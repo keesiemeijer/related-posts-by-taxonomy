@@ -15,6 +15,8 @@ Choose from single or multiple taxonomies and search for related posts in multip
 
 For more information on how to use the plugin see [these instructions](http://keesiemeijer.wordpress.com/2013/05/11/related-posts-by-taxonomy-plugin/) or read the readme.html file that comes with the plugin (inside the 'docs' directory).
 
+If you want to have related posts after the post content on single post pages without using the shortcode or widgets see the [FAQ](http://wordpress.org/extend/plugins/related-posts-by-taxonomy/faq/). 
+
 Default usage of the shortcode is:
 <pre><code>[related_posts_by_tax]</code></pre>
 
