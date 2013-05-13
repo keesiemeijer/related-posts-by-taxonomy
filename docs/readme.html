@@ -1,0 +1,408 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Related Posts by Taxonomy plugin</title>
+
+<link rel="stylesheet" href="readme.css" type="text/css" media="screen" />
+
+</head>
+<body>
+
+<h1>Related Posts by Taxonomy Plugin</h1>
+
+<p class="first">This lightweight plugin provides a widget and shortcode to display related posts by taxonomies as links, full posts or excerpts.</p>
+
+<p class="second">
+Choose from single or multiple taxonomies and search for related posts in multiple post types. Posts that have the most terms in common will  display at the top (also ordered by date). It's easy to override the look of the widget or shortcode with a filter or by including your own templates in your theme. It's also possible to get the related posts by using a function in your theme template files.</p>
+
+<h2>The plugin documentation</h2>
+
+<p>Use the links below to navigate to a specific section in the documentation:</p>
+
+<ul>
+	<li><a href="#install">How to install the plugin</a></li>
+	<li><a href="#widget">The widget</a></li>
+	<li><a href="#outside-the-loop">Widget usage outside the loop</a></li>
+	<li><a href="#shortcode">The shortcode</a></li>
+	<li><a href="#function">The function</a></li>
+	<li><a href="#examples">Examples</a></li>
+	<li><a href="#filters">Filters</a></li>
+	<li><a href="#templates">Templates</a></li>
+	<li><a href="#after-content">Adding related posts after the post content</a></li>
+	<li><a href="#plugin-support">Plugin support</a></li>
+	<li><a href="#copyright">Copyright &amp; License</a></li>
+</ul>
+	
+
+<h2 id="install">How to install the plugin</h2>
+
+<ol>
+	<li>Unzip the <code>related-posts-by-taxonomy.zip</code> folder.</li>
+	<li>Upload the <code>related-posts-by-taxonomy</code> folder to your <code>/wp-content/plugins</code> directory.</li>
+	<li>Activate <em>Related Posts by Taxonomy</em>.</li>
+	<li>That's it, now you are ready to use the widget and shortcode.</li>
+	
+</ol>
+
+<h2 id="widget">The widget</h2>
+
+<p>The widget settings are very self-explanatory.</p>
+<p><img src="widget_settings.png" alt="screenshot of widget settings" /></p>
+<p><strong>The display settings </strong></p>
+<p>You can choose from three different display formats:</p>
+<ol>
+	<li>links: display a list of related post links</li>
+	<li>posts: display a list of full posts</li>
+	<li>excerpts: display a list of excerpts</li>
+</ol>
+<p>To override the template used for these formats see: <a href="#templates">Templates</a></p>
+<p>For more information about the post ID and the widget outside the loop see <a href="#outside-the-loop">Usage outside the loop</a>.</p>
+
+<h2 id="outside-the-loop">Widget usage outside the loop</h2>
+<p>If the widget is used outside the loop (like in a sidebar) and no post ID is provided in the widget's settings it gets the first post ID for that page request (e.g. on a category archive page it will get the post ID from the first post of that category archive page).</p>
+
+<p><strong>Custom queries with WP_Query()</strong></p>
+<p>To let the widget get the first post ID outside the loop on pages that query the main loop with <code>new WP_Query</code> you have to make some alterations after the query and in your (child) theme's functions.php file:</p>
+<pre><code>// the query
+$my_query = new WP_Query( 'cat=25' );
+// put this right after the WP_Query
+if ( isset( $my_query->posts[0]->ID ) ) {
+	global $related_posts_by_taxonomy_post_ID;
+	$related_posts_by_taxonomy_post_ID = $my_query->posts[0]->ID;
+	add_filter( 'related_posts_by_taxonomy_widget_args', 'widget_filter_first_post_id', 10, 2 );
+}
+</code></pre>
+<p>And add this to your theme's functions.php file:</p>
+<pre><code>function widget_filter_first_post_id( $args, $instance ) {
+	global $related_posts_by_taxonomy_post_ID;
+	if ( $related_posts_by_taxonomy_post_ID ) {
+	  echo $related_posts_by_taxonomy_post_ID;
+		$args['post_id'] = $related_posts_by_taxonomy_post_ID;
+	}
+	return $args;
+}</code></pre>
+
+<h2 id="shortcode">The shortcode</h2>
+<p>Basic usage</p>
+<pre><code>[related_posts_by_tax]</code></pre>
+<p id="shortcode-attributes">attributes:</p>
+<ul>
+	<li><a href="#post-id">post_id</a></li>
+	<li><a href="#taxonomies">taxonomies</a></li>
+	<li><a href="#post-types">post_types</a></li>
+	<li><a href="#posts-per-page">posts_per_page</a></li>
+	<li><a href="#order">order</a></li>
+	<li><a href="#orderby">orderby</a></li>
+	<li><a href="#title">title</a></li>
+	<li><a href="#before-title">before_title</a></li>
+	<li><a href="#after-title">after_title</a></li>
+	<li><a href="#exclude-terms">exclude_terms</a></li>
+	<li><a href="#exclude-posts">exclude_posts</a></li>
+	<li><a href="#format">format</a></li>
+	<li><a href="#limit-posts">limit_posts</a></li>
+	<li><a href="#limit-year">limit_year</a></li>
+	<li><a href="#limit-month">limit_month</a></li>
+</ul>
+<p>All these attributes can be filtered in your theme's functions.php file. See <a href="#filters">Filters</a>.</p>
+
+<dl id="post-id">
+<dt><tt>post_id</tt></dt>
+<dd>(<i>int</i>) Display related posts for one post ID. There is no default.</dd>
+</dl>
+<pre><code>[related_posts_by_tax post_id="23"]</code></pre>
+
+
+<dl id="taxonomies">
+<dt><tt>taxonomies</tt></dt>
+<dd>(<i>string</i>) Taxonomy name or a comma-separated list of taxonomy names. Default is 'all' (all taxonomies).</dd>
+</dl>
+<pre><code>[related_posts_by_tax taxonomies="category,post_tag"]</code></pre>
+
+<dl id="post-types">
+<dt><tt>post_types</tt></dt>
+<dd>(<i>string</i>) Post type name or a comma-separated list of post type names to search related posts in. Default is 'post'.</dd>
+</dl>
+<pre><code>[related_posts_by_tax post_type="post,movie"]</code></pre>
+
+<dl id="posts-per-page">
+<dt><tt>posts_per_page</tt></dt>
+<dd>(<i>int</i>) How many related posts to display. Default is 5.</dd>
+</dl>
+<pre><code>[related_posts_by_tax posts_per_page="10"]</code></pre>
+
+<dl id="order">
+<dt><tt>order</tt></dt>
+<dd>(<i>string</i>) Start searching for related posts from latest post date, oldest post date or randomly.<ul>
+	<li>'DESC' - from latest post date (show posts with most common terms first)(default).</li>
+	<li>'ASC' - from oldest post date (show posts with most common terms first).</li>
+	<li>'RAND' - random (show posts with terms in common randomly).</li>
+</ul></dd>
+</dl>
+<pre><code>[related_posts_by_tax order="ASC"]</code></pre>
+
+<dl id="orderby">
+<dt><tt>orderby</tt></dt>
+<dd>(<i>string</i>) Order by post date or by date modified.<ul>
+	<li>'post_date' - order by date (and show posts with most common terms first)(default).</li>
+	<li>'post_modified' - order by last modified date (and show posts with most common terms first).</li>
+</ul></dd>
+</dl>
+<pre><code>[related_posts_by_tax orderby="post_modified"]</code></pre>
+
+<dl id="title">
+<dt><tt>title</tt></dt>
+<dd>(<i>string</i>) The title displayed above the related posts. Default is 'Related Posts'.</dd>
+</dl>
+<pre><code>[related_posts_by_tax title="My Related Posts"]</code></pre>
+
+<dl id="before-title">
+<dt><tt>before_title</tt></dt>
+<dd>(<i>string</i>) Text to place before the title. Default is an empty string (nothing before the title).</dd>
+</dl>
+
+<dl id="after-title">
+<dt><tt>after_title</tt></dt>
+<dd>(<i>string</i>) Text to place after the title. Default is an empty string (nothing after the title).</dd>
+</dl>
+<pre><code>[related_posts_by_tax before_title="&lt;h3>" after_title="&lt;/h3>"]</code></pre>
+
+<dl id="exclude-terms">
+<dt><tt>exclude_terms</tt></dt>
+<dd>(<i>string</i>) Exclude a comma separated list of term IDs. Default is an empty string (don't exclude terms).</dd>
+</dl>
+<pre><code>[related_posts_by_tax exclude_terms="20,23,14"]</code></pre>
+
+<dl id="exclude-posts">
+<dt><tt>exclude_posts</tt></dt>
+<dd>(<i>string</i>) Exclude a comma separated list of post IDs. Default is an empty string (don't exclude posts).</dd>
+</dl>
+<pre><code>[related_posts_by_tax exclude_posts="83,102,44"]</code></pre>
+
+<dl id="format">
+<dt><tt>format</tt></dt>
+<dd>(<i>string</i>) Display related posts as links, full posts, or excerpts.<ul>
+	<li>'links':
+		<ul>
+			<li>display a list of related post links.</li>
+			<li>template used for display: related-posts-links.php.</li>
+		</ul>
+	</li>
+	<li>'posts':
+		<ul>
+			<li>display post title and full post.</li>
+			<li>template used for display: related-posts-posts.php.</li>
+		</ul>
+	</li>
+	<li>'excerpts':
+		<ul>
+			<li>display post title and excerpt.</li>
+			<li>template used for display: related-posts-excerpts.php.</li>
+		</ul>
+	</li>
+</ul></dd>
+</dl>
+<pre><code>[related_posts_by_tax format="excerpts"]</code></pre>
+<p>To override the templates for display see <a href="#templates">Templates</a></p>
+
+<dl id="limit-posts">
+<dt><tt>limit_posts</tt></dt>
+<dd>(<i>string</i>) Limit the search for related posts to the latests published posts only. Default is '-1' (search in all posts). Example: search for related posts in the last 100 posts.</dd>
+</dl>
+<pre><code>[related_posts_by_tax limit_posts="100"]</code></pre>
+
+<dl id="limit-year">
+<dt><tt>limit_year</tt></dt>
+<dd>(<i>string</i>) Limit the search for related posts to posts published in the past year(s). Default is an empty string (no limit). Example: search only in posts published within the last year.</dd>
+</dl>
+<pre><code>[related_posts_by_tax limit_year="1"]</code></pre>
+
+<dl id="limit-month">
+<dt><tt>limit_month</tt></dt>
+<dd>(<i>string</i>) Limit the search for related posts to posts published in the past month(s). Default is an empty string (no limit). Example: search only in posts published within the last 6 months.</dd>
+</dl>
+<pre><code>[related_posts_by_tax limit_month="6"]</code></pre>
+
+
+
+<h2 id="function">The Function</h2>
+<p>Use this function in your theme template files to get the related posts by taxonomy.</p>
+<p>Basic Usage</p>
+<pre><code>&lt;?php km_rpbt_related_posts_by_taxonomy( $post_id, $taxonomies, $args  ); ?></code></pre>
+<p><strong>parameters</strong>:</p>
+<dl>
+<dt><tt>$post_id</tt></dt>
+<dd>(<i>int</i>)(<i>required</i>) The post ID to retrieve related posts for.</dd>
+</dl>
+
+<dl>
+<dt><tt>$taxonomies</tt></dt>
+<dd>(<i>string|array</i>)(<i>required</i>) The taxonomies used by the related posts. For example: <code>'category'</code> or <code>array( 'category', 'customtaxonomy' ).</code></dd>
+</dl>
+
+<dl>
+<dt><tt>$args</tt></dt>
+<dd>(<i>array</i>)(<i>optional</i>) Overwrite the defaults.</dd>
+</dl>
+
+<p>Default $args are:</p>
+<pre><code>&lt;?php 
+$defaults = array(
+	'post_types'     => 'post', // string or array with multiple post type names
+	'posts_per_page' => 5, // return 5 posts
+	'order'          => 'DESC',
+	'orderby'        => 'post_date',
+	'exclude_terms'  => '', // array with term IDs
+	'exclude_posts'  => '', // array with post IDs
+	'limit_posts'    => -1, // don't limit posts
+	'limit_year'     => '',
+	'limit_month'    => '',
+	'fields'         => 'all', // return post objects 
+);
+?></code></pre>
+
+<p>As you can see most arguments are the same as in <a href="#shortcode-attributes">The shortcode attributes</a>.</p>
+<p>One additional argument is the 'fields' argument</p>
+
+<dl>
+<dt><tt>fields</tt></dt>
+<dd>(<i>string</i>) Return full post objects, IDs, post titles or post slugs. Default is 'all'.<ul>
+	<li>'all' - return array of post objects</li>
+	<li>'ids' - return array of post IDs</li>
+	<li>'names' - return array of post titles</li>
+	<li>'slugs' - return array of post slugs</li>
+</ul></dd>
+</dl>
+  
+<h2 id="examples">Examples</h2>
+<p>Get the latest 10 post related by categories and tags, excluding term ID's '12' and '34':</p>
+<pre><code>&lt;?php
+// check if the function already exists
+if ( function_exists( 'km_rpbt_related_posts_by_taxonomy' ) ) {
+  $args = array(
+    'posts_per_page' => 10,
+    'exclude_terms' => array(12,34), 
+  );
+  $taxonomies = array('category','post_tag');
+  
+  $related_posts = km_rpbt_related_posts_by_taxonomy( $post->ID, $taxonomies, $args );
+  if( $related_posts ) {
+    echo '&lt;ul>';
+    // loop through related posts
+    foreach ( (array) $related_posts as $related ) {
+      // title is the post ID if a post doesn't have a title
+      $title = ($related->post_title) ? $related->post_title : $related->ID;
+      echo '&lt;li>&lt;a href="' . get_permalink( $related->ID ) . '">' . $title . '&lt;/a>&lt;/li>';
+    }
+    echo '&lt;/ul>';
+  }
+}
+?></code></pre>
+<h2 id="filters">Filters</h2>
+<p>Filter: <strong>related_posts_by_taxonomy_widget_args</strong></p>
+<p>This filter is run just before the widget retrieves the related posts from the database. All shortcode <a href="#shortcode-attributes">attributes</a> can be used as arguments. For example, let the widget get related posts by categories and tags, and return 10 related posts on the home page. Use this example in your theme's functions.php file.</p>
+<pre><code>add_filter( 'related_posts_by_taxonomy_widget_args', 'my_widget_filter', 10, 2 );
+function my_widget_filter( $args, $instance ) {
+	$args['taxonomies'] = array( 'category', 'post_tag' );
+	
+	if(is_home()) {
+		$args['posts_per_page'] = 10;
+	}
+	
+	return $args;
+}</code></pre>
+
+<p>Filter: <strong>related_posts_by_taxonomy_widget_hide_empty</strong></p>
+<p>This filter allows you to hide or show the widget if no related posts are found. Use this example in your theme's functions.php file.</p>
+<pre><code>// this will show the widget even if no results where found
+add_filter( 'related_posts_by_taxonomy_widget_hide_empty', '__return_false' );</code></pre>
+
+
+<p>Filter: <strong>related_posts_by_taxonomy_shortcode_atts</strong></p>
+<p>This filter is run just before the shortcode retrieves the related posts from the database. All <a href="#shortcode-attributes">shortcode attributes</a> can be used. For example, change the default title 'Related Posts' and make it a heading. Use this example in your theme's functions.php file.</p>
+<pre><code>add_filter( 'related_posts_by_taxonomy_shortcode_atts', 'related_shortcode_title' );
+function related_shortcode_title( $atts ) {
+	$atts['before_title'] = '&lt;h3>';
+	$atts['title'] = 'My Related Posts by Taxonomies';
+	$atts['after_title'] = '&lt;/h3>';
+
+	return $atts;
+}
+</code></pre>
+
+<p>Filter: <strong>related_posts_by_taxonomy</strong></p>
+<p>This filter is run just after the related posts are retrieved from the database by <a href="#function">the function</a> (used by the widget and shortcode).</p>
+<pre><code>add_filter( 'related_posts_by_taxonomy', 'my_related_posts_by_taxonomy_filter',10, 4 );
+function my_related_posts_by_taxonomy_filter( $results, $post_id, $taxonomies, $args ) {
+	// do stuff with the $results (related posts)
+	return $results;
+}</code></pre>
+
+<p>Filter: <strong>related_posts_by_taxonomy_template</strong></p>
+<p>This filter lets you override the template used to display the related posts. See <a href="#templates">Templates</a></p>
+
+<h2 id="templates">Templates</h2>
+<p>There are three templates used by the widget and shortcode to display the related posts. These templates can be found in the plugin folder 'templates'.</p>
+<ol>
+	<li>'related-posts-links.php': display a list of related post links.</li>
+	<li>'related-posts-posts.php': display a list of full posts.</li>
+	<li>'related-posts-excerpts.php': display a list of excerpts.</li>
+</ol>
+<p>You can override these templates with your own template in two ways. First, create a folder "related-post-plugin" in the root of your (child) theme folder. </p>
+<p>The first way is by <strong>copying</strong> (not moving) the files you want to edit from the plugin 'templates' folder into your theme's 'related-post-plugin' folder. The widget and shortcode will now use the template in your theme folder if the template exists.</p> 
+<p>The second way is by <strong>creating your own</strong> template in the "related-post-plugin" folder and filter the template used in your theme's functions.php file. This way you can also have separate templates for the widget and the shortcode. Example:</p>
+<pre><code>&lt;?php
+add_filter( 'related-post-plugin_template', 'my_related_posts_templates', 10, 2 );
+function my_related_posts_templates( $template, $type ) {
+
+	// check if it's the template for a shortcode
+	if ( isset( 'type' ) &amp;&amp; $type == 'shortcode' ) {
+	
+		// check what template the plugin wants to use
+		if ( $template == 'related-posts-links.php' ) { // the links template
+			// return your my-shortcode-links-template.php
+			return 'my-shortcode-links-template.php';
+		}
+		
+		// more shortcode templates here
+	}
+	
+	// check if it's the template is for a widget
+	if ( isset( 'type' ) &amp;&amp; $type == 'widget' ) {
+	
+		// return my-widget-template.php
+		return 'my-widget-template.php';
+	}
+	
+	// return default template
+	return $template;
+}
+?></code></pre>
+
+<h2 id="after-content">Adding Related Posts After the Post Content</h2>
+<p>You can add the related posts after the post content by using a code snippet in your theme's functions.php file. Example with related posts after the content on single post pages:</p>
+<pre><code>add_filter( 'the_content', 'add_related_posts_after_post_content' );
+function add_related_posts_after_post_content( $content ) {
+	if ( is_single() ) {
+		$related = do_shortcode( '[related_posts_by_tax before_title="&lt;h2>" after_title="&lt;/h2>"]' );
+		if ( $related ) {
+			$content .=  $related;
+		}
+	}
+	return $content;
+}</code></pre>
+
+
+<h2 id="plugin-support">Plugin support</h2>
+<p>All support for this plugin is done in the WordPress forums.</p>
+
+<h2 id="copyright">Copyright &amp; license</h2>
+
+<p><em>Related Posts by Taxonomies plugin</em> is licensed under the <a href="http://www.gnu.org/licenses/gpl.html" title="GNU GPL">GNU General Public License</a>, version  (<acronym title="GNU General Public License">GPL</acronym>).</p>
+
+<p>This plugin is made by Kees Meijer.</p>
+
+<p>&copy; 2013 &ndash; Kees Meijer</p>
+
+</body>
+</html>

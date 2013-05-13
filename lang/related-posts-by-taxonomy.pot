@@ -1,0 +1,97 @@
+# Copyright (C) 2013 Related Posts By Taxonomy
+# This file is distributed under the same license as the Related Posts By Taxonomy package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Related Posts By Taxonomy 0.1\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/related-posts-by-taxonomy\n"
+"POT-Creation-Date: 2013-05-10 11:11:12+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2013-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: shortcode.php:19 widget.php:213
+msgid "Related Posts"
+msgstr ""
+
+#: templates/related-posts-excerpts.php:21
+#: templates/related-posts-links.php:24 templates/related-posts-posts.php:21
+msgid "No related posts found"
+msgstr ""
+
+#: widget.php:30
+msgid "Show a list of related posts by taxonomy."
+msgstr ""
+
+#. #-#-#-#-#  plugin.pot (Related Posts By Taxonomy 0.1)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: widget.php:36
+msgid "Related Posts By Taxonomy"
+msgstr ""
+
+#: widget.php:47
+msgid "links"
+msgstr ""
+
+#: widget.php:48
+msgid "posts"
+msgstr ""
+
+#: widget.php:49
+msgid "excerpts"
+msgstr ""
+
+#: widget.php:230
+msgid "Title:"
+msgstr ""
+
+#: widget.php:235
+msgid "Number of related posts to show:"
+msgstr ""
+
+#: widget.php:240
+msgid "Taxonomy:"
+msgstr ""
+
+#: widget.php:242
+msgid "All Taxonomies"
+msgstr ""
+
+#: widget.php:250
+msgid "Post types to include:"
+msgstr ""
+
+#: widget.php:262
+msgid "Display"
+msgstr ""
+
+#: widget.php:265
+msgid "Format:"
+msgstr ""
+
+#: widget.php:273
+msgid ""
+"This widget needs a post ID for it to display the related posts. The post ID "
+"is available on single post pages or inside a loop. If the widget is outside "
+"the loop  (like in a sidebar) it gets the first post ID for that page "
+"request. (i.e. on a category archive page it will get the post ID from the "
+"first post of that category archive page)."
+msgstr ""
+
+#: widget.php:276
+msgid "Display only on single post pages"
+msgstr ""
+
+#: widget.php:279
+msgid "Display related posts for post ID (optional):"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "display related posts by taxonomies. Widget and Shortcode"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "keesiemijer"
+msgstr ""
