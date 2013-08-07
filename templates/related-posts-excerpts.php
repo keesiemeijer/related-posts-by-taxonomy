@@ -2,10 +2,18 @@
 /**
  * Template for Related Posts by Taxonomy widget and shortcode - excerpts template
  *
+ * @since 0.1
+ *
  * @package related posts by taxonomy
  *
  * the following variables are available:
  * @var array $related_posts array with related posts objects or empty array
+ */
+?>
+
+<?php
+/**
+ * Note: global $post; is run before this template by the widget and the shortcode.
  */
 ?>
 
@@ -18,10 +26,10 @@
 
 	<?php endforeach; ?>
 <?php else : ?>
-<p><?php _e('No related posts found', 'related-posts-by-taxonomy'); ?></p>
+<p><?php _e( 'No related posts found', 'related-posts-by-taxonomy' ); ?></p>
 <?php endif ?>
 
-<?php 
+<?php
 /**
  * note: wp_reset_postdata(); is run after this template by the widget and the shortcode
  */

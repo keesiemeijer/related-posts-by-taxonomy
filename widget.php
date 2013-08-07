@@ -40,13 +40,14 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		foreach ( (array) $taxonomies as $key => $value ) {
 			$tax[$key] = $value->label;
 		}
-		
+
 		$this->taxonomies = $tax;
 
 		$this->formats = array(
 			'links' => __( 'links', 'related-posts-by-taxonomy' ),
 			'posts' => __( 'posts', 'related-posts-by-taxonomy' ),
-			'excerpts' => __( 'excerpts', 'related-posts-by-taxonomy' )
+			'excerpts' => __( 'excerpts', 'related-posts-by-taxonomy' ),
+			'thumbnails' => __( 'post thumbnails', 'related-posts-by-taxonomy' ),
 		);
 
 		if ( !is_admin() )
@@ -70,13 +71,13 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		/* 	set up 	the args for km_rpbt_related_posts_by_taxonomy() */
 		$args_related['post_id'] = $instance['post_id'];
 		if ( empty( $instance['post_id'] ) ) {
-			
+
 			if ( in_the_loop() ) {
 				$args_related['post_id'] = get_the_ID();
 			} else {
-				/* 
-				 * not inside the loop 
-				 * try to get the first post id off $wp_query (outside of the loop) 
+				/*
+				 * not inside the loop
+				 * try to get the first post id off $wp_query (outside of the loop)
 				 */
 				global $wp_query;
 				if ( isset( $wp_query->posts[0]->ID ) )
@@ -94,13 +95,20 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$args_related['taxonomies'] =  array_keys( $this->taxonomies );
 		}
 
+
 		if ( !empty( $instance['posts_per_page'] ) )
 			$args_related['posts_per_page'] = $instance['posts_per_page'];
+
+		$args_related['post_thumbnail'] = false;
+		if ( isset( $instance['format'] ) &&( $instance['format'] == 'thumbnails' ) )
+			$args_related['post_thumbnail'] = true;
 
 		$instance['widget_id'] = $args['widget_id'];
 
 		$args_related = apply_filters( 'related_posts_by_taxonomy_widget_args', $args_related, $instance );
-		
+
+
+
 		$post_id = ( isset( $args_related['post_id'] ) ) ? $args_related['post_id'] : ''; // maybe filtered
 		if ( isset( $args_related['taxonomies'] ) ) { // maybe filtered
 			$taxonomies = $args_related['taxonomies'];
@@ -109,22 +117,27 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 		unset( $args_related['post_id'], $args_related['taxonomy'] ); // not needed
 
+
 		/* get related posts */
 		$related_posts = (array) km_rpbt_related_posts_by_taxonomy( $post_id, $taxonomies, $args_related );
 
-		/* if no related posts where found show the widget? default: true */
+		/* if no related posts where found hide the widget? default: true */
 		$show_empty = (bool) apply_filters( 'related_posts_by_taxonomy_widget_hide_empty', true );
 
 		if ( !$show_empty || !empty( $related_posts ) ) {
+
 			$template = km_rpbt_related_posts_by_taxonomy_template( (string) $instance['format'], 'widget' );
+
 			if ( $template ) {
 
 				/* display of the widget */
 				echo $before_widget;
+
 				$title = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 				/* widget title if one was input. */
 				if ( trim( $title ) != '' )
 					echo $before_title . $title . $after_title;
+
 				global $post; // for setup_postdata in $template
 				require $template;
 				wp_reset_postdata(); // clean up global $post;
@@ -222,7 +235,9 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$instance['post_types']['post'] = 'on';
 		}
 		$singular_template = isset( $instance['singular_template'] ) ? (bool) $instance['singular_template'] : false;
+
 		$post_id = isset( $instance['post_id'] ) ? $instance['post_id'] : '';
+
 ?>
 
 		<!-- Widget Form Fields -->

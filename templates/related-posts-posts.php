@@ -9,6 +9,12 @@
  */
 ?>
 
+<?php
+/**
+ * Note: global $post; is run before this template by the widget and the shortcode.
+ */
+?>
+
 <?php if ( $related_posts ) : ?>
 	<?php foreach ( $related_posts as $post ) :
 		setup_postdata( $post ); ?>
@@ -18,10 +24,10 @@
 
 	<?php endforeach; ?>
 <?php else : ?>
-<p><?php _e('No related posts found', 'related-posts-by-taxonomy'); ?></p>
+<p><?php _e( 'No related posts found', 'related-posts-by-taxonomy' ); ?></p>
 <?php endif ?>
 
-<?php 
+<?php
 /**
  * note: wp_reset_postdata(); is run after this template by the widget and the shortcode
  */

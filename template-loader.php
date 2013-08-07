@@ -17,6 +17,7 @@ function km_rpbt_related_posts_by_taxonomy_template( $format = false, $type = fa
 		switch ( (string) $format ) {
 		case 'posts': $template = 'related-posts-posts.php'; break;
 		case 'excerpts': $template = 'related-posts-excerpts.php'; break;
+		case 'thumbnails': $template = 'related-posts-thumbnails.php'; break;
 		default: $template = 'related-posts-links.php'; break;
 		}
 	}

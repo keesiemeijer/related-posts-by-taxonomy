@@ -1,21 +1,33 @@
 === Related Posts by Taxonomy ===
 Contributors: keesiemeijer
-Tags: related,related posts,widget,shortcode,taxonomy,taxonomies,post type,post types,term,terms,category,categories,tag,tags,post_tag,posts,similar,similar posts
+Tags: related,related posts,widget,shortcode,taxonomy,taxonomies,post type,post types,term,terms,category,categories,tag,tags,post_tag,posts,similar,posts,similar,thumbnail, thumbnails, post thumbnail,featured image
 Requires at least: 3.4
 Tested up to: 3.6
-Stable tag: 0.1.1
+Stable tag: 0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This lightweight plugin provides a widget and shortcode to display related posts by taxonomies as links, full posts or excerpts. 
+This lightweight WordPress plugin provides a widget and shortcode to display related posts as links, full posts, excerpts or post thumbnails. 
 
 == Description ==
 
-Choose from single or multiple taxonomies and search for related posts in multiple post types. Posts that have the most terms in common will display at the top (also ordered by date). It's easy to override the look of the widget or shortcode with a filter or by including your own templates in your theme. It's also possible to get the related posts by using a function in your theme template files.
+Choose from single or multiple taxonomies and search for related posts in single  or multiple post types. Posts that have the **most terms** in common will display at the top (also ordered by date). It’s easy to override the look of the widget or shortcode. It’s also possible to get the related posts by using plugin functions in your (child) theme template files.
 
-For more information on how to use the plugin see [these instructions](http://keesiemeijer.wordpress.com/2013/05/11/related-posts-by-taxonomy-plugin/) or read the readme.html file that comes with the plugin (inside the 'docs' directory).
+Plugin features:
 
-If you want to have related posts after the post content on single post pages without using the shortcode or widgets see the [FAQ](http://wordpress.org/extend/plugins/related-posts-by-taxonomy/faq/). 
+* Widget and shortcode
+* Display related posts as links, full posts, excerpts or post thumbnails
+* exclude terms from taxonomies
+* exclude posts from the related posts
+* limit related posts by year(s) or by month(s)
+* only display related posts on single posts 
+* display related posts after the post content
+* use your own templates for display of the related posts
+
+
+For more information on how to use the plugin see the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
+
+If you want to have related posts after the post content on single post pages without using the shortcode or widget see the [FAQ](http://wordpress.org/extend/plugins/related-posts-by-taxonomy/faq/). 
 
 Default usage of the shortcode is:
 <pre><code>[related_posts_by_tax]</code></pre>
@@ -51,20 +63,33 @@ Read the documentation for more information on these attributes and what they do
 
 == Frequently Asked Questions ==
 
-For more information on how to use the plugin see [these instructions](http://keesiemeijer.wordpress.com/2013/05/11/related-posts-by-taxonomy-plugin/) or read the readme.html file that comes with the plugin (inside the 'docs' directory).
+For more information on how to use the plugin see this [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
 
 = Can I exclude posts and/or terms with the widget or shortcode =
-Yes. Read the "Filters" or "Shortcode" section in the documentation that comes with the plugin.
+Yes. For the widget see [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) and for the shortcode see the [shortcode parameters](href="http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#shortcode-attributes).
 
 = The widget only lets you choose "all taxonomies" or a single taxonomy. Can I make it use only the taxonomies I want? =
 
-Yes. Read the "Filters" section in the documentation that comes with the plugin.
+Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) on how to do that.
 
 = How can I automatically add related posts after the post content? =
 
-Read the "Adding Related Posts After the Post Content" section in the documentation that comes with the plugin.
-
+Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#after-content).
+" section in the documentation.
 
 == Screenshots ==
 
 1. The Widget
+2. Twenty Twelve screenshot. Post thumbnails (after post content) and the widget
+3. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
+== Changelog ==
+
+= 0.2 =
+* Added new feature to display related post thumbnails.
+* Removed the docs that came with the plugin.
+* some minor bug fixing for the shortcode.
+
+== Upgrade Notice ==
+
+= 0.2 =
+Added new feature to display related post thumbnails.
