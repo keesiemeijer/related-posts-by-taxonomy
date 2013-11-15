@@ -1,0 +1,171 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Related Posts By Taxonomy v0.2.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2013-11-13 09:02:51+0000\n"
+"Last-Translator: admin <keesie.meijer@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: CSL v1.x\n"
+"X-Poedit-Language: Dutch\n"
+"X-Poedit-Country: NETHERLANDS\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#. translators: plugin header field 'Name'
+#: related-posts-by-taxonomy.php:0
+#: widget.php:38
+#@ related-posts-by-taxonomy
+msgid "Related Posts By Taxonomy"
+msgstr "Gerelateerde Berichten door Taxonomie"
+
+#. translators: plugin header field 'PluginURI'
+#: related-posts-by-taxonomy.php:0
+#@ related-posts-by-taxonomy
+msgid "http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/"
+msgstr "http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/"
+
+#. translators: plugin header field 'Author'
+#: related-posts-by-taxonomy.php:0
+#@ related-posts-by-taxonomy
+msgid "keesiemijer"
+msgstr "keesiemijer"
+
+#: shortcode.php:21
+#@ related-posts-by-taxonomy
+msgid "Related Posts"
+msgstr "Gerelateerde Berichten"
+
+#: templates/related-posts-excerpts.php:29
+#: templates/related-posts-links.php:32
+#: templates/related-posts-posts.php:27
+#: templates/related-posts-thumbnails.php:48
+#@ related-posts-by-taxonomy
+msgid "No related posts found"
+msgstr "Geen gerelateerde berichten gevonden"
+
+#: widget.php:32
+#@ related-posts-by-taxonomy
+msgid "Show a list of related posts by taxonomy."
+msgstr "Toon een lijst met gerelateerde berichten door taxonomie."
+
+#: widget.php:276
+#@ related-posts-by-taxonomy
+msgid "Title:"
+msgstr "Titel:"
+
+#: widget.php:281
+#@ related-posts-by-taxonomy
+msgid "Number of related posts to show:"
+msgstr "Aantal gerelateerde berichten:"
+
+#: widget.php:294
+#@ related-posts-by-taxonomy
+msgid "Taxonomy:"
+msgstr "Taxonomie:"
+
+#: widget.php:296
+#@ related-posts-by-taxonomy
+msgid "All Taxonomies"
+msgstr "Alle Taxonomiën"
+
+#: widget.php:304
+#@ related-posts-by-taxonomy
+msgid "Post types to include:"
+msgstr "Te gebruiken post types:"
+
+#: widget.php:314
+#@ related-posts-by-taxonomy
+msgid "Display"
+msgstr "Weergave"
+
+#: widget.php:317
+#@ related-posts-by-taxonomy
+msgid "Format:"
+msgstr "Opmaak:"
+
+#: widget.php:340
+#@ related-posts-by-taxonomy
+msgid "This widget needs a post ID for it to display the related posts. The post ID is available on single post pages or inside a loop. If the widget is outside the loop  (like in a sidebar) it gets the first post ID for that page request. (i.e. on a category archive page it will get the post ID from the first post of that category archive page)."
+msgstr "Deze widget heeft een post ID nodig om de gerelateerde berichten weer te geven. De post ID is beschikbaar op pagina's met een enkel bericht of binnenin “the loop”.  Als de widget zich buiten “the loop” bevindt (zoals in een sidebar) zal het de eerste Post ID van de pagina gebruiken (bijvoorbeeld, op een categorie archief pagina zal het de post ID gebruiken van het eerste bericht op de pagina )."
+
+#: widget.php:349
+#@ related-posts-by-taxonomy
+msgid "Display related posts for post ID (optional):"
+msgstr "Toon gerelateerde berichten voor deze Post ID (optioneel):"
+
+#. translators: plugin header field 'Description'
+#: related-posts-by-taxonomy.php:0
+#@ related-posts-by-taxonomy
+msgid "This lightweight WordPress plugin provides a widget and shortcode to display related posts as links, full posts, excerpts or post thumbnails (aka featured images). Posts that have the most terms in common will display at the top."
+msgstr "Gebruik een widget of shortcode om gerelateerde berichten weer te geven als links, volledige berichten, samenvattingen of uitgelichte afbeeldingen. Berichten met de meest gemeenschappelijke termen (categorieën, tags, etc.) worden als eerst weergegeven."
+
+#: defaults.php:102
+#@ related-posts-by-taxonomy
+msgid "Category"
+msgstr "Categorie"
+
+#: defaults.php:106
+#@ related-posts-by-taxonomy
+msgid "Post"
+msgstr "Bericht"
+
+#: defaults.php:114
+#@ related-posts-by-taxonomy
+msgid "Thumbnail"
+msgstr "Thumbnail"
+
+#: defaults.php:226
+#@ related-posts-by-taxonomy
+msgid "Links"
+msgstr "Links"
+
+#: defaults.php:227
+#@ related-posts-by-taxonomy
+msgid "Posts"
+msgstr "Berichten"
+
+#: defaults.php:228
+#@ related-posts-by-taxonomy
+msgid "Excerpts"
+msgstr "Samenvattingen"
+
+#: defaults.php:229
+#@ related-posts-by-taxonomy
+msgid "Post thumbnails"
+msgstr "Uitgelichte afbeeldingen"
+
+#. translators: plugin header field 'Version'
+#: related-posts-by-taxonomy.php:0
+#@ related-posts-by-taxonomy
+msgid "0.2.1"
+msgstr "0.2.1"
+
+#: widget.php:283
+#@ related-posts-by-taxonomy
+msgid "Use -1 to show all related posts."
+msgstr "Gebruik -1 om alle gerelateerde berichten te tonen."
+
+#: widget.php:326
+#@ related-posts-by-taxonomy
+msgid "Image size:"
+msgstr "Afmeting afbeeldingen:"
+
+#: widget.php:335
+#@ related-posts-by-taxonomy
+msgid "Number of image columns:"
+msgstr "Aantal afbeeldings kolommen"
+
+#: widget.php:345
+#@ related-posts-by-taxonomy
+msgid "Display this widget only on single post pages"
+msgstr "Toon deze widget alleen op pagina's met een enkel bericht"
+

@@ -4,10 +4,11 @@
  *
  * @since 0.1
  *
- * @param int (required) $post_id
- * @param array|string (required) $taxonomies The taxonomies to retrieve related posts from
- * @param array|string $args Change what is returned
- * @return array Empty array if no related posts found. Array with post objects.
+ * @global object       $wpdb
+ * @param int     $post_id
+ * @param array|string $taxonomies The taxonomies to retrieve related posts from
+ * @param array|string $args       Optional. Change what is returned
+ * @return array        Empty array if no related posts found. Array with post objects.
  */
 function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'category', $args = '' ) {
 	global $wpdb;
@@ -21,7 +22,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		'post_types' => 'post', 'posts_per_page' => 5, 'order' => 'DESC',
 		'fields' => 'all', 'limit_posts' => -1, 'limit_year' => '',
 		'limit_month' => '', 'orderby' => 'post_date', 'exclude_terms' => '',
-		'exclude_posts' => '', 'post_thumbnail' => ''
+		'exclude_posts' => '', 'post_thumbnail' => '', 'common_terms' => true,
 	);
 
 	$args = wp_parse_args( $args, $defaults );
@@ -45,7 +46,6 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	$term_ids_sql = implode( ', ', $terms );
 
-
 	$exclude_posts  = km_rpbt_related_posts_by_taxonomy_validate_ids( $exclude_posts );
 	$exclude_posts[] = $post_id;
 	$exclude_posts   = array_unique( $exclude_posts );
@@ -62,7 +62,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	}
 
 	$limit_sql = '';
-	if ( -1 !== $limit_posts ) {
+	if ( -1 !== (int) $limit_posts ) {
 		$limit_posts = absint( $limit_posts );
 		if ( $limit_posts )
 			$limit_sql = ' LIMIT 0,' . $limit_posts;
@@ -120,9 +120,11 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	// sql for order not RAND
 	$termcount_sql = $post_date_sql = $having_sql = '';
 	if ( $order_sql != 'RAND()' ) {
-		$termcount_sql = " , count(distinct tr.term_taxonomy_id) as termcount";
-		$having_sql = "GROUP BY $wpdb->posts.ID
+		if ( $common_terms ) {
+			$termcount_sql = " , count(distinct tr.term_taxonomy_id) as termcount";
+			$having_sql = "GROUP BY $wpdb->posts.ID
                HAVING SUM(CASE WHEN tt.term_id IN ($term_ids_sql) THEN 1 ELSE 0 END) > 0";
+		}
 		$post_date_sql = " $wpdb->posts.$date_format";
 	}
 
@@ -154,15 +156,19 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	}
 
 	if ( $results ) {
-		if ( $order_sql != 'RAND()' ) {
+
+		if ( ( $order_sql != 'RAND()' ) && $common_terms ) {
+
 			/* add score to order by termcount AND post_date */
 			for ( $i=0; $i < count( $results ) ; $i++ ) {
 				$results[ $i ]->score = array( $results[ $i ]->termcount, $i );
 			}
+
 			/* order related posts */
-			if ( function_exists( 'km_rpbt_related_posts_by_taxonomy_cmp' ) )
-				uasort(  $results, 'km_rpbt_related_posts_by_taxonomy_cmp' );
+			uasort(  $results, 'km_rpbt_related_posts_by_taxonomy_cmp' );
 		}
+
+		$results = array_values( $results );
 
 		switch ( (string) $fields ) {
 		case 'ids': $pluck = 'ID'; break;
@@ -171,8 +177,11 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		}
 
 		$results = ( isset( $pluck ) ) ? wp_list_pluck( $results, $pluck ) : $results;
-		$posts_per_page = ( absint( $posts_per_page ) > 0 ) ? absint( $posts_per_page ) : 5;
-		$results = array_slice( $results, 0, $posts_per_page );
+
+		if ( -1 !== (int) $posts_per_page ) {
+			$posts_per_page = ( absint( $posts_per_page ) > 0 ) ? absint( $posts_per_page ) : 5;
+			$results = array_slice( $results, 0, $posts_per_page );
+		}
 
 	} else {
 		$results = array();
@@ -187,8 +196,8 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
  *
  * @since 0.1
  *
- * @param array $item1
- * @param array $item2
+ * @param array   $item1
+ * @param array   $item2
  * @return int
  */
 function km_rpbt_related_posts_by_taxonomy_cmp( $item1, $item2 ) {
@@ -220,6 +229,7 @@ function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
 
 	/* convert to integers and remove 0 values */
 	$ids = array_filter( array_map( 'intval', (array) $ids ) );
+
 	/* remove duplicates */
 	$ids = array_unique( $ids );
 

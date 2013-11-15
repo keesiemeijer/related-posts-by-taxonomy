@@ -6,8 +6,10 @@
  *
  * @since 0.2
  *
- * @param array $args Attributes of the shortcode.
- * @param array $related_posts Array with related post objects.
+ * @global string $wp_version
+ * @global string $post
+ * @param array   $args          Attributes of the shortcode.
+ * @param array   $related_posts Array with related post objects.
  * @return string HTML content to display gallery.
  */
 function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = array() ) {
@@ -65,7 +67,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$itemtag = tag_escape( $itemtag );
 	$captiontag = tag_escape( $captiontag );
 	$icontag = tag_escape( $icontag );
-	
+
 	// back compat
 	if ( $compatible ) {
 		$valid_tags = wp_kses_allowed_html( 'post' );
@@ -132,10 +134,14 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 				$image_output
 			</{$icontag}>";
 			if ( $captiontag && trim(  $related->post_title ) ) {
-				$output .= "
+
+				$caption = apply_filters( 'related_posts_by_taxonomy_caption', wptexturize( $related->post_title ), $related );
+				if ( $caption ) {
+					$output .= "
 				<{$captiontag} class='wp-caption-text gallery-caption'>
-				" . wptexturize(  $related->post_title ) . "
+				" . $caption . "
 				</{$captiontag}>";
+				}
 			}
 			$output .= "</{$itemtag}>";
 			if ( $columns > 0 && ++$i % $columns == 0 )

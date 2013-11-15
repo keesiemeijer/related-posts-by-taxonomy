@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Related Posts By Taxonomy
-Version: 0.2
+Version: 0.2.1
 Plugin URI: http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/
-Description: This lightweight WordPress plugin provides a widget and shortcode to display related posts by taxonomies as links, full posts or excerpts. Posts that have the most terms in common will display at the top.
+Description: This lightweight WordPress plugin provides a widget and shortcode to display related posts as links, full posts, excerpts or post thumbnails (aka featured images). Posts that have the most terms in common will display at the top.
 Author: keesiemijer
 Author URI:
 License: GPL v2
@@ -34,17 +34,25 @@ if ( !function_exists( 'related_posts_by_taxonomy_init' ) ) {
 
 		load_plugin_textdomain( 'related-posts-by-taxonomy', '', dirname( plugin_basename( __FILE__ ) ) . '/lang' );
 
-		// functions to retrieve related posts from the database
-		require_once plugin_dir_path( __FILE__ ) . 'functions.php';
-
-		// functions for display of related post thumbnail gallery
-		require_once plugin_dir_path( __FILE__ ) . 'functions-thumbnail.php';
-
-		// loads the different templates uses for the widget and shortcode
-		require_once plugin_dir_path( __FILE__ ) . 'template-loader.php';
+		// defaults needed for this plugin
+		require_once plugin_dir_path( __FILE__ ) . 'defaults.php';
 
 		require_once plugin_dir_path( __FILE__ ) . 'widget.php';
-		require_once plugin_dir_path( __FILE__ ) . 'shortcode.php';
+
+		// include files only needed on the front end
+		if ( !is_admin() ) {
+
+			// functions to retrieve related posts from the database
+			require_once plugin_dir_path( __FILE__ ) . 'functions.php';
+
+			// functions for display of the related post thumbnail gallery
+			require_once plugin_dir_path( __FILE__ ) . 'functions-thumbnail.php';
+
+			// loads the different templates used for the widget and shortcode
+			require_once plugin_dir_path( __FILE__ ) . 'template-loader.php';
+
+			require_once plugin_dir_path( __FILE__ ) . 'shortcode.php';
+		}
 
 		add_shortcode( 'related_posts_by_tax', 'km_rpbt_related_posts_by_taxonomy_shortcode' );
 	}
