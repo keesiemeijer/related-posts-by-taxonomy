@@ -1,11 +1,11 @@
 related-posts-by-taxonomy
 =========================
 
-A WordPress plugin that provides a widget and shortcode to display related posts by taxonomies as links, full posts or excerpts. 
+A WordPress plugin that provides a widget and shortcode to display related posts by taxonomies as links, full posts, excerpts or post thumbnails. 
 
 Choose from single or multiple taxonomies and search for related posts in multiple post types. Posts that have the most terms in common will display at the top (also ordered by date). It's easy to override the look of the widget or shortcode with a filter or by including your own templates in your theme. It's also possible to get the related posts by using a function in your theme template files.
 
-For more information on how to use the plugin see [these instructions](http://keesiemeijer.wordpress.com/2013/05/11/related-posts-by-taxonomy-plugin/) or read the readme.html file that comes with the plugin (inside the 'docs' directory).
+For more information on how to use the plugin see [these instructions](http://keesiemeijer.wordpress.com/2013/05/11/related-posts-by-taxonomy-plugin/).
 
 Default usage of the shortcode is:
 
@@ -25,6 +25,8 @@ Attributes for the shortcode are:
 * exclude_terms
 * exclude_posts
 * format
+* image_size
+* columns
 * limit_posts
 * limit_year
 * limit_month
