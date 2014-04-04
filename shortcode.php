@@ -7,104 +7,115 @@
  * @uses km_rpbt_related_posts_by_taxonomy()
  * @uses km_rpbt_related_posts_by_taxonomy_template()
  *
- * @param string  $atts Attributes used by the shortcode
+ * @param string  $rpbt_args Attributes used by the shortcode
  * @return string Related posts html or empty string
  */
-function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
+function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 
 	$plugin_defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
-	$all_tax = (isset($plugin_defaults->all_tax)) ? $plugin_defaults->all_tax : 'all';
 
 	$defaults = array(
 		// shortcode defaults
-		'post_id' => '', 'taxonomies' => $all_tax, 'format' => 'links',
+		'post_id' => '', 'taxonomies' => $plugin_defaults->all_tax, 'format' => 'links',
 		'title' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
 		'before_title' => '', 'after_title' => '', 'image_size' => 'thumbnail', 'columns' => 3,
+		'caption' => 'post_title',
 
 		// km_rpbt_related_posts_by_taxonomy defaults
-		'post_types' => 'post', 'posts_per_page' => 5, 'order' => 'DESC',
+		'post_types' => '', 'posts_per_page' => 5, 'order' => 'DESC',
 		'limit_posts' => -1, 'limit_year' => '',
 		'limit_month' => '', 'orderby' => 'post_date',
-		'exclude_terms' => '', 'exclude_posts' => '', 
-		'common_terms' => true, // 'post_thumbnail' => '', 'fields' => 'all'
+		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
+		'relation' => 'AND', // 'post_thumbnail' => '', 'fields' => 'all'
 	);
 
 
-	/* filter defaults before using them (since version 0.2.1). */
+	/**
+	 * Set new default attributes.
+	 *
+	 * @since 0.2.1
+	 *
+	 * @param array   $defaults See $defaults above
+	 */
 	$defaults = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
 
 	/**
-	 * filter hook: shortcode_atts_related_posts_by_tax
-	 * filter attributes WordPress >= 3.6 after defaults are set
+	 * filter shortcode_atts_related_posts_by_tax
+	 *
+	 * hook can be used by WordPress >= 3.6
+	 *
+	 * @param array   $rpbt_args See $defaults above
 	 */
-	$atts = shortcode_atts( $defaults, $atts, 'related_posts_by_tax' );
+	$rpbt_args = shortcode_atts( $defaults, $rpbt_args, 'related_posts_by_tax' );
 
-	/* filter attributes WordPress < 3.6  after defaults are set */
-	$filtered_atts = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $atts );
+	/**
+	 * Filter default attributes (back compatibility).
+	 *
+	 * @param array   $rpbt_args See $defaults above
+	 */
+	$filtered_args = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $rpbt_args );
 
 	/* make sure all defaults are present after filtering */
-	$atts = array_merge( $atts, (array) $filtered_atts );
+	$rpbt_args = array_merge( $rpbt_args, (array) $filtered_args );
 
-	/* validate shortcode defaults */
+	/* add type for use in templates */
+	$rpbt_args['type'] = 'shortcode';
 
-	if ( '' == trim( $atts['post_id'] ) )
-		$atts['post_id'] = get_the_ID();
+	/* validate filtered attributes */
 
-	if ( $atts['taxonomies'] == $all_tax )
-		$atts['taxonomies'] = array_keys( $plugin_defaults->taxonomies );
-
-	if ( !in_array( $atts['format'], array_keys( $plugin_defaults->formats ) ) )
-		$atts['format'] = 'links';
-
-	$atts['post_thumbnail'] = false;
-	if ( 'thumbnails' == $atts['format'] ) {
-
-		$atts['post_thumbnail'] = true;
-
-		if ( !in_array( $atts['image_size'], array_keys( $plugin_defaults->image_sizes ) ) )
-			$atts['image_size'] = 'thumbnail';
-
-		// set public variables $image_size and $columns
-		$image_size = $atts['image_size'];
-		$atts['columns'] = absint( $atts['columns'] );
-		$atts['columns'] = $columns = ( $atts['columns'] > 0 ) ? $atts['columns'] : 3;
+	if ( '' === trim( $rpbt_args['post_id'] ) ) {
+		$rpbt_args['post_id'] = get_the_ID();
 	}
 
-	/* function arguments */
-	
-	$f_args = $atts;
-	$f_defaults = array(
-		'post_types', 'posts_per_page', 'order', // 'fields', 
-		'limit_posts', 'limit_year', 'limit_month',
-		'orderby', 'exclude_terms', 'exclude_posts',
-		'post_thumbnail', 'common_terms'
-	);
-
-	/* remove arguments not needed for km_rpbt_related_posts_by_taxonomy() */
-	foreach ( $f_args as $arg => $value ) {
-		if ( !in_array( $arg, $f_defaults ) )
-			unset( $f_args[ $arg ] );
+	if ( '' === trim( $rpbt_args['post_types'] ) ) {
+		$post_types = get_post_type( $rpbt_args['post_id'] );
+		$rpbt_args['post_types'] = ( $post_types ) ? $post_types : 'post';
 	}
+
+	if ( $rpbt_args['taxonomies'] == $plugin_defaults->all_tax ) {
+		$rpbt_args['taxonomies'] = array_keys( $plugin_defaults->taxonomies );
+	}
+
+	$rpbt_args['post_thumbnail'] = '';
+	if ( 'thumbnails' === $rpbt_args['format'] ) {
+		$rpbt_args['post_thumbnail'] = 1;
+	}
+
+	if ( !in_array( $rpbt_args['image_size'], array_keys( $plugin_defaults->image_sizes ) ) ) {
+		$rpbt_args['image_size'] = 'thumbnail';
+	}
+
+	/* public template variables */
+	$image_size = $rpbt_args['image_size'];
+	$rpbt_args['columns'] = absint( $rpbt_args['columns'] );
+	$rpbt_args['columns'] = $columns = ( $rpbt_args['columns'] > 0 ) ? $rpbt_args['columns'] : 3;
+
+	/* function km_rpbt_related_posts_by_taxonomy arguments */
+	$function_args = $rpbt_args;
+
+	/* restricted arguments */
+	unset( $function_args['post_id'], $function_args['taxonomies'], $function_args['fields'] );
 
 	/* get related posts */
-	$related_posts = km_rpbt_related_posts_by_taxonomy( $atts['post_id'], $atts['taxonomies'], $f_args );
+	$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
 
-	/* clean up attributes for template */
-	unset( $all_tax, $defaults, $filtered_atts, $plugin_defaults, $f_args, $f_defaults, $arg, $value );
+	/* clean up attributes before calling template */
+	unset( $plugin_defaults, $defaults, $filtered_args, $post_types, $function_args );
 
 	/* get template for related posts */
-	$template = km_rpbt_related_posts_by_taxonomy_template( $atts['format'], 'shortcode' );
+	$template = km_rpbt_related_posts_by_taxonomy_template( $rpbt_args['format'], $rpbt_args['type'] );
 
 	if ( $template && !empty( $related_posts ) ) {
 
 		ob_start();
 
-		if ( $atts['title'] )
-			echo $atts['before_title'] . $atts['title'] . $atts['after_title'];
+		if ( $rpbt_args['title'] ) {
+			echo $rpbt_args['before_title'] . $rpbt_args['title'] . $rpbt_args['after_title'];
+		}
 
 		global $post; // for setup_postdata( $post ) in $template
 		require $template;
-		wp_reset_postdata(); // clean up for global $post;
+		wp_reset_postdata(); // clean up global $post;
 
 		return ob_get_clean();
 	}

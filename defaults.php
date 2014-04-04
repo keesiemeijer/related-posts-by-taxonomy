@@ -13,7 +13,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @since 0.2.1
 		 * @var array
 		 */
-		public static $post_types;
+		public $post_types;
 
 		/**
 		 * Taxonomies.
@@ -21,7 +21,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @since 0.2.1
 		 * @var array
 		 */
-		public static $taxonomies;
+		public $taxonomies;
 
 		/**
 		 * slug for "all" taxonomies.
@@ -29,7 +29,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @since 0.2.1
 		 * @var string
 		 */
-		public static $all_tax;
+		public $all_tax;
 
 		/**
 		 * Default taxonomy (category).
@@ -37,7 +37,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @since 0.2.1
 		 * @var string
 		 */
-		public static $default_tax;
+		public $default_tax;
 
 		/**
 		 * Formats.
@@ -45,7 +45,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @since 0.2.1
 		 * @var array
 		 */
-		public static $formats;
+		public $formats;
 
 		/**
 		 * Image sizes.
@@ -53,7 +53,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @since 0.2.1
 		 * @var array
 		 */
-		public static $image_sizes;
+		public $image_sizes;
 
 		/**
 		 * Class instance.
@@ -102,16 +102,19 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			$this->default_tax = array( 'category' => __( 'Category', 'related-posts-by-taxonomy' ) );
 
 			$this->post_types = $this->get_post_types();
-			if ( empty( $this->post_types ) )
+			if ( empty( $this->post_types ) ) {
 				$this->post_types = array( 'post' => __( 'Post', 'related-posts-by-taxonomy' ) );
+			}
 
 			$this->taxonomies = $this->get_taxonomies();
-			if ( empty( $this->taxonomies ) )
+			if ( empty( $this->taxonomies ) ) {
 				$this->taxonomies = $this->default_tax;
+			}
 
 			$this->image_sizes = $this->get_image_sizes();
-			if ( empty( $this->image_sizes ) )
+			if ( empty( $this->image_sizes ) ) {
 				$this->image_sizes = array( 'thumbnail' => __( 'Thumbnail', 'related-posts-by-taxonomy' ) );
+			}
 
 			$this->formats = $this->get_formats();
 		}
@@ -156,8 +159,9 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				$tax[$key] = esc_attr( $value->labels->menu_name );
 
 				// set first taxonomy as the default taxonomy
-				if ( !$i++ )
+				if ( !$i++ ) {
 					$this->default_tax = array( $key => esc_attr( $value->labels->menu_name ) );
+				}
 			}
 
 			// if 'all' is a registered taxonomy change the all_tax value (slug: all-2)
@@ -173,7 +177,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				}
 			}
 
-			return $tax;
+			return array_unique( $tax );
 		}
 
 

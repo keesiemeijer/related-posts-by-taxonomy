@@ -10,9 +10,10 @@
  * @package related posts by taxonomy
  *
  * The following variables are available:
- * @var array  $related_posts Array with full related posts objects or empty array.
- * @var string $image_size    Image size (since 0.2.1).
- * @var string $columns       Columns for image gallery (since 0.2.1).
+ * @var array  $related_posts Array with full related posts objects or empty.
+ * @var array  $rpbt_args     Array with widget or shortcode arguments.
+ * @var string $image_size    Image size. (deprecated - use $rpbt_args['image_size'])
+ * @var string $columns       Columns.    (deprecated - use $rpbt_args['columns'])
  */
 ?>
 
@@ -25,20 +26,22 @@
 <?php if ( $related_posts ) : ?>
 
 <?php
-// check if $colums is set
-$columns = ( isset( $columns ) && $columns ) ? $columns : 3;
+	/**
+	 * Arguments for km_rpbt_related_posts_by_taxonomy_gallery().
+	 *
+	 * function documentation: http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/functions/#km_rpbt_related_posts_by_taxonomy_gallery
+	 * defaults set by theme 'itemtag', 'icontag', 'captiontag'
+	 */
+	$args = array(
 
-// check if $image_size is set
-$image_size = ( isset( $image_size ) && $image_size ) ? $image_size : 'thumbnail';
+		// 'itemtag'    => 'dl',
+		// 'icontag'    => 'dt',
+		// 'captiontag' => 'dd',
 
-// related posts gallery arguments
-$args = array(
-	'itemtag'    => 'dl',
-	'icontag'    => 'dt',
-	'captiontag' => 'dd',
-	'columns'    => $columns,
-	'size'       => $image_size,
-);
+		'columns'    => $rpbt_args['columns'], // positive integer
+		'size'       => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
+		'caption'    => $rpbt_args['caption'], // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
+	);
 
 // see the documentation.
 echo km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts );
