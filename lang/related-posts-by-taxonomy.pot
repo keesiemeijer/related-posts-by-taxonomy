@@ -1,121 +1,119 @@
-# Copyright (C) 2013 Related Posts By Taxonomy
+# Copyright (C) 2014 Related Posts By Taxonomy
 # This file is distributed under the same license as the Related Posts By Taxonomy package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Related Posts By Taxonomy 0.2.1\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/related-posts-by-"
-"taxonomy\n"
-"POT-Creation-Date: 2013-11-13 08:36:53+00:00\n"
+"Project-Id-Version: Related Posts By Taxonomy 0.3\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/related-posts-by-taxonomy\n"
+"POT-Creation-Date: 2014-04-10 13:22:27+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2013-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: defaults.php:102
+#: defaults.php:101
 msgid "Category"
 msgstr ""
 
-#: defaults.php:106
+#: defaults.php:105
 msgid "Post"
 msgstr ""
 
-#: defaults.php:114
+#: defaults.php:115
 msgid "Thumbnail"
 msgstr ""
 
-#: defaults.php:226
+#: defaults.php:229
 msgid "Links"
 msgstr ""
 
-#: defaults.php:227
+#: defaults.php:230
 msgid "Posts"
 msgstr ""
 
-#: defaults.php:228
+#: defaults.php:231
 msgid "Excerpts"
 msgstr ""
 
-#: defaults.php:229
+#: defaults.php:232
 msgid "Post thumbnails"
 msgstr ""
 
-#: shortcode.php:21
+#: shortcode.php:20
 msgid "Related Posts"
 msgstr ""
 
-#: templates/related-posts-excerpts.php:29
-#: templates/related-posts-links.php:32 templates/related-posts-posts.php:27
-#: templates/related-posts-thumbnails.php:48
+#: templates/related-posts-excerpts.php:35
+#: templates/related-posts-links.php:38 templates/related-posts-posts.php:35
+#: templates/related-posts-thumbnails.php:54
 msgid "No related posts found"
 msgstr ""
 
-#: widget.php:32
-msgid "Show a list of related posts by taxonomy."
-msgstr ""
-
-#. #-#-#-#-#  related-posts-by-taxonomy.pot (Related Posts By Taxonomy 0.2.1)  #-#-#-#-#
+#. #-#-#-#-#  plugin.pot (Related Posts By Taxonomy 0.3)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: widget.php:38
+#: widget.php:34
 msgid "Related Posts By Taxonomy"
 msgstr ""
 
-#: widget.php:276
-msgid "Title:"
+#: widget.php:35
+msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: widget.php:281
-msgid "Number of related posts to show:"
+#: widget.php:262
+msgid "Title"
 msgstr ""
 
-#: widget.php:283
+#: widget.php:268
+msgid "Number of related posts to show"
+msgstr ""
+
+#: widget.php:271
 msgid "Use -1 to show all related posts."
 msgstr ""
 
-#: widget.php:294
-msgid "Taxonomy:"
+#: widget.php:275
+msgid "Taxonomies"
 msgstr ""
 
-#: widget.php:296
+#: widget.php:277
+msgid "Taxonomy"
+msgstr ""
+
+#: widget.php:280
 msgid "All Taxonomies"
 msgstr ""
 
-#: widget.php:304
-msgid "Post types to include:"
+#: widget.php:287
+msgid "Post Types"
 msgstr ""
 
-#: widget.php:314
+#: widget.php:299
 msgid "Display"
 msgstr ""
 
-#: widget.php:317
-msgid "Format:"
+#: widget.php:303
+msgid "Format"
 msgstr ""
 
-#: widget.php:326
-msgid "Image size:"
+#: widget.php:312
+msgid "Image Size"
 msgstr ""
 
-#: widget.php:335
-msgid "Number of image columns:"
+#: widget.php:321
+msgid "Number of image columns"
 msgstr ""
 
-#: widget.php:340
-msgid ""
-"This widget needs a post ID for it to display the related posts. The post ID "
-"is available on single post pages or inside a loop. If the widget is outside "
-"the loop  (like in a sidebar) it gets the first post ID for that page "
-"request. (i.e. on a category archive page it will get the post ID from the "
-"first post of that category archive page)."
+#: widget.php:324
+msgid "Use 0 for no columns."
 msgstr ""
 
-#: widget.php:345
-msgid "Display this widget only on single post pages"
+#: widget.php:332
+msgid "Display widget on single post pages only"
 msgstr ""
 
-#: widget.php:349
-msgid "Display related posts for post ID (optional):"
+#: widget.php:336
+msgid "Display related posts for post ID (optional)"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
@@ -124,10 +122,9 @@ msgstr ""
 
 #. Description of the plugin/theme
 msgid ""
-"This lightweight WordPress plugin provides a widget and shortcode to display "
-"related posts as links, full posts, excerpts or post thumbnails (aka "
-"featured images). Posts that have the most terms in common will display at "
-"the top."
+"Display related posts as thumbnails, links, excerpts or as full posts with a "
+"widget or shortcode. Posts with the most terms in common will display at the "
+"top."
 msgstr ""
 
 #. Author of the plugin/theme
