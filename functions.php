@@ -4,11 +4,12 @@
  *
  * @since 0.1
  *
- * @global object      $wpdb
- * @param int     $post_id
+ * @global object       $wpdb
+ *
+ * @param int     $post_id    The post id to get related posts for.
  * @param array|string $taxonomies The taxonomies to retrieve related posts from
  * @param array|string $args       Optional. Change what is returned
- * @return array        Empty array if no related posts found. Array with post objects.
+ * @return array                    Empty array if no related posts found. Array with post objects.
  */
 function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'category', $args = '' ) {
 	global $wpdb;
@@ -175,7 +176,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		$meta_join_sql = ( isset( $meta['join'] ) && $meta['join'] ) ? $meta['join'] : '';
 		$meta_where_sql = ( isset( $meta['where'] ) && $meta['where'] ) ? $meta['where'] : '';
 
-		if ( ( '' == $meta_join_sql ) || ( '' == $meta_join_sql ) ) {
+		if ( ( '' === $meta_join_sql ) || ( '' === $meta_join_sql ) ) {
 			$meta_join_sql = $meta_where_sql = '';
 		}
 	}

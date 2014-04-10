@@ -1,35 +1,36 @@
 === Related Posts by Taxonomy ===
 Contributors: keesiemeijer
-Tags: related,related posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tags,similar,posts,thumbnails,post thumbnail,featured image
-Requires at least: 3.4
-Tested up to: 3.9-beta3
+Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
+Requires at least: 3.5
+Tested up to: 3.9
 Stable tag: 0.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This lightweight WordPress plugin provides a widget and shortcode to display related posts as links, post thumbnails, full posts or excerpts. 
+This lightweight WordPress plugin provides a widget and shortcode to display related posts as thumbnails, links, excerpts or as full posts. 
 
 == Description ==
 
-Display related posts as links, post thumbnails, full posts or excerpts. Posts with the **most terms** in common will display at the top. Choose from single or multiple taxonomies and search for related posts in single or multiple post types. The plugin provides an easy way to change the look of the widget or shortcode with your own template and html markup. Or use plugin functions in your (child) theme template files to get the related posts.
+Display related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the **most terms in common** will display at the top. Use multiple taxonomies and post types to get the related posts. Include or exclude terms. Change the look and feel with your own html templates in your (child) theme.  
 
 Plugin features:
 
 * Widget and shortcode.
-* Display related posts as links, post thumbnails, full posts or excerpts.
+* Display post thumbnails, links, excerpts or full posts.
 * Exclude or include terms.
 * Exclude posts.
-* Limit related posts by year(s) or by month(s).
-* Only display related posts on single posts.
-* Display related posts after the post content.
+* Limit related posts by date.
+* Display related posts on single post pages only.
+* Automatically display related posts after the post content.
 * Use your own templates for display of the related posts.
-* Lots of filters to change default behaviour or display.
+* Use plugin functions to get related posts in your theme templates.
+* Filters to change the default behavior and display of the plugin.
 
-For more information on how to use the plugin see the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
+For more information about the plugin see the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
 
-If you want to have related posts after the post content on single post pages without using the shortcode or widget see the [FAQ](http://wordpress.org/extend/plugins/related-posts-by-taxonomy/faq/). 
+To have the related posts automatically display after the post content without using the shortcode or widget see the [FAQ](http://wordpress.org/extend/plugins/related-posts-by-taxonomy/faq/). 
 
-Default usage of the shortcode is:
+Default usage for the shortcode is:
 <pre><code>[related_posts_by_tax]</code></pre>
 
 Attributes for the shortcode are:
@@ -49,6 +50,7 @@ Attributes for the shortcode are:
 * format
 * image_size
 * columns
+* caption
 * limit_posts
 * limit_year
 * limit_month
@@ -56,7 +58,7 @@ Attributes for the shortcode are:
 Example to show 10 related posts instead of the default 5.
 <pre><code>[related_posts_by_tax posts_per_page="10"]</code></pre>
 
-Read the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/) for more information about the attributes and their defaults.
+See the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/) for more information about the attributes and their defaults.
 = Translations =
 Dutch
 
@@ -89,21 +91,27 @@ Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.word
 3. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
-= 0.2.2 =
-* New parameters: include_terms and caption.
-* New filter output options for post thumbnail gallery captions.
-* New support for html5 tags (set by themes) in the post thumbnail gallery (same as in WordPress 3.9 gallery shortcode).
-* Notice: The template used for the post thumbnails is updated.
-* New default post type for the shortcode. Now the shortcode defaults to the post type from the post to get the related posts for.
-* Reformatted code to adhere to new WordPress coding standarts.
-* New inline filter documentation.
-* New filters for even more control of the plugin.
-* Fixed bug where duplicate related posts where found for order="RAND". Props: Mock.
+= 0.3 =
+* Enhancement
+	* New parameters for the shortcode and widget: include_terms and caption.
+	* New support for html5 tags (set by themes) in the thumbnail gallery (same as in WordPress 3.9 gallery shortcode).
+	* Allow image columns to be set to zero (same as in WordPress gallery shortcode).
+	* New options for gallery captions. Use the post title (default), excerpt, attachment caption or attachment alt text for the caption. 
+	* Reformatted code and new inline filter documentation is added to adhere to new WordPress coding standards.
+	* New filters for overriding images in the thumbnail gallery.
+
+* Bug fixes
+	* Fixed bug where duplicate related posts where found for order="RAND". Props: [Mock](https://profiles.wordpress.org/mock).
+	* Fixed php notices coming from the Related_Posts_By_Taxonomy_Defaults class.
+
+* Notice
+	* Removed backward compatibility for WordPress 3.4.
+	* The template used for display of the post thumbnails is updated. Review the changes made in the updated related-posts-thumbnails.php file if you're using it to display the thumbnails in your own theme.
 
 = 0.2.1 =
-* Added image sizes and columns to the widget and shortcode. 
-* Cleaned up the codebase and made it faster.
-* Added Dutch translation.
+* Added image sizes and columns for the widget and shortcode. 
+* Cleaned up of code base and speed improvements.
+* Added a Dutch translation.
 * Added a filter for the caption of post thumbnails.
 * Added two filters for a future settings page for this plugin. (this will be a separate plugin)
 
@@ -113,12 +121,6 @@ Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.word
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 0.2.2 =
-This version is tested up to WordPress 3.9-beta and adds a new parameters include_terms and caption.
-The post thumbnail gallery (function )is updated for html5 tags support (same as in WordPress 3.9 gallery shortcode). Notice - The template used for post thumbnail display is also updated (backwards compatible).  
-The shortcode post type now defaults to the post type of the current post. 
-Code is reformatted to adhere to new WordPress coding standarts. 
-Fixed a bug where duplicate related posts where found for order="RAND". Props: Mock.
-
-= 0.2.1 =
-Added image sizes and image columns to the widget and shortcode. New filter to change the post thumbnail caption text. Cleaned up the codebase and made it faster. Also added the Dutch language translation and tested it up to WordPress 3.7.1.
+= 0.3 =
+This version adds new options (include terms, caption) and filters for the shortode and widget. Two bugs are fixed. See the Changelog for more information.
+**Note**: Removed backward compatibility for WordPress 3.4.

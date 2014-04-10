@@ -1,7 +1,6 @@
 <?php
 /**
- * A helper class to get all the defaults needed for this plugin.
- * Used by the widget and shortcode.
+ * Helper class to get all the defaults needed for this plugin.
  */
 
 if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {

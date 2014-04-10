@@ -1,19 +1,25 @@
 <?php
 /**
- * Template for Related Posts by Taxonomy widget and shortcode - links template
+ * Widget and shortcode template: links template.
  *
+ * This template is used by the plugin: Related Posts by Taxonomy.
+ *
+ * plugin:        https://wordpress.org/plugins/related-posts-by-taxonomy
+ * Documentation: https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/
+ *
+ * @package Related Posts by Taxonomy
  * @since 0.1
  *
- * @package related posts by taxonomy
+ * The following variables are available:
  *
- * the following variables are available:
- * @var array $related_posts array with related posts objects or empty array
+ * @var array $related_posts Array with related posts objects or empty array.
+ * @var array $rpbt_args     Widget or shortcode arguments.
  */
 ?>
 
 <?php
 /**
- * Note: global $post; is run before this template by the widget and the shortcode.
+ * Note: global $post; is used before this template by the widget and the shortcode.
  */
 ?>
 
@@ -34,6 +40,6 @@
 
 <?php
 /**
- * note: wp_reset_postdata(); is run after this template by the widget and the shortcode
+ * note: wp_reset_postdata(); is used after this template by the widget and the shortcode.
  */
 ?>

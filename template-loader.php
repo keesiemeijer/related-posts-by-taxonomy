@@ -12,6 +12,7 @@
  */
 function km_rpbt_related_posts_by_taxonomy_template( $format = false, $type = false ) {
 
+	/* default template */
 	$template = 'related-posts-links.php';
 
 	if ( $format ) {
@@ -38,12 +39,13 @@ function km_rpbt_related_posts_by_taxonomy_template( $format = false, $type = fa
 	if ( $theme_template ) {
 		return $theme_template;
 	} else {
-		if ( $template != '' ) {
-			$path = plugin_dir_path( __FILE__ );
-			if ( file_exists( $path . 'templates/' . $template ) ) {
-				return $path . 'templates/' . $template;
-			}
+
+		$path = plugin_dir_path( __FILE__ );
+		if ( file_exists( $path . 'templates/' . $template ) ) {
+			return $path . 'templates/' . $template;
 		}
+
 	}
+
 	return false;
 }

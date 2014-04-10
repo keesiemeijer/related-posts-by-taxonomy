@@ -29,7 +29,6 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		'relation' => 'AND', // 'post_thumbnail' => '', 'fields' => 'all'
 	);
 
-
 	/**
 	 * Set new default attributes.
 	 *
@@ -39,17 +38,11 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	 */
 	$defaults = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
 
-	/**
-	 * filter shortcode_atts_related_posts_by_tax
-	 *
-	 * hook can be used by WordPress >= 3.6
-	 *
-	 * @param array   $rpbt_args See $defaults above
-	 */
+	/* Can be filtered in WordPress > 3.5 (hook: shortcode_atts_related_posts_by_tax) */
 	$rpbt_args = shortcode_atts( $defaults, $rpbt_args, 'related_posts_by_tax' );
 
 	/**
-	 * Filter default attributes (back compatibility).
+	 * Filter defaults.
 	 *
 	 * @param array   $rpbt_args See $defaults above
 	 */
@@ -67,12 +60,13 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		$rpbt_args['post_id'] = get_the_ID();
 	}
 
+	/* if no post type is set use the post type of the current post (new default since 0.3) */
 	if ( '' === trim( $rpbt_args['post_types'] ) ) {
 		$post_types = get_post_type( $rpbt_args['post_id'] );
 		$rpbt_args['post_types'] = ( $post_types ) ? $post_types : 'post';
 	}
 
-	if ( $rpbt_args['taxonomies'] == $plugin_defaults->all_tax ) {
+	if ( $rpbt_args['taxonomies'] === $plugin_defaults->all_tax ) {
 		$rpbt_args['taxonomies'] = array_keys( $plugin_defaults->taxonomies );
 	}
 
@@ -81,16 +75,10 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		$rpbt_args['post_thumbnail'] = 1;
 	}
 
-	if ( !in_array( $rpbt_args['image_size'], array_keys( $plugin_defaults->image_sizes ) ) ) {
-		$rpbt_args['image_size'] = 'thumbnail';
-	}
-
-	/* public template variables */
+	/* public template variables $image_size && $columns (deprecated in version 0.3) */
 	$image_size = $rpbt_args['image_size'];
-	$rpbt_args['columns'] = absint( $rpbt_args['columns'] );
-	$rpbt_args['columns'] = $columns = ( $rpbt_args['columns'] > 0 ) ? $rpbt_args['columns'] : 3;
+	$columns = absint( $rpbt_args['columns'] );
 
-	/* function km_rpbt_related_posts_by_taxonomy arguments */
 	$function_args = $rpbt_args;
 
 	/* restricted arguments */
@@ -99,10 +87,10 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	/* get related posts */
 	$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
 
-	/* clean up attributes before calling template */
+	/* clean up variables before calling the template */
 	unset( $plugin_defaults, $defaults, $filtered_args, $post_types, $function_args );
 
-	/* get template for related posts */
+	/* get the template depending on the format  */
 	$template = km_rpbt_related_posts_by_taxonomy_template( $rpbt_args['format'], $rpbt_args['type'] );
 
 	if ( $template && !empty( $related_posts ) ) {
@@ -113,9 +101,9 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 			echo $rpbt_args['before_title'] . $rpbt_args['title'] . $rpbt_args['after_title'];
 		}
 
-		global $post; // for setup_postdata( $post ) in $template
+		global $post; // used for setup_postdata() in templates
 		require $template;
-		wp_reset_postdata(); // clean up global $post;
+		wp_reset_postdata(); // clean up global $post variable;
 
 		return ob_get_clean();
 	}

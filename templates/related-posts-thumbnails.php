@@ -1,25 +1,29 @@
 <?php
 /**
- * Template for Related Posts by Taxonomy widget and shortcode - post thumbnail template
- * This template uses a function that comes whith the plugin. See the documentation
- * See http://codex.wordpress.org/Post_Thumbnails if you want to use your own html markup.
- * See the documentation on how you can use your own templates.
+ * Widget and shortcode template: post thumbnails template
  *
- * @since 0.2
+ * This template is used by the plugin: Related Posts by Taxonomy.
  *
- * @package related posts by taxonomy
+ * plugin:        https://wordpress.org/plugins/related-posts-by-taxonomy
+ * Documentation: https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/
+ *
+ * @package Related Posts by Taxonomy
+ * @since 0.3
  *
  * The following variables are available:
- * @var array  $related_posts Array with full related posts objects or empty.
+ *
+ * @var array  $related_posts Array with full related posts objects or empty array.
  * @var array  $rpbt_args     Array with widget or shortcode arguments.
- * @var string $image_size    Image size. (deprecated - use $rpbt_args['image_size'])
- * @var string $columns       Columns.    (deprecated - use $rpbt_args['columns'])
+ *
+ * deprecated (since version 0.3)
+ * @var string $image_size    Image size. (deprecated - use $rpbt_args['image_size'] instead)
+ * @var string $columns       Columns.    (deprecated - use $rpbt_args['columns'] instead)
  */
 ?>
 
 <?php
 /**
- * Note: global $post; is run before this template by the widget and the shortcode.
+ * Note: global $post; is used before this template by the widget and the shortcode.
  */
 ?>
 
@@ -27,10 +31,9 @@
 
 <?php
 	/**
-	 * Arguments for km_rpbt_related_posts_by_taxonomy_gallery().
+	 * Arguments for km_rpbt_related_posts_by_taxonomy_gallery() function.
 	 *
-	 * function documentation: http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/functions/#km_rpbt_related_posts_by_taxonomy_gallery
-	 * defaults set by theme 'itemtag', 'icontag', 'captiontag'
+	 * use the defaults 'itemtag', 'icontag', 'captiontag'
 	 */
 	$args = array(
 
@@ -38,13 +41,13 @@
 		// 'icontag'    => 'dt',
 		// 'captiontag' => 'dd',
 
-		'columns'    => $rpbt_args['columns'], // positive integer
+		'id'         => $rpbt_args['post_id'], 
+		'columns'    => $rpbt_args['columns'],    // zero or positive number
 		'size'       => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
-		'caption'    => $rpbt_args['caption'], // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
+		'caption'    => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
 	);
 
-// see the documentation.
-echo km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts );
+	echo km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts );
 ?>
 
 <?php else : ?>
@@ -53,6 +56,6 @@ echo km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts );
 
 <?php
 /**
- * note: wp_reset_postdata(); is run after this template by the widget and the shortcode
+ * note: wp_reset_postdata(); is used after this template by the widget and the shortcode
  */
 ?>
