@@ -2,8 +2,8 @@
 Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 3.5
-Tested up to: 3.9
-Stable tag: 0.2.1
+Tested up to: 4.0
+Stable tag: 0.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,6 +91,11 @@ Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.word
 3. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 0.3.1 =
+* New filters for the related posts query.
+* Fixed minor bug when using spaces in post_types string in the short code.
+* Added plugin icons introduced with WordPress 4.0
+
 = 0.3 =
 * Enhancement
 	* New parameters for the shortcode and widget: include_terms and caption.
@@ -121,6 +126,5 @@ Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.word
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 0.3 =
-This version adds new options (include terms, caption) and filters for the shortode and widget. Two bugs are fixed. See the Changelog for more information.
-**Note**: Removed backward compatibility for WordPress 3.4.
+= 0.3.1 =
+This version adds new filters for the related posts query and fixes a minor bug in the shortcode.

@@ -102,7 +102,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 	/**
 	 * Filter whether to print default gallery styles.
-	 * 
+	 *
 	 * Note: This is a WordPress core filter hook
 	 *
 	 * @since 3.1.0
@@ -212,7 +212,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		}
 		$item_output .= "</{$itemtag}>";
 
-		if ( ! $html5 && $columns > 0 && ++$i % $columns == 0 ) {
+		if ( ! $html5 && ( $columns > 0 ) && ( ++$i % $columns == 0 ) ) {
 			$item_output .= '<br style="clear: both" />';
 		}
 	}
@@ -223,7 +223,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 	$output .= $item_output;
 
-	if ( ! $html5 && $columns > 0 && $i % $columns !== 0 ) {
+	if ( ! $html5 && ( $columns > 0 ) && ( $i % $columns !== 0 ) ) {
 		$output .= "
 			<br style='clear: both' />";
 	}
