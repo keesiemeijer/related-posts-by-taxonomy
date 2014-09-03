@@ -26,7 +26,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		'limit_posts' => -1, 'limit_year' => '',
 		'limit_month' => '', 'orderby' => 'post_date',
 		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
-		'relation' => 'AND', // 'post_thumbnail' => '', 'fields' => 'all'
+		'related' => '', // 'post_thumbnail' => '', 'fields' => 'all'
 	);
 
 	/**
@@ -78,6 +78,13 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	/* public template variables $image_size && $columns (deprecated in version 0.3) */
 	$image_size = $rpbt_args['image_size'];
 	$columns = absint( $rpbt_args['columns'] );
+
+	// convert 'related' string to boolean.
+	$rpbt_args['related'] = ( '' !== trim( $rpbt_args['related'] ) ) ? $rpbt_args['related'] : true;
+	$rpbt_args['related'] = filter_var( $rpbt_args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+
+	// non boolean used, default to true
+	$rpbt_args['related'] = ( $rpbt_args['related'] === NULL ) ? true : $rpbt_args['related'];
 
 	$function_args = $rpbt_args;
 

@@ -23,7 +23,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		'fields' => '', 'limit_posts' => -1, 'limit_year' => '',
 		'limit_month' => '', 'orderby' => 'post_date',
 		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
-		'post_thumbnail' => '', 'relation' => 'AND',
+		'post_thumbnail' => '', 'related' => true,
 	);
 
 	$args = wp_parse_args( $args, $defaults );
@@ -42,8 +42,13 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	}
 
 	if ( !empty( $include_terms ) ) {
+		// validates ids and returns an array
 		$include_terms = km_rpbt_related_posts_by_taxonomy_validate_ids( $include_terms );
-		$terms = array_values( array_intersect( $include_terms, $terms ) );
+		if ( $related ) {
+			$terms = array_values( array_intersect( $include_terms, $terms ) );
+		} else {
+			$terms = $include_terms;
+		}
 	} else {
 		$exclude_terms = km_rpbt_related_posts_by_taxonomy_validate_ids( $exclude_terms );
 		$terms = array_values( array_diff( $terms , $exclude_terms ) );
@@ -131,11 +136,6 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		}
 	}
 
-	$relation = strtoupper( (string) $relation );
-	if ( !in_array( $relation, array( 'AND', 'OR' ) ) ) {
-		$relation = 'AND';
-	}
-
 	$orderby = strtolower( (string) $orderby );
 	if ( !in_array( $orderby, array( 'post_date', 'post_modified' ) ) ) {
 		$orderby = 'post_date';
@@ -159,12 +159,11 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	$group_by_sql = "$wpdb->posts.ID";
 
 	if ( !$order_by_rand ) {
-		if ( 'AND' === $relation ) {
-			// sql for common terms
+		if ( $related ) {
+			// sql for related terms order
 			$select_sql .= " , count(distinct tr.term_taxonomy_id) as termcount";
 			$group_by_sql .= " HAVING SUM(CASE WHEN {$term_ids_sql} THEN 1 ELSE 0 END) > 0";
 		}
-
 		$order_by_sql = "$wpdb->posts.$orderby";
 	}
 
@@ -269,7 +268,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	}
 
 	$query = "SELECT {$select_sql} FROM $wpdb->posts {$join_sql} {$where_sql} {$group_by_sql} {$order_by_sql} {$limit_sql}";
-
+	//echo $query;
 	$last_changed = wp_cache_get( 'last_changed', 'posts' );
 	if ( ! $last_changed ) {
 		$last_changed = microtime();
@@ -285,7 +284,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	if ( $results ) {
 
-		if ( !$order_by_rand && ( 'AND' === $relation ) ) {
+		if ( !$order_by_rand && $related ) {
 
 			/* add (termcount) score and key to results */
 			for ( $i=0; $i < count( $results ) ; $i++ ) {
