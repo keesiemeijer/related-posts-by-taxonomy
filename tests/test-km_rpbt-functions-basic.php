@@ -100,13 +100,15 @@ class Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 		$posts = $create_posts['posts'];
 
 		$_posts = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
+		$ids = wp_list_pluck( $_posts, 'ID' );
+		$permalinks = array_map( 'get_permalink', $ids );
 
 		$expected = <<<EOF
 Related Posts
 <ul>
-<li><a href="http://example.org/?p={$_posts[1]->ID}" title="{$_posts[1]->post_title}">{$_posts[1]->post_title}</a></li>
-<li><a href="http://example.org/?p={$_posts[2]->ID}" title="{$_posts[2]->post_title}">{$_posts[2]->post_title}</a></li>
-<li><a href="http://example.org/?p={$_posts[3]->ID}" title="{$_posts[3]->post_title}">{$_posts[3]->post_title}</a></li>
+<li><a href="{$permalinks[1]}" title="{$_posts[1]->post_title}">{$_posts[1]->post_title}</a></li>
+<li><a href="{$permalinks[2]}" title="{$_posts[2]->post_title}">{$_posts[2]->post_title}</a></li>
+<li><a href="{$permalinks[3]}" title="{$_posts[3]->post_title}">{$_posts[3]->post_title}</a></li>
 </ul>
 EOF;
 		ob_start();
@@ -128,6 +130,7 @@ EOF;
 		$create_posts = $this->utils->create_posts_with_terms();
 		$posts = $create_posts['posts'];
 		$related_post = get_post( $posts[0] );
+		$permalink = get_permalink( $related_post->ID );
 
 		// adds fake image <img>, otherwhise it will return nothing
 		add_filter( 'related_posts_by_taxonomy_post_thumbnail', array( $this, 'add_image' ) );
@@ -145,7 +148,7 @@ EOF;
 		$expected = <<<EOF
 <div id='gallery-1' class='gallery related-gallery related-galleryid-0 gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
 <dt class='gallery-icon '>
-<a href='http://example.org/?p={$related_post->ID}' title='{$related_post->post_title}'><img></a>
+<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption'>
 {$related_post->post_title}
