@@ -73,11 +73,19 @@ class Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 	 * test if template was found
 	 */
 	function test_km_rpbt_related_posts_by_taxonomy_template() {
-		$template = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
+
 		$path = pathinfo( dirname(  __FILE__  ) );
-		$path = $path['dirname'] . '/templates/related-posts-excerpts.php';
-		$this->assertEquals( $template , $path );
+
+		$template = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
+		$path1 = $path['dirname'] . '/templates/related-posts-excerpts.php';
+		$this->assertEquals( $path1 , $template );
+
+		// should default to links template
+		$template = km_rpbt_related_posts_by_taxonomy_template( 'not a template' );
+		$path2 = $path['dirname'] . '/templates/related-posts-links.php';
+		$this->assertEquals( $path2 , $template );
 	}
+
 
 	/**
 	 * test output from shortcode
