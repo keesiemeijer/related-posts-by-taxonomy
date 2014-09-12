@@ -1,8 +1,8 @@
 # [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Build Status](https://travis-ci.org/keesiemeijer/related-posts-by-taxonomy.svg?branch=master)](http://travis-ci.org/keesiemeijer/related-posts-by-taxonomy) #
 
-Requires at least: 3.5
-Tested up to:      4.0
-Stable tag:        0.3.1
+Requires at least: 3.5  
+Tested up to:      4.0  
+Stable tag:        0.3.1  
 
 This lightweight WordPress plugin provides a widget and shortcode to display related posts as thumbnails, links, excerpts or as full posts. 
 
