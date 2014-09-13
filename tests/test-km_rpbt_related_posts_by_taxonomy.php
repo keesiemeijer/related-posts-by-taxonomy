@@ -1,4 +1,7 @@
 <?php
+/**
+ * Tests for the km_rpbt_related_posts_by_taxonomy() function.
+ */
 class KM_RPBT_Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 
 	private $utils;
@@ -17,9 +20,7 @@ class KM_RPBT_Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 		$create_posts = $this->utils->create_posts_with_terms();
 		$posts = $create_posts['posts'];
 
-		$args =  array( 'fields' => 'ids' );
-
-		// test single taxonomy
+		// Test with a single taxonomy.
 		$taxonomies = array( 'post_tag' );
 
 		// test post 0
@@ -38,7 +39,7 @@ class KM_RPBT_Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 		$rel_post3 = km_rpbt_related_posts_by_taxonomy( $posts[3], $taxonomies, $args );
 		$this->assertEquals( array( $posts[0], $posts[1], $posts[2] ), $rel_post3 );
 
-		// test multiple taxonomies
+		// Test with multiple taxonomies.
 		$taxonomies = array( 'category', 'post_tag' );
 
 		// test post 0
@@ -64,7 +65,7 @@ class KM_RPBT_Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 
 
 	/**
-	 * test related posts for custom post type and custom taxonomy
+	 * test related posts for custom post type and custom taxonomy.
 	 */
 	function test_custom_post_type_and_custom_taxonomy() {
 
@@ -97,7 +98,7 @@ class KM_RPBT_Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 		$rel_post3 = km_rpbt_related_posts_by_taxonomy( $posts[3], $taxonomies, $args );
 		$this->assertEquals( array( $posts[1] ), $rel_post3 );
 
-		// test multiple taxonomies
+		// Test with multiple taxonomies.
 		$taxonomies = array( 'rel_ctax', 'post_tag' );
 
 		// test post 0
