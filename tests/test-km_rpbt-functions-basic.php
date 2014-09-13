@@ -220,8 +220,9 @@ EOF;
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery )  );
 	}
 
+
 	/**
-	 * adds fake image
+	 * Adds fake image.
 	 */
 	function add_image( $image ) {
 		return '<img>';
