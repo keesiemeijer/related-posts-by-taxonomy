@@ -363,8 +363,5 @@ function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
 	/* convert to integers and remove 0 values */
 	$ids = array_filter( array_map( 'intval', (array) $ids ) );
 
-	/* remove duplicates */
-	$ids = array_unique( $ids );
-
-	return $ids;
+	return array_values( array_unique( $ids ) );
 }
