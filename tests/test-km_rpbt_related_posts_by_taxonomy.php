@@ -5,6 +5,10 @@
 class KM_RPBT_Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 
 	private $utils;
+	private $posts;
+	private $tax_1_terms;
+	private $tax_2_terms;
+	private $taxonomies = array( 'category', 'post_tag' );
 
 	function setUp() {
 		parent::setUp();
