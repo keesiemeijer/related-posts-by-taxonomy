@@ -171,85 +171,129 @@ class KM_RPBT_Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 	}
 
 	/**
-	 * test function arguments
+	 * Test exclude_terms argument.
 	 */
-	function test_arguments() {
+	function test_exclude_terms(){
+		$this->create_posts();
+		$args       = array( 'exclude_terms' => $this->tax_1_terms[2], 'fields' => 'ids' );
+		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[2] ), $rel_post0 );
+	}
 
-		$create_posts = $this->utils->create_posts_with_terms();
-		$posts = $create_posts['posts'];
 
-		$_posts = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
-		$terms = $create_posts['tax1_terms'];
-		$terms2 = $create_posts['tax2_terms'];
+	/**
+	 * Test include_terms argument.
+	 */
+	function test_include_terms(){
+		$this->create_posts();
+		$args       = array( 'include_terms' => $this->tax_1_terms[0], 'fields' => 'ids' );
+		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[2] ), $rel_post0 );
+	}
 
-		$args =  array( 'fields' => 'ids' );
-		$taxonomies = array( 'category', 'post_tag' );
 
-		// test exclude_terms
-		$_args = array_merge( $args, array( 'exclude_terms' => array( $terms[2] ) ) );
-		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $_args );
-		$this->assertEquals( array( $posts[1], $posts[2] ), $rel_post0 );
+	/**
+	 * Test include_terms argument when related === false.
+	 */
+	function test_include_terms_unrelated(){
+		$this->create_posts();
+		$args = array( 
+			'include_terms' => array(  $this->tax_2_terms[2], $this->tax_1_terms[3] ),
+			'related'       => false,
+			'fields'        => 'ids',
+		);
+		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals(array( $this->posts[3], $this->posts[4] ), $rel_post0 );
+	}
 
-		// test include_terms
-		$_args = array_merge( $args, array( 'include_terms' => array( $terms[0] ) ) );
-		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $_args );
-		$this->assertEquals( array( $posts[2] ), $rel_post0 );
 
-		// test include_terms without relation by taxonomy
-		$_args = array_merge( $args, array(
-				'related' => false,
-				'include_terms' => array( $terms2[2], $terms[3] )
-			) );
-		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $_args );
-		$this->assertEquals( array( $posts[3], $posts[4] ), $rel_post0 );
+	/**
+	 * Test exclude_posts function argument.
+	 */
+	function test_exclude_posts(){
+		$this->create_posts();
+		$args       = array( 'exclude_posts' => $this->posts[2], 'fields' => 'ids' );
+		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
 
-		// test exclude_posts
-		$_args = array_merge( $args, array( 'exclude_posts' => array( $posts[2] ) ) );
-		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $_args );
-		$this->assertEquals( array( $posts[1], $posts[3] ), $rel_post0 );
 
-		// test limit_posts
-		$_args = array_merge( $args, array( 'limit_posts' => 2 ) );
-		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $_args );
-		$this->assertEquals( array( $posts[1], $posts[2] ), $rel_post0 );
+	/**
+	 * Test limit_posts function argument.
+	 */
+	function test_limit_posts(){
+		$this->create_posts();
+		$args      = array( 'limit_posts' => 2, 'fields' => 'ids' );
+		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[2] ), $rel_post0 );
+	}
 
-		// test posts_per_page
-		$_args = array_merge( $args, array( 'posts_per_page' => 1 ) );
-		$rel_post3 = km_rpbt_related_posts_by_taxonomy( $posts[3], $taxonomies, $_args );
-		$this->assertEquals( array( $posts[1] ), $rel_post3 );
 
-		$slugs = wp_list_pluck( $_posts, 'post_name' );
-		$titles =  wp_list_pluck( $_posts, 'post_title' );
+	/**
+	 * Test posts_per_page function argument.
+	 */
+	function test_posts_per_page(){
+		$this->create_posts();
+		$args      = array( 'posts_per_page' => 1, 'fields' => 'ids' );
+		$rel_post3 = km_rpbt_related_posts_by_taxonomy( $this->posts[3], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1] ), $rel_post3 );
+	}
 
-		// test post_fields
-		$_args = array_merge( $args, array( 'fields' => 'slugs' ) );
-		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $_args );
+
+	/**
+	 * Test fields function argument.
+	 */
+	function test_fields(){
+		$this->create_posts();
+		$_posts = get_posts( array( 'posts__in' => $this->posts, 'order' => 'post__in' ) );
+
+		$slugs      = wp_list_pluck( $_posts, 'post_name' );
+		$args       = array( 'fields' => 'slugs' );
+
+		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $slugs[1], $slugs[2], $slugs[3] ), $rel_post0 );
 
-		// test post_fields
-		$_args = array_merge( $args, array( 'fields' => 'names' ) );
-		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $_args );
+		$titles     = wp_list_pluck( $_posts, 'post_title' );
+		$args['fields'] = 'names';
+
+		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $titles[1], $titles[2], $titles[3] ), $rel_post0 );
+	}
 
-		// fake post thumbnails
-		add_post_meta( $posts[1], '_thumbnail_id' , 22 ); // fake ID's
-		add_post_meta( $posts[3], '_thumbnail_id' , 33 );
 
-		// test post_thumbnail
-		$_args = array_merge( $args, array( 'post_thumbnail' => true ) );
-		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $_args );
-		$this->assertEquals( array( $posts[1], $posts[3] ), $rel_post0 );
+	/**
+	 * Test post_thumbnail function argument.
+	 */
+	function test_post_thumbnail(){
+		$this->create_posts();
 
-		// test limit_month
+		// Fake post thumbnails for post 1 and 3
+		add_post_meta( $this->posts[1], '_thumbnail_id' , 22 ); // fake attachment ID's
+		add_post_meta( $this->posts[3], '_thumbnail_id' , 33 );
+
+		$args       = array( 'post_thumbnail' => true, 'fields' => 'ids' );
+		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
+
+
+	/**
+	 * Test limit_month function argument.
+	 */
+	function test_limit_month(){
+		$this->create_posts();
+		$_posts = get_posts( array( 'posts__in' => $this->posts, 'order' => 'post__in' ) );
+
 		list( $date, $time ) = explode( ' ', $_posts[2]->post_date );
 		$mypost = array(
-			'ID' =>  $posts[2],
+			'ID' =>  $this->posts[2],
 			'post_date' => date( 'Y-m-d H:i:s', strtotime( $date .' -2 month' ) ),
 		);
 		wp_update_post( $mypost );
 
-		$_args = array_merge( $args, array( 'limit_month' => 1 ) );
-		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $_args );
-		$this->assertEquals( array( $posts[1], $posts[3] ), $rel_post0 );
+		$args       = array( 'limit_month' => 1, 'fields' => 'ids' );
+		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
+
 }
