@@ -137,33 +137,37 @@ class KM_RPBT_Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 	}
 
 	/**
-	 * using wrong function arguments
+	 * Test invalid function arguments.
 	 */
 	function test_invalid_arguments() {
 
-		$create_posts = $this->utils->create_posts_with_terms();
-		$posts = $create_posts['posts'];
+		$this->create_posts();
+		$posts = $this->posts;
 
 		$args =  array( 'fields' => 'ids' );
 
-		// test single taxonomy
+		// Test single taxonomy.
 		$taxonomies = array( 'post_tag' );
 
-		// not a post ID
+		// Not a post ID.
 		$fail = km_rpbt_related_posts_by_taxonomy( 'not a post ID', $taxonomies, $args );
 		$this->assertEmpty( $fail );
 
-		// non existant post ID
+		// Non existant post ID.
 		$fail2 = km_rpbt_related_posts_by_taxonomy( 9999999999, $taxonomies, $args );
 		$this->assertEmpty( $fail2 );
 
-		// non existant taxonomy
-		$fail3 = km_rpbt_related_posts_by_taxonomy( $posts[0], 'not_a_taxonomy', $args );
+		// Non existant taxonomy.
+		$fail3 = km_rpbt_related_posts_by_taxonomy( $posts[0], 'not a taxonomy', $args );
 		$this->assertEmpty( $fail3 );
 
-		// empty string defaults to taxonomy 'category'
+		// Empty string should default to taxonomy 'category'.
 		$fail4 = km_rpbt_related_posts_by_taxonomy( $posts[0], '', $args );
 		$this->assertEquals( array( $posts[1] ), $fail4 );
+
+		// No arguments should return an empty array.
+		$fail5 = km_rpbt_related_posts_by_taxonomy();
+		$this->assertEmpty( $fail5 );
 	}
 
 	/**
