@@ -82,20 +82,21 @@ class Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 		}
 
 		$create_posts = $this->utils->create_posts_with_terms();
-		$posts = $create_posts['posts'];
+		$posts        = $create_posts['posts'];
 
-		$args =  array( 'fields' => 'ids' );
+		$args       =  array( 'fields' => 'ids' );
 		$taxonomies = array( 'category', 'post_tag' );
 
 		ob_start();
 
 		// these functions should not output anything.
-		$_posts = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
-		$_template = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
-		$_ids = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1' );
+		$_posts     = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$_template  = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
+		$_ids       = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
+		$_shortcode = km_rpbt_related_posts_by_taxonomy_shortcode( array() );
 
-		// shortcode has its own test for output
-		// gallery has its own test for output
+		// shortcode has another test for output below
+		// gallery has its own test for output below
 
 		$out = ob_get_clean();
 
