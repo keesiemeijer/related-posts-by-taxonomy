@@ -15,17 +15,28 @@ class KM_RPBT_Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+	/**
+	 * Helper function to create 5 posts with 5 terms from two taxonomies.
+	 */
+	function create_posts( $post_type = 'post', $tax1 = 'post_tag', $tax2 = 'category' ) {
+		$posts = $this->utils->create_posts_with_terms( $post_type, $tax1, $tax2 );
+		$this->posts       = $posts['posts'];
+		$this->tax_1_terms = $posts['tax1_terms'];
+		$this->tax_2_terms = $posts['tax2_terms'];
+	}
+
 
 	/**
 	 * test related posts for post type post
 	 */
 	function test_post_type_post() {
 
-		$create_posts = $this->utils->create_posts_with_terms();
-		$posts = $create_posts['posts'];
+		$this->create_posts();
+		$posts = $this->posts;
 
 		// Test with a single taxonomy.
 		$taxonomies = array( 'post_tag' );
+		$args       = array( 'fields' => 'ids');
 
 		// test post 0
 		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
@@ -78,13 +89,12 @@ class KM_RPBT_Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 
 		$this->assertFalse( is_taxonomy_hierarchical( 'rel_ctax' ) );
 
-		//$this->utils->create_posts_with_terms();
-		$create_posts = $this->utils->create_posts_with_terms( 'rel_cpt', 'post_tag', 'rel_ctax' );
-		$posts = $create_posts['posts'];
+		$this->create_posts('rel_cpt', 'post_tag', 'rel_ctax');
+		$posts = $this->posts;
 
-		$args =  array( 'post_types' => array( 'rel_cpt', 'post' ), 'fields' => 'ids', );
+		$args =  array( 'post_types' => array( 'rel_cpt','post' ), 'fields' => 'ids', );
 
-		// test single taxonomy
+		// Test with a single taxonomy.
 		$taxonomies = array( 'rel_ctax' );
 
 		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
