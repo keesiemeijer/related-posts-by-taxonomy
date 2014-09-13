@@ -154,12 +154,14 @@ class Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 		}
 
 		$create_posts = $this->utils->create_posts_with_terms();
-		$posts = $create_posts['posts'];
+		$posts        = $create_posts['posts'];
 
-		$_posts = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
-		$ids = wp_list_pluck( $_posts, 'ID' );
+		// get post ids array and permalinks array
+		$_posts     = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
+		$ids        = wp_list_pluck( $_posts, 'ID' );
 		$permalinks = array_map( 'get_permalink', $ids );
 
+		// expected related posts are post 1,2,3
 		$expected = <<<EOF
 Related Posts
 <ul>
@@ -186,11 +188,11 @@ EOF;
 		}
 
 		$create_posts = $this->utils->create_posts_with_terms();
-		$posts = $create_posts['posts'];
+		$posts        = $create_posts['posts'];
 		$related_post = get_post( $posts[0] );
-		$permalink = get_permalink( $related_post->ID );
+		$permalink    = get_permalink( $related_post->ID );
 
-		// adds fake image <img>, otherwhise it will return nothing
+		// Adds a fake image <img>, otherwhise the function will return nothing.
 		add_filter( 'related_posts_by_taxonomy_post_thumbnail', array( $this, 'add_image' ) );
 
 		$args = array(
