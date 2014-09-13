@@ -105,25 +105,47 @@ class Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 
 
 	/**
-	 * test if template was found
+	 * Test if correct validated ids are returned.
+	 */
+	function test_km_rpbt_related_posts_by_taxonomy_validate_ids() {
+
+		$ids=array( 1, false, 'string', 2, 0, 1, 3 );
+
+		$validated_ids = km_rpbt_related_posts_by_taxonomy_validate_ids( $ids );
+		$this->assertEquals( array( 1, 2, 3 ), $validated_ids );
+
+		$ids = '1,string,2,0,###,2,3';
+		$validated_ids = km_rpbt_related_posts_by_taxonomy_validate_ids( $ids );
+		$this->assertEquals( array( 1, 2, 3 ), $validated_ids );
+	}
+
+
+	/**
+	 * Test if correct template was found.
 	 */
 	function test_km_rpbt_related_posts_by_taxonomy_template() {
 
 		$path = pathinfo( dirname(  __FILE__  ) );
 
+		// get the excerpts template
 		$template = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
 		$path1 = $path['dirname'] . '/templates/related-posts-excerpts.php';
 		$this->assertEquals( $path1 , $template );
 
-		// should default to links template
-		$template = km_rpbt_related_posts_by_taxonomy_template( 'not a template' );
+		// If no template is provided it should default to the links template.
+		$template = km_rpbt_related_posts_by_taxonomy_template();
 		$path2 = $path['dirname'] . '/templates/related-posts-links.php';
 		$this->assertEquals( $path2 , $template );
+
+		// Wrong templates should default to links template.
+		$template = km_rpbt_related_posts_by_taxonomy_template( 'not-a-template.php' );
+		$path3 = $path['dirname'] . '/templates/related-posts-links.php';
+		$this->assertEquals( $path3 , $template );
 	}
 
 
 	/**
-	 * test output from shortcode
+	 * Test output from shortcode.
 	 */
 	function test_shortcode_output() {
 
