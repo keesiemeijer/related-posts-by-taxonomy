@@ -1,14 +1,40 @@
 <?php
+/**
+ * Tests for various plugin functions
+ */
 class Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 
+	/**
+	 * Don't test for output when debugging.
+	 *
+	 * todo: find a better way to set this property
+	 *
+	 * @var bool
+	 */
 	private $test_output = 1; // default = 1;
+
+	/**
+	 * Utils object to create posts with terms
+	 *
+	 * @var object
+	 */
 	private $utils;
 
+
+	/**
+	 * Set up.
+	 */
 	function setUp() {
 		parent::setUp();
+
+		// Use the utils class to create posts with terms
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+
+	/**
+	 * test if the utils class created posts
+	 */
 	function test_utils() {
 		$create_posts = $this->utils->create_posts_with_terms();
 		$this->assertCount( 5, $create_posts['posts'] );
@@ -16,14 +42,19 @@ class Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 		$this->assertCount( 5, $create_posts['tax2_terms'] );
 	}
 
+
+	/**
+	 * Display Notice if $this->test_output is disabled.
+	 */
 	function test_output() {
 		if ( !$this->test_output ) {
 			fwrite( STDERR, "NOTICE: some tests are disabled\n\n" );
 		}
 	}
 
+
 	/**
-	 * test if default taxonomies exist
+	 * Test if default taxonomies exist.
 	 */
 	function test_get_post_taxonomies() {
 		$this->assertEquals( array( 'category', 'post_tag', 'post_format' ), get_object_taxonomies( 'post' ) );
@@ -31,15 +62,18 @@ class Related_Posts_by_Taxonomy_Tests extends WP_UnitTestCase {
 
 
 	/**
-	 * test output from get_posts_by_author_sql()
+	 * Test output from WordPress function get_posts_by_author_sql().
+	 *
+	 * Used in the km_rpbt_related_posts_by_taxonomy() function to replace 'post_type = 'post' with 'post_type IN ( ... )
 	 */
 	function test_get_posts_by_author_sql() {
 		$where  = get_posts_by_author_sql( 'post' );
 		$this->assertTrue( (bool) preg_match( "/post_type = 'post'/", $where ) );
 	}
 
+
 	/**
-	 * test output from functions
+	 * Tests for functions that should not output anything.
 	 */
 	function test_empty_output() {
 
@@ -118,8 +152,9 @@ EOF;
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );
 	}
 
+
 	/**
-	 * test output from gallery
+	 * Test output from gallery.
 	 */
 	function test_gallery_output() {
 
