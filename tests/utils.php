@@ -7,42 +7,28 @@ class RPBT_Test_Utils {
 		$this->factory = $factory;
 	}
 
+	/**
+	 * Creates 5 posts and assigns terms from two taxonomies.
+	 *
+	 * @param string  $post_type Post type.
+	 * @param string  $tax1      First taxonomy name.
+	 * @param string  $tax2      Second taxonomy name
+	 * @return array             Array with post ids and term ids from both taxonomies
+	 */
 	function create_posts_with_terms( $post_type = 'post', $tax1 = 'post_tag', $tax2 = 'category' ) {
 
 		$posts = $this->create_posts( $post_type, 5 );
 
-		// create terms
-		$tax1_terms = $this->factory->term->create_many( 5, array( 'taxonomy' => $tax1 ) );
-
-		$post_terms =  array(
-			array( $tax1_terms[0], $tax1_terms[1], $tax1_terms[2] ), // post 0
-			array( $tax1_terms[2] ),                                 // post 1
-			array( $tax1_terms[0], $tax1_terms[2] ),                 // post 2
-			array( $tax1_terms[3], $tax1_terms[4], $tax1_terms[2] ), // post 3
-			array(),                                                 // post 4
-		);
-
-		foreach ( $post_terms as $key => $terms ) {
-			if ( !empty( $terms ) ) {
-				wp_set_post_terms ( $posts[ $key ], $terms, $tax1 );
-			}
+		// bail if no posts were created
+		if ( count( $posts ) !== 5 ) {
+			return array();
 		}
 
-		$tax2_terms = $this->factory->term->create_many( 5, array( 'taxonomy' => $tax2 ) );
+		// create terms taxonomy 1
+		$tax1_terms = $this->assign_taxonomy_terms( $posts, $tax1, 1 );
 
-		$post_terms = array(
-			array( $tax2_terms[4] ),                 // post 0
-			array( $tax2_terms[4], $tax2_terms[3] ), // post 1
-			array(),                                 // post 2
-			array( $tax2_terms[3] ),                 // post 3
-			array( $tax2_terms[2] ),                 // post 4
-		);
-
-		foreach ( $post_terms as $key => $terms ) {
-			if ( !empty( $terms ) ) {
-				wp_set_post_terms ( $posts[ $key ], $terms, $tax2 );
-			}
-		}
+		// create terms taxonomy 2
+		$tax2_terms = $this->assign_taxonomy_terms( $posts, $tax2, 2 );
 
 		return compact( 'posts', 'tax1_terms', 'tax2_terms' );
 	}
