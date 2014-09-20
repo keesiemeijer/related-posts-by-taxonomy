@@ -33,28 +33,85 @@ class RPBT_Test_Utils {
 		return compact( 'posts', 'tax1_terms', 'tax2_terms' );
 	}
 
-
+	/**
+	 * Creates posts with decreasing timestamps a day apart.
+	 *
+	 * @param string  $post_type      Post type.
+	 * @param integer $posts_per_page How may posts to create.
+	 * @return array                  Array with post ids.
+	 */
 	function create_posts( $post_type = 'post', $posts_per_page = 5 ) {
 
-		// create posts and increment timestamp
+		// create posts with decreasing timestamp
 		$posts = array();
+		$now = time();
 		foreach ( range( 1, $posts_per_page ) as $i ) {
 			$this->factory->post->create(
 				array(
-					'post_date' => date( 'Y-m-d H:i:s', time() + $i ),
+					'post_date' => date( 'Y-m-d H:i:s', $now - ( $i * DAY_IN_SECONDS ) ),
 					'post_type' => $post_type
 				) );
 		}
 
-		// desc posts
+		// Return posts by desc date.
 		$posts = get_posts(
 			array(
-				'post_type' => $post_type,
-				'fields'    => 'ids',
-				'order'     => 'DESC',
-				'orderby'   => 'date'
+				'posts_per_page' => 5,
+				'post_type'      => $post_type,
+				'fields'         => 'ids',
+				'order'          => 'DESC',
+				'orderby'        => 'date'
 			) );
 
 		return $posts;
 	}
+
+	/**
+	 * Assings terms to posts.
+	 *
+	 * @param array   $posts    Array with 5 post ids.
+	 * @param string  $taxonomy Taxonomy name.
+	 * @return array            Array with created term ids.
+	 */
+	function assign_taxonomy_terms( $posts, $taxonomy, $schema = 1 ) {
+		// create terms taxonomy 1
+		$tax_terms = $this->factory->term->create_many( 5, array( 'taxonomy' => $taxonomy ) );
+
+		// bail if no terms were created
+		if ( ( count( $tax_terms ) !== 5 ) && ( count( $posts ) !== 5 ) ) {
+			return array();
+		}
+
+		if ( $schema === 1 ) {
+			// assign terms to posts
+			$post_terms =  array(
+				array( $tax_terms[0], $tax_terms[1], $tax_terms[2] ), // post 0
+				array( $tax_terms[2] ),                               // post 1
+				array( $tax_terms[0], $tax_terms[2] ),                // post 2
+				array( $tax_terms[3], $tax_terms[4], $tax_terms[2] ), // post 3
+				array(),                                              // post 4
+			);
+		}
+
+		if ( $schema === 2 ) {
+			// assign terms to posts
+			$post_terms = array(
+				array( $tax_terms[4] ),                // post 0
+				array( $tax_terms[4], $tax_terms[3] ), // post 1
+				array(),                               // post 2
+				array( $tax_terms[3] ),                // post 3
+				array( $tax_terms[2] ),                // post 4
+			);
+
+		}
+
+		foreach ( $post_terms as $key => $terms ) {
+			if ( !empty( $terms ) ) {
+				wp_set_post_terms ( $posts[ $key ], $terms, $taxonomy );
+			}
+		}
+
+		return $tax_terms;
+	}
+
 }
