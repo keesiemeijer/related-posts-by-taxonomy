@@ -183,6 +183,8 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		if ( 'post_title' === $caption ) {
 			$_caption = $related->post_title;
 		} elseif ( 'post_excerpt' === $caption ) {
+			global $post;
+			$post = $related;
 			setup_postdata( $related );
 			$_caption = apply_filters( 'the_excerpt', get_the_excerpt() );
 			wp_reset_postdata();
