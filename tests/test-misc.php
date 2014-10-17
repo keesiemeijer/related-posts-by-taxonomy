@@ -108,7 +108,7 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 		$_posts     = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
 		$_template  = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
 		$_ids       = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
-		$_shortcode = km_rpbt_related_posts_by_taxonomy_shortcode( array() );
+		$_shortcode = km_rpbt_related_posts_by_taxonomy_shortcode( array('post_id' => $posts[0]) );
 
 		// The shortcode and thumbnail gallery have other tests for output in test-shortcode.php
 

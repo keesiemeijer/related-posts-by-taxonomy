@@ -55,12 +55,12 @@ Related Posts
 <li><a href="{$permalinks[3]}" title="{$_posts[3]->post_title}">{$_posts[3]->post_title}</a></li>
 </ul>
 EOF;
+
 		ob_start();
 		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '"]' );
 		$shortcode = ob_get_clean();
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );
 	}
-
 
 }
