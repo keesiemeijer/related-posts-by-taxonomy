@@ -152,7 +152,7 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 		$this->assertEquals( $path2 , $template );
 
 		// Wrong templates should default to links template.
-		$template = km_rpbt_related_posts_by_taxonomy_template( 'not-a-template.php' );
+		$template = km_rpbt_related_posts_by_taxonomy_template( 'not-a-template' );
 		$path3 = $path['dirname'] . '/templates/related-posts-links.php';
 		$this->assertEquals( $path3 , $template );
 	}
