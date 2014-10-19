@@ -49,16 +49,19 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$filtered_args = apply_filters( 'related_posts_by_taxonomy_gallery', $args );
 
 	$args = array_merge( $defaults, (array) $filtered_args );
-	extract( $args );
 
-	$id = intval( $id );
+	$id = intval( $args['id'] );
 
 	if ( is_feed() ) {
 		$output = "\n";
 		foreach ( (array) $related_posts as $related ) {
 
-			$thumbnail_id = get_post_thumbnail_id(  $related->ID  );
+			$thumbnail_id   = get_post_thumbnail_id(  $related->ID  );
 			$post_thumbnail = wp_get_attachment_image( $thumbnail_id, $size );
+			$url            = get_permalink(  $related->ID );
+			$post_title     = esc_attr(  $related->post_title );
+
+			$image = ( $post_thumbnail ) ? "<a href='$url' title='$post_title_attr'>$post_thumbnail</a>" : '';
 
 			/**
 			 * Filter the related post gallery image in the feed.
@@ -69,36 +72,36 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 			 * @param object  $related        Related post object
 			 * @param array   $args           Function arguments.
 			 */
-			$gallery_image = apply_filters( 'related_posts_by_taxonomy_rss_post_thumbnail', $post_thumbnail, $related, $args );
+			$image_output = apply_filters( 'related_posts_by_taxonomy_rss_post_thumbnail', $image, $related, $args );
 
-			if ( $gallery_image ) {
-				$url = get_permalink(  $related->ID );
-				$post_title =  esc_attr(  $related->post_title );
-
-				$output .=  "<a href='$url' title='$post_title'>$gallery_image</a>\n";
+			if ( $image_output ) {
+				$output .=  $image_output . "\n";
 			}
 		}
 		return $output;
 	}
 
-	$itemtag = tag_escape( $itemtag );
-	$captiontag = tag_escape( $captiontag );
-	$icontag = tag_escape( $icontag );
+	$itemtag    = tag_escape( $args['itemtag'] );
+	$captiontag = tag_escape( $args['captiontag'] );
+	$icontag    = tag_escape( $args['icontag'] );
 	$valid_tags = wp_kses_allowed_html( 'post' );
-	if ( ! isset( $valid_tags[ $itemtag ] ) )
+	if ( ! isset( $valid_tags[ $itemtag ] ) ) {
 		$itemtag = 'dl';
-	if ( ! isset( $valid_tags[ $captiontag ] ) )
+	}
+	if ( ! isset( $valid_tags[ $captiontag ] ) ) {
 		$captiontag = 'dd';
-	if ( ! isset( $valid_tags[ $icontag ] ) )
+	}
+	if ( ! isset( $valid_tags[ $icontag ] ) ) {
 		$icontag = 'dt';
+	}
 
-	$columns = intval( $columns );
+	$columns   = intval( $args['columns'] );
 	$itemwidth = $columns > 0 ? floor( 100/$columns ) : 100;
-	$float = is_rtl() ? 'right' : 'left';
+	$float     = is_rtl() ? 'right' : 'left';
 
 	$selector = "gallery-{$instance}";
 
-	$gallery_style = $gallery_div = '';
+	$gallery_style = '';
 
 	/**
 	 * Filter whether to print default gallery styles.
@@ -133,7 +136,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		</style>\n\t\t";
 	}
 
-	$size_class = sanitize_html_class( $size );
+	$size_class = sanitize_html_class( $args['size'] );
 	$gallery_div = "<div id='$selector' class='gallery related-gallery related-galleryid-{$id} gallery-columns-{$columns} gallery-size-{$size_class}'>";
 	$output = apply_filters( 'gallery_style', $gallery_style . $gallery_div );
 
@@ -142,10 +145,43 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 	foreach ( (array) $related_posts as $related ) {
 
-		$image_output = $_caption = '';
+		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
+		$caption       = '';
 
-		$thumbnail_id = get_post_thumbnail_id(  $related->ID  );
-		$post_thumbnail = wp_get_attachment_image( $thumbnail_id, $size );
+		if ( 'post_title' === $args['caption'] ) {
+			$caption = $related->post_title;
+		} elseif ( 'post_excerpt' === $args['caption'] ) {
+			global $post;
+			$post = $related;
+			setup_postdata( $related );
+			$caption = apply_filters( 'the_excerpt', get_the_excerpt() );
+			wp_reset_postdata();
+		} elseif ( $thumbnail_id && ( 'attachment_caption' === $args['caption'] ) ) {
+			$attachment = get_post( $thumbnail_id );
+			$caption = ( isset( $attachment->post_excerpt ) ) ? $attachment->post_excerpt : '';
+		} elseif ( $thumbnail_id && ( 'attachment_alt' === $args['caption'] ) ) {
+			$caption = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
+		} else {
+			$caption = (string) $args['caption'];
+		}
+
+		/**
+		 * Filter the related post thumbnail caption.
+		 *
+		 * @since 0.3
+		 *
+		 * @param string  $caption Options 'post_title', 'attachment_caption', attachment_alt, or a custom string. Default: post_title.
+		 * @param object  $related Related post object.
+		 * @param array   $args    Function arguments.
+		 */
+		$caption = apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args );
+
+		$attr            = ( trim( $caption ) ) ? array( 'aria-describedby' => "$selector-$id" ) : '';
+		$post_thumbnail  = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $attr );
+		$url             = get_permalink(  $related->ID );
+		$post_title_attr = esc_attr( $related->post_title );
+
+		$image = ( $post_thumbnail ) ? "<a href='$url' title='$post_title_attr'>$post_thumbnail</a>" : '';
 
 		/**
 		 * Filter the gallery image.
@@ -156,16 +192,11 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		 * @param object  $related        Related post object
 		 * @param array   $args           Function arguments.
 		 */
-		$gallery_image = apply_filters( 'related_posts_by_taxonomy_post_thumbnail', $post_thumbnail, $related, $args );
+		$image_output = apply_filters( 'related_posts_by_taxonomy_post_thumbnail', $image, $related, $args );
 
-		if ( !$gallery_image ) {
+		if ( !$image_output ) {
 			continue;
 		}
-
-		$url = get_permalink(  $related->ID );
-		$post_title_attr =  esc_attr( $related->post_title );
-
-		$image_output =  "<a href='$url' title='$post_title_attr'>$gallery_image</a>";
 
 		$image_meta  = wp_get_attachment_metadata( $thumbnail_id );
 
@@ -180,36 +211,10 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 				$image_output
 			</{$icontag}>";
 
-		if ( 'post_title' === $caption ) {
-			$_caption = $related->post_title;
-		} elseif ( 'post_excerpt' === $caption ) {
-			global $post;
-			$post = $related;
-			setup_postdata( $related );
-			$_caption = apply_filters( 'the_excerpt', get_the_excerpt() );
-			wp_reset_postdata();
-		} elseif ( 'attachment_caption' === $caption ) {
-			$attachment = get_post( $thumbnail_id );
-			$_caption = ( isset( $attachment->post_excerpt ) ) ? $attachment->post_excerpt : '';
-		} elseif ( 'attachment_alt' === $caption ) {
-			$_caption = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
-		}
-
-		/**
-		 * Filter the related post thumbnail caption.
-		 *
-		 * @since 0.3
-		 *
-		 * @param string  $caption Options 'post_title', 'attachment_caption', attachment_alt, or a custom string. Default: post_title.
-		 * @param object  $related Related post object.
-		 * @param array   $args    Function arguments.
-		 */
-		$_caption = apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $_caption ), $related, $args );
-
-		if ( $captiontag && !empty( $_caption ) ) {
+		if ( $captiontag && trim( $caption ) ) {
 			$item_output .= "
-				<{$captiontag} class='wp-caption-text gallery-caption'>
-				" . $_caption . "
+				<{$captiontag} class='wp-caption-text gallery-caption' id='$selector-$id'>
+				" . $caption . "
 				</{$captiontag}>";
 		}
 		$item_output .= "</{$itemtag}>";

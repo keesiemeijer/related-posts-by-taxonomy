@@ -44,7 +44,7 @@ class KM_RPBT_Gallery_Tests extends WP_UnitTestCase {
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
-<dd class='wp-caption-text gallery-caption'>
+<dd class='wp-caption-text gallery-caption' id='gallery-1-{$args['id']}'>
 {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
@@ -93,7 +93,7 @@ margin-left: 0;
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
-<dd class='wp-caption-text gallery-caption'>
+<dd class='wp-caption-text gallery-caption' id='gallery-2-{$args['id']}'>
 {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
