@@ -27,7 +27,6 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	);
 
 	$args = wp_parse_args( $args, $defaults );
-	extract( $args );
 
 	$taxonomies = ( !empty( $taxonomies ) ) ? $taxonomies : array( 'category' );
 
@@ -41,16 +40,16 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		return array();
 	}
 
-	if ( !empty( $include_terms ) ) {
+	if ( !empty( $args['include_terms'] ) ) {
 		// validates ids and returns an array
-		$include_terms = km_rpbt_related_posts_by_taxonomy_validate_ids( $include_terms );
-		if ( $related ) {
+		$include_terms = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['include_terms'] );
+		if ( $args['related'] ) {
 			$terms = array_values( array_intersect( $include_terms, $terms ) );
 		} else {
 			$terms = $include_terms;
 		}
 	} else {
-		$exclude_terms = km_rpbt_related_posts_by_taxonomy_validate_ids( $exclude_terms );
+		$exclude_terms = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['exclude_terms'] );
 		$terms = array_values( array_diff( $terms , $exclude_terms ) );
 	}
 
@@ -66,7 +65,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	}
 
 	// validates ids and returns an array
-	$exclude_posts  = km_rpbt_related_posts_by_taxonomy_validate_ids( $exclude_posts );
+	$exclude_posts  = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['exclude_posts'] );
 
 	// add current post ID
 	$exclude_posts[] = $post_id;
@@ -81,12 +80,12 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	}
 
 	// post types
-	if ( !is_array( $post_types ) ) {
-		$post_types = explode( ',', (string) $post_types );
+	if ( !is_array( $args['post_types'] ) ) {
+		$args['post_types'] = explode( ',', (string) $args['post_types'] );
 	}
 
 	// sanitize post type names and remove duplicates
-	$post_types = array_unique( array_map( 'sanitize_key', (array) $post_types ) );
+	$post_types = array_unique( array_map( 'sanitize_key', (array) $args['post_types'] ) );
 
 	$post_type_arr = array();
 	foreach ( $post_types as $type ) {
@@ -110,7 +109,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	$order_by_rand = false;
 
 	// order sql
-	switch ( strtoupper( (string) $order ) ) {
+	switch ( strtoupper( (string) $args['order'] ) ) {
 	case 'ASC':  $order_sql = 'ASC'; break;
 	case 'RAND': $order_sql = 'RAND()'; $order_by_rand = true; break;
 	default:     $order_sql = 'DESC'; break;
@@ -119,7 +118,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	$allowed_fields = array( 'ids' => 'ID', 'names' => 'post_title', 'slugs' => 'post_name' );
 
 	// select sql
-	$fields = strtolower( (string) $fields );
+	$fields = strtolower( (string) $args['fields'] );
 	if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {
 		$select_sql = "$wpdb->posts." . $allowed_fields[ $fields ];
 	} else {
@@ -129,22 +128,22 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	// limit sql
 	$limit_sql = '';
-	if ( -1 !== (int) $limit_posts ) {
-		$limit_posts = absint( $limit_posts );
+	if ( -1 !== (int) $args['limit_posts'] ) {
+		$limit_posts = absint( $args['limit_posts'] );
 		if ( $limit_posts ) {
 			$limit_sql = 'LIMIT 0,' . $limit_posts;
 		}
 	}
 
-	$orderby = strtolower( (string) $orderby );
+	$orderby = strtolower( (string) $args['orderby'] );
 	if ( !in_array( $orderby, array( 'post_date', 'post_modified' ) ) ) {
 		$orderby = 'post_date';
 	}
 
 	// limit date sql
 	$limit_date_sql = '';
-	$limit_year = absint( $limit_year );
-	$limit_month = absint( $limit_month );
+	$limit_year = absint( $args['limit_year'] );
+	$limit_month = absint( $args['limit_month'] );
 	if ( $limit_year || $limit_month  ) {
 		// year takes precedence over month
 		$time_limit  = ( $limit_year ) ? $limit_year : $limit_month;
@@ -159,7 +158,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	$group_by_sql = "$wpdb->posts.ID";
 
 	if ( !$order_by_rand ) {
-		if ( $related ) {
+		if ( $args['related'] ) {
 			// sql for related terms order
 			$select_sql .= " , count(distinct tr.term_taxonomy_id) as termcount";
 			$group_by_sql .= " HAVING SUM(CASE WHEN {$term_ids_sql} THEN 1 ELSE 0 END) > 0";
@@ -169,7 +168,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	// post thumbnail sql
 	$meta_join_sql = $meta_where_sql = '';
-	if ( $post_thumbnail ) {
+	if ( $args['post_thumbnail'] ) {
 		$meta_query = array( array( 'key' => '_thumbnail_id' ) );
 		$meta = get_meta_sql( $meta_query, 'post', $wpdb->posts, 'ID' );
 		$meta_join_sql = ( isset( $meta['join'] ) && $meta['join'] ) ? $meta['join'] : '';
@@ -284,7 +283,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	if ( $results ) {
 
-		if ( !$order_by_rand && $related ) {
+		if ( !$order_by_rand && $args['related'] ) {
 
 			/* add (termcount) score and key to results */
 			for ( $i=0; $i < count( $results ) ; $i++ ) {
@@ -301,8 +300,9 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 			$results = wp_list_pluck( $results, $allowed_fields[ $fields ] );
 		}
 
-		if ( -1 !== (int) $posts_per_page ) {
-			$posts_per_page = ( absint( $posts_per_page ) ) ? absint( $posts_per_page ) : 5;
+		if ( -1 !== (int) $args['posts_per_page'] ) {
+			$posts_per_page = absint( $args['posts_per_page'] );
+			$posts_per_page = ( $posts_per_page ) ? $posts_per_page : 5;
 			$results = array_slice( $results, 0, $posts_per_page );
 		}
 
