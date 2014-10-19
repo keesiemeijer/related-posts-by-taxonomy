@@ -133,8 +133,7 @@ EOF;
 
 	function setup_gallery() {
 
-		$create_posts = $this->utils->create_posts_with_terms();
-		$posts        = $create_posts['posts'];
+		$posts        = $this->utils->create_posts();
 		$related_post = get_post( $posts[0] );
 		$permalink    = get_permalink( $related_post->ID );
 
