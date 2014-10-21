@@ -176,12 +176,13 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		 */
 		$caption = apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args );
 
-		$attr            = ( trim( $caption ) ) ? array( 'aria-describedby' => "$selector-$id" ) : '';
-		$post_thumbnail  = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $attr );
-		$url             = get_permalink(  $related->ID );
-		$post_title_attr = esc_attr( $related->post_title );
+		$describedby = ( trim( $caption ) ) ? array( 'aria-describedby' => "{$selector}-{$related->ID}" ) : '';
+		$thumbnail   = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $describedby );
+		$permalink   = get_permalink(  $related->ID );
+		$title_attr  = esc_attr( $related->post_title );
 
-		$image = ( $post_thumbnail ) ? "<a href='$url' title='$post_title_attr'>$post_thumbnail</a>" : '';
+		$image      = ( $thumbnail ) ? "<a href='$permalink' title='$title_attr'>$thumbnail</a>" : '';
+		$image_attr = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
 
 		/**
 		 * Filter the gallery image.
@@ -192,7 +193,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		 * @param object  $related        Related post object
 		 * @param array   $args           Function arguments.
 		 */
-		$image_output = apply_filters( 'related_posts_by_taxonomy_post_thumbnail', $image, $related, $args );
+		$image_output = apply_filters( 'related_posts_by_taxonomy_post_thumbnail', $image, $image_attr, $related, $args );
 
 		if ( !$image_output ) {
 			continue;
@@ -213,7 +214,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 		if ( $captiontag && trim( $caption ) ) {
 			$item_output .= "
-				<{$captiontag} class='wp-caption-text gallery-caption' id='$selector-$id'>
+				<{$captiontag} class='wp-caption-text gallery-caption' id='{$selector}-{$related->ID}'>
 				" . $caption . "
 				</{$captiontag}>";
 		}

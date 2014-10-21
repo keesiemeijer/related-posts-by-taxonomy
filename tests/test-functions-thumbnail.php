@@ -139,7 +139,7 @@ EOF;
 		$permalink    = get_permalink( $related_post->ID );
 
 		// Adds a fake image <img>, otherwhise the function will return nothing.
-		add_filter( 'related_posts_by_taxonomy_post_thumbnail', array( $this, 'add_image' ), 99, 3 );
+		add_filter( 'related_posts_by_taxonomy_post_thumbnail', array( $this, 'add_image' ), 99, 4 );
 
 		$args = array(
 			'id'         => $related_post->ID,
@@ -155,10 +155,8 @@ EOF;
 	/**
 	 * Adds fake image for testing.
 	 */
-	function add_image( $image, $related, $args ) {
-		$url             = get_permalink(  $related->ID );
-		$post_title_attr = esc_attr( $related->post_title );
-		return "<a href='$url' title='$post_title_attr'><img></a>";
+	function add_image( $image, $attr, $related, $args ) {
+		return "<a href='{$attr['permalink']}' title='{$attr['title_attr']}'><img></a>";
 	}
 
 }
