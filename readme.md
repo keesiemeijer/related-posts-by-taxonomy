@@ -3,13 +3,10 @@
 version:           0.4  
 Requires at least: 3.5  
 Tested up to:      4.0  
-Stable tag:        0.3.1  
 
-This lightweight WordPress plugin provides a widget and shortcode to display related posts as thumbnails, links, excerpts or as full posts. 
+### Welcome to our GitHub Repository ###
 
-Welcome to the github repository for the Related Posts by Taxonomy plugin. For the development version of the plugin switch to the develop branch. 
-
-Display related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the **most terms in common** will display at the top. Use multiple taxonomies and post types to get the related posts. Include or exclude terms. Change the look and feel with your own html templates in your (child) theme.  
+Display related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the **most terms in common** will display at the top. Use multiple taxonomies and post types to get the related posts. Include or exclude terms. Change the look and feel with your own html templates in your (child) theme.
 
 Plugin features:
 
@@ -22,6 +19,28 @@ Plugin features:
 * Automatically display related posts after the post content.
 * Use your own templates for display of the related posts.
 * Use plugin functions to get related posts in your theme templates.
-* Filters to change the default behavior and display of the plugin.
+* Filters to change the default behavior and display of the plugin. 
 
-For more information about the plugin see the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
+More information can be found [here](https://wordpress.org/plugins/related-posts-by-taxonomy) and at the official [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
+
+## Installation ##
+
+1. You can clone the GitHub repository: `https://github.com/keesiemeijer/related-posts-by-taxonomy.git`
+2. Or download it directly as a ZIP file: `https://github.com/keesiemeijer/related-posts-by-taxonomy/archive/master.zip`
+
+This will download the latest developer copy of Easy Digital Downloads.
+
+## Bugs ##
+If you find an issue, let us know [here](https://github.com/keesiemeijer/related-posts-by-taxonomy/issues?state=open)!
+
+## Support ##
+This is a developer's portal for Related Posts by Taxonomy and should _not_ be used for support. Please visit the [support forums](https://wordpress.org/support/plugin/related-posts-by-taxonomy).
+
+## Contributions ##
+
+There are various ways you can contribute:
+
+1. Raise an [Issue](https://github.com/keesiemeijer/related-posts-by-taxonomy/issues) on GitHub
+2. Send us a Pull Request with your bug fixes and/or new features
+3. Translate Easy Digital Downloads into different languages
+4. Provide feedback and suggestions on [enhancements](https://github.com/keesiemeijer/related-posts-by-taxonomy/issues?direction=desc&labels=Enhancement&page=1&sort=created&state=open)
