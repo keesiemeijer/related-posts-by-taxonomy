@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 3.5
 Tested up to: 4.0
-Stable tag: 0.3.1
+Stable tag: 0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,8 @@ Plugin features:
 * Filters to change the default behavior and display of the plugin.
 
 For more information about the plugin see the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
+
+Follow this plugin on [GitHub](https://github.com/keesiemeijer/related-posts-by-taxonomy)
 
 To have the related posts automatically display after the post content without using the shortcode or widget see the [FAQ](http://wordpress.org/extend/plugins/related-posts-by-taxonomy/faq/). 
 
@@ -91,6 +93,20 @@ Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.word
 3. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 0.4 =
+* Enhancement
+	* Added the new parameter 'related' to get posts with include_terms even if the current post doesn't have the included terms (unrelated). 
+	* Used attribute aria-describedby in wp_get_attachment_image for accessibility (similar changes as in the WordPress 4.1 gallery).
+	* Added new filters related_posts_by_taxonomy_post_thumbnail_link and related_posts_by_taxonomy_rss_post_thumbnail_link.
+	* Removed extract() from all files (WordPress core best practices).
+	* Added Phpunit tests (in the github repository).
+
+* Bug fixes
+	* Fixed a filter recursion bug for the shortcode if it's used in the WordPress the_content filter and the format is excerpts or posts.
+
+* Notice
+	* Deprecated filters related_posts_by_taxonomy_post_thumbnail and related_posts_by_taxonomy_rss_post_thumbnail.
+
 = 0.3.1 =
 * New filters for the related posts query.
 * Fixed minor bug when using spaces in post_types string in the short code.
@@ -127,4 +143,4 @@ Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.word
 
 == Upgrade Notice ==
 = 0.3.1 =
-This version adds new filters for the related posts query and fixes a minor bug in the shortcode.
+Now you can get posts (with include_terms) even if the current post doesn't have the included terms (unrelated). This version uses new WordPress best practices and fixes a minor bug in the shortcode. See the changelog for more details.

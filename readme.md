@@ -1,6 +1,6 @@
 # [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Build Status](https://travis-ci.org/keesiemeijer/related-posts-by-taxonomy.svg?branch=master)](http://travis-ci.org/keesiemeijer/related-posts-by-taxonomy) #
 
-version:           0.4-beta1  
+version:           0.4  
 Requires at least: 3.5  
 Tested up to:      4.0  
 Stable tag:        0.3.1  
