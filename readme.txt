@@ -28,7 +28,7 @@ Plugin features:
 
 For more information about the plugin see the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
 
-Follow this plugin on [GitHub](https://github.com/keesiemeijer/related-posts-by-taxonomy)
+Follow this plugin on [GitHub](https://github.com/keesiemeijer/related-posts-by-taxonomy).
 
 To have the related posts automatically display after the post content without using the shortcode or widget see the [FAQ](http://wordpress.org/extend/plugins/related-posts-by-taxonomy/faq/). 
 
@@ -56,6 +56,7 @@ Attributes for the shortcode are:
 * limit_posts
 * limit_year
 * limit_month
+* related
 
 Example to show 10 related posts instead of the default 5.
 <pre><code>[related_posts_by_tax posts_per_page="10"]</code></pre>
@@ -95,7 +96,7 @@ Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.word
 == Changelog ==
 = 0.4 =
 * Enhancement
-	* Added the new parameter 'related' to get posts with include_terms even if the current post doesn't have the included terms (unrelated). 
+	* Added a new parameter 'related' to get posts with include_terms even if the current post doesn't have the included terms (unrelated). 
 	* Used attribute aria-describedby in wp_get_attachment_image for accessibility (similar changes as in the WordPress 4.1 gallery).
 	* Added new filters related_posts_by_taxonomy_post_thumbnail_link and related_posts_by_taxonomy_rss_post_thumbnail_link.
 	* Removed extract() from all files (WordPress core best practices).
