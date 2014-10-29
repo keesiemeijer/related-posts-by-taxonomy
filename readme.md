@@ -7,9 +7,7 @@ Stable tag:        0.3.1
 
 This lightweight WordPress plugin provides a widget and shortcode to display related posts as thumbnails, links, excerpts or as full posts. 
 
-## Description ##
-
-Welcome to the github repository for the Related Posts by Taxonomy plugin.
+Welcome to the github repository for the Related Posts by Taxonomy plugin. 
 
 Display related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the **most terms in common** will display at the top. Use multiple taxonomies and post types to get the related posts. Include or exclude terms. Change the look and feel with your own html templates in your (child) theme.  
 
@@ -27,3 +25,7 @@ Plugin features:
 * Filters to change the default behavior and display of the plugin.
 
 For more information about the plugin see the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
+
+### Translations ###
+Dutch
+French (by [Annie Stasse](http://www.artisanathai.fr))
