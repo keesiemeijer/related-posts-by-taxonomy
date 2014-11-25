@@ -4,9 +4,12 @@ version:           0.4
 Requires at least: 3.5  
 Tested up to:      4.0  
 
-### Welcome to our GitHub Repository ###
+### Welcome to the GitHub repository for this plugin ###
+The `master` branch is where you'll find the most recent, stable release.
+The `develop` branch is the current working branch for development. Both branches are required to pass all unit tests. Any pull requests are first merged with the `develop` branch before being merged into the `master` branch. 
 
-Display related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the **most terms in common** will display at the top. Use multiple taxonomies and post types to get the related posts. Include or exclude terms. Change the look and feel with your own html templates in your (child) theme.
+## Description ##
+This WordPress plugin displays related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the **most terms in common** will display at the top. Use multiple taxonomies and post types to get the related posts. Include or exclude terms. Change the look and feel with your own html templates in your (child) theme.
 
 Plugin features:
 
@@ -28,13 +31,23 @@ More information can be found [here](https://wordpress.org/plugins/related-posts
 1. You can clone the GitHub repository: `https://github.com/keesiemeijer/related-posts-by-taxonomy.git`
 2. Or download it directly as a ZIP file: `https://github.com/keesiemeijer/related-posts-by-taxonomy/archive/master.zip`
 
-This will download the latest developer copy of Easy Digital Downloads.
+This will download the latest stable copy of Related Posts by Taxonomy.
+
+## Pull Requests ##
+When starting work on a new feature, branch off from the `develop` branch.
+```
+git checkout -b myfeature develop
+```
 
 ## Bugs ##
 If you find an issue, let us know [here](https://github.com/keesiemeijer/related-posts-by-taxonomy/issues?state=open)!
 
 ## Support ##
 This is a developer's portal for Related Posts by Taxonomy and should _not_ be used for support. Please visit the [support forums](https://wordpress.org/support/plugin/related-posts-by-taxonomy).
+
+### Translations ###
+Dutch  
+French (by [Annie Stasse](http://www.artisanathai.fr))  
 
 ## Contributions ##
 
