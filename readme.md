@@ -35,8 +35,18 @@ This will download the latest stable copy of Related Posts by Taxonomy.
 
 ## Pull Requests ##
 When starting work on a new feature, branch off from the `develop` branch.
-```
-git checkout -b myfeature develop
+```bash
+# clone the repository
+git clone https://github.com/keesiemeijer/related-posts-by-taxonomy.git
+
+# cd into the related-posts-by-taxonomy directory
+cd related-posts-by-taxonomy
+
+# switch to the develop branch
+git checkout develop
+
+# create new branch newfeature and switch to it
+git checkout -b newfeature develop
 ```
 
 ## Bugs ##
