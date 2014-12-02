@@ -309,11 +309,11 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 		list( $date, $time ) = explode( ' ', $_posts[2]->post_date );
 		$mypost = array(
 			'ID' =>  $this->posts[2],
-			'post_date' => date( 'Y-m-d H:i:s', strtotime( $date .' -2 month' ) ),
+			'post_date' => date( 'Y-m-d H:i:s', strtotime( $date .' -6 month' ) ),
 		);
 		wp_update_post( $mypost );
 
-		$args       = array( 'limit_month' => 1, 'fields' => 'ids' );
+		$args       = array( 'limit_month' => 2, 'fields' => 'ids' );
 		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
