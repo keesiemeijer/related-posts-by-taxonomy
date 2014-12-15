@@ -1,9 +1,9 @@
 === Related Posts by Taxonomy ===
 Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
-Requires at least: 3.5
-Tested up to: 4.0
-Stable tag: 0.4
+Requires at least: 3.7
+Tested up to: 4.1
+Stable tag: 0.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -95,6 +95,9 @@ Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.word
 3. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 0.4.1 =
+Updated 'include_terms' logic to search for related posts with different taxonomy terms if 'related' is set.
+Updated unit tests to be more reliable.
 = 0.4 =
 * Enhancement
 	* Added a new parameter 'related' to get posts with include_terms even if the current post doesn't have the included terms (unrelated). 
@@ -144,5 +147,5 @@ Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.word
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 0.3.1 =
-Now you can get posts (with include_terms) even if the current post doesn't have the included terms (unrelated). This version uses new WordPress best practices and fixes a minor bug in the shortcode. See the changelog for more details.
+= 0.4.1 =
+Tested with WordPress 4.1. A minor update with a more stable logic to retrieve related posts with the 'include_terms' parameter. 
