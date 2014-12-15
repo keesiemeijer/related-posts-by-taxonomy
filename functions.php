@@ -34,23 +34,36 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		$taxonomies = array_unique( explode( ',', (string) $taxonomies ) );
 	}
 
-	$terms = wp_get_object_terms( $post_id, array_map( 'trim', (array) $taxonomies ), array( 'fields' => 'ids' ) );
+	$terms = array();
 
-	if ( is_wp_error( $terms ) || empty( $terms ) ) {
-		return array();
+	// validates ids and returns an array
+	$included = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['include_terms'] );
+
+	if ( $args['related'] ) {
+		// get related post terms
+		$terms = wp_get_object_terms( $post_id, array_map( 'trim', (array) $taxonomies ), array( 'fields' => 'ids' ) );
+
+		if ( is_wp_error( $terms ) ) {
+			return array();
+		}
+
+		// only use included terms from the post terms
+		if ( !empty( $included ) ) {
+			$terms = array_values( array_intersect( $included, $terms ) );
+		}
+
+	} else {
+		// not related, use included terms
+		if ( !empty( $included ) ) {
+			$terms = $included;
+		}
 	}
 
-	if ( !empty( $args['include_terms'] ) ) {
+	// exclude terms
+	if ( empty( $included ) ) {
 		// validates ids and returns an array
-		$include_terms = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['include_terms'] );
-		if ( $args['related'] ) {
-			$terms = array_values( array_intersect( $include_terms, $terms ) );
-		} else {
-			$terms = $include_terms;
-		}
-	} else {
-		$exclude_terms = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['exclude_terms'] );
-		$terms = array_values( array_diff( $terms , $exclude_terms ) );
+		$excluded = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['exclude_terms'] );
+		$terms = array_values( array_diff( $terms , $excluded ) );
 	}
 
 	if ( empty( $terms ) ) {
@@ -67,7 +80,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	// validates ids and returns an array
 	$exclude_posts  = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['exclude_posts'] );
 
-	// add current post ID
+	// add current post ID to exclude
 	$exclude_posts[] = $post_id;
 	$exclude_posts   = array_unique( $exclude_posts );
 
@@ -267,7 +280,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	}
 
 	$query = "SELECT {$select_sql} FROM $wpdb->posts {$join_sql} {$where_sql} {$group_by_sql} {$order_by_sql} {$limit_sql}";
-	//echo $query;
+
 	$last_changed = wp_cache_get( 'last_changed', 'posts' );
 	if ( ! $last_changed ) {
 		$last_changed = microtime();
