@@ -199,6 +199,18 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 			continue;
 		}
 
+		/**
+		 * Gallery item css classes.
+		 *
+		 * @since
+		 *
+		 * @param string  $classes Classes used for a gallery item.
+		 * @param object  $related Related post object
+		 * @param array   $args    Function arguments.
+		 */
+		$itemclass = apply_filters( 'related_posts_by_taxonomy_gallery_item_class', 'gallery-item', $related, $args );
+		$itemclass = sanitize_html_class( $itemclass );
+
 		$image_meta  = wp_get_attachment_metadata( $thumbnail_id );
 
 		$orientation = '';
@@ -206,7 +218,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 			$orientation = ( $image_meta['height'] > $image_meta['width'] ) ? 'portrait' : 'landscape';
 		}
 
-		$item_output .= "<{$itemtag} class='gallery-item'>";
+		$item_output .= "<{$itemtag} class='{$itemclass}'>";
 		$item_output .= "
 			<{$icontag} class='gallery-icon {$orientation}'>
 				$image_link
