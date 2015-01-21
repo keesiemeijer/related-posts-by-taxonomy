@@ -22,6 +22,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+
 	/**
 	 * Test if shortcode is registered.
 	 */
@@ -29,6 +30,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		global $shortcode_tags;
 		$this->assertArrayHasKey( 'related_posts_by_tax', $shortcode_tags );
 	}
+
 
 	/**
 	 * Test output from shortcode.

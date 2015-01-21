@@ -15,6 +15,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+
 	/**
 	 * Helper function to create 5 posts with 5 terms from two taxonomies.
 	 */
@@ -139,6 +140,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 		$this->assertEmpty( $rel_post4 );
 	}
 
+
 	/**
 	 * Test invalid function arguments.
 	 *  @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
@@ -173,6 +175,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 		$fail5 = km_rpbt_related_posts_by_taxonomy();
 		$this->assertEmpty( $fail5 );
 	}
+
 
 	/**
 	 * Test exclude_terms argument.

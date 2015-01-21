@@ -23,6 +23,7 @@ class KM_RPBT_Gallery_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+
 	/**
 	 * Test output from gallery.
 	 *
@@ -53,6 +54,7 @@ EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery )  );
 	}
+
 
 	/**
 	 * Test output from gallery with gallery style.
@@ -102,6 +104,7 @@ EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery )  );
 	}
+
 
 	/**
 	 * Test output gallery with no caption.

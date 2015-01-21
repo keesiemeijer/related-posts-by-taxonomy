@@ -59,6 +59,7 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 		$this->assertCount( 5, $create_posts['tax2_terms'] );
 	}
 
+
 	/**
 	 * Skip tests if the constant KM_RPBT_TEST_OUTPUT is set to false.
 	 */
