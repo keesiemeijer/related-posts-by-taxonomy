@@ -39,23 +39,21 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	// validates ids and returns an array
 	$included = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['include_terms'] );
 
-	if ( $args['related'] ) {
-		// get related post terms
+	if ( !$args['related'] && !empty( $included ) ) {
+		// related, use included term ids
+		$terms = $included;
+	} else {
+
+		// related and not related terms
 		$terms = wp_get_object_terms( $post_id, array_map( 'trim', (array) $taxonomies ), array( 'fields' => 'ids' ) );
 
-		if ( is_wp_error( $terms ) ) {
+		if ( is_wp_error( $terms ) || empty( $terms ) ) {
 			return array();
 		}
 
 		// only use included terms from the post terms
-		if ( !empty( $included ) ) {
+		if ( !empty( $included ) && $args['related'] ) {
 			$terms = array_values( array_intersect( $included, $terms ) );
-		}
-
-	} else {
-		// not related, use included terms
-		if ( !empty( $included ) ) {
-			$terms = $included;
 		}
 	}
 
