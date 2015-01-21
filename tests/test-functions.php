@@ -221,6 +221,22 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 
 
 	/**
+	 * Test related === false without include_terms.
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 */
+	function test_related() {
+		$this->create_posts();
+		$args = array(
+			'related'       => false,
+			'fields'        => 'ids',
+		);
+		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
+	}
+
+
+	/**
 	 * Test exclude_posts function argument.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
