@@ -97,16 +97,10 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	// sanitize post type names and remove duplicates
 	$post_types = array_unique( array_map( 'sanitize_key', (array) $args['post_types'] ) );
-
-	$post_type_arr = array();
-	foreach ( $post_types as $type ) {
-		if ( post_type_exists( $type ) ) {
-			$post_type_arr[] = $type;
-		}
-	}
+	$post_types = array_filter( $post_types, 'post_type_exists' );
 
 	// default to post type post if no post types are found
-	$post_types = ( !empty( $post_type_arr ) ) ? $post_type_arr : array( 'post' );
+	$post_types = ( !empty( $post_types ) ) ? $post_types : array( 'post' );
 
 	// where sql (post types and post status)
 	if ( count( $post_types ) > 1 ) {

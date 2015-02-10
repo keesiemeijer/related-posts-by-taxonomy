@@ -28,7 +28,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		'post_id' => '', 'taxonomies' => $plugin_defaults->all_tax, 'format' => 'links',
 		'title' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
 		'before_title' => '', 'after_title' => '', 'image_size' => 'thumbnail', 'columns' => 3,
-		'caption' => 'post_title',
+		'caption' => 'post_title', 'before_shortcode' => '', 'after_shortcode' => '',
 
 		// km_rpbt_related_posts_by_taxonomy defaults
 		'post_types' => '', 'posts_per_page' => 5, 'order' => 'DESC',
@@ -130,9 +130,11 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		global $post; // used for setup_postdata() in templates
 
 		if ( $template ) {
+			echo $rpbt_args['before_shortcode'];
 			echo ( $rpbt_args['title'] ) ? $title : '';
 			unset( $title );
 			require $template;
+			echo $rpbt_args['after_shortcode'];
 		}
 
 		wp_reset_postdata(); // clean up global $post variable;
