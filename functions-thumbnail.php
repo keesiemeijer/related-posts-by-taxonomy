@@ -59,7 +59,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 			$thumbnail_id = get_post_thumbnail_id(  $related->ID  );
 			$thumbnail    = wp_get_attachment_image( $thumbnail_id, $args['size'] );
 			$permalink    = get_permalink(  $related->ID );
-			$title_attr   = esc_attr( $related->post_title );
+			$title_attr   = apply_filters( 'the_title', esc_attr( $related->post_title ) );
 
 			$image_link = ( $thumbnail ) ? "<a href='$permalink' title='$title_attr'>$thumbnail</a>" : '';
 
@@ -147,9 +147,10 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
 		$caption       = '';
+		$title         = apply_filters( 'the_title', $related->post_title );
 
 		if ( 'post_title' === $args['caption'] ) {
-			$caption = $related->post_title;
+			$caption = $title;
 		} elseif ( 'post_excerpt' === $args['caption'] ) {
 			global $post;
 			$post = $related;
@@ -179,7 +180,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		$describedby = ( trim( $caption ) ) ? array( 'aria-describedby' => "{$selector}-{$related->ID}" ) : '';
 		$thumbnail   = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $describedby );
 		$permalink   = get_permalink(  $related->ID );
-		$title_attr  = esc_attr( $related->post_title );
+		$title_attr  = esc_attr( $title );
 
 		$image_link = ( $thumbnail ) ? "<a href='$permalink' title='$title_attr'>$thumbnail</a>" : '';
 		$image_attr = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
