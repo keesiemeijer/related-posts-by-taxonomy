@@ -166,6 +166,13 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			wp_reset_postdata(); // Clean up global $post variable;
 			echo $rpbt_widget_args['after_widget'];
 		}
+
+		/**
+		 * After the related posts are displayed
+		 *
+		 * @param string  Display type, widget or shortcode.
+		 */
+		do_action( 'related_posts_by_taxonomy_after_display', 'widget' );
 	}
 
 
