@@ -52,7 +52,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		}
 
 		// only use included terms from the post terms
-		if ( !empty( $included ) && $args['related'] ) {
+		if ( $args['related'] && !empty( $included ) ) {
 			$terms = array_values( array_intersect( $included, $terms ) );
 		}
 	}
@@ -61,7 +61,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	if ( empty( $included ) ) {
 		// validates ids and returns an array
 		$excluded = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['exclude_terms'] );
-		$terms = array_values( array_diff( $terms , $excluded ) );
+		$terms    = array_values( array_diff( $terms , $excluded ) );
 	}
 
 	if ( empty( $terms ) ) {
