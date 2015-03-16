@@ -7,6 +7,7 @@ class RPBT_Test_Utils {
 		$this->factory = $factory;
 	}
 
+
 	/**
 	 * Creates 5 posts and assigns terms from two taxonomies.
 	 *
@@ -32,6 +33,7 @@ class RPBT_Test_Utils {
 
 		return compact( 'posts', 'tax1_terms', 'tax2_terms' );
 	}
+
 
 	/**
 	 * Creates posts with decreasing timestamps a day apart.
@@ -65,6 +67,7 @@ class RPBT_Test_Utils {
 
 		return $posts;
 	}
+
 
 	/**
 	 * Assings terms to posts.

@@ -22,6 +22,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+
 	/**
 	 * Test if shortcode is registered.
 	 */
@@ -29,6 +30,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		global $shortcode_tags;
 		$this->assertArrayHasKey( 'related_posts_by_tax', $shortcode_tags );
 	}
+
 
 	/**
 	 * Test output from shortcode.
@@ -48,12 +50,14 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 
 		// expected related posts are post 1,2,3
 		$expected = <<<EOF
-Related Posts
+<div class="rpbt_shortcode">
+<h3>Related Posts</h3>
 <ul>
 <li><a href="{$permalinks[1]}" title="{$_posts[1]->post_title}">{$_posts[1]->post_title}</a></li>
 <li><a href="{$permalinks[2]}" title="{$_posts[2]->post_title}">{$_posts[2]->post_title}</a></li>
 <li><a href="{$permalinks[3]}" title="{$_posts[3]->post_title}">{$_posts[3]->post_title}</a></li>
 </ul>
+</div>
 EOF;
 
 		ob_start();

@@ -24,11 +24,16 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	$plugin_defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
 
 	$defaults = array(
+
 		// shortcode defaults
-		'post_id' => '', 'taxonomies' => $plugin_defaults->all_tax, 'format' => 'links',
+		'post_id' => '', 'taxonomies' => $plugin_defaults->all_tax,
+		'before_shortcode' => '<div class="rpbt_shortcode">', 'after_shortcode' => '</div>',
+		'before_title' => '<h3>', 'after_title' => '</h3>',
 		'title' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
-		'before_title' => '', 'after_title' => '', 'image_size' => 'thumbnail', 'columns' => 3,
+		'format' => 'links',
+		'image_size' => 'thumbnail', 'columns' => 3,
 		'caption' => 'post_title',
+
 
 		// km_rpbt_related_posts_by_taxonomy defaults
 		'post_types' => '', 'posts_per_page' => 5, 'order' => 'DESC',
@@ -62,6 +67,8 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 
 	/* add type for use in templates */
 	$rpbt_args['type'] = 'shortcode';
+
+	$rpbt_args['title'] = trim( $rpbt_args['title'] );
 
 	/* validate filtered attributes */
 
@@ -116,31 +123,43 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	 */
 	$hide_empty = (bool) apply_filters( 'related_posts_by_taxonomy_shortcode_hide_empty', true );
 
-	$rpbt_shortcode = '';
+	$rpbt_shortcode = $shortcode = '';
 
 	if ( !$hide_empty || !empty( $related_posts ) ) {
 
 		/* get the template depending on the format  */
-		$template = km_rpbt_related_posts_by_taxonomy_template( $rpbt_args['format'], $rpbt_args['type'] );
+		$template = km_rpbt_related_posts_by_taxonomy_template( $rpbt_args['format'], 'shortcode' );
 
-		$title = $rpbt_args['before_title'] . $rpbt_args['title'] . $rpbt_args['after_title'];
 
-		ob_start();
-
-		global $post; // used for setup_postdata() in templates
-
-		if ( $template ) {
-			echo ( $rpbt_args['title'] ) ? $title : '';
-			unset( $title );
-			require $template;
+		if ( $rpbt_args['title'] ) {
+			$rpbt_args['title'] = $rpbt_args['before_title'] . $rpbt_args['title'] . $rpbt_args['after_title'];
 		}
 
-		wp_reset_postdata(); // clean up global $post variable;
+		if ( $template ) {
+			global $post; // used for setup_postdata() in templates
+			ob_start();
+			require $template;
+			$shortcode = ob_get_clean();
+			$shortcode = trim( $shortcode );
+			wp_reset_postdata(); // clean up global $post variable;
+		}
 
-		$rpbt_shortcode = ob_get_clean();
+		if ( $shortcode ) {
+			$rpbt_shortcode = $rpbt_args['before_shortcode'] . "\n" ;
+			$rpbt_shortcode .= trim( $rpbt_args['title'] ) . "\n";
+			$rpbt_shortcode .= $shortcode . "\n";
+			$rpbt_shortcode .= $rpbt_args['after_shortcode'];
+		}
 	}
+
+	/**
+	 * After the related posts are displayed
+	 *
+	 * @param string  Display type, widget or shortcode.
+	 */
+	do_action( 'related_posts_by_taxonomy_after_display', 'shortcode' );
 
 	$recursing = false;
 
-	return $rpbt_shortcode;
+	return trim( $rpbt_shortcode );
 } // end km_rpbt_related_posts_by_taxonomy_shortcode()

@@ -23,6 +23,7 @@ class KM_RPBT_Gallery_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+
 	/**
 	 * Test output from gallery.
 	 *
@@ -53,6 +54,7 @@ EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery )  );
 	}
+
 
 	/**
 	 * Test output from gallery with gallery style.
@@ -103,6 +105,7 @@ EOF;
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery )  );
 	}
 
+
 	/**
 	 * Test output gallery with no caption.
 	 *
@@ -132,6 +135,12 @@ EOF;
 	}
 
 
+	/**
+	 * Sets up posts for the gallery
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts
+	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
+	 */
 	function setup_gallery() {
 
 		$posts        = $this->utils->create_posts();
@@ -153,7 +162,7 @@ EOF;
 
 
 	/**
-	 * Adds fake image for testing.
+	 * Adds a fake image for testing.
 	 */
 	function add_image( $image, $attr, $related, $args ) {
 		return "<a href='{$attr['permalink']}' title='{$attr['title_attr']}'><img></a>";

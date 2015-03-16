@@ -15,6 +15,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+
 	/**
 	 * Helper function to create 5 posts with 5 terms from two taxonomies.
 	 */
@@ -139,6 +140,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 		$this->assertEmpty( $rel_post4 );
 	}
 
+
 	/**
 	 * Test invalid function arguments.
 	 *  @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
@@ -173,6 +175,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 		$fail5 = km_rpbt_related_posts_by_taxonomy();
 		$this->assertEmpty( $fail5 );
 	}
+
 
 	/**
 	 * Test exclude_terms argument.
@@ -214,6 +217,22 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 		);
 		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[3], $this->posts[4] ), $rel_post0 );
+	}
+
+
+	/**
+	 * Test related === false without include_terms.
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 */
+	function test_related() {
+		$this->create_posts();
+		$args = array(
+			'related'       => false,
+			'fields'        => 'ids',
+		);
+		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
 	}
 
 

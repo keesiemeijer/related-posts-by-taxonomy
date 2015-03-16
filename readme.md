@@ -1,8 +1,8 @@
 # [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Build Status](https://travis-ci.org/keesiemeijer/related-posts-by-taxonomy.svg?branch=master)](http://travis-ci.org/keesiemeijer/related-posts-by-taxonomy) #
 
-version:           0.4.1  
+version:           1.0  
 Requires at least: 3.7  
-Tested up to:      4.1  
+Tested up to:      4.1.1  
 
 ### Welcome to the GitHub repository for this plugin ###
 The `master` branch is where you'll find the most recent, stable release.
