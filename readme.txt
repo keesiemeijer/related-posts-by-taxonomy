@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 3.7
 Tested up to: 4.1.1
-Stable tag: 0.4.1
+Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,8 +15,7 @@ Display related posts as thumbnails, links, excerpts or as full posts with a wid
 
 Plugin features:
 
-* Widget and shortcode.
-* Display post thumbnails, links, excerpts or full posts.
+* Post thumbnails, links, excerpts or full posts.
 * Exclude or include terms.
 * Exclude posts.
 * Limit related posts by date.
@@ -24,7 +23,7 @@ Plugin features:
 * Automatically display related posts after the post content.
 * Use your own templates for display of the related posts.
 * Use plugin functions to get related posts in your theme templates.
-* Filters to change the default behavior and display of the plugin.
+* Use Filters to change the default behavior of the plugin.
 
 For more information about the plugin see the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
 
@@ -43,6 +42,8 @@ Attributes for the shortcode are:
 * posts_per_page
 * order
 * orderby
+* before_shortcode
+* after_shortcode
 * title
 * before_title
 * after_title
@@ -95,10 +96,12 @@ Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.word
 3. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
-= 0.4.2-beta3 =
+= 1.0 =
 * Enhancement
 	* Using WordPress semantic versioning.
 	* New shortcode attributes before_shortcode and after_shortcode.
+	* Default h3 heading for the shortcode 'Related Posts' title
+	* Shortcode is wrapped in a div container
 	* New filter to add classes to gallery items.
 	* New action after displaying related posts.
 	* Better logic for the 'related' parameter.
@@ -156,5 +159,5 @@ Updated unit tests to be more reliable.
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 0.4.2-beta3 =
-New attributes before_shortcode and after_shortcode make it easy to add a container for the shortcode. A new filter was added to add classes to gallery items.
+= 1.0 =
+Switched to use WP semantic versioning for this plugin. The shortcode gets wrapped in a div container and get's a h3 heading by default making styling more easy. A new filter was added for adding classes to gallery items.
