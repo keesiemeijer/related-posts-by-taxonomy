@@ -50,7 +50,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$widget_ops = array( 'classname'   => 'related_posts_by_taxonomy', 'description' => $widget['description'] );
 
 		/* Widget control settings. */
-		$control_ops = array( 'width' => 300, 'id_base' => 'related-posts-by-taxonomy' );
+		$control_ops = array( 'id_base' => 'related-posts-by-taxonomy' );
 
 		/* Create the widget. */
 		$this->WP_Widget( 'related-posts-by-taxonomy', $widget['name'], $widget_ops, $control_ops );
@@ -71,6 +71,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	function widget( $rpbt_widget_args, $rpbt_args ) {
 
 		$i = $rpbt_args;
+		$i = $this->validate_instance( $i );
 
 		/* don't show widget on pages other than single if singular_template is set */
 		if ( $i['singular_template'] && !is_singular() ) {
@@ -83,11 +84,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		if ( !empty( $i['post_types'] ) ) {
 			$i['post_types'] = array_keys( $i['post_types'] );
-		}
-
-		// back compat
-		if ( !isset( $i['taxonomies'] ) ) {
-			$i = $this->update_rpbt_widget( $i );
 		}
 
 		/* Added in 0.3 (not part of the widget settings). Can be filtered below */
@@ -233,31 +229,8 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 */
 	function form( $instance ) {
 
-		$i = $instance;
+		$i = $this->validate_instance( $instance );
 		$default = $this->defaults;
-
-		// back compat
-		if ( !isset( $i['taxonomies'] ) ) {
-			$i = $this->update_rpbt_widget( $i );
-		}
-
-		$i['title']             = ( isset( $i['title'] ) ) ? esc_attr( $i['title'] ) : 'Related Posts';
-		$i['posts_per_page']    = ( isset( $i['posts_per_page'] ) ) ? (int) $i['posts_per_page'] : 5;
-		$i['taxonomies']        = ( isset( $i['taxonomies'] ) ) ?  (string) $i['taxonomies'] : $default->all_tax;
-		$i['format']            = ( isset( $i['format'] ) ) ?  (string) $i['format'] : 'links';
-		$i['image_size']        = ( isset( $i['image_size'] ) ) ?  (string) $i['image_size'] : 'thumbnail';
-		$i['columns']           = ( isset( $i['columns'] ) ) ? absint( $i['columns'] ) : 3;
-		$i['singular_template'] = ( isset( $i['singular_template'] ) ) ? (bool) $i['singular_template'] : false;
-		$i['post_id']           = ( isset( $i['post_id'] ) && $i['post_id'] ) ? absint( $i['post_id'] ) : '';
-
-		/* since version 0.2.1 you can use -1 to display all posts */
-		if ( -1 !== $i['posts_per_page'] ) {
-			$i['posts_per_page'] = ( absint( $i['posts_per_page'] ) ) ? absint( $i['posts_per_page'] ) : 5;
-		}
-
-		if ( !isset( $i['post_types'] ) ) {
-			$i['post_types']['post'] = 'on';
-		}
 
 		/* widget form fields */
 
@@ -393,6 +366,44 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 
 		return $post_id;
+	}
+
+
+	/**
+	 * Validates widget settings.
+	 *
+	 * @since 1.1
+	 * @param array   $instance Widget instance
+	 * @return array Widget instance
+	 */
+	function validate_instance( $instance ) {
+		$i = $instance;
+		$default = $this->defaults;
+
+		// back compat
+		if ( !isset( $i['taxonomies'] ) ) {
+			$i = $this->update_rpbt_widget( $i );
+		}
+
+		$i['title']             = ( isset( $i['title'] ) ) ? esc_attr( $i['title'] ) : 'Related Posts';
+		$i['posts_per_page']    = ( isset( $i['posts_per_page'] ) ) ? (int) $i['posts_per_page'] : 5;
+		$i['taxonomies']        = ( isset( $i['taxonomies'] ) ) ?  (string) $i['taxonomies'] : $default->all_tax;
+		$i['format']            = ( isset( $i['format'] ) ) ?  (string) $i['format'] : 'links';
+		$i['image_size']        = ( isset( $i['image_size'] ) ) ?  (string) $i['image_size'] : 'thumbnail';
+		$i['columns']           = ( isset( $i['columns'] ) ) ? absint( $i['columns'] ) : 3;
+		$i['singular_template'] = ( isset( $i['singular_template'] ) ) ? (bool) $i['singular_template'] : false;
+		$i['post_id']           = ( isset( $i['post_id'] ) && $i['post_id'] ) ? absint( $i['post_id'] ) : '';
+
+		/* since version 0.2.1 you can use -1 to display all posts */
+		if ( -1 !== $i['posts_per_page'] ) {
+			$i['posts_per_page'] = ( absint( $i['posts_per_page'] ) ) ? absint( $i['posts_per_page'] ) : 5;
+		}
+
+		if ( !isset( $i['post_types'] ) ) {
+			$i['post_types']['post'] = 'on';
+		}
+
+		return $i;
 	}
 
 

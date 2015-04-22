@@ -2,34 +2,38 @@
 Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 3.7
-Tested up to: 4.1.1
+Tested up to: 4.2
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This lightweight WordPress plugin provides a widget and shortcode to display related posts as thumbnails, links, excerpts or as full posts. 
+This lightweight plugin lets you easily display related posts in a sidebar or after your posts as thumbnails, links, excerpts or full posts.
 
 == Description ==
 
-Display related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the **most terms in common** will display at the top. Use multiple taxonomies and post types to get the related posts. Include or exclude terms. Change the look and feel with your own html templates in your (child) theme.  
+Quickly increase your readers' engagement by adding related posts in the sidebar or after post content with a widget or shortcode. Posts with the **most terms in common** will display at the top. This plugin is capable of finding related posts in multiple **taxonomies** and **post types**. Include or exclude terms from the search for related posts. Change the look and feel by using your own templates in your (child) theme.
+
+[plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/)
 
 Plugin features:
 
-* Post thumbnails, links, excerpts or full posts.
-* Exclude or include terms.
-* Exclude posts.
-* Limit related posts by date.
-* Display related posts on single post pages only.
-* Automatically display related posts after the post content.
-* Use your own templates for display of the related posts.
-* Use plugin functions to get related posts in your theme templates.
-* Use Filters to change the default behavior of the plugin.
-
-For more information about the plugin see the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
+* **Efficient cached query** to get the related posts.
+* **Small Footprint**.
+* Widget and Shortcode.
+* Display related posts as **post thumbnails**, links, excerpts or full posts.
+* Automatic display of related posts after the post content.
+* Search for related posts in **single** or **multiple** taxonomies and post types.
+* **Exclude** or **include** terms and posts.
+* **Limit the search** of related posts by date or number.
+* Use your own **HTML templates** for display of the related posts.
+* Use **plugin functions** in your theme templates to display related posts yourself.
+* Use Filters to **change the default behavior** of the plugin.
+* Extensive **plugin documentation**.
+* Follows WordPress coding standards and plugin best practices.
 
 Follow this plugin on [GitHub](https://github.com/keesiemeijer/related-posts-by-taxonomy).
 
-To have the related posts automatically display after the post content without using the shortcode or widget see the [FAQ](http://wordpress.org/extend/plugins/related-posts-by-taxonomy/faq/). 
+See the [FAQ](http://wordpress.org/extend/plugins/related-posts-by-taxonomy/faq/) to have related posts automatically display after the post content without using the shortcode or widget. 
 
 Default usage for the shortcode is:
 <pre><code>[related_posts_by_tax]</code></pre>
@@ -75,25 +79,31 @@ See the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxon
 
 == Frequently Asked Questions ==
 
-For more information on how to use the plugin see this [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
+For more information about the plugin see the [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).  
+To customize this plugin see the [plugin recipes page](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/recipes/).
+
+= Can I change the layout for the related posts? =
+Yes. Review [this section](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/recipes/#styling) of the documuntation to style the related posts yourself.
+
+= How can I automatically add related posts after the post content? =
+Review [Adding Related Posts After the Post Content](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#after-content).
 
 = Can I include or exclude posts or terms with the widget or shortcode =
-Yes. For the widget see [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) and for the shortcode see the [shortcode parameters](href="http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#shortcode-attributes).
+Yes. For the widget see [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) and for the shortcode see the attributes [exclude-terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-terms), [include_terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#include-terms) and [exclude_posts](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-posts).
+
+= Can I set my own defaults for the shortcode? =
+Yes. Review [Setting your own defaults for the shortcode](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/recipes/#shortcode_defaults) 
 
 = The widget only lets you choose "all taxonomies" or a single taxonomy. Can I make it use only the taxonomies I want? =
 
 Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) on how to do that.
 
-= How can I automatically add related posts after the post content? =
-
-Read the "[Adding Related Posts After the Post Content](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#after-content).
-" section in the documentation.
-
 == Screenshots ==
 
 1. The Widget
-2. Twenty Twelve screenshot. Post thumbnails (after post content) and the widget
-3. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
+2. Twenty Fifteen screenshot. Related posts in the sidebar
+3. Twenty Twelve screenshot. Post thumbnails (after post content) and the widget
+4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
 = 1.0 =
