@@ -1,9 +1,9 @@
 === Related Posts by Taxonomy ===
 Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
-Requires at least: 3.7
+Requires at least: 3.8
 Tested up to: 4.2
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,6 +106,10 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 1.1 =
+* Bug fixes
+	* Fixed a minor compatibility bug with the widget customizer. Settings were not saved properly when adding a new widget.
+
 = 1.0 =
 * Enhancement
 	* Using WordPress semantic versioning.
@@ -169,5 +173,5 @@ Updated unit tests to be more reliable.
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 1.0 =
-Switched to use WP semantic versioning for this plugin. The shortcode gets wrapped in a div container and get's a h3 heading by default making styling more easy. A new filter was added for adding classes to gallery items.
+= 1.1 =
+Fixed a minor compatibility bug with the widget customizer. Tested up to WordPress 4.2.
