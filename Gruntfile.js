@@ -11,7 +11,7 @@ module.exports = function( grunt ) {
 
 		addtextdomain: {
 			options: {
-				textdomain: 'additional-content',
+				textdomain: 'related-posts-by-taxonomy',
 			},
 			target: {
 				files: {
@@ -23,9 +23,9 @@ module.exports = function( grunt ) {
 		makepot: {
 			target: {
 				options: {
-					domainPath: '/languages',
-					mainFile: 'additional-content.php',
-					potFilename: 'additional-content.pot',
+					domainPath: '/lang',
+					mainFile: 'related-posts-by-taxonomy.php',
+					potFilename: 'related-posts-by-taxonomy.pot',
 					potHeaders: {
 						poedit: true,
 						'x-poedit-keywordslist': true
