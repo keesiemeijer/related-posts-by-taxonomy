@@ -39,10 +39,9 @@ function km_rpbt_related_posts_by_taxonomy_template( $format = false, $type = fa
 	if ( $theme_template ) {
 		return $theme_template;
 	} else {
-
-		$path = plugin_dir_path( __FILE__ );
-		if ( file_exists( $path . 'templates/' . $template ) ) {
-			return $path . 'templates/' . $template;
+		
+		if ( file_exists( RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'templates/' . $template ) ) {
+			return RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'templates/' . $template;
 		}
 
 	}

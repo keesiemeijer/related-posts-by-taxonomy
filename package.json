@@ -1,18 +1,18 @@
 {
-  "name": "related-posts-by-taxonomy",
-  "version": "1.2.0",
-  "main": "Gruntfile.js",
-  "author": "keesiemeijer",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/keesiemeijer/related-posts-by-taxonomy.git"
-  },
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-copy": "^0.7.0",
-    "grunt-version": "^1.0.0",
-    "grunt-wp-i18n": "^0.5.2",
-    "load-grunt-tasks": "^3.2.0"
-  }
+	"name": "related-posts-by-taxonomy",
+	"version": "1.2.0-beta1",
+	"main": "Gruntfile.js",
+	"author": "keesiemeijer",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/keesiemeijer/related-posts-by-taxonomy.git"
+		},
+		"devDependencies": {
+			"grunt": "^0.4.5",
+			"grunt-contrib-clean": "^0.6.0",
+			"grunt-contrib-copy": "^0.7.0",
+			"grunt-version": "^1.0.0",
+			"grunt-wp-i18n": "^0.5.2",
+			"load-grunt-tasks": "^3.2.0"
+		}
 }
