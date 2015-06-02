@@ -79,7 +79,7 @@ module.exports = function( grunt ) {
 				},
 				src: [ 'readme.txt' ]
 			},
-			readmemd: {
+			plugin: {
 				options: {
 					prefix: 'Version: *'
 				},

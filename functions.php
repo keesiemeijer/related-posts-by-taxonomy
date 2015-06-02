@@ -68,6 +68,8 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		return array();
 	}
 
+	$args['related_terms'] = $terms;
+
 	// term ids sql
 	if ( count( $terms ) > 1 ) {
 		$term_ids_sql = "tt.term_id IN (" . implode( ', ', $terms ) . ")";
