@@ -1,6 +1,6 @@
 module.exports = function( grunt ) {
 
-	require('load-grunt-tasks')(grunt);
+	require( 'load-grunt-tasks' )( grunt );
 
 	'use strict';
 
@@ -70,12 +70,27 @@ module.exports = function( grunt ) {
 				],
 				dest: 'build/<%= pkg.name %>/'
 			}
-		}
+		},
+
+		version: {
+			readmetxt: {
+				options: {
+					prefix: 'Stable tag: *'
+				},
+				src: [ 'readme.txt' ]
+			},
+			readmemd: {
+				options: {
+					prefix: 'Version: *'
+				},
+				src: [ 'readme.md', 'related-posts-by-taxonomy.php' ]
+			},
+		},
 
 	} );
-	
+
 	grunt.registerTask( 'i18n', [ 'addtextdomain', 'makepot' ] );
-	grunt.registerTask( 'build', [ 'clean', 'copy' ] );
+	grunt.registerTask( 'build', [ 'version', 'clean', 'copy' ] );
 
 	grunt.util.linefeed = '\n';
 
