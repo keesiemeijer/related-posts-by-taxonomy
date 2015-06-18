@@ -20,7 +20,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 
 		function __construct() {
-			add_action( 'wp_loaded', array( $this, 'debug_setup' ) );
+			$this->debug_setup();
 		}
 
 		/**
@@ -31,21 +31,12 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 */
 		function debug_setup() {
 
-			/**
-			 * Adds debug information to the footer.
-			 *
-			 * @since 1.2.0
-			 * @param bool    $debug Default false
-			 */
-			$debug = apply_filters( 'related_posts_by_taxonomy_debug', false );
-		
 			// Check if the current user can view debug results.
-			// 
+			//
 			// True if the current user is an admin or super admin
-			// OR the current user has the 'view_rpbt_debug_results' capability  
-			// AND $debug is set to true
+			// OR the current user has the 'view_rpbt_debug_results' capability
 
-			if ( !( $debug  && ( is_super_admin() || current_user_can( 'view_rpbt_debug_results' ) ) ) ) {
+			if ( !( is_super_admin() || current_user_can( 'view_rpbt_debug_results' ) ) ) {
 				return;
 			}
 
@@ -306,7 +297,9 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 						echo $key . ":\n\n";
 						if ( is_array( $value ) ) {
-							print_r( $value );
+							echo '<pre>';
+							echo htmlspecialchars( print_r( $value, true ) );
+							echo '</pre>';
 						} else {
 							echo $value . "\n";
 						}
@@ -324,7 +317,3 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 	} // class
 } // class exists
-
-if ( !is_admin() ) {
-	$debug = new Related_Posts_By_Taxonomy_Debug();
-}

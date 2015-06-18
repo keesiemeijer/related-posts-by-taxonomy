@@ -64,9 +64,6 @@ if ( !function_exists( 'related_posts_by_taxonomy_init' ) ) {
 
 			// displays the related posts from the shortcode
 			require_once plugin_dir_path( __FILE__ ) . 'includes/shortcode.php';
-
-			// displays the related posts from the shortcode
-			require_once plugin_dir_path( __FILE__ ) . 'includes/debug.php';
 		}
 
 		add_shortcode( 'related_posts_by_tax', 'km_rpbt_related_posts_by_taxonomy_shortcode' );

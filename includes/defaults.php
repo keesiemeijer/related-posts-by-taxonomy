@@ -121,6 +121,21 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			}
 
 			$this->formats = $this->get_formats();
+
+			/**
+			 * Adds debug information to the footer.
+			 *
+			 * @since 1.2.0
+			 * @param bool    $debug Default false
+			 */
+			$debug = apply_filters( 'related_posts_by_taxonomy_debug', false );
+
+			if ( $debug && !is_admin() ) {
+				// Only load the debug file when $debug is set to true
+				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/debug.php';
+				$debug = new Related_Posts_By_Taxonomy_Debug();
+			}
+
 		}
 
 
