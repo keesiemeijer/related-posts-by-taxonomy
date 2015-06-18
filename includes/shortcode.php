@@ -1,4 +1,10 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Display for the shortcode [related_posts_by_tax]
  *

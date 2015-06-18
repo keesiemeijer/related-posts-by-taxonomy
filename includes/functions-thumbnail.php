@@ -1,4 +1,10 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Related Posts by Taxonomy Gallery.
  *

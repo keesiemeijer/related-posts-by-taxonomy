@@ -3,6 +3,11 @@
  * Helper class to get all the defaults needed for this plugin.
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 	class Related_Posts_By_Taxonomy_Defaults {
 

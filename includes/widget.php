@@ -1,4 +1,10 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 add_action( 'widgets_init', 'km_rpbt_related_posts_by_taxonomy_widget' );
 
 /**

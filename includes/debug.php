@@ -1,7 +1,14 @@
 <?php
 /**
  * Helper class to get debug information for admins.
+ * 
+ * This file is only loaded if the filter related_posts_by_taxonomy_debug is set to true
  */
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 	class Related_Posts_By_Taxonomy_Debug {
