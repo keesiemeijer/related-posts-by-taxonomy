@@ -414,34 +414,36 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 
 	/**
-	 * Updates widget settings if taxonomies is not defined
+	 * Updates widget settings if taxonomies is not defined.
 	 *
-	 * provides back compatiblity for upgading from version 0.2.1
+	 * provides back compatiblity for **upgading** from version 0.2.1
 	 * taxonomy changed to taxonomies in version 0.2.2
-	 * image_size and columns were added in version 0.2.2
 	 *
 	 * @param array   $i Widget instance
 	 * @return array    Widget instance
 	 */
 	function update_rpbt_widget( $i ) {
 
+		if ( isset( $i['taxonomies'] ) ) {
+			// Taxonomies argument exist
+			return $i;
+		}
+
 		if ( isset( $i['taxonomy'] ) && $i['taxonomy'] ) {
 			$i['taxonomies'] = ( 'all_taxonomies' === $i['taxonomy'] ) ? $this->defaults->all_tax : $i['taxonomy'];
 			unset( $i['taxonomy'] );
 		} else {
+			// Taxonomy and taxonomies argument doesn't exist
 			$i['taxonomies'] = $this->defaults->all_tax;
 		}
-
-		$i['image_size'] = ( isset( $i['image_size'] ) ) ? $i['image_size'] : 'thumbnail';
-		$i['columns'] = ( isset( $i['columns'] ) ) ? $i['columns'] : 3;
 
 		$instances = get_option( 'widget_' . $this->id_base );
 
 		if ( isset( $instances[ $this->number ] ) ) {
 			unset( $instances[ $this->number ]['taxonomy'] );
 			$instances[ $this->number ]['taxonomies'] = $i['taxonomies'];
-			$instances[ $this->number ]['image_size'] = $i['image_size'];
-			$instances[ $this->number ]['columns'] = $i['columns'];
+
+			// Update the widget instance
 			update_option( 'widget_' . $this->id_base, $instances );
 		}
 
