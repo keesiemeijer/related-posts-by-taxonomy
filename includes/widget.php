@@ -296,9 +296,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 		$post_types = $before . $field . '</p></div>' . $after;
 
-
-
-
 		// display
 		$display = $before . '<h4 class="rpbt_widget_display_title">' . __( 'Display', 'related-posts-by-taxonomy' ) . '</h4>' . $after;
 
@@ -381,11 +378,11 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		if ( !in_the_loop() ) {
 
 			if ( isset( $wp_query->post->ID ) ) {
-				$post_id =  $wp_query->post->ID;
+				$post_id = $wp_query->post->ID;
 			}
 
 			if ( isset( $wp_query->query_vars['km_rpbt_related_post_id'] ) ) {
-				$post_id =  $wp_query->query_vars['km_rpbt_related_post_id'];
+				$post_id = $wp_query->query_vars['km_rpbt_related_post_id'];
 			}
 		}
 
