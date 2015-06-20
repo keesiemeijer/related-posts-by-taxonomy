@@ -11,6 +11,8 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 	 */
 	private $utils;
 
+	private $boolean;
+
 
 	/**
 	 * Set up.
@@ -86,6 +88,19 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 	function test_get_posts_by_author_sql() {
 		$where  = get_posts_by_author_sql( 'post' );
 		$this->assertTrue( (bool) preg_match( "/post_type = 'post'/", $where ) );
+	}
+
+
+	/**
+	 * Tests if debug filter is set to false (by default).
+	 */
+	function test_debug_filter() {
+		add_filter( 'related_posts_by_taxonomy_debug', array( $this->utils, 'return_bool' ) );
+
+		$plugin_defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
+		$plugin_defaults->_setup();
+		$this->assertFalse( $this->utils->boolean  );
+		$this->utils->boolean = null;
 	}
 
 
