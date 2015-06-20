@@ -2,6 +2,7 @@
 class RPBT_Test_Utils {
 
 	private $factory;
+	public $boolean;
 
 	function __construct( $factory = null ) {
 		$this->factory = $factory;
@@ -115,6 +116,10 @@ class RPBT_Test_Utils {
 		}
 
 		return $tax_terms;
+	}
+
+	function return_bool( $bool ) {
+		return $this->boolean = $bool;
 	}
 
 }
