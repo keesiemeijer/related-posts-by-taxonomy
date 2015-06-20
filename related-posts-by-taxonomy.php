@@ -45,25 +45,25 @@ if ( !function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		load_plugin_textdomain( 'related-posts-by-taxonomy', '', dirname( plugin_basename( __FILE__ ) ) . '/lang' );
 
 		// defaults needed for this plugin
-		require_once plugin_dir_path( __FILE__ ) . 'includes/defaults.php';
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/defaults.php';
 
 		// the widget
-		require_once plugin_dir_path( __FILE__ ) . 'includes/widget.php';
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/widget.php';
 
 		// include files only needed on the front end
 		if ( !is_admin() ) {
 
 			// functions to retrieve related posts from the database
-			require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
+			require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions.php';
 
 			// functions for display of the related post thumbnail gallery
-			require_once plugin_dir_path( __FILE__ ) . 'includes/functions-thumbnail.php';
+			require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions-thumbnail.php';
 
 			// loads the different templates used for the widget and shortcode
-			require_once plugin_dir_path( __FILE__ ) . 'includes/template-loader.php';
+			require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-loader.php';
 
 			// displays the related posts from the shortcode
-			require_once plugin_dir_path( __FILE__ ) . 'includes/shortcode.php';
+			require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
 		}
 
 		add_shortcode( 'related_posts_by_tax', 'km_rpbt_related_posts_by_taxonomy_shortcode' );
