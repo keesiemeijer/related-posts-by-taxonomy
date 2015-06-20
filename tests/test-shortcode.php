@@ -38,7 +38,8 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 	function test_shortcode_hide_empty_filter() {
 		// shortcode
 		add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this->utils, 'return_bool' ) );
-		do_shortcode( '[related_posts_by_tax]' );
+		$id = $this->factory->post->create();
+		do_shortcode( '[related_posts_by_tax post_id="' . $id . '"]' );
 		$this->assertTrue( $this->utils->boolean );
 		$this->utils->boolean = null;
 	}
