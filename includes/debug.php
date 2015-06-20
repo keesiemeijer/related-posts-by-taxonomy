@@ -1,7 +1,7 @@
 <?php
 /**
  * Helper class to get debug information for admins.
- * 
+ *
  * This file is only loaded if the filter related_posts_by_taxonomy_debug is set to true
  */
 
@@ -146,16 +146,16 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return array Array term objects.
 		 */
 		function object_terms( $terms, $object_ids, $taxonomies, $args ) {
-			$this->debug[ 'current post id']              = $object_ids;
-			$this->debug[ 'taxonomies']                   = $taxonomies;
-			$this->debug[ 'terms found for current post'] = $terms;
+			$this->debug[ 'current post id']                   = $object_ids;
+			$this->debug[ 'taxonomies used for related query'] = $taxonomies;
+			$this->debug[ 'terms found for current post']      = $terms;
 
 			return $terms;
 		}
 
 
 		/**
-		 * Shows widget even if no related posts were found.
+		 * Shows widget or shortcode even if no related posts were found.
 		 * Removes filter wp_get_object_terms.
 		 *
 		 * @since 1.2.0
@@ -164,6 +164,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		function hide_empty() {
 			// Remove filter after related posts are retrieved from the database.
 			remove_filter( 'wp_get_object_terms', array( $this, 'object_terms' ), 99, 4 );
+
+			// Always show the widget or shortcode.
 			return false;
 		}
 
@@ -192,8 +194,10 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			$query = str_replace( $wpdb->prefix , '' , $query );
 
+			$this->debug[ 'terms used for related query'] = $args['related_terms'];
+			unset( $args['related_terms'] );
 			$this->debug[ 'function args'] = $args;
-			$this->debug[ 'query'] = $query;
+			$this->debug[ 'related posts query'] = $query;
 
 
 			add_filter( 'related_posts_by_taxonomy', array( $this, 'posts_found' ) );
@@ -251,10 +255,12 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		function wp_footer() {
 
 			$order = array(
-				'type', 'current post id', 'taxonomies', 'widget args',
-				'shortcode args', 'function args',
-				'terms found for current post', 'query',
-				'related post ids found', 'requested template', 'widget'
+				'type', 'current post id', 'taxonomies used for related query',
+				'terms found for current post', 'terms used for related query',
+				'related post ids found',
+				'widget args', 'shortcode args', 'function args',
+				'related posts query',
+				'requested template', 'widget'
 			);
 			$order = array_fill_keys( $order , '' );
 			$style = 'border:0 none;outline:0 none;padding:20px;margin:0;';
