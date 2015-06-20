@@ -5,7 +5,7 @@
 class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 
 	/**
-	 * Utils object to create posts with terms
+	 * Utils object to create posts with terms.
 	 *
 	 * @var object
 	 */
@@ -24,13 +24,41 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 
 
 	/**
-	 * Test if the widget exists
+	 * Test if the widget exists.
 	 */
-	function test_register_rpbt_widget_exists() {
+	function test_rpbt_widget_exists() {
 		global $wp_widget_factory;
 
 		$widget_class = 'Related_Posts_By_Taxonomy';
 		$this->assertArrayHasKey( $widget_class, $wp_widget_factory->widgets );
+	}
+
+
+	/**
+	 * Test if the widget_hide_empty filter is set to true (by default).
+	 */
+	function test_widget_hide_empty_filter() {
+		$create_posts = $this->utils->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this->utils, 'return_bool' ) );
+		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+
+		// run the widget
+		ob_start();
+		$args = array(
+			'before_widget' => '<section>',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2>',
+			'after_title'   => '</h2>',
+		);
+		$instance = array( 'post_id' => $posts[0] );
+		$widget->_set( 2 );
+		$widget->widget( $args, $instance );
+		$output = ob_get_clean();
+
+		$this->assertTrue( $this->utils->boolean  );
+		$this->utils->boolean = null;
 	}
 
 
@@ -40,7 +68,7 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
-	function test_rpbt_widget_form() {
+	function test_rpbt_widget_output() {
 		$plugin_defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
 		$create_posts = $this->utils->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
