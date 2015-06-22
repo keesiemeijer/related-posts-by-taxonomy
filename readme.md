@@ -5,26 +5,28 @@ Requires at least: 3.8
 Tested up to:      4.2  
 
 ### Welcome to the GitHub repository for this plugin ###
+This is the development repository for the WordPress plugin [Related Posts by Taxonomy](https://wordpress.org/plugins/related-posts-by-taxonomy).
+
 The `master` branch is where you'll find the most recent, stable release.
-The `develop` branch is the current working branch for development. Both branches are required to pass all unit tests. Any pull requests are first merged with the `develop` branch before being merged into the `master` branch. 
+The `develop` branch is the current working branch for development. Both branches are required to pass all unit tests. Any pull requests are first merged with the `develop` branch before being merged into the `master` branch.
+
+To build the plugin without the development files (as in the WP repository) use the following commands:
+```bash
+# Go to the master branch
+git checkout master
+
+# Install Grunt tasks
+npm install
+
+# Build the production plugin
+grunt build
+```
+The plugin will be compiled in the `build` directory.
 
 ## Description ##
 This WordPress plugin displays related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the **most terms in common** will display at the top. Use multiple taxonomies and post types to get the related posts. Include or exclude terms. Change the look and feel with your own html templates in your (child) theme.
 
-Plugin features:
-
-* Widget and shortcode.
-* Display post thumbnails, links, excerpts or full posts.
-* Exclude or include terms.
-* Exclude posts.
-* Limit related posts by date.
-* Display related posts on single post pages only.
-* Automatically display related posts after the post content.
-* Use your own templates for display of the related posts.
-* Use plugin functions to get related posts in your theme templates.
-* Filters to change the default behavior and display of the plugin. 
-
-More information can be found [here](https://wordpress.org/plugins/related-posts-by-taxonomy) and at the official [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
+More information can be found at the [WordPress repository](https://wordpress.org/plugins/related-posts-by-taxonomy) and at the official [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
 
 ## Installation ##
 

@@ -38,7 +38,18 @@ module.exports = function( grunt ) {
 
 		// Clean up build directory
 		clean: {
-			main: [ 'build/<%= pkg.name %>' ]
+			main: [ 'build/<%= pkg.name %>' ],
+			release:[
+				'**',
+				'.travis.yml',
+				'.gitignore',
+				'.git/**',
+				'!lang/**',
+				'!templates/**',
+				'!includes/**',
+				'!related-posts-by-taxonomy.php',
+				'!readme.txt'
+				]
 		},
 
 		// Copy the theme into the build directory
@@ -90,7 +101,13 @@ module.exports = function( grunt ) {
 	} );
 
 	grunt.registerTask( 'i18n', [ 'addtextdomain', 'makepot' ] );
-	grunt.registerTask( 'build', [ 'version', 'clean', 'copy' ] );
+
+	// Creates build
+	grunt.registerTask( 'build', [ 'version', 'clean:main', 'copy:main' ] );
+
+	// Removes ALL development files in the root directory
+	// !!! be careful with this
+    grunt.registerTask( 'release', [ 'version', 'clean:release', ] );
 
 	grunt.util.linefeed = '\n';
 
