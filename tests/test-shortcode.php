@@ -33,6 +33,19 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 
 
 	/**
+	 * Test if the shortcode_hide_empty filter is set to true (by default).
+	 */
+	function test_shortcode_hide_empty_filter() {
+		// shortcode
+		add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this->utils, 'return_bool' ) );
+		$id = $this->factory->post->create();
+		do_shortcode( '[related_posts_by_tax post_id="' . $id . '"]' );
+		$this->assertTrue( $this->utils->boolean );
+		$this->utils->boolean = null;
+	}
+
+
+	/**
 	 * Test output from shortcode.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms

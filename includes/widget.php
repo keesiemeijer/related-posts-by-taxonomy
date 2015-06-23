@@ -1,4 +1,10 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 add_action( 'widgets_init', 'km_rpbt_related_posts_by_taxonomy_widget' );
 
 /**
@@ -70,6 +76,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 */
 	function widget( $rpbt_widget_args, $rpbt_args ) {
 
+
 		$i = $rpbt_args;
 		$i = $this->validate_instance( $i );
 
@@ -84,6 +91,12 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		if ( !empty( $i['post_types'] ) ) {
 			$i['post_types'] = array_keys( $i['post_types'] );
+		}
+
+		/* added in 2.0 */
+		if ( $i['random'] ) {
+			unset( $i['random'] );
+			$i['order'] = 'RAND';
 		}
 
 		/* Added in 0.3 (not part of the widget settings). Can be filtered below */
@@ -215,6 +228,8 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		$i['singular_template'] = isset( $new_instance['singular_template'] ) ? (bool) $new_instance['singular_template'] : '';
 
+		$i['random'] = isset( $new_instance['random'] ) ? (bool) $new_instance['random'] : '';
+
 		$post_id = absint( strip_tags( $new_instance['post_id'] ) );
 		$i['post_id'] = ( $post_id  > 0 ) ? $post_id  : '';
 
@@ -250,6 +265,12 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$field .= 'type="text" value="' . $i['posts_per_page'] . '" size="3" />';
 		$field .= '<br/><span class="description">' . __( 'Use -1 to show all related posts.', 'related-posts-by-taxonomy' ) . '</span>';
 		$posts_per_page = $before . $field . "</p>" . $after;
+
+		$field = '<p>';
+		$field .= '<input class="checkbox" type="checkbox" ' . checked( $i['random'], 1, false ) . ' ';
+		$field .= 'id="' . $this->get_field_id( 'random' ) . '" name="' . $this->get_field_name( 'random' ) . '" />';
+		$field .= ' <label for="' . $this->get_field_id( 'random' ) . '">';
+		$random = $before . $field .  __( 'Randomize related posts.', 'related-posts-by-taxonomy' ) . '</label></p>' . $after;
 
 		// taxonomies
 		$field = '<div class="rpbt_taxonomies"><h4>' . __( 'Taxonomies', 'related-posts-by-taxonomy' ) . ' </h4>';
@@ -317,7 +338,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$field .= '<input id="' . $this->get_field_id( 'post_id' ) . '" name="' . $this->get_field_name( 'post_id' ) . '" ';
 		$post_id = $before . $field . 'type="text" value="' . $i['post_id'] . '" size="5" /></p>' . "\n";
 
-		$pieces = array( 'title', 'posts_per_page', 'taxonomies', 'post_types', 'display', 'format', 'image_size', 'columns', 'singular_template', 'post_id' );
+		$pieces = array( 'title', 'posts_per_page', 'random', 'taxonomies', 'post_types', 'display', 'format', 'image_size', 'columns', 'singular_template', 'post_id' );
 
 		/* Filter all fields at once, for convenience */
 		$form_fields = (array) apply_filters_ref_array( 'related_posts_by_taxonomy_widget_form_fields', array( compact( $pieces ), $i, $this ) );
@@ -357,11 +378,11 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		if ( !in_the_loop() ) {
 
 			if ( isset( $wp_query->post->ID ) ) {
-				$post_id =  $wp_query->post->ID;
+				$post_id = $wp_query->post->ID;
 			}
 
 			if ( isset( $wp_query->query_vars['km_rpbt_related_post_id'] ) ) {
-				$post_id =  $wp_query->query_vars['km_rpbt_related_post_id'];
+				$post_id = $wp_query->query_vars['km_rpbt_related_post_id'];
 			}
 		}
 
@@ -380,18 +401,16 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$i = $instance;
 		$default = $this->defaults;
 
-		// back compat
-		if ( !isset( $i['taxonomies'] ) ) {
-			$i = $this->update_rpbt_widget( $i );
-		}
+		$i = $this->update_rpbt_widget( $i );
 
-		$i['title']             = ( isset( $i['title'] ) ) ? esc_attr( $i['title'] ) : 'Related Posts';
-		$i['posts_per_page']    = ( isset( $i['posts_per_page'] ) ) ? (int) $i['posts_per_page'] : 5;
-		$i['taxonomies']        = ( isset( $i['taxonomies'] ) ) ?  (string) $i['taxonomies'] : $default->all_tax;
-		$i['format']            = ( isset( $i['format'] ) ) ?  (string) $i['format'] : 'links';
-		$i['image_size']        = ( isset( $i['image_size'] ) ) ?  (string) $i['image_size'] : 'thumbnail';
-		$i['columns']           = ( isset( $i['columns'] ) ) ? absint( $i['columns'] ) : 3;
-		$i['singular_template'] = ( isset( $i['singular_template'] ) ) ? (bool) $i['singular_template'] : false;
+		$i['title']             = isset( $i['title'] ) ? esc_attr( $i['title'] ) : 'Related Posts';
+		$i['posts_per_page']    = isset( $i['posts_per_page'] ) ? (int) $i['posts_per_page'] : 5;
+		$i['taxonomies']        = isset( $i['taxonomies'] ) ? (string) $i['taxonomies'] : $default->all_tax;
+		$i['format']            = isset( $i['format'] ) ? (string) $i['format'] : 'links';
+		$i['image_size']        = isset( $i['image_size'] ) ? (string) $i['image_size'] : 'thumbnail';
+		$i['columns']           = isset( $i['columns'] ) ? absint( $i['columns'] ) : 3;
+		$i['singular_template'] = isset( $i['singular_template'] ) ? (bool) $i['singular_template'] : false;
+		$i['random']            = isset( $i['random'] ) ? (bool) $i['random'] : false;
 		$i['post_id']           = ( isset( $i['post_id'] ) && $i['post_id'] ) ? absint( $i['post_id'] ) : '';
 
 		/* since version 0.2.1 you can use -1 to display all posts */
@@ -408,34 +427,36 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 
 	/**
-	 * Updates widget settings if taxonomies is not defined
+	 * Updates widget settings if taxonomies is not defined.
 	 *
-	 * provides back compatiblity for upgading from version 0.2.1
+	 * provides back compatiblity for **upgading** from version 0.2.1
 	 * taxonomy changed to taxonomies in version 0.2.2
-	 * image_size and columns were added in version 0.2.2
 	 *
 	 * @param array   $i Widget instance
 	 * @return array    Widget instance
 	 */
 	function update_rpbt_widget( $i ) {
 
+		if ( isset( $i['taxonomies'] ) ) {
+			// Taxonomies argument exist
+			return $i;
+		}
+
 		if ( isset( $i['taxonomy'] ) && $i['taxonomy'] ) {
 			$i['taxonomies'] = ( 'all_taxonomies' === $i['taxonomy'] ) ? $this->defaults->all_tax : $i['taxonomy'];
 			unset( $i['taxonomy'] );
 		} else {
+			// Taxonomy and taxonomies argument doesn't exist
 			$i['taxonomies'] = $this->defaults->all_tax;
 		}
-
-		$i['image_size'] = ( isset( $i['image_size'] ) ) ? $i['image_size'] : 'thumbnail';
-		$i['columns'] = ( isset( $i['columns'] ) ) ? $i['columns'] : 3;
 
 		$instances = get_option( 'widget_' . $this->id_base );
 
 		if ( isset( $instances[ $this->number ] ) ) {
 			unset( $instances[ $this->number ]['taxonomy'] );
 			$instances[ $this->number ]['taxonomies'] = $i['taxonomies'];
-			$instances[ $this->number ]['image_size'] = $i['image_size'];
-			$instances[ $this->number ]['columns'] = $i['columns'];
+
+			// Update the widget instance
 			update_option( 'widget_' . $this->id_base, $instances );
 		}
 
