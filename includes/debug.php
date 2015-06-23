@@ -26,7 +26,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		/**
 		 * Calls plugin filters for debugging.
 		 *
-		 * @since 1.2.0
+		 * @since 2.0.0
 		 * @return void
 		 */
 		function debug_setup() {
@@ -68,7 +68,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Starts debugging at the arguments hook for widged and shortcode.
 		 * Adds filter to wp_get_object_terms.
 		 *
-		 * @since 1.2.0
+		 * @since 2.0.0
 		 * @return array Array with widget or shortcode arguments
 		 */
 		function debug_start( $args, $widget = '' ) {
@@ -100,7 +100,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		/**
 		 * Adds debug link before widget title.
 		 *
-		 * @since 1.2.0
+		 * @since 2.0.0
 		 * @param array   $params Array with widget parameters.
 		 * @return array Array with widget parameters.
 		 */
@@ -123,7 +123,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		/**
 		 * Creates a debug link.
 		 *
-		 * @since 1.2.0
+		 * @since 2.0.0
 		 * @param string  $type Type shortcode or widget.
 		 * @return string Link to debug information,
 		 */
@@ -142,7 +142,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Gets debug information
 		 * Callback function for filter wp_get_object_terms.
 		 *
-		 * @since 1.2.0
+		 * @since 2.0.0
 		 * @return array Array term objects.
 		 */
 		function object_terms( $terms, $object_ids, $taxonomies, $args ) {
@@ -158,7 +158,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Shows widget or shortcode even if no related posts were found.
 		 * Removes filter wp_get_object_terms.
 		 *
-		 * @since 1.2.0
+		 * @since 2.0.0
 		 * @return void.
 		 */
 		function hide_empty() {
@@ -174,7 +174,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Gets query and function args from km_rpbt_related_posts_by_taxonomy().
 		 * adds filter to related_posts_by_taxonomy.
 		 *
-		 * @since 1.2.0
+		 * @since 2.0.0
 		 * @return array Array with sql clauses.
 		 */
 		function posts_clauses( $pieces, $post_id, $taxonomies, $args ) {
@@ -209,7 +209,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		/**
 		 * Gets the post ids if related posts where found.
 		 *
-		 * @since 1.2.0
+		 * @since 2.0.0
 		 * @param array   $results Array with post objects.
 		 * @return array Array with with post objects.
 		 */
@@ -231,7 +231,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		/**
 		 * Gets the requested template.
 		 *
-		 * @since 1.2.0
+		 * @since 2.0.0
 		 * @param string  $template Template.
 		 * @return string Template.
 		 */

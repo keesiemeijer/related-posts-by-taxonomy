@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 3.8
 Tested up to: 4.2
-Stable tag: 2.0.0-beta1
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,6 +106,14 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.0 =
+* Enhancement
+	* New option for the widget to randomise the related posts.
+	* Refactored the query to get the related posts.
+	* Orginized files in the new 'includes' directory.
+	* Added a new class for debugging (only loaded if needed, with a filter).
+	* New PHPUnit tests for the widged (GitHub only).
+
 = 1.1 =
 * Bug fixes
 	* Fixed a minor compatibility bug with the widget customizer. Settings were not saved properly when adding a new widget.
@@ -173,5 +181,5 @@ Updated unit tests to be more reliable.
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 1.1 =
-Fixed a minor compatibility bug with the widget customizer. Tested up to WordPress 4.2.
+= 2.0 =
+A new option for the widget to randomise the related posts. The query to get related posts is tweaked for performance.

@@ -125,7 +125,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			/**
 			 * Adds debug information to the footer.
 			 *
-			 * @since 1.2.0
+			 * @since 2.0.0
 			 * @param bool    $debug Default false
 			 */
 			$debug = apply_filters( 'related_posts_by_taxonomy_debug', false );
