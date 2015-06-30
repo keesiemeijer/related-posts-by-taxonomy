@@ -128,15 +128,21 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		/* public template variables $image_size and $columns (deprecated in version 0.3) */
 		$image_size = $i['image_size'];
-		$columns = $i['columns'];
+		$columns    = $i['columns'];
 
 		$function_args = $rpbt_args = $i;
 
 		/* restricted arguments */
 		unset( $function_args['fields'], $function_args['post_id'], $function_args['taxonomies'] );
 
-		/* $related_posts varaiable for use in templates */
-		$related_posts = (array) km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
+		//$cache = class_exists('Related_Posts_By_Taxonomy_Cache');
+
+		if ( ( isset( $rpbt_args['cache'] ) && $rpbt_args['cache'] ) ) {
+			$related_posts = $this->defaults->cache->get_related_posts( $rpbt_args );
+		} else {
+			/* get related posts */
+			$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
+		}
 
 		/**
 		 * Filter whether to hide the widget if no related posts are found.
@@ -232,6 +238,10 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		$post_id = absint( strip_tags( $new_instance['post_id'] ) );
 		$i['post_id'] = ( $post_id  > 0 ) ? $post_id  : '';
+
+		//if ( !empty( $old_instance ) && ( $i != $old_instance ) ) {
+			//$this->defaults->cache->flush_cache();
+		//}
 
 		return $i;
 	}

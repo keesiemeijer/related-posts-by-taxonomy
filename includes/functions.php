@@ -173,7 +173,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	if ( !$order_by_rand ) {
 		if ( $args['related'] ) {
 			// sql for related terms count
-			$select_sql .= " , count(distinct tt.term_id) as termcount";
+			$select_sql .= " , count(distinct tt.term_taxonomy_id) as termcount";
 		}
 		$order_by_sql = "$wpdb->posts.$orderby";
 	}

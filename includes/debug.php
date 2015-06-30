@@ -1,8 +1,8 @@
 <?php
 /**
- * Helper class to get debug information for admins.
+ * Class to display debug information for admins.
  *
- * This file is only loaded if the filter related_posts_by_taxonomy_debug is set to true
+ * Notice: This file is only loaded if you activate debugging with the filter related_posts_by_taxonomy_debug.
  */
 
 // Exit if accessed directly
