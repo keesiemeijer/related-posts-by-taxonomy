@@ -2,10 +2,10 @@
 # This file is distributed under the GPL v2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Related Posts By Taxonomy 2.0.0\n"
+"Project-Id-Version: Related Posts By Taxonomy 2.0.1\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2015-06-23 13:48:12+00:00\n"
+"POT-Creation-Date: 2015-07-24 09:48:55+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,31 +25,31 @@ msgstr ""
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
 
-#: includes/defaults.php:106
+#: includes/defaults.php:115
 msgid "Category"
 msgstr ""
 
-#: includes/defaults.php:110
+#: includes/defaults.php:119
 msgid "Post"
 msgstr ""
 
-#: includes/defaults.php:120
+#: includes/defaults.php:129
 msgid "Thumbnail"
 msgstr ""
 
-#: includes/defaults.php:249
+#: includes/defaults.php:272
 msgid "Links"
 msgstr ""
 
-#: includes/defaults.php:250
+#: includes/defaults.php:273
 msgid "Posts"
 msgstr ""
 
-#: includes/defaults.php:251
+#: includes/defaults.php:274
 msgid "Excerpts"
 msgstr ""
 
-#: includes/defaults.php:252
+#: includes/defaults.php:275
 msgid "Post thumbnails"
 msgstr ""
 
@@ -65,63 +65,63 @@ msgstr ""
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/widget.php:257
+#: includes/widget.php:267
 msgid "Title"
 msgstr ""
 
-#: includes/widget.php:263
+#: includes/widget.php:273
 msgid "Number of related posts to show"
 msgstr ""
 
-#: includes/widget.php:266
+#: includes/widget.php:276
 msgid "Use -1 to show all related posts."
 msgstr ""
 
-#: includes/widget.php:273
+#: includes/widget.php:283
 msgid "Randomize related posts."
 msgstr ""
 
-#: includes/widget.php:276
+#: includes/widget.php:286
 msgid "Taxonomies"
 msgstr ""
 
-#: includes/widget.php:278
+#: includes/widget.php:288
 msgid "Taxonomy"
 msgstr ""
 
-#: includes/widget.php:281
+#: includes/widget.php:291
 msgid "All Taxonomies"
 msgstr ""
 
-#: includes/widget.php:288
+#: includes/widget.php:298
 msgid "Post Types"
 msgstr ""
 
-#: includes/widget.php:300
+#: includes/widget.php:310
 msgid "Display"
 msgstr ""
 
-#: includes/widget.php:304
+#: includes/widget.php:314
 msgid "Format"
 msgstr ""
 
-#: includes/widget.php:313
+#: includes/widget.php:323
 msgid "Image Size"
 msgstr ""
 
-#: includes/widget.php:322
+#: includes/widget.php:332
 msgid "Number of image columns"
 msgstr ""
 
-#: includes/widget.php:325
+#: includes/widget.php:335
 msgid "Use 0 for no columns."
 msgstr ""
 
-#: includes/widget.php:333
+#: includes/widget.php:343
 msgid "Display widget on single post pages only"
 msgstr ""
 
-#: includes/widget.php:337
+#: includes/widget.php:347
 msgid "Display related posts for post ID (optional)"
 msgstr ""
 
