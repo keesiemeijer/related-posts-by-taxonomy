@@ -59,7 +59,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$control_ops = array( 'id_base' => 'related-posts-by-taxonomy' );
 
 		/* Create the widget. */
-		$this->WP_Widget( 'related-posts-by-taxonomy', $widget['name'], $widget_ops, $control_ops );
+		parent::__construct( 'related-posts-by-taxonomy', $widget['name'], $widget_ops, $control_ops );
 
 		if ( !is_admin() ) {
 
