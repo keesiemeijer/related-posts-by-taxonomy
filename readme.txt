@@ -184,4 +184,4 @@ Updated unit tests to be more reliable.
 
 == Upgrade Notice ==
 = 2.0.1 =
-A new option for the widget to randomise the related posts. The query to get related posts is tweaked for performance. 
+A new option is added to the widget to randomise the related posts. The query to get related posts is tweaked for performance. Tested with WordPress 4.3
