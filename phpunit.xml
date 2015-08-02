@@ -13,6 +13,7 @@
       		<file>tests/test-shortcode.php</file>
       		<file>tests/test-widget.php</file>
       		<file>tests/test-functions-thumbnail.php</file>
+      		<file>tests/test-cache.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>
