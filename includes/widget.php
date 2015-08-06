@@ -78,6 +78,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 
 		$i = $rpbt_args;
+
 		$i = $this->validate_instance( $i );
 
 		/* don't show widget on pages other than single if singular_template is set */
@@ -130,12 +131,14 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$image_size = $i['image_size'];
 		$columns    = $i['columns'];
 
-		$function_args = $rpbt_args = $i;
-
+		$rpbt_args     = $i;
+		$function_args = km_rpbt_sanitize_args( $rpbt_args );
+		
 		/* restricted arguments */
 		unset( $function_args['fields'], $function_args['post_id'], $function_args['taxonomies'] );
 
 		//$cache = class_exists('Related_Posts_By_Taxonomy_Cache');
+		ksort( $function_args );
 
 		if ( ( isset( $rpbt_args['cache'] ) && $rpbt_args['cache'] ) ) {
 			$related_posts = $this->defaults->cache->get_related_posts( $rpbt_args );
