@@ -85,7 +85,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	/* if no post type is set use the post type of the current post (new default since 0.3) */
 	if ( '' === trim( $rpbt_args['post_types'] ) ) {
 		$post_types = get_post_type( $rpbt_args['post_id'] );
-		$rpbt_args['post_types'] = ( $post_types ) ? $post_types : 'post';
+		$rpbt_args['post_types'] = ( $post_types ) ? $post_types : array( 'post' );
 	}
 
 	if ( $rpbt_args['taxonomies'] === $plugin_defaults->all_tax ) {
@@ -108,13 +108,13 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	// non boolean used, default to true
 	$rpbt_args['related'] = ( $rpbt_args['related'] === NULL ) ? true : $rpbt_args['related'];
 
-	$function_args = $rpbt_args;
+	$function_args = km_rpbt_sanitize_args( $rpbt_args );
 
 	/* restricted arguments */
 	unset( $function_args['post_id'], $function_args['taxonomies'], $function_args['fields'] );
 
 	if(isset($rpbt_args['cache']) && $rpbt_args['cache']) {
-	
+
 		$related_posts = $plugin_defaults->cache->get_related_posts( $rpbt_args );
 	} else {
 		/* get related posts */
