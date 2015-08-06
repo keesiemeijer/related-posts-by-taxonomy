@@ -24,15 +24,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		return array();
 	}
 
-	$defaults = array(
-		'post_types' => 'post', 'posts_per_page' => 5, 'order' => 'DESC',
-		'fields' => '', 'limit_posts' => -1, 'limit_year' => '',
-		'limit_month' => '', 'orderby' => 'post_date',
-		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
-		'post_thumbnail' => '', 'related' => true,
-	);
-
-	$args = wp_parse_args( $args, $defaults );
+	$args = km_rpbt_sanitize_args( $args );
 
 	$taxonomies = ( !empty( $taxonomies ) ) ? $taxonomies : array( 'category' );
 
@@ -376,4 +368,64 @@ function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
 	$ids = array_filter( array_map( 'intval', (array) $ids ) );
 
 	return array_values( array_unique( $ids ) );
+}
+
+
+/**
+ * returns sanitized function arguments.
+ *
+ * @since 2.1
+ *
+ * @return array Array with sanitized function arguments..
+ */
+function km_rpbt_sanitize_args( $args ) {
+
+	$defaults = array(
+		'post_types' => 'post', 'posts_per_page' => 5, 'order' => 'DESC',
+		'fields' => '', 'limit_posts' => -1, 'limit_year' => '',
+		'limit_month' => '', 'orderby' => 'post_date',
+		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
+		'post_thumbnail' => '', 'related' => true,
+	);
+
+	$unset = array_diff_key( $args, $defaults );
+	$args  = wp_parse_args( $args, $defaults );
+	$cache = isset( $args['cache'] ) ? $args['cache'] : false;
+
+	// Remove unnecessary args
+	foreach ( $unset as $key => $arg ) {
+		unset( $args[$key] );
+	}
+
+	if ( $cache ) {
+		$args['cache'] = 1;
+	}
+
+	return $args;
+}
+
+
+/**
+ * Public function to cache related posts.
+ * Uses the same arguments as the km_rpbt_related_posts_by_taxonomy() function.
+ *
+ * @since 2.1
+ * @param int     $post_id    The post id to cache related posts for.
+ * @param array|string $taxonomies The taxonomies to cache related posts from
+ * @param array|string $args Optional. Cache arguments
+ * @return array Array Array with cached related posts objects or false if no posts where cached.
+ */
+function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $args = '' ) {
+
+	if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
+		return false;
+	}
+
+	// Add post id and taxonomies to arguments
+	$args['post_id']    = $post_id;
+	$args['taxonomies'] = $taxonomies;
+
+	$cache = new Related_Posts_By_Taxonomy_Cache();
+
+	return $cache->update_cache( $args );
 }
