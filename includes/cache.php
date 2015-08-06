@@ -35,7 +35,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		/**
 		 * Setup actions and filters for the cache
 		 *
-		 * @since 2.1
+		 * @since 2.0.1
 		 * @return void
 		 */
 		private function setup() {
@@ -76,7 +76,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		/**
 		 * Get the cache arguments.
 		 *
-		 * @since 2.1
+		 * @since 2.0.1
 		 * @return array Array with cache arguments.
 		 */
 		private function get_cache_options() {
@@ -91,7 +91,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		/**
 		 * Add 'cache' to the widget and shortcode arguments.
 		 *
-		 * @since 2.1
+		 * @since 2.0.1
 		 * @param array   $args Array with widget or shortcode args.
 		 * @return array Array with widget or shortcode args.
 		 */
@@ -104,7 +104,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		/**
 		 * Get related posts from cache.
 		 *
-		 * @since 2.1
+		 * @since 2.0.1
 		 * @param array   $args Array with widget or shortcode args.
 		 * @return array Array Array with related post objects.
 		 */
@@ -139,8 +139,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		/**
 		 * Cache related posts
 		 *
-		 * @since 2.1.0
-		 * @param array   $args Widget or shortcode args
+		 * @since 2.0.1
+		 * @param array   $args Array with sanitized Widget or shortcode arguments.
 		 * @return array Array with related post objects that are cached.
 		 */
 		private function set_cache( $args ) {
@@ -185,8 +185,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		/**
 		 * Get related posts from cache
 		 *
-		 * @since 2.1.0
-		 * @param array   $args  Widget or shortcode arguments.
+		 * @since 2.0.1
+		 * @param array   $args  Array with sanitized widget or shortcode arguments.
 		 * @param array   $posts Array with cached post ids.
 		 * @return array Array with related post objects.
 		 */
@@ -261,8 +261,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		/**
 		 * Create a meta key from args.
 		 *
-		 * @since 2.1
-		 * @param array   $args Array with widget or shortcode args.
+		 * @since 2.0.1
+		 * @param array $args Array with sanitized widget or shortcode arguments.
 		 * @return string Meta key created from args.
 		 */
 		public function get_post_meta_key( $args ) {
@@ -274,8 +274,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		/**
 		 * Get related post arguments for the current post.
 		 *
-		 * @since 2.1
-		 * @param array   $args Array with widget or shortcode args.
+		 * @since 2.0.1
+		 * @param array $args Array with widget or shortcode args.
 		 * @return array Array with widget or shortcode args.
 		 */
 		public function current_post( $results, $post_id, $taxonomies, $args ) {
@@ -300,7 +300,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		/**
 		 * Flush the related posts cache.
 		 *
-		 * @since 2.1.0
+		 * @since 2.0.1
 		 * @return void.
 		 */
 		public function flush_cache() {
@@ -318,7 +318,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Flush the cache if a post thumbnail is added, updated or deleted.
 		 * Callback for the post meta actions.
 		 *
-		 * @since 2.1
+		 * @since 2.0.1
 		 */
 		public function updated_postmeta( $meta_id, $object_id, $meta_key = '', $meta_value = '' ) {
 			if ( ( '_thumbnail_id' === $meta_key ) ) {
@@ -331,7 +331,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Flush the cache when terms are updated.
 		 * Callback for the set_object_terms action.
 		 *
-		 * @since 2.1
+		 * @since 2.0.1
 		 */
 		public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
 			sort( $tt_ids );
@@ -345,7 +345,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		/**
 		 * Set the cache expiration transient.
 		 *
-		 * @since 2.1
+		 * @since 2.0.1
 		 * @return void.
 		 */
 		public function set_transient() {
