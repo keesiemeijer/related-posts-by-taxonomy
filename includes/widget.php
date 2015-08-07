@@ -131,16 +131,14 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$image_size = $i['image_size'];
 		$columns    = $i['columns'];
 
-		$rpbt_args     = $i;
-		$function_args = km_rpbt_sanitize_args( $rpbt_args );
-		
+		$rpbt_args = $function_args = $i;
+
 		/* restricted arguments */
 		unset( $function_args['fields'], $function_args['post_id'], $function_args['taxonomies'] );
 
-		//$cache = class_exists('Related_Posts_By_Taxonomy_Cache');
-		ksort( $function_args );
+		$cache = $this->defaults->cache instanceof Related_Posts_By_Taxonomy_Cache;
 
-		if ( ( isset( $rpbt_args['cache'] ) && $rpbt_args['cache'] ) ) {
+		if ( $cache && ( isset( $rpbt_args['cache'] ) && $rpbt_args['cache'] ) ) {
 			$related_posts = $this->defaults->cache->get_related_posts( $rpbt_args );
 		} else {
 			/* get related posts */
@@ -243,7 +241,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$i['post_id'] = ( $post_id  > 0 ) ? $post_id  : '';
 
 		//if ( !empty( $old_instance ) && ( $i != $old_instance ) ) {
-			//$this->defaults->cache->flush_cache();
+		//$this->defaults->cache->flush_cache();
 		//}
 
 		return $i;

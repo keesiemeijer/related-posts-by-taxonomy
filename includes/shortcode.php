@@ -108,13 +108,14 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	// non boolean used, default to true
 	$rpbt_args['related'] = ( $rpbt_args['related'] === NULL ) ? true : $rpbt_args['related'];
 
-	$function_args = km_rpbt_sanitize_args( $rpbt_args );
+	$function_args = $rpbt_args;
 
 	/* restricted arguments */
 	unset( $function_args['post_id'], $function_args['taxonomies'], $function_args['fields'] );
 
-	if(isset($rpbt_args['cache']) && $rpbt_args['cache']) {
+	$cache = $plugin_defaults->cache instanceof Related_Posts_By_Taxonomy_Cache;
 
+	if ( $cache && ( isset( $rpbt_args['cache'] ) && $rpbt_args['cache'] ) ) {
 		$related_posts = $plugin_defaults->cache->get_related_posts( $rpbt_args );
 	} else {
 		/* get related posts */
