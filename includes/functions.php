@@ -24,7 +24,8 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		return array();
 	}
 
-	$args = km_rpbt_sanitize_args( $args );
+	$defaults = km_rpbt_get_default_args();
+	$args     = wp_parse_args( $args, $defaults );
 
 	$taxonomies = ( !empty( $taxonomies ) ) ? $taxonomies : array( 'category' );
 
@@ -90,14 +91,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		$post_ids_sql .= " != $post_id";
 	}
 
-	// post types
-	if ( !is_array( $args['post_types'] ) ) {
-		$args['post_types'] = explode( ',', (string) $args['post_types'] );
-	}
-
-	// sanitize post type names and remove duplicates
-	$post_types = array_unique( array_map( 'sanitize_key', (array) $args['post_types'] ) );
-	$post_types = array_filter( $post_types, 'post_type_exists' );
+	$post_types = km_rpbt_validate_post_types( $args['post_types'] );
 
 	// default to post type post if no post types are found
 	$post_types = ( !empty( $post_types ) ) ? $post_types : array( 'post' );
@@ -347,12 +341,34 @@ function km_rpbt_related_posts_by_taxonomy_cmp( $item1, $item2 ) {
 
 
 /**
+ * Validate post types
+ *
+ * @since 2.1
+ *
+ * @param string|array $post_types Comma separated list or array with post type names
+ * @return array Array with validated post types.
+ */
+function km_rpbt_validate_post_types( $post_types = '' ) {
+
+	if ( !is_array( $post_types ) ) {
+		$post_types = explode( ',', (string) $post_types );
+	}
+
+	// sanitize post type names and remove duplicates
+	$post_types = array_unique( array_map( 'sanitize_key', (array) $post_types ) );
+	$post_types = array_filter( $post_types, 'post_type_exists' );
+
+	return $post_types;
+}
+
+
+/**
  * Validates ids.
  * Checks if ids is a comma separated string or an array with ids
  *
  * @since 0.2
  *
- * @param string|array Comma seperated list or array with ids
+ * @param string|array Comma separated list or array with ids
  * @return array Array with postive integers
  */
 function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
@@ -372,36 +388,21 @@ function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
 
 
 /**
- * returns sanitized function arguments.
+ * Returns default arguments.
  *
  * @since 2.1
  *
- * @return array Array with sanitized function arguments..
+ * @return array Array with default arguments.
  */
-function km_rpbt_sanitize_args( $args ) {
+function km_rpbt_get_default_args() {
 
-	$defaults = array(
+	return array(
 		'post_types' => 'post', 'posts_per_page' => 5, 'order' => 'DESC',
 		'fields' => '', 'limit_posts' => -1, 'limit_year' => '',
 		'limit_month' => '', 'orderby' => 'post_date',
 		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
 		'post_thumbnail' => '', 'related' => true,
 	);
-
-	$unset = array_diff_key( $args, $defaults );
-	$args  = wp_parse_args( $args, $defaults );
-	$cache = isset( $args['cache'] ) ? $args['cache'] : false;
-
-	// Remove unnecessary args
-	foreach ( $unset as $key => $arg ) {
-		unset( $args[$key] );
-	}
-
-	if ( $cache ) {
-		$args['cache'] = 1;
-	}
-
-	return $args;
 }
 
 
@@ -412,12 +413,15 @@ function km_rpbt_sanitize_args( $args ) {
  * @since 2.1
  * @param int     $post_id    The post id to cache related posts for.
  * @param array|string $taxonomies The taxonomies to cache related posts from
- * @param array|string $args Optional. Cache arguments
+ * @param array|string $args       Optional. Cache arguments
  * @return array Array Array with cached related posts objects or false if no posts where cached.
  */
 function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $args = '' ) {
 
-	if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
+	$defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
+
+	// Check if the cache class is instantiated.
+	if ( !( $defaults->cache instanceof Related_Posts_By_Taxonomy_Cache ) ) {
 		return false;
 	}
 
@@ -425,7 +429,5 @@ function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $a
 	$args['post_id']    = $post_id;
 	$args['taxonomies'] = $taxonomies;
 
-	$cache = new Related_Posts_By_Taxonomy_Cache();
-
-	return $cache->update_cache( $args );
+	return $defaults->cache->update_cache( $args );
 }
