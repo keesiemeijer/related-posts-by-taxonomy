@@ -126,17 +126,19 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 
 		$create_posts = $this->utils->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
-
-		$args       =  array( 'fields' => 'ids' );
-		$taxonomies = array( 'category', 'post_tag' );
+		$args         =  array( 'fields' => 'ids' );
+		$taxonomies   = array( 'category', 'post_tag' );
 
 		ob_start();
 
 		// these functions should not output anything.
-		$_posts     = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
-		$_template  = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
-		$_ids       = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
-		$_shortcode = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
+		$_posts       = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$_cache_posts = km_rpbt_cache_related_posts( $posts[0], $taxonomies, $args );
+		$_args        = km_rpbt_get_default_args();
+		$_post_types  = km_rpbt_validate_post_types();
+		$_template    = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
+		$_ids         = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
+		$_shortcode   = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
 
 		// The shortcode and thumbnail gallery have other tests for output in test-shortcode.php
 
