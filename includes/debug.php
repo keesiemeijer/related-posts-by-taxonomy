@@ -196,9 +196,10 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			$this->debug[ 'terms used for related query'] = $args['related_terms'];
 			unset( $args['related_terms'] );
-			$this->debug[ 'function args'] = $args;
-			$this->debug[ 'related posts query'] = $query;
 
+			$defaults = km_rpbt_get_default_args();
+			$this->debug[ 'function args'] = array_intersect_key ( $args , $defaults );
+			$this->debug[ 'related posts query'] = $query;
 
 			add_filter( 'related_posts_by_taxonomy', array( $this, 'posts_found' ) );
 
