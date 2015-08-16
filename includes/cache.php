@@ -68,6 +68,9 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				if ( !$cache ) {
 					$this->flush_cache();
 				}
+
+				// Flush cache if transient expires.
+				add_action ( "delete_transient_rpbt_related_posts_flush_cache", array( $this, 'delete_cache_transient' ) );
 			}
 		}
 
@@ -80,7 +83,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 */
 		private function get_cache_options() {
 			return apply_filters( 'related_posts_by_taxonomy_cache_args', array(
-					'expiration'     => 0,
+					'expiration'     => DAY_IN_SECONDS * 5, // five days
 					'flush_manually' => false,
 				)
 			);
@@ -421,6 +424,16 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 */
 		public function set_transient() {
 			set_transient( 'rpbt_related_posts_flush_cache', 1, $this->cache['expiration'] );
+		}
+
+		/**
+		 * Flushes the cache before the cache transient is deleted.
+		 *
+		 * @since 2.1
+		 * @return void.
+		 */
+		public function delete_cache_transient() {
+			$this->flush_cache();
 		}
 
 	} // Class
