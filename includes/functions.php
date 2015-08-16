@@ -418,7 +418,7 @@ function km_rpbt_get_default_args() {
 		'fields' => '', 'limit_posts' => -1, 'limit_year' => '',
 		'limit_month' => '', 'orderby' => 'post_date',
 		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
-		'post_thumbnail' => '', 'related' => true,
+		'post_thumbnail' => false, 'related' => true,
 	);
 }
 
