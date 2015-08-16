@@ -104,7 +104,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Get related posts from cache.
 		 *
 		 * @since 2.0.1
-		 * @param array   $args         Array with widget or shortcode args.
+		 * @param array   $args Array with widget or shortcode args.
 		 * @return array Array Array with related post objects.
 		 */
 		public function get_related_posts( $args ) {
@@ -269,7 +269,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Arguments are stored as the cache meta key.
 		 *
 		 * @since 2.1
-		 * @param array   $args    Array with widget or shortcode argument.
+		 * @param array   $args Array with widget or shortcode argument.
 		 * @return array      Array with sanitized widget or shortcode arguments.
 		 */
 		public function sanitize_cache_args( $args ) {
@@ -311,10 +311,14 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 
 			// single values
-			$cache_args['related']        = (bool) $cache_args['related'];
-			$cache_args['post_thumbnail'] = (bool) $cache_args['post_thumbnail'];
+			$cache_args['related']        = filter_var( $cache_args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+			$cache_args['related']        = !is_null( $cache_args['related'] ) ? $cache_args['related'] : true;
+			$cache_args['post_thumbnail'] = filter_var( $cache_args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+			$cache_args['post_thumbnail'] = !is_null( $cache_args['post_thumbnail'] ) ? $cache_args['post_thumbnail'] : false;
 			$cache_args['limit_year']     = absint( $cache_args['limit_year'] );
 			$cache_args['limit_month']    = absint( $cache_args['limit_month'] );
+			$cache_args['limit_posts']    = (int) $cache_args['limit_posts'];
+			$cache_args['posts_per_page'] = (int) $cache_args['posts_per_page'];
 
 			// sort the $cache args.
 			ksort( $cache_args );
