@@ -1,6 +1,6 @@
 # [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Build Status](https://travis-ci.org/keesiemeijer/related-posts-by-taxonomy.svg?branch=master)](http://travis-ci.org/keesiemeijer/related-posts-by-taxonomy) #
 
-Version:           2.1-alpha  
+Version:           2.1.0-alpha1  
 Requires at least: 3.8  
 Tested up to:      4.3  
 
