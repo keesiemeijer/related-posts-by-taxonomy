@@ -483,11 +483,9 @@ function km_rpbt_sanitize_args( $args, $context = '' ) {
 	}
 
 	// Booleans
-	// true, 1, "1", "true", "on", "yes", false, 0, "0", "false", "off", "no", and ""
+	// true, 1, "1", "true", "on", "yes". Everything else return false
 	$args['related']        = (bool) filter_var( $args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	$args['related']        = !is_null( $args['related'] ) ? $args['related'] : true;
 	$args['post_thumbnail'] = (bool) filter_var( $args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	$args['post_thumbnail'] = !is_null( $args['post_thumbnail'] ) ? $args['post_thumbnail'] : false;
 
 	if ( 'cache' === $context ) {
 		ksort( $args );
