@@ -27,6 +27,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 */
 		private $current;
 
+
 		public function __construct() {
 			$this->setup();
 		}
@@ -40,7 +41,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		private function setup() {
 			// delete_option ( 'rpbt_flushed_cache' );
 
-			$this->cache    = $this->get_cache_options();
+			$this->cache = $this->get_cache_options();
 
 			// Enable cache for the shortcode and widget.
 			add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'add_cache' ) );
@@ -112,6 +113,9 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 */
 		public function get_related_posts( $args ) {
 
+			$type = isset( $args['type'] ) ? $args['type'] : '';
+
+			// returns only function args
 			$args = $this->sanitize_cache_args( $args );
 
 			// Get cached post ids (if they exist)
@@ -125,7 +129,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 				if ( !is_array( $posts ) ) {
 					// Related posts are not cached yet!
-					$posts = $this->set_cache( $args );
+					$posts = $this->set_cache( $args, $type );
 				} else {
 					// Already cached, but the post has no related posts.
 					$posts = array();
@@ -133,7 +137,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			} else {
 				// Cached related post ids are found!
-				$posts = $this->get_cache( $args, $posts );
+				$posts = $this->get_cache( $args, $posts, $type );
 			}
 
 			return $posts;
@@ -147,8 +151,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @param array   $args Array with arguments to get the related posts.
 		 * @return array Array with related post objects that are cached.
 		 */
-		public function update_cache( $args ) {
-			return $this->set_cache( $this->sanitize_cache_args( $args ) );
+		public function update_cache( $args, $type = '' ) {
+			return $this->set_cache( $this->sanitize_cache_args( $args ), $type );
 		}
 
 
@@ -159,13 +163,14 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @param array   $args Array with sanitized Widget or shortcode arguments.
 		 * @return array Array with related post objects that are cached.
 		 */
-		private function set_cache( $args ) {
+		private function set_cache( $args, $type = '' ) {
 
-			$function_args = $args;
-			$key = $this->get_post_meta_key( $args );
+			$function_args         = $args;
+			$function_args['type'] = $type;
+			$key                   = $this->get_post_meta_key( $args );
 
 			// Restricted function arguments.
-			unset( $function_args['taxonomies'], $function_args['post_id'] );
+			unset( $function_args['taxonomies'], $function_args['post_id'], $function_args['fields'] );
 
 			// Add a filter to get the function arguments for the current post
 			add_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
@@ -209,7 +214,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @param array   $posts Array with cached post ids.
 		 * @return array Array with related post objects.
 		 */
-		private function get_cache( $args, $posts ) {
+		private function get_cache( $args, $posts, $type = '' ) {
 
 			if ( empty( $posts ) ) {
 				return array();
@@ -231,6 +236,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// set the function arguments for the related_posts_by_taxonomy filter
 			$function_args                  = $args;
 			$function_args['related_terms'] = $current['related_terms'];
+			$function_args['type']          = $type;
 
 			// Restricted arguments.
 			unset( $function_args['taxonomies'], $function_args['post_id'] );
@@ -291,42 +297,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			$cache_args[ 'post_id' ]    = isset( $args[ 'post_id' ] ) ? $args[ 'post_id' ] : 0;
 			$cache_args[ 'taxonomies' ] = isset( $args[ 'taxonomies' ] ) ? $args[ 'taxonomies' ] : '';
 
-			// Validate post types
-			$post_types               = km_rpbt_validate_post_types( $cache_args['post_types'] );
-			$cache_args['post_types'] = ( !empty( $post_types ) ) ? $post_types : array( 'post' );
-
-			// Sort the post types and taxonomies (string|array values).
-			foreach ( array( 'taxonomies', 'post_types' ) as $type ) {
-				if ( !is_array( $cache_args[ $type ] ) ) {
-					$cache_args[ $type ] = explode( ',', (string) $cache_args[ $type ] );
-				}
-
-				sort( $cache_args[ $type ] );
-				$cache_args[ $type ] = implode( ',', array_map( 'trim', $cache_args[ $type ] ) );
-			}
-
-			// Sort ids (string|array values).
-			$ids = array( 'exclude_terms', 'include_terms', 'exclude_posts' );
-			foreach ( $ids as $id ) {
-				$cache_args[ $id ] = km_rpbt_related_posts_by_taxonomy_validate_ids( $cache_args[ $id ] );
-				sort( $cache_args[ $id ] );
-				$cache_args[ $id ] = implode( ',', $cache_args[ $id ] );
-			}
-
-			// single values
-			$cache_args['related']        = filter_var( $cache_args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-			$cache_args['related']        = !is_null( $cache_args['related'] ) ? $cache_args['related'] : true;
-			$cache_args['post_thumbnail'] = filter_var( $cache_args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-			$cache_args['post_thumbnail'] = !is_null( $cache_args['post_thumbnail'] ) ? $cache_args['post_thumbnail'] : false;
-			$cache_args['limit_year']     = absint( $cache_args['limit_year'] );
-			$cache_args['limit_month']    = absint( $cache_args['limit_month'] );
-			$cache_args['limit_posts']    = (int) $cache_args['limit_posts'];
-			$cache_args['posts_per_page'] = (int) $cache_args['posts_per_page'];
-
-			// sort the $cache args.
-			ksort( $cache_args );
-
-			return $cache_args;
+			return km_rpbt_sanitize_args( $cache_args, 'cache' );
 		}
 
 
