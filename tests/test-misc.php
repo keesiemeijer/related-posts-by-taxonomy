@@ -135,6 +135,7 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 		$_posts       = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
 		$_cache_posts = km_rpbt_cache_related_posts( $posts[0], $taxonomies, $args );
 		$_args        = km_rpbt_get_default_args();
+		$_args        = km_rpbt_sanitize_args( $_args );
 		$_post_types  = km_rpbt_validate_post_types();
 		$_template    = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
 		$_ids         = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );

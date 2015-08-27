@@ -87,4 +87,46 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->assertEquals( $cache_ids, $related );
 	}
 
+
+	/**
+	 * Test manually setting the cache for a post id.
+	 */
+	function test_cache_cache_related_posts() {
+		global $wpdb;
+
+		// Activate cache
+		add_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
+
+		$plugin_defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
+		$plugin_defaults->_setup();
+
+		// Check if cache class exists.
+		$cache = class_exists( 'Related_Posts_By_Taxonomy_Cache' );
+		$this->assertTrue( $cache  );
+
+		$create_posts = $this->utils->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		$args = array( 'fields' => 'ids' );
+		$taxonomies = array( 'post_tag' );
+		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, $args );
+
+		$cache_query = "SELECT $wpdb->postmeta.meta_key FROM $wpdb->postmeta WHERE meta_key LIKE '_rpbt_related_posts%'";
+		$meta_key    = $wpdb->get_var( $cache_query );
+
+		// Cache should be set for $post[1].
+		$this->assertNotEmpty( $meta_key );
+
+		// Get cache for $post[1];
+		$cache_ids = get_post_meta( $posts[1], $meta_key, true );
+		unset( $cache_ids['rpbt_current'] );
+		$cache_ids = array_keys( $cache_ids );
+		$this->assertNotEmpty( $cache_ids );
+
+		$this->assertEquals( array( $posts[0], $posts[2], $posts[3] ), $cache_ids );
+
+		$related = km_rpbt_related_posts_by_taxonomy( $posts[1], $taxonomies, $args );
+		$this->assertEquals( $cache_ids, $related );
+	}
+
 }
