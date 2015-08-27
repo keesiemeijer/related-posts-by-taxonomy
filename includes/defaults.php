@@ -132,6 +132,20 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			$this->formats = $this->get_formats();
 
 			/**
+			 * Adds a cache layer for this plugin.
+			 *
+			 * @since 2.1.0
+			 * @param bool    $cache Default false
+			 */
+			$cache = apply_filters( 'related_posts_by_taxonomy_cache', false );
+
+			if ( $cache ) {
+				// Only load the cache class when $cache is set to true
+				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/cache.php';
+				$this->cache = new Related_Posts_By_Taxonomy_Cache();
+			}
+
+			/**
 			 * Adds debug information to the footer.
 			 *
 			 * @since 2.0.0
@@ -143,20 +157,6 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				// Only load the debug file when $debug is set to true
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/debug.php';
 				$debug = new Related_Posts_By_Taxonomy_Debug();
-			}
-
-			/**
-			 * Adds a cache layer for this plugin.
-			 *
-			 * @since 2.1.0
-			 * @param bool    $cache Default false
-			 */
-			$cache = apply_filters( 'related_posts_by_taxonomy_cache', false );
-
-			if ( $cache && !$debug ) {
-				// Only load the cache class when $cache is set to true
-				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/cache.php';
-				$this->cache = new Related_Posts_By_Taxonomy_Cache();
 			}
 
 		}
