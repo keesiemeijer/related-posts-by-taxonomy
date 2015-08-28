@@ -120,14 +120,21 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 		ob_start();
 
 		// these functions should not output anything.
+		$_plugin      = km_rpbt_plugin();
 		$_posts       = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
 		$_cache_posts = km_rpbt_cache_related_posts( $posts[0], $taxonomies, $args );
 		$_args        = km_rpbt_get_default_args();
-		$_args        = km_rpbt_sanitize_args( $_args );
+		$_args['taxonomies'] = $taxonomies;
+		$_sanitize    = km_rpbt_sanitize_args( $_args );
+		$_shortcode   = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
+		$_sc_args     = km_rpbt_get_shortcode_defaults();
+		$_sc_args['post_id'] = $posts[0];
+		$_sc_validate = km_rpbt_validate_shortcode_atts( $_sc_args );
+		$_posts       = get_posts();
+		$_sc_output   = km_rpbt_shortcode_output( $_posts, $_sc_validate );
 		$_post_types  = km_rpbt_validate_post_types();
 		$_template    = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
 		$_ids         = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
-		$_shortcode   = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
 
 		// The shortcode and thumbnail gallery have other tests for output in test-shortcode.php
 
