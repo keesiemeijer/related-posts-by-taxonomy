@@ -24,6 +24,18 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+	/**
+	 * Tests if cache filter is set to false (by default).
+	 */
+	function test_cache_filter() {
+		add_filter( 'related_posts_by_taxonomy_cache', array( $this->utils, 'return_bool' ) );
+
+		$plugin_defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
+		$plugin_defaults->_setup();
+		$this->assertFalse( $this->utils->boolean  );
+		$this->utils->boolean = null;
+	}
+
 
 	/**
 	 * Test cache.
@@ -91,7 +103,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 	/**
 	 * Test manually setting the cache for a post id.
 	 */
-	function test_cache_cache_related_posts() {
+	function test_manually_cache_related_posts() {
 		global $wpdb;
 
 		// Activate cache
