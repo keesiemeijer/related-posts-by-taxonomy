@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Display for the shortcode [related_posts_by_tax]
+ * Callback function for the shortcode [related_posts_by_tax]
  *
  * @since 0.1
  *
@@ -33,39 +33,16 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		return '';
 	}
 
-	$defaults = $_defaults = array(
-
-		// shortcode defaults
-		'post_id' => '', 'taxonomies' => $plugin->all_tax,
-		'before_shortcode' => '<div class="rpbt_shortcode">', 'after_shortcode' => '</div>',
-		'before_title' => '<h3>', 'after_title' => '</h3>',
-		'title' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
-		'format' => 'links',
-		'image_size' => 'thumbnail', 'columns' => 3,
-		'caption' => 'post_title', 'type' => 'shortcode',
-	);
-
-
-	/* add default args to shortcode args */
-	$defaults = array_merge( km_rpbt_get_default_args(), $defaults );
-
-	/**
-	 * Set new default attributes.
-	 *
-	 * @since 0.2.1
-	 *
-	 * @param array   $defaults See $defaults above
-	 */
-	$defaults = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
+	$defaults = km_rpbt_get_shortcode_defaults();
 
 	/* Can be filtered in WordPress > 3.5 (hook: shortcode_atts_related_posts_by_tax) */
 	$rpbt_args = shortcode_atts( $defaults, $rpbt_args, 'related_posts_by_tax' );
 
 	/* Validate attributes */
-	$rpbt_args = km_rpbt_validate_shortcode_atts( $rpbt_args, $_defaults );
+	$rpbt_args = km_rpbt_validate_shortcode_atts( $rpbt_args );
 
 	/**
-	 * Filter defaults.
+	 * Filter attributes.
 	 *
 	 * @param array   $rpbt_args See $defaults above
 	 */
@@ -73,11 +50,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 
 
 	/* Validate once more */
-	$rpbt_args = km_rpbt_validate_shortcode_atts( $rpbt_args, $_defaults );
-
-	/* public template variables */
-	$image_size = $rpbt_args['image_size']; // deprecated in version 0.3
-	$columns = absint( $rpbt_args['columns'] ); // deprecated in version 0.3
+	$rpbt_args = km_rpbt_validate_shortcode_atts( $rpbt_args );
 
 	$function_args = $rpbt_args;
 
@@ -93,9 +66,6 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
 	}
 
-	/* clean up variables before calling the template */
-	unset( $plugin, $defaults, $atts_filter, $post_types, $function_args, $cache );
-
 	/**
 	 * Filter whether to hide the widget if no related posts are found.
 	 *
@@ -106,33 +76,9 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	 */
 	$hide_empty = (bool) apply_filters( 'related_posts_by_taxonomy_shortcode_hide_empty', true );
 
-	$rpbt_shortcode = $shortcode = '';
-
+	$shortcode = '';
 	if ( !$hide_empty || !empty( $related_posts ) ) {
-
-		/* get the template depending on the format  */
-		$template = km_rpbt_related_posts_by_taxonomy_template( $rpbt_args['format'], 'shortcode' );
-
-
-		if ( $rpbt_args['title'] ) {
-			$rpbt_args['title'] = $rpbt_args['before_title'] . $rpbt_args['title'] . $rpbt_args['after_title'];
-		}
-
-		if ( $template ) {
-			global $post; // used for setup_postdata() in templates
-			ob_start();
-			require $template;
-			$shortcode = ob_get_clean();
-			$shortcode = trim( $shortcode );
-			wp_reset_postdata(); // clean up global $post variable;
-		}
-
-		if ( $shortcode ) {
-			$rpbt_shortcode = $rpbt_args['before_shortcode'] . "\n" ;
-			$rpbt_shortcode .= trim( $rpbt_args['title'] ) . "\n";
-			$rpbt_shortcode .= $shortcode . "\n";
-			$rpbt_shortcode .= $rpbt_args['after_shortcode'];
-		}
+		$shortcode = km_rpbt_shortcode_output( $related_posts, $rpbt_args );
 	}
 
 	/**
@@ -144,54 +90,140 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 
 	$recursing = false;
 
-	return trim( $rpbt_shortcode );
+	return $shortcode;
 } // end km_rpbt_related_posts_by_taxonomy_shortcode()
+
+
+/**
+ * Returns shortcode output
+ *
+ * @since 2.1
+ * @param array   $related_posts Array with related post objects
+ * @param array   $args
+ * @return string Shortcode output.
+ */
+function km_rpbt_shortcode_output( $related_posts, $args ) {
+
+	if ( empty( $related_posts ) ) {
+		return '';
+	}
+
+	/* make sure all defaults are present */
+	$args = array_merge( km_rpbt_get_shortcode_defaults(), $args );
+
+	$rpbt_shortcode = $shortcode = '';
+
+	/* get the template depending on the format  */
+	$template = km_rpbt_related_posts_by_taxonomy_template( $args['format'], 'shortcode' );
+
+	if ( $args['title'] ) {
+		$args['title'] = $args['before_title'] . $args['title'] . $args['after_title'];
+	}
+
+	if ( $template ) {
+		global $post; // used for setup_postdata() in templates
+
+		/* public template variables */
+		$image_size = $args['image_size']; // deprecated in version 0.3
+		$columns    = absint( $args['columns'] ); // deprecated in version 0.3
+
+		ob_start();
+		require $template;
+		$shortcode = ob_get_clean();
+		$shortcode = trim( $shortcode );
+		wp_reset_postdata(); // clean up global $post variable;
+	}
+
+	if ( $shortcode ) {
+		$rpbt_shortcode = $args['before_shortcode'] . "\n" ;
+		$rpbt_shortcode .= trim( $args['title'] ) . "\n";
+		$rpbt_shortcode .= $shortcode . "\n";
+		$rpbt_shortcode .= $args['after_shortcode'];
+	}
+
+	return trim( $rpbt_shortcode );
+}
 
 
 /**
  * Validate shortcode attributes.
  *
  * @since 2.1
- * @param array   $rpbt_args Array with shortcode attributes.
+ * @param array   $args Array with shortcode attributes.
  * @return array Array with validated shortcode attributes.
  */
-function km_rpbt_validate_shortcode_atts( $rpbt_args, $defaults ) {
+function km_rpbt_validate_shortcode_atts( $args ) {
 
 	$plugin = km_rpbt_plugin();
 
-	if ( !$plugin || !is_array( $rpbt_args ) ) {
-		return $rpbt_args;
+	if ( !$plugin || !is_array( $args ) ) {
+		return $args;
 	}
 
-	/* make sure all defaults are present after filtering */
-	$rpbt_args = array_merge( $defaults, $rpbt_args );
+	/* make sure all defaults are present */
+	$args = array_merge( km_rpbt_get_shortcode_defaults(), $args );
 
 	// default to shortcode
-	$rpbt_args['type']  = 'shortcode';
+	$args['type']  = 'shortcode';
 
-	$rpbt_args['title'] = trim( $rpbt_args['title'] );
+	$args['title'] = trim( $args['title'] );
 
-	if ( '' === trim( $rpbt_args['post_id'] ) ) {
-		$rpbt_args['post_id'] = get_the_ID();
+	if ( '' === trim( $args['post_id'] ) ) {
+		$args['post_id'] = get_the_ID();
 	}
 
-	if ( $rpbt_args['taxonomies'] === $plugin->all_tax ) {
-		$rpbt_args['taxonomies'] = array_keys( $plugin->taxonomies );
+	if ( $args['taxonomies'] === $plugin->all_tax ) {
+		$args['taxonomies'] = array_keys( $plugin->taxonomies );
 	}
 
 	/* if no post type is set use the post type of the current post (new default since 0.3) */
-	if ( empty( $rpbt_args['post_types'] ) ) {
-		$post_types = get_post_type( $rpbt_args['post_id'] );
-		$rpbt_args['post_types'] = ( $post_types ) ? $post_types : array( 'post' );
+	if ( empty( $args['post_types'] ) ) {
+		$post_types = get_post_type( $args['post_id'] );
+		$args['post_types'] = ( $post_types ) ? $post_types : array( 'post' );
 	}
 
-	$rpbt_args['post_thumbnail'] = false;
-	if ( 'thumbnails' === $rpbt_args['format'] ) {
-		$rpbt_args['post_thumbnail'] = true;
+	$args['post_thumbnail'] = false;
+	if ( 'thumbnails' === $args['format'] ) {
+		$args['post_thumbnail'] = true;
 	}
 
 	// convert 'related' string to boolean true if empty.
-	$rpbt_args['related'] = ( '' !== trim( $rpbt_args['related'] ) ) ? $rpbt_args['related'] : true;
+	$args['related'] = ( '' !== trim( $args['related'] ) ) ? $args['related'] : true;
 
-	return $rpbt_args;
+	return $args;
+}
+
+
+/**
+ * Returns default shortcode atts
+ *
+ * @return array Array with default shortcode atts
+ */
+function km_rpbt_get_shortcode_defaults() {
+
+	$plugin = km_rpbt_plugin();
+
+	$defaults =  array(
+		'post_id' => '', 'taxonomies' => $plugin->all_tax,
+		'before_shortcode' => '<div class="rpbt_shortcode">', 'after_shortcode' => '</div>',
+		'before_title' => '<h3>', 'after_title' => '</h3>',
+		'title' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
+		'format' => 'links',
+		'image_size' => 'thumbnail', 'columns' => 3,
+		'caption' => 'post_title', 'type' => 'shortcode',
+	);
+
+	/* add default args to shortcode args */
+	$defaults = array_merge( km_rpbt_get_default_args(), $defaults );
+
+	/**
+	 * Filter default attributes.
+	 *
+	 * @since 0.2.1
+	 *
+	 * @param array   $defaults See $defaults above
+	 */
+	$defaults_filter = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
+
+	return array_merge( $defaults, $defaults_filter );
 }
