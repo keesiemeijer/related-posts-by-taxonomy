@@ -156,10 +156,6 @@ function km_rpbt_validate_shortcode_atts( $args ) {
 
 	$plugin = km_rpbt_plugin();
 
-	if ( !$plugin || !is_array( $args ) ) {
-		return $args;
-	}
-
 	/* make sure all defaults are present */
 	$args = array_merge( km_rpbt_get_shortcode_defaults(), $args );
 

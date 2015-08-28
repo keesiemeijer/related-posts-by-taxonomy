@@ -470,7 +470,7 @@ function km_rpbt_sanitize_args( $args, $context = '' ) {
 	// Strings
 	$args['fields']  = is_string( $args['fields'] ) ? $args['fields'] : '';
 	$args['orderby'] = is_string( $args['orderby'] ) ? $args['orderby'] : '';
-	$args['order']   = is_string( $args['order'] ) ? $args['orderby'] : '';
+	$args['order']   = is_string( $args['order'] ) ? $args['order'] : '';
 
 	// Integers
 	$args['limit_year']     = absint( $args['limit_year'] );
