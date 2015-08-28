@@ -41,7 +41,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				return;
 			}
 
-			$this->debug[ 'cached' ] = 'FALSE';
+			$this->debug[ 'cached' ] = 'default';
 
 			$this->plugin  = Related_Posts_By_Taxonomy_Defaults::get_instance();
 			$this->cache   = $this->plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
@@ -92,12 +92,14 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			} else {
 				$this->debug[ 'type']           = 'shortcode';
 				$this->debug[ 'shortcode args'] = $args;
-				$args['before_shortcode']       = '<div class="rpbt_shortcode">hhh' . $this->debug_link( 'shortcode' ) . '<br/>';
+				$args['before_shortcode']       = '<div class="rpbt_shortcode">' . $this->debug_link( 'shortcode' ) . '<br/>';
 				$args['after_shortcode']        = '</div>';
 			}
 
 			if ( $this->cache ) {
 				$this->check_cache( $args );
+			} else {
+				$this->debug[ 'cached' ] = 'default';
 			}
 
 			// Gets current post terms, taxonomies and post ID.
@@ -119,11 +121,15 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				unset( $posts['rpbt_current'] );
 				$posts = array_keys( $posts );
 				$this->debug[ 'cached' ] = 'TRUE';
-				$this->debug[ 'cached post ids'] = $posts;
-				$this->debug[ 'function args'] = $args;
+				$this->debug[ 'cached post ids'] = !empty( $posts ) ? $posts : '';
+				$defaults = km_rpbt_get_default_args();
+				$this->debug[ 'function args'] = array_intersect_key( $args , $defaults );
 				$this->debug[ 'cached taxonomies'] = isset( $current['taxonomies'] ) ? $current['taxonomies'] : '';
+				$this->debug[ 'cached taxonomies'] = str_replace(',', ', ', $this->debug[ 'cached taxonomies']);
 				$this->debug[ 'cached terms'] = isset( $current['related_terms'] ) ? $current['related_terms'] : '';
-				$this->debug[ 'current post id'] = $args['post_id'];
+				$this->debug[ 'current post id'] = isset( $args['post_id'] ) ? $args['post_id'] : '';
+			} else {
+				$this->debug[ 'cached' ] = 'default';
 			}
 		}
 
@@ -229,7 +235,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			unset( $args['related_terms'] );
 
 			$defaults = km_rpbt_get_default_args();
-			$this->debug[ 'function args'] = $args;
+			$this->debug[ 'function args'] = array_intersect_key( $args , $defaults );
 			$this->debug[ 'related posts query'] = $query;
 
 			add_filter( 'related_posts_by_taxonomy', array( $this, 'posts_found' ) );
