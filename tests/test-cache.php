@@ -167,4 +167,37 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->assertEquals( $cache_ids, $related );
 	}
 
+	/**
+	 * Test manually setting the cache for a post id.
+	 *
+	 * @depends test_cache_setup
+	 */
+	function test_flush_cache() {
+		global $wpdb;
+
+		$this->setup_cache();
+
+		$create_posts = $this->utils->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		$args = array( 'fields' => 'ids' );
+		$taxonomies = array( 'post_tag' );
+
+		// Cache related posts for post 2
+		$related_posts = km_rpbt_cache_related_posts( $posts[2], $taxonomies, $args );
+
+		$cache_query = "SELECT $wpdb->postmeta.meta_key FROM $wpdb->postmeta WHERE meta_key LIKE '_rpbt_related_posts%'";
+		$meta_key    = $wpdb->get_var( $cache_query );
+
+		// Cache should be set for $post[2].
+		$this->assertNotEmpty( $meta_key );
+
+		km_rpbt_flush_cache();
+
+		$meta_key = $wpdb->get_var( $cache_query );
+
+		// Cache should be empty.
+		$this->assertEmpty( $meta_key );
+	}
+
 }
