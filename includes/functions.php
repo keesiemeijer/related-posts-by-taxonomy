@@ -524,10 +524,30 @@ function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $a
 
 
 /**
+ * Public function to flush the persistent cache.
+ *
+ * @since 2.1
+ * @return bool True if cache was flushed.
+ */
+function km_rpbt_flush_cache() {
+
+	$plugin = km_rpbt_plugin();
+
+	// Check if the cache class is instantiated.
+	if ( $plugin && ( $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache ) ) {
+		$plugin->cache->flush_cache();
+		return true;
+	}
+
+	return false;
+}
+
+
+/**
  * Returns plugin defaults instance or false.
  *
  * @since 2.1
- * @return Object Related_Posts_By_Taxonomy_Defaults instance.
+ * @return Object|false Related_Posts_By_Taxonomy_Defaults instance or false.
  */
 function km_rpbt_plugin() {
 	if ( class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
