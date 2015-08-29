@@ -92,19 +92,6 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 
 
 	/**
-	 * Tests if debug filter is set to false (by default).
-	 */
-	function test_debug_filter() {
-		add_filter( 'related_posts_by_taxonomy_debug', array( $this->utils, 'return_bool' ) );
-
-		$plugin_defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
-		$plugin_defaults->_setup();
-		$this->assertFalse( $this->utils->boolean  );
-		$this->utils->boolean = null;
-	}
-
-
-	/**
 	 * Tests for functions that should not output anything.
 	 *
 	 * @depends test_create_posts_with_terms
