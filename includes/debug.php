@@ -43,7 +43,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			$this->debug[ 'cached' ] = 'default';
 
-			$this->plugin  = Related_Posts_By_Taxonomy_Defaults::get_instance();
+			$this->plugin  = km_rpbt_plugin();
 			$this->cache   = $this->plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
 
 			// Adds debug link before the widget title.
