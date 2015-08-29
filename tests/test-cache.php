@@ -11,7 +11,9 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 	 */
 	private $utils;
 
-	public $args = null;
+	private $args = null;
+
+	private $plugin;
 
 
 	/**
@@ -24,30 +26,64 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+	function setup_cache(){
+		// Activate cache
+		add_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
+
+		$plugin = km_rpbt_plugin();
+		if( $plugin ) {
+			$plugin->_setup();
+			$this->plugin = $plugin;
+		}
+	}
+
+	/**
+	 * Test if cache is enabled by using the filter.
+	 * 
+	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
+	 */
+	function test_cache_setup() {
+		$this->setup_cache();
+		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Cache' )  );
+		$this->assertTrue( isset( $this->plugin->cache ) );
+		$this->assertTrue( $this->plugin->cache instanceof Related_Posts_By_Taxonomy_Cache );
+	}
+
+
 	/**
 	 * Tests if cache filter is set to false (by default).
+	 *
+	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
 	 */
 	function test_cache_filter() {
 		add_filter( 'related_posts_by_taxonomy_cache', array( $this->utils, 'return_bool' ) );
-
-		$plugin_defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
-		$plugin_defaults->_setup();
+		$plugin = km_rpbt_plugin();
+		$plugin->_setup();
 		$this->assertFalse( $this->utils->boolean  );
 		$this->utils->boolean = null;
 	}
 
 
 	/**
+	 * Tests if cache filter display_cache_log is set to false (by default).
+	 *
+	 * @depends test_cache_setup
+	 */
+	function test_cache_filter_display_cache_log() {
+		$this->setup_cache();
+		$this->assertFalse( $this->plugin->cache->cache['display_cache_log']  );
+	}
+
+
+	/**
 	 * Test cache.
+	 *
+	 * @depends test_cache_setup
 	 */
 	function test_cache_with_shortcode_in_post_content() {
 		global $wpdb;
 
-		// Activate cache
-		add_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
-
-		$plugin_defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
-		$plugin_defaults->_setup();
+		$this->setup_cache();
 
 		$create_posts = $this->utils->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
@@ -61,10 +97,6 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 		// Go to the single post page
 		$this->go_to( get_permalink( $posts[0] ) );
-
-		// Check if cache class exists.
-		$cache = class_exists( 'Related_Posts_By_Taxonomy_Cache' );
-		$this->assertTrue( $cache  );
 
 		$cache_query = "SELECT $wpdb->postmeta.meta_key FROM $wpdb->postmeta WHERE meta_key LIKE '_rpbt_related_posts%'";
 
@@ -93,7 +125,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 		// Get related post ids with function.
 		$args = array( 'fields' => 'ids' );
-		$taxonomies = array_keys( $plugin_defaults->taxonomies );
+		$taxonomies = array_keys( $this->plugin->taxonomies );
 		$related = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
 
 		$this->assertEquals( $cache_ids, $related );
@@ -102,19 +134,13 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 	/**
 	 * Test manually setting the cache for a post id.
+	 *
+	 * @depends test_cache_setup
 	 */
 	function test_manually_cache_related_posts() {
 		global $wpdb;
 
-		// Activate cache
-		add_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
-
-		$plugin_defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
-		$plugin_defaults->_setup();
-
-		// Check if cache class exists.
-		$cache = class_exists( 'Related_Posts_By_Taxonomy_Cache' );
-		$this->assertTrue( $cache  );
+		$this->setup_cache();
 
 		$create_posts = $this->utils->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
