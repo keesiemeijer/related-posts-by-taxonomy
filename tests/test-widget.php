@@ -69,7 +69,7 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function test_rpbt_widget_output() {
-		$plugin_defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
+
 		$create_posts = $this->utils->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
