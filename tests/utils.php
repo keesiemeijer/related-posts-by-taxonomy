@@ -122,4 +122,10 @@ class RPBT_Test_Utils {
 		return $this->boolean = $bool;
 	}
 
+	function get_cache_meta_key() {
+		global $wpdb;
+		$cache_query = "SELECT $wpdb->postmeta.meta_key FROM $wpdb->postmeta WHERE meta_key LIKE '_rpbt_related_posts%' LIMIT 1";
+		return $wpdb->get_var( $cache_query );
+	}
+
 }
