@@ -98,12 +98,8 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		// Go to the single post page
 		$this->go_to( get_permalink( $posts[0] ) );
 
-		$cache_query = "SELECT $wpdb->postmeta.meta_key FROM $wpdb->postmeta WHERE meta_key LIKE '_rpbt_related_posts%'";
-
-		$meta = $wpdb->get_var( $cache_query );
-
 		// Cache should be empty.
-		$this->assertEmpty( $meta  );
+		$this->assertEmpty( $this->utils->get_cache_meta_key() );
 
 		// Trigger cache.
 		ob_start();
@@ -111,7 +107,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		the_content();
 		$content = ob_get_clean();
 
-		$meta_key = $wpdb->get_var( $cache_query );
+		$meta_key = $this->utils->get_cache_meta_key();
 
 		// Cache should be set for the shortcode in $post[0] content.
 		$this->assertNotEmpty( $meta_key );
@@ -149,8 +145,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$taxonomies = array( 'post_tag' );
 		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, $args );
 
-		$cache_query = "SELECT $wpdb->postmeta.meta_key FROM $wpdb->postmeta WHERE meta_key LIKE '_rpbt_related_posts%'";
-		$meta_key    = $wpdb->get_var( $cache_query );
+		$meta_key = $this->utils->get_cache_meta_key();
 
 		// Cache should be set for $post[1].
 		$this->assertNotEmpty( $meta_key );
@@ -186,18 +181,13 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		// Cache related posts for post 2
 		$related_posts = km_rpbt_cache_related_posts( $posts[2], $taxonomies, $args );
 
-		$cache_query = "SELECT $wpdb->postmeta.meta_key FROM $wpdb->postmeta WHERE meta_key LIKE '_rpbt_related_posts%'";
-		$meta_key    = $wpdb->get_var( $cache_query );
-
 		// Cache should be set for $post[2].
-		$this->assertNotEmpty( $meta_key );
+		$this->assertNotEmpty( $this->utils->get_cache_meta_key() );
 
 		km_rpbt_flush_cache();
 
-		$meta_key = $wpdb->get_var( $cache_query );
-
 		// Cache should be empty.
-		$this->assertEmpty( $meta_key );
+		$this->assertEmpty( $this->utils->get_cache_meta_key() );
 	}
 
 }
