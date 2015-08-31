@@ -303,8 +303,19 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		add_theme_support( 'post-thumbnails' );
 
 		// create attachment
-		$filename = ( DIR_TESTDATA.'/images/a2-small.jpg' );
 		
+		$_tests_dir = getenv( 'WP_TESTS_DIR' );
+		if ( !$_tests_dir ) {
+			 $_tests_dir = '/tmp/wordpress-tests-lib';
+		}
+
+
+		echo '<pre>';
+print_r($_tests_dir);
+echo '</pre>';
+		// create attachment
+		$filename = ( $_tests_dir .'/data/images/a2-small.jpg' );
+
 		$contents = file_get_contents( $filename );
 		$upload = wp_upload_bits( $filename, null, $contents );
 		$this->assertTrue( empty( $upload['error'] ) );
