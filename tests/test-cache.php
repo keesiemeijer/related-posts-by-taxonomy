@@ -26,12 +26,13 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
-	function setup_cache(){
+
+	function setup_cache() {
 		// Activate cache
 		add_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
 
 		$plugin = km_rpbt_plugin();
-		if( $plugin ) {
+		if ( $plugin ) {
 			$plugin->_setup();
 			$this->plugin = $plugin;
 		}
@@ -39,7 +40,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 	/**
 	 * Test if cache is enabled by using the filter.
-	 * 
+	 *
 	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
 	 */
 	function test_cache_setup() {
@@ -188,6 +189,134 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 		// Cache should be empty.
 		$this->assertEmpty( $this->utils->get_cache_meta_key() );
+	}
+
+
+	/**
+	 * Test flushing cache when deleting a post.
+	 *
+	 * @depends test_cache_setup
+	 */
+	function test_cache_delete_post() {
+		global $wpdb;
+
+		$this->setup_cache();
+
+		$create_posts = $this->utils->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// Was set to true with create_posts_with_terms()
+		$this->plugin->cache->flush_cache = false;
+
+		$args = array( 'fields' => 'ids' );
+		$taxonomies = array( 'post_tag' );
+
+		// Cache related posts for post 2
+		$related_posts = km_rpbt_cache_related_posts( $posts[2], $taxonomies, $args );
+
+		// Cache should be set for $post[2].
+		$this->assertNotEmpty( $this->utils->get_cache_meta_key() );
+
+		wp_delete_post( $posts[2] );
+
+		// $this->plugin->cache->flush_cache should be true
+		$this->plugin->cache->shutdown_flush_cache();
+
+		// Cache should be empty.
+		$this->assertEmpty( $this->utils->get_cache_meta_key() );
+	}
+
+
+	/**
+	 * Test flushing cache when setting a post thumbnail.
+	 *
+	 * @depends test_cache_setup
+	 */
+	function test_cache_set_post_thumbnail() {
+		global $wpdb;
+
+		$this->setup_cache();
+		$attachment_id = $this->create_image();
+
+		$create_posts = $this->utils->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// Was set to true with create_posts_with_terms()
+		$this->plugin->cache->flush_cache = false;
+
+		$args = array( 'fields' => 'ids' );
+		$taxonomies = array( 'post_tag' );
+
+		// Cache related posts for post 2
+		$related_posts = km_rpbt_cache_related_posts( $posts[2], $taxonomies, $args );
+
+		// Cache should be set for $post[2].
+		$this->assertNotEmpty( $this->utils->get_cache_meta_key() );
+
+		set_post_thumbnail ( $posts[2], $attachment_id );
+
+		// $this->plugin->cache->flush_cache should be true
+		$this->plugin->cache->shutdown_flush_cache();
+
+		// Cache should be empty.
+		$this->assertEmpty( $this->utils->get_cache_meta_key() );
+	}
+
+
+	/**
+	 * Test flushing cache when setting a post thumbnail.
+	 *
+	 * @depends test_cache_setup
+	 */
+	function test_cache_delete_term() {
+		global $wpdb;
+
+		$this->setup_cache();
+		$attachment_id = $this->create_image();
+
+		$create_posts = $this->utils->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+		$terms        = $create_posts['tax1_terms'];
+
+		// Was set to true with create_posts_with_terms()
+		$this->plugin->cache->flush_cache = false;
+
+		$args = array( 'fields' => 'ids' );
+		$taxonomies = array( 'post_tag' );
+
+		// Cache related posts for post 2
+		$related_posts = km_rpbt_cache_related_posts( $posts[2], $taxonomies, $args );
+
+		// Cache should be set for $post[2].
+		$this->assertNotEmpty( $this->utils->get_cache_meta_key() );
+
+		wp_delete_term ( $terms[2], 'post_tag' );
+
+		// $this->plugin->cache->flush_cache should be true
+		$this->plugin->cache->shutdown_flush_cache();
+
+		// Cache should be empty.
+		$this->assertEmpty( $this->utils->get_cache_meta_key() );
+	}
+
+
+	function create_image() {
+		add_theme_support( 'post-thumbnails' );
+
+		// create attachment
+		$filename = ( DIR_TESTDATA.'/images/a2-small.jpg' );
+		$contents = file_get_contents( $filename );
+		$upload = wp_upload_bits( $filename, null, $contents );
+		$this->assertTrue( empty( $upload['error'] ) );
+
+		$attachment = array(
+			'post_title' => 'Post Thumbnail',
+			'post_type' => 'attachment',
+			'post_mime_type' => 'image/jpeg',
+			'guid' => $upload['url']
+		);
+
+		return wp_insert_attachment( $attachment, $upload['file'] );
 	}
 
 }
