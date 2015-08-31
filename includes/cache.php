@@ -35,6 +35,13 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 */
 		private $current;
 
+		/**
+		 * Flush the cache or not (in shutdown hook)
+		 *
+		 * @var bool
+		 */
+		public $flush_cache;
+
 
 		public function __construct() {
 			$this->setup();
@@ -61,9 +68,9 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			if ( !$this->cache['flush_manually'] ) {
 
 				// Flush the cache when a post is deleted.
-				add_action( 'after_delete_post', array( $this, 'flush_cache' ) );
-				add_action( 'trashed_post',      array( $this, 'flush_cache' ) );
-				add_action( 'untrashed_post',    array( $this, 'flush_cache' ) );
+				add_action( 'after_delete_post', array( $this, '_flush_cache' ) );
+				add_action( 'trashed_post',      array( $this, '_flush_cache' ) );
+				add_action( 'untrashed_post',    array( $this, '_flush_cache' ) );
 
 				// Flush the cache when terms are updated.
 				add_action( 'set_object_terms',  array( $this, 'set_object_terms' ), 10, 6 );
@@ -72,6 +79,9 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				add_action( 'updated_post_meta', array( $this, 'updated_postmeta' ), 10, 4 );
 				add_action( "deleted_post_meta", array( $this, 'updated_postmeta' ), 10, 4 );
 				add_action( "added_post_meta",   array( $this, 'updated_postmeta' ), 10, 4 );
+
+				// Flush cache when PHP is almost shutting down and page is loaded
+				add_action ( "shutdown", array( $this, 'shutdown_flush_cache' ) );
 			}
 
 			// Flush cache by expiration date if set
@@ -295,8 +305,6 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				$this->cache_log[] = sprintf( __( 'Post ID %d - cache exists empty', 'related-posts-by-taxonomy' ), $args['post_id'] );
 			}
 
-
-
 			return apply_filters( 'related_posts_by_taxonomy', $posts, $current['post_id'], $current['taxonomies'], $function_args );
 		}
 
@@ -377,11 +385,47 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		public function flush_cache() {
 			global $wpdb;
 
-			$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_rpbt_related_posts%'" );
-			$this->cache_log[] = 'Flushed cache!';
-
 			if ( $this->cache['expiration'] ) {
 				$this->set_transient();
+			}
+
+			// Returns number of deleted rows (0,1,2 etc.) or false on failure.
+			$flush = $wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_rpbt_related_posts%'" );
+
+			if ( false === $flush ) {
+				$this->cache_log[] = 'Failed Flushing cache!';
+			} else {
+				$this->cache_log[] = 'Flushed cache!';
+			}
+
+			return $flush;
+		}
+
+
+		/**
+		 * Flush the related posts cache.
+		 *
+		 * @since 2.1
+		 * @return void.
+		 */
+		public function _flush_cache() {
+			if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+				$this->flush_cache();
+			} else {
+				$this->flush_cache = true;
+			}
+		}
+
+
+		/**
+		 * Flush the related posts cache in the shutdown action.
+		 *
+		 * @since 2.1
+		 * @return void.
+		 */
+		public function shutdown_flush_cache() {
+			if ( !$this->cache['flush_manually'] && ( true === $this->flush_cache ) ) {
+				$this->flush_cache();
 			}
 		}
 
@@ -394,11 +438,54 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 */
 		public function updated_postmeta( $meta_id, $object_id, $meta_key = '', $meta_value = '' ) {
 			if ( '_thumbnail_id' === $meta_key ) {
-				$this->flush_cache();
+				$this->_flush_cache();
 				return;
 			}
 		}
 
+
+		/**
+		 * Flush the cache when terms are updated.
+		 * Callback for the set_object_terms action.
+		 *
+		 * @since 2.0.1
+		 */
+		public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
+			sort( $tt_ids );
+			sort( $old_tt_ids );
+			if ( $tt_ids != $old_tt_ids ) {
+				$this->_flush_cache();
+			}
+		}
+
+
+		/**
+		 * Set the cache expiration transient.
+		 *
+		 * @since 2.0.1
+		 * @return void.
+		 */
+		public function set_transient() {
+			set_transient( 'rpbt_related_posts_flush_cache', 1, $this->cache['expiration'] );
+		}
+
+		/**
+		 * Flushes the cache before the cache transient is deleted.
+		 *
+		 * @since 2.1
+		 * @return void.
+		 */
+		public function delete_cache_transient() {
+			$this->flush_cache();
+		}
+
+
+		/**
+		 * Displays cache log in the toolbar.
+		 *
+		 * @since 2.1
+		 * @return void.
+		 */
 		public function display_cache_log( $wp_admin_bar ) {
 
 			if ( is_admin() || !is_super_admin() ) {
@@ -437,42 +524,6 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 				$wp_admin_bar->add_node( $args );
 			}
-		}
-
-
-		/**
-		 * Flush the cache when terms are updated.
-		 * Callback for the set_object_terms action.
-		 *
-		 * @since 2.0.1
-		 */
-		public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
-			sort( $tt_ids );
-			sort( $old_tt_ids );
-			if ( $tt_ids != $old_tt_ids ) {
-				$this->flush_cache();
-			}
-		}
-
-
-		/**
-		 * Set the cache expiration transient.
-		 *
-		 * @since 2.0.1
-		 * @return void.
-		 */
-		public function set_transient() {
-			set_transient( 'rpbt_related_posts_flush_cache', 1, $this->cache['expiration'] );
-		}
-
-		/**
-		 * Flushes the cache before the cache transient is deleted.
-		 *
-		 * @since 2.1
-		 * @return void.
-		 */
-		public function delete_cache_transient() {
-			$this->flush_cache();
 		}
 
 	} // Class
