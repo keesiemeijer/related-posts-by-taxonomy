@@ -22,7 +22,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		public $cache;
 
 		/**
-		 * Post ids with cached posts
+		 * Cache log messages
 		 *
 		 * @var array
 		 */
@@ -139,7 +139,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			$type = isset( $args['type'] ) ? $args['type'] : '';
 
-			// returns only function args
+			// Returns sanitized arguments
+			// Arguments are used in post meta key.
 			$args = $this->sanitize_cache_args( $args );
 
 			// Get cached post ids (if they exist)
@@ -148,7 +149,6 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// If $posts is an empty array the current post doesn't have any related posts.
 			// If $posts is an empty string the related posts are not cached.
 
-			// $posts = '';
 			if ( empty( $posts ) ) {
 
 				if ( !is_array( $posts ) ) {
@@ -157,7 +157,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 					$this->cache_log[] = sprintf( 'Post ID %d - cache not exists', $args['post_id'] );
 					$posts = $this->set_cache( $args, $type );
 				} else {
-					// Already cached, but the post has no related posts.
+					// Already cached, but the current post has no related posts.
 
 					$posts = array();
 					$this->cache_log[] = sprintf( 'Post ID %d - cache exists empty', $args['post_id'] );
@@ -209,7 +209,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// Remove the filter
 			remove_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
 
-			// Create the array with cached post ids, and add the related term count.
+			// Create the array with cached post ids
+			// and add the related term count.
 			$posts_arr = array();
 			foreach ( $posts as  $post ) {
 				$posts_arr[ $post->ID ] = isset( $post->termcount ) ? $post->termcount : 0;
@@ -285,7 +286,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				'update_post_meta_cache' => false,
 			);
 
-			// Get related posts.
+			// Get related posts with get_posts().
 			$_posts = get_posts( $_args );
 
 			if ( !empty( $_posts ) ) {
@@ -297,7 +298,6 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 					}
 				}
 
-				// Apply the same filter as the km_rpbt_related_posts_by_taxonomy function
 				$posts = $_posts;
 				$this->cache_log[] = sprintf( __( 'Post ID %d - cache exists', 'related-posts-by-taxonomy' ), $args['post_id'] );
 			} else {
@@ -305,6 +305,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				$this->cache_log[] = sprintf( __( 'Post ID %d - cache exists empty', 'related-posts-by-taxonomy' ), $args['post_id'] );
 			}
 
+			// See km_rpbt_related_posts_by_taxonomy filter in includes/functions.php
 			return apply_filters( 'related_posts_by_taxonomy', $posts, $current['post_id'], $current['taxonomies'], $function_args );
 		}
 
@@ -321,13 +322,9 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			$defaults   = km_rpbt_get_default_args();
 			$cache_args = wp_parse_args( $args, $defaults );
-			$unset      = array_diff_key( $cache_args, $defaults );
 
 			// Remove unnecessary args.
-			// Also removes taxonomies and post id.
-			foreach ( $unset as $key => $arg ) {
-				unset( $cache_args[$key] );
-			}
+			$cache_args = array_intersect_key( $cache_args, $defaults );
 
 			// Add post id and taxonomies back to the cache args.
 			$cache_args[ 'post_id' ]    = isset( $args[ 'post_id' ] ) ? $args[ 'post_id' ] : 0;
@@ -469,6 +466,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			set_transient( 'rpbt_related_posts_flush_cache', 1, $this->cache['expiration'] );
 		}
 
+
 		/**
 		 * Flushes the cache before the cache transient is deleted.
 		 *
@@ -492,35 +490,40 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				return;
 			}
 
-			$title = 'Related Posts Cache';
-
-			if ( in_array( 'Flushed cache!', $this->cache_log ) ) {
-				$title = '<span style="color:orange;">Related Posts Cache</span>';
-			}
-
-			$args = array(
-				'id'    => 'related_posts_by_tax',
-				'title' => $title,
-			);
-
-			$wp_admin_bar->add_node( $args );
-
 			if ( empty( $this->cache_log ) ) {
 				$this->cache_log[] = 'Cache not used';
 			}
 
-			$i=0;
-			foreach ( $this->cache_log as $log ) {
+			array_unshift( $this->cache_log, "Related Posts Cache" );
 
-				if ( 'Flushed cache!' === $log ) {
-					$log = '<span style="color:orange;">Flushed cache!</span>';
+			$this->cache_log = $cache_log = array_values( $this->cache_log );
+			$notices         = array( 'failed', 'flushed' );
+
+			// Add color to toolbar nodes if needed
+			foreach ( $this->cache_log as $key => $log ) {
+				foreach ( $notices as $notice ) {
+					if ( false !== strpos( strtolower( $log ), $notice ) ) {
+						$this->cache_log[ $key ] = "<span style='color:orange;'>$log</span>";
+						break;
+					}
 				}
+			}
+
+			// Add color to top level node if needed
+			if ( $this->cache_log != $cache_log ) {
+				$this->cache_log[ 0 ] = "<span style='color:orange;'>{$this->cache_log[ 0 ]}</span>";
+			}
+
+			for ( $i=0; $i < count( $this->cache_log ) ; $i++ ) {
 
 				$args = array(
-					'id'    => 'related_posts_by_tax_' . ++$i,
-					'parent' => 'related_posts_by_tax',
-					'title' => $log,
+					'id'    => 'related_posts_by_tax-' . $i,
+					'title' => $this->cache_log[ $i ],
 				);
+
+				if ( $i ) {
+					$args['parent'] = 'related_posts_by_tax-0';
+				}
 
 				$wp_admin_bar->add_node( $args );
 			}
