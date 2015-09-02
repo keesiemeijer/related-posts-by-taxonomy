@@ -533,8 +533,7 @@ function km_rpbt_flush_cache() {
 
 	// Check if the cache class is instantiated.
 	if ( $plugin && ( $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache ) ) {
-		$plugin->cache->flush_cache();
-		return true;
+		return $plugin->cache->flush_cache();
 	}
 
 	return false;
