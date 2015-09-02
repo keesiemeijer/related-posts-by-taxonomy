@@ -9,6 +9,8 @@ module.exports = function( grunt ) {
 
 		pkg: grunt.file.readJSON( 'package.json' ),
 
+		gitinfo: {},
+
 		addtextdomain: {
 			options: {
 				textdomain: 'related-posts-by-taxonomy',
@@ -39,7 +41,7 @@ module.exports = function( grunt ) {
 		// Clean up build directory
 		clean: {
 			main: [ 'build/<%= pkg.name %>' ],
-			release:[
+			release: [
 				'**',
 				'.travis.yml',
 				'.gitignore',
@@ -49,7 +51,7 @@ module.exports = function( grunt ) {
 				'!includes/**',
 				'!related-posts-by-taxonomy.php',
 				'!readme.txt'
-				]
+			]
 		},
 
 		// Copy the theme into the build directory
@@ -98,16 +100,30 @@ module.exports = function( grunt ) {
 			},
 		},
 
+		replace: {
+			replace_branch: {
+				src: [ 'readme.md' ],
+				overwrite: true, // overwrite matched source files
+				replacements: [ {
+					from: /related-posts-by-taxonomy.svg\?branch=(master|develop)/g,
+					to: "related-posts-by-taxonomy.svg?branch=<%= gitinfo.local.branch.current.name %>"
+				} ]
+			}
+		}
+
 	} );
+
 
 	grunt.registerTask( 'i18n', [ 'addtextdomain', 'makepot' ] );
 
+	grunt.registerTask( 'travis', [ 'gitinfo', 'replace:replace_branch' ] );
+
 	// Creates build
-	grunt.registerTask( 'build', [ 'version', 'clean:main', 'copy:main' ] );
+	grunt.registerTask( 'build', [ 'version', 'travis', 'clean:main', 'copy:main' ] );
 
 	// Removes ALL development files in the root directory
 	// !!! be careful with this
-    grunt.registerTask( 'release', [ 'version', 'clean:release', ] );
+	grunt.registerTask( 'release', [ 'version', 'clean:release', ] );
 
 	grunt.util.linefeed = '\n';
 
