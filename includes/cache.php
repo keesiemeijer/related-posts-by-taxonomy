@@ -299,10 +299,10 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				}
 
 				$posts = $_posts;
-				$this->cache_log[] = sprintf( __( 'Post ID %d - cache exists', 'related-posts-by-taxonomy' ), $args['post_id'] );
+				$this->cache_log[] = sprintf( 'Post ID %d - cache exists', $args['post_id'] );
 			} else {
 				$posts = array();
-				$this->cache_log[] = sprintf( __( 'Post ID %d - cache exists empty', 'related-posts-by-taxonomy' ), $args['post_id'] );
+				$this->cache_log[] = sprintf( 'Post ID %d - cache exists empty', $args['post_id'] );
 			}
 
 			// See km_rpbt_related_posts_by_taxonomy filter in includes/functions.php
