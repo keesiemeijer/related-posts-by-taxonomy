@@ -108,6 +108,13 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			return $args;
 		}
 
+		/**
+		 * Check if related posts are cached.
+		 *
+		 * @since 2.1
+		 * @param array   $args Array with widget or shortcode arguments
+		 * @return voie
+		 */
 		function check_cache( $args ) {
 
 			// returns only function args
@@ -125,7 +132,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				$defaults = km_rpbt_get_default_args();
 				$this->debug[ 'function args'] = array_intersect_key( $args , $defaults );
 				$this->debug[ 'cached taxonomies'] = isset( $current['taxonomies'] ) ? $current['taxonomies'] : '';
-				$this->debug[ 'cached taxonomies'] = str_replace(',', ', ', $this->debug[ 'cached taxonomies']);
+				$this->debug[ 'cached taxonomies'] = str_replace( ',', ', ', $this->debug[ 'cached taxonomies'] );
 				$this->debug[ 'cached terms'] = isset( $current['related_terms'] ) ? $current['related_terms'] : '';
 				$this->debug[ 'current post id'] = isset( $args['post_id'] ) ? $args['post_id'] : '';
 			} else {
