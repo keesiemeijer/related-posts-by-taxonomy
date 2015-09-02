@@ -1,34 +1,39 @@
 === Related Posts by Taxonomy ===
 Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
-Requires at least: 3.8
+Requires at least: 3.9
 Tested up to: 4.3
-Stable tag: 2.0.1
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This lightweight plugin lets you easily display related posts in a sidebar or after your posts as thumbnails, links, excerpts or full posts.
+This lightweight plugin lets you easily display related posts in a sidebar or after posts as thumbnails, links, excerpts or full posts.
 
 == Description ==
 
-Quickly increase your readers' engagement by adding related posts in the sidebar or after post content with a widget or shortcode. Posts with the **most terms in common** will display at the top. This plugin is capable of finding related posts in multiple **taxonomies** and **post types**. Include or exclude terms from the search for related posts. Change the look and feel by using your own templates in your (child) theme.
+Quickly increase your readers' engagement by adding related posts in the sidebar or after post content with a widget or shortcode.
+
+Posts with the **most terms in common** will display at the top! 
+
+This plugin is capable of finding related posts in multiple **taxonomies** and **post types**. Include or exclude terms from the search for related posts. Change the look and feel by using your own templates in your (child) theme.
 
 [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/)
 
 Plugin features:
 
-* **Efficient cached query** to get the related posts.
-* **Small Footprint**.
 * Widget and Shortcode.
 * Display related posts as **post thumbnails**, links, excerpts or full posts.
+* **Small Footprint**. Doesn't slow down your site!
+* Object **and** persistent cache to get the related posts.
 * Automatic display of related posts after the post content.
-* Search for related posts in **single** or **multiple** taxonomies and post types.
+* Search for related posts in single or multiple **taxonomies** and **post types**.
 * **Exclude** or **include** terms and posts.
 * **Limit the search** of related posts by date or number.
 * Use your own **HTML templates** for display of the related posts.
 * Use **plugin functions** in your theme templates to display related posts yourself.
-* Use Filters to **change the default behavior** of the plugin.
-* Extensive **plugin documentation**.
+* Use Filters to **change the default behavior** of the plugin. 
+* Extensive **[plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/)**.
+* Highly Adjustable!
 * Follows WordPress coding standards and plugin best practices.
 
 Follow this plugin on [GitHub](https://github.com/keesiemeijer/related-posts-by-taxonomy).
@@ -66,7 +71,7 @@ Attributes for the shortcode are:
 Example to show 10 related posts instead of the default 5.
 <pre><code>[related_posts_by_tax posts_per_page="10"]</code></pre>
 
-See the [documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/) for more information about the attributes and their defaults.
+See the [documentation](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#shortcode) for more information about these attributes.
 = Translations =
 * Dutch
 * French (by [Annie Stasse](http://www.artisanathai.fr))
@@ -94,7 +99,7 @@ Yes. For the widget see [this filter](http://keesiemeijer.wordpress.com/related-
 = Can I set my own defaults for the shortcode? =
 Yes. Review [Setting your own defaults for the shortcode](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/recipes/#shortcode_defaults) 
 
-= The widget only lets you choose "all taxonomies" or a single taxonomy. Can I make it use only the taxonomies I want? =
+= The widget only lets you choose "all taxonomies" or a single taxonomy. Can I make it only use the taxonomies I want? =
 
 Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) on how to do that.
 
@@ -106,6 +111,14 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.1.0 =
+* Enhancement
+	* Optimised related posts query.
+	* All round better validation of function arguments.
+	* Persistent cache out of beta. Now fully functioning.
+	* Cached data will be deleted after deleting the plugin from the wp-admin
+	* New opt-in cache log in the toolbar.
+
 = 2.0.1 =
 * Enhancement
 	* New option for the widget to randomise the related posts.
@@ -184,4 +197,4 @@ Updated unit tests to be more reliable.
 
 == Upgrade Notice ==
 = 2.0.1 =
-A new option is added to the widget to randomise the related posts. The query to get related posts is tweaked for performance. Tested with WordPress 4.3
+The persistant cache is now out of beta and fully functioning.

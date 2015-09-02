@@ -26,6 +26,16 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 		$this->tax_2_terms = $posts['tax2_terms'];
 	}
 
+	/**
+	 * Test if km_rpbt_plugin() returns an object.
+	 *
+	 * Used in the km_rpbt_related_posts_by_taxonomy() function to replace 'post_type = 'post' with 'post_type IN ( ... )
+	 */
+	function test_km_rpbt_plugin() {
+		$plugin = km_rpbt_plugin();
+		$this->assertTrue( $plugin instanceof Related_Posts_By_Taxonomy_Defaults );
+	}
+
 
 	/**
 	 * test related posts for post type post

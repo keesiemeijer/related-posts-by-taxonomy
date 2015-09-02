@@ -13,6 +13,9 @@
       		<file>tests/test-shortcode.php</file>
       		<file>tests/test-widget.php</file>
       		<file>tests/test-functions-thumbnail.php</file>
+      		<file>tests/test-debug.php</file>
+      		<file>tests/test-cache.php</file>
+      		<file>tests/test-uninstall.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>

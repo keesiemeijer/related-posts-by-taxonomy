@@ -11,6 +11,13 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 	 */
 	private $utils;
 
+	/**
+	 * Returned args from filter
+	 *
+	 * @var array
+	 */
+	private $args;
+
 
 	/**
 	 * Set up.
@@ -78,6 +85,43 @@ EOF;
 		$shortcode = ob_get_clean();
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );
+	}
+
+	/**
+	 * Test booleans in shortcode arguments.
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
+	 */
+	function test_shortcode_booleans() {
+
+		$create_posts = $this->utils->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// use filter to get arguments used for the related posts
+		add_filter( 'related_posts_by_taxonomy', array( $this, 'return_args' ), 10, 4 );
+
+		do_shortcode( '[related_posts_by_tax related="" post_id="' . $posts[0] . '"]'  );
+		$this->assertTrue( $this->args['related'] );
+		$this->args = null;
+
+		do_shortcode( '[related_posts_by_tax related="true" post_id="' . $posts[0] . '"]'  );
+		$this->assertTrue( $this->args['related'] );
+		$this->args = null;
+
+		do_shortcode( '[related_posts_by_tax related="gobbledygook" post_id="' . $posts[0] . '"]'  );
+		$this->assertFalse( $this->args['related'] );
+		$this->args = null;
+
+		do_shortcode( '[related_posts_by_tax related="false" post_id="' . $posts[0] . '"]'  );
+		$this->assertFalse( $this->args['related'] );
+		$this->args = null;
+	}
+
+
+	function return_args( $results, $post_id, $taxonomies, $args ) {
+		$this->args = $args;
+		return $results;
 	}
 
 }

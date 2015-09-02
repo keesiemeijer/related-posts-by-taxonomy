@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Related Posts By Taxonomy
-Version: 2.0.1
+Version: 2.1.0
 Plugin URI: http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/
 Description: Display related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the most terms in common will display at the top.
 Author: keesiemijer
@@ -50,21 +50,17 @@ if ( !function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		// the widget
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/widget.php';
 
-		// include files only needed on the front end
-		if ( !is_admin() ) {
+		// functions to retrieve related posts from the database
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions.php';
 
-			// functions to retrieve related posts from the database
-			require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions.php';
+		// functions for display of the related post thumbnail gallery
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions-thumbnail.php';
 
-			// functions for display of the related post thumbnail gallery
-			require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions-thumbnail.php';
+		// loads the different templates used for the widget and shortcode
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-loader.php';
 
-			// loads the different templates used for the widget and shortcode
-			require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-loader.php';
-
-			// displays the related posts from the shortcode
-			require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
-		}
+		// displays the related posts from the shortcode
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
 
 		add_shortcode( 'related_posts_by_tax', 'km_rpbt_related_posts_by_taxonomy_shortcode' );
 	}

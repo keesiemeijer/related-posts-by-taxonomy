@@ -24,15 +24,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		return array();
 	}
 
-	$defaults = array(
-		'post_types' => 'post', 'posts_per_page' => 5, 'order' => 'DESC',
-		'fields' => '', 'limit_posts' => -1, 'limit_year' => '',
-		'limit_month' => '', 'orderby' => 'post_date',
-		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
-		'post_thumbnail' => '', 'related' => true,
-	);
-
-	$args = wp_parse_args( $args, $defaults );
+	$args = km_rpbt_sanitize_args( $args );
 
 	$taxonomies = ( !empty( $taxonomies ) ) ? $taxonomies : array( 'category' );
 
@@ -42,12 +34,9 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	$terms = array();
 
-	// validates ids and returns an array
-	$included = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['include_terms'] );
-
-	if ( !$args['related'] && !empty( $included ) ) {
+	if ( !$args['related'] && !empty( $args['include_terms'] ) ) {
 		// related, use included term ids
-		$terms = $included;
+		$terms = $args['include_terms'];
 	} else {
 
 		// related and not related terms
@@ -58,16 +47,14 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		}
 
 		// only use included terms from the post terms
-		if ( $args['related'] && !empty( $included ) ) {
-			$terms = array_values( array_intersect( $included, $terms ) );
+		if ( $args['related'] && !empty( $args['include_terms'] ) ) {
+			$terms = array_values( array_intersect( $args['include_terms'], $terms ) );
 		}
 	}
 
 	// exclude terms
-	if ( empty( $included ) ) {
-		// validates ids and returns an array
-		$excluded = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['exclude_terms'] );
-		$terms    = array_values( array_diff( $terms , $excluded ) );
+	if ( empty( $args['include_terms'] ) ) {
+		$terms    = array_values( array_diff( $terms , $args['exclude_terms'] ) );
 	}
 
 	if ( empty( $terms ) ) {
@@ -83,40 +70,28 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		$term_ids_sql = ( isset( $terms[0] ) ) ? "tt.term_id = " .  $terms[0] : "tt.term_id = 0";
 	}
 
-	// validates ids and returns an array
-	$exclude_posts  = km_rpbt_related_posts_by_taxonomy_validate_ids( $args['exclude_posts'] );
-
 	// add current post ID to exclude
-	$exclude_posts[] = $post_id;
-	$exclude_posts   = array_unique( $exclude_posts );
+	$args['exclude_posts'][] = $post_id;
+	$args['exclude_posts']   = array_unique( $args['exclude_posts'] );
 
 	// post ids sql
 	$post_ids_sql = "AND $wpdb->posts.ID";
-	if ( count( $exclude_posts ) > 1 ) {
-		$post_ids_sql .= " NOT IN (" . implode( ', ', $exclude_posts ) .")";
+	if ( count( $args['exclude_posts'] ) > 1 ) {
+		$post_ids_sql .= " NOT IN (" . implode( ', ', $args['exclude_posts'] ) .")";
 	} else {
 		$post_ids_sql .= " != $post_id";
 	}
 
-	// post types
-	if ( !is_array( $args['post_types'] ) ) {
-		$args['post_types'] = explode( ',', (string) $args['post_types'] );
-	}
-
-	// sanitize post type names and remove duplicates
-	$post_types = array_unique( array_map( 'sanitize_key', (array) $args['post_types'] ) );
-	$post_types = array_filter( $post_types, 'post_type_exists' );
-
 	// default to post type post if no post types are found
-	$post_types = ( !empty( $post_types ) ) ? $post_types : array( 'post' );
+	$args['post_types'] = ( !empty( $args['post_types'] ) ) ? $args['post_types'] : array( 'post' );
 
 	// where sql (post types and post status)
-	if ( count( $post_types ) > 1 ) {
+	if ( count( $args['post_types'] ) > 1 ) {
 		$where         = get_posts_by_author_sql( 'post' );
-		$post_type_sql = "'" . implode( "', '", $post_types ) . "'";
+		$post_type_sql = "'" . implode( "', '", $args['post_types'] ) . "'";
 		$where_sql     = preg_replace( "/post_type = 'post'/", "post_type IN ($post_type_sql)", $where );
 	} else {
-		$where_sql = get_posts_by_author_sql( $post_types[0] );
+		$where_sql = get_posts_by_author_sql( $args['post_types'][0] );
 	}
 
 	$order_by_rand = false;
@@ -141,11 +116,10 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	// limit sql
 	$limit_sql = '';
-	if ( -1 !== (int) $args['limit_posts'] ) {
-		$limit_posts = absint( $args['limit_posts'] );
-		if ( $limit_posts ) {
-			$limit_sql = 'LIMIT 0,' . $limit_posts;
-		}
+	if ( -1 !== (int) $args['posts_per_page'] ) {
+		$posts_per_page = absint( $args['posts_per_page'] );
+		$posts_per_page = ( $posts_per_page ) ? $posts_per_page : 5;
+		$limit_sql = 'LIMIT 0,' . $posts_per_page;
 	}
 
 	$orderby = strtolower( (string) $args['orderby'] );
@@ -153,18 +127,33 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		$orderby = 'post_date';
 	}
 
+	$limit_posts_sql = '';
+	if ( ( -1 !== (int) $args['limit_posts'] ) && ( absint( $args['limit_posts'] ) ) ) {
+		$limit_posts = absint( $args['limit_posts'] );
+
+		$limit_args = array(
+			'posts_per_page' => 1,
+			'post_types'     => $args['post_types'],
+			'offset'         => $limit_posts,
+		);
+		$limit_post = get_posts( $limit_args );
+
+		if ( isset( $limit_post[0]->{$orderby} ) ) {
+			$limit_date = $limit_post[0]->{$orderby};
+			$limit_posts_sql  = " AND $wpdb->posts.$orderby >= '$limit_date'";
+		}
+	}
+
 	// limit date sql
 	$limit_date_sql = '';
-	$limit_year = absint( $args['limit_year'] );
-	$limit_month = absint( $args['limit_month'] );
-	if ( $limit_year || $limit_month  ) {
+	if ( $args['limit_year'] || $args['limit_month'] ) {
 		// year takes precedence over month
-		$time_limit  = ( $limit_year ) ? $limit_year : $limit_month;
-		$time_string = ( $limit_year ) ? 'year' : 'month';
+		$time_limit  = ( $args['limit_year'] ) ? $args['limit_year'] : $args['limit_month'];
+		$time_string = ( $args['limit_year'] ) ? 'year' : 'month';
 		$last_date = date( 'Y-m-t', strtotime( "now" ) );
 		$first_date  = date( 'Y-m-d', strtotime( "$last_date -$time_limit $time_string" ) );
 		$limit_date_sql    = " AND $wpdb->posts.$orderby > '$first_date 23:59:59' AND $wpdb->posts.$orderby <= '$last_date 23:59:59'";
-		$limit_sql = ''; // limit by date takes precedence over limit by posts
+		$limit_posts_sql = ''; // limit by date takes precedence over limit by posts
 	}
 
 	$order_by_sql = '';
@@ -174,8 +163,11 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		if ( $args['related'] ) {
 			// sql for related terms count
 			$select_sql .= " , count(distinct tt.term_taxonomy_id) as termcount";
+			$order_by_sql .= "termcount {$order_sql}, ";
 		}
-		$order_by_sql = "$wpdb->posts.$orderby";
+		$order_by_sql .= "$wpdb->posts.$orderby {$order_sql}";
+	} else {
+		$order_by_sql .= "RAND()";
 	}
 
 	// post thumbnail sql
@@ -214,7 +206,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	 */
 	$join_sql  = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_join', array( $join_sql, $post_id, $taxonomies, $args ) );
 
-	$where_sql = "{$where_sql} {$post_ids_sql}{$limit_date_sql} AND ( $term_ids_sql ){$meta_where_sql}";
+	$where_sql = "{$where_sql} {$post_ids_sql}{$limit_date_sql} AND ( $term_ids_sql ){$meta_where_sql}{$limit_posts_sql}";
 
 	/**
 	 * Filter the WHERE clause of the query.
@@ -233,8 +225,6 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	 * @param string  $groupby The GROUP BY clause of the query.
 	 */
 	$group_by_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_groupby', array( $group_by_sql, $post_id, $taxonomies, $args ) );
-
-	$order_by_sql = "{$order_by_sql} {$order_sql}";
 
 	/**
 	 * Filter the ORDER BY clause of the query.
@@ -266,9 +256,12 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	 */
 	$clauses = (array) apply_filters_ref_array( 'related_posts_by_taxonomy_posts_clauses', array( compact( $pieces ), $post_id, $taxonomies, $args ) );
 
-	foreach ( $pieces as $piece ) {
-		$$piece = isset( $clauses[ $piece ] ) ? $clauses[ $piece ] : '';
-	}
+	$select_sql   = isset( $clauses['select_sql'] )   ? $clauses['select_sql']   : '';
+	$join_sql     = isset( $clauses['join_sql'] )     ? $clauses['join_sql']     : '';
+	$where_sql    = isset( $clauses['where_sql'] )    ? $clauses['where_sql']    : '';
+	$group_by_sql = isset( $clauses['group_by_sql'] ) ? $clauses['group_by_sql'] : '';
+	$order_by_sql = isset( $clauses['order_by_sql'] ) ? $clauses['order_by_sql'] : '';
+	$limit_sql    = isset( $clauses['limit_sql' ] )    ? $clauses['limit_sql']    : '';
 
 	if ( !empty( $group_by_sql ) ) {
 		$group_by_sql = 'GROUP BY ' . $group_by_sql;
@@ -355,12 +348,34 @@ function km_rpbt_related_posts_by_taxonomy_cmp( $item1, $item2 ) {
 
 
 /**
+ * Validate post types
+ *
+ * @since 2.1
+ *
+ * @param string|array $post_types Comma separated list or array with post type names
+ * @return array Array with validated post types.
+ */
+function km_rpbt_validate_post_types( $post_types = '' ) {
+
+	if ( !is_array( $post_types ) ) {
+		$post_types = explode( ',', (string) $post_types );
+	}
+
+	// sanitize post type names and remove duplicates
+	$post_types = array_unique( array_map( 'sanitize_key', (array) $post_types ) );
+	$post_types = array_filter( $post_types, 'post_type_exists' );
+
+	return $post_types;
+}
+
+
+/**
  * Validates ids.
  * Checks if ids is a comma separated string or an array with ids
  *
  * @since 0.2
  *
- * @param string|array Comma seperated list or array with ids
+ * @param string|array Comma separated list or array with ids
  * @return array Array with postive integers
  */
 function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
@@ -376,4 +391,165 @@ function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
 	$ids = array_filter( array_map( 'intval', (array) $ids ) );
 
 	return array_values( array_unique( $ids ) );
+}
+
+
+/**
+ * Returns default arguments.
+ *
+ * @since 2.1
+ *
+ * @return array Array with default arguments.
+ */
+function km_rpbt_get_default_args() {
+
+	return array(
+		'post_types' => 'post', 'posts_per_page' => 5, 'order' => 'DESC',
+		'fields' => '', 'limit_posts' => -1, 'limit_year' => '',
+		'limit_month' => '', 'orderby' => 'post_date',
+		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
+		'post_thumbnail' => false, 'related' => true,
+	);
+}
+
+
+/**
+ * Returns sanitized arguments.
+ *
+ * @since 2.1
+ * @return array Array with sanitized arguments.
+ */
+function km_rpbt_sanitize_args( $args, $context = '' ) {
+
+	$defaults = km_rpbt_get_default_args();
+	$args     = wp_parse_args( $args, $defaults );
+	$types    = array( 'post_types' );
+
+	// Arrays| Strings
+	if ( isset( $args['taxonomies'] ) ) {
+		$plugin  = km_rpbt_plugin();
+		$types[] = 'taxonomies';
+
+		if ( $plugin && ( $args['taxonomies'] === $plugin->all_tax ) ) {
+			$args['taxonomies'] = array_keys( $plugin->taxonomies );
+		}
+
+	}
+
+	$post_types         = km_rpbt_validate_post_types( $args['post_types'] );
+	$args['post_types'] = ( !empty( $post_types ) ) ? $post_types : array( 'post' );
+
+	foreach ( $types as $type ) {
+
+		// Return an array
+		if ( !is_array( $args[ $type ] ) ) {
+			$args[ $type ] = explode( ',', (string) $args[ $type ] );
+		}
+
+		$args[ $type ] = array_map( 'trim', $args[ $type ] );
+
+		if ( 'cache' === $context ) {
+			// Create sorted comma separated string for cache.
+			sort( $args[ $type ] );
+			$args[ $type ] = implode( ',', $args[ $type ] );
+		}
+	}
+
+	$ids = array( 'exclude_terms', 'include_terms', 'exclude_posts' );
+	foreach ( $ids as $id ) {
+		$args[ $id ] = km_rpbt_related_posts_by_taxonomy_validate_ids( $args[ $id ] );
+		if ( 'cache' === $context ) {
+			// Create sorted comma separated string for cache.
+			sort( $args[ $id ] );
+			$args[ $id ] = implode( ',', $args[ $id ] );
+		}
+	}
+
+	// Strings
+	$args['fields']  = is_string( $args['fields'] ) ? $args['fields'] : '';
+	$args['orderby'] = is_string( $args['orderby'] ) ? $args['orderby'] : '';
+	$args['order']   = is_string( $args['order'] ) ? $args['order'] : '';
+
+	// Integers
+	$args['limit_year']     = absint( $args['limit_year'] );
+	$args['limit_month']    = absint( $args['limit_month'] );
+	$args['limit_posts']    = (int) $args['limit_posts'];
+	$args['posts_per_page'] = (int) $args['posts_per_page'];
+
+	if ( isset( $args['post_id'] ) ) {
+		$args['post_id'] = absint( $args['post_id'] );
+	}
+
+	// Booleans
+	// true, 1, "1", "true", "on", "yes". Everything else return false
+	$args['related']        = (bool) filter_var( $args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	$args['post_thumbnail'] = (bool) filter_var( $args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+
+	if ( 'cache' === $context ) {
+		ksort( $args );
+	}
+
+	return $args;
+}
+
+
+/**
+ * Public function to cache related posts.
+ * Uses the same arguments as the km_rpbt_related_posts_by_taxonomy() function.
+ *
+ * @since 2.1
+ * @param int     $post_id    The post id to cache related posts for.
+ * @param array|string $taxonomies The taxonomies to cache related posts from
+ * @param array|string $args       Optional. Cache arguments
+ * @return array Array Array with cached related posts objects or false if no posts where cached.
+ */
+function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $args = '' ) {
+
+	$plugin = km_rpbt_plugin();
+
+	// Check if the cache class is instantiated.
+	if ( $plugin && !( $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache ) ) {
+		return false;
+	}
+
+	// Add post id and taxonomies to arguments
+	$args['post_id']    = $post_id;
+	$args['taxonomies'] = $taxonomies;
+
+	// Cache related posts if not in cache.
+	return $plugin->cache->get_related_posts( $args ); ;
+}
+
+
+/**
+ * Public function to flush the persistent cache.
+ *
+ * @since 2.1
+ * @return int|bool Returns number of deleted rows or false on failure.
+ */
+function km_rpbt_flush_cache() {
+
+	$plugin = km_rpbt_plugin();
+
+	// Check if the cache class is instantiated.
+	if ( $plugin && ( $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache ) ) {
+		return $plugin->cache->flush_cache();
+	}
+
+	return false;
+}
+
+
+/**
+ * Returns plugin defaults instance or false.
+ *
+ * @since 2.1
+ * @return Object|false Related_Posts_By_Taxonomy_Defaults instance or false.
+ */
+function km_rpbt_plugin() {
+	if ( class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
+		return Related_Posts_By_Taxonomy_Defaults::get_instance();
+	}
+
+	return false;
 }
