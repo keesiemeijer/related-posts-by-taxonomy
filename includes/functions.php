@@ -146,8 +146,6 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	// limit date sql
 	$limit_date_sql = '';
-	//$limit_year = absint( $args['limit_year'] );
-	//$limit_month = absint( $args['limit_month'] );
 	if ( $args['limit_year'] || $args['limit_month'] ) {
 		// year takes precedence over month
 		$time_limit  = ( $args['limit_year'] ) ? $args['limit_year'] : $args['limit_month'];
@@ -527,7 +525,7 @@ function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $a
  * Public function to flush the persistent cache.
  *
  * @since 2.1
- * @return bool True if cache was flushed.
+ * @return int|bool Returns number of deleted rows or false on failure.
  */
 function km_rpbt_flush_cache() {
 
