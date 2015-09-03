@@ -114,7 +114,7 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 		$_args['taxonomies'] = $taxonomies;
 		$_sanitize    = km_rpbt_sanitize_args( $_args );
 		$_shortcode   = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
-		$_sc_args     = km_rpbt_get_shortcode_defaults();
+		$_sc_args     = km_rpbt_get_shortcode_atts();
 		$_sc_args['post_id'] = $posts[0];
 		$_sc_validate = km_rpbt_validate_shortcode_atts( $_sc_args );
 		$_posts       = get_posts();
