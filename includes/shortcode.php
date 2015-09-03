@@ -33,7 +33,16 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		return '';
 	}
 
-	$defaults = km_rpbt_get_shortcode_defaults();
+	$defaults = km_rpbt_get_shortcode_atts();
+
+	/**
+	 * Filter default attributes.
+	 *
+	 * @since 0.2.1
+	 *
+	 * @param array   $defaults See $defaults above
+	 */
+	$defaults = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
 
 	/* Can be filtered in WordPress > 3.5 (hook: shortcode_atts_related_posts_by_tax) */
 	$rpbt_args = shortcode_atts( $defaults, $rpbt_args, 'related_posts_by_tax' );
@@ -47,7 +56,6 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	 * @param array   $rpbt_args See $defaults above
 	 */
 	$rpbt_args = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $rpbt_args );
-
 
 	/* Validate once more */
 	$rpbt_args = km_rpbt_validate_shortcode_atts( $rpbt_args );
@@ -109,7 +117,7 @@ function km_rpbt_shortcode_output( $related_posts, $args ) {
 	}
 
 	/* make sure all defaults are present */
-	$args = array_merge( km_rpbt_get_shortcode_defaults(), $args );
+	$args = array_merge( km_rpbt_get_shortcode_atts(), $args );
 
 	$rpbt_shortcode = $shortcode = '';
 
@@ -157,7 +165,7 @@ function km_rpbt_validate_shortcode_atts( $args ) {
 	$plugin = km_rpbt_plugin();
 
 	/* make sure all defaults are present */
-	$args = array_merge( km_rpbt_get_shortcode_defaults(), $args );
+	$args = array_merge( km_rpbt_get_shortcode_atts(), $args );
 
 	// default to shortcode
 	$args['type']  = 'shortcode';
@@ -193,13 +201,14 @@ function km_rpbt_validate_shortcode_atts( $args ) {
 /**
  * Returns default shortcode atts
  *
+ * @since 2.1
  * @return array Array with default shortcode atts
  */
-function km_rpbt_get_shortcode_defaults() {
+function km_rpbt_get_shortcode_atts() {
 
 	$plugin = km_rpbt_plugin();
 
-	$defaults =  array(
+	$args =  array(
 		'post_id' => '', 'taxonomies' => $plugin->all_tax,
 		'before_shortcode' => '<div class="rpbt_shortcode">', 'after_shortcode' => '</div>',
 		'before_title' => '<h3>', 'after_title' => '</h3>',
@@ -210,16 +219,5 @@ function km_rpbt_get_shortcode_defaults() {
 	);
 
 	/* add default args to shortcode args */
-	$defaults = array_merge( km_rpbt_get_default_args(), $defaults );
-
-	/**
-	 * Filter default attributes.
-	 *
-	 * @since 0.2.1
-	 *
-	 * @param array   $defaults See $defaults above
-	 */
-	$defaults_filter = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
-
-	return array_merge( $defaults, $defaults_filter );
+	return array_merge( km_rpbt_get_default_args(), $args );
 }
