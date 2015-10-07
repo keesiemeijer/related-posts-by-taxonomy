@@ -26,6 +26,11 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+	function tearDown(){
+		// use tearDown for WP < 4.0
+		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
+	}
+
 
 	function setup_cache() {
 		// Activate cache

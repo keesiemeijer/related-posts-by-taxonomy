@@ -24,6 +24,14 @@ class KM_RPBT_Gallery_Tests extends WP_UnitTestCase {
 	}
 
 
+	function tearDown(){
+		// use tearDown for WP < 4.0
+		remove_filter( 'use_default_gallery_style', '__return_false', 99 );
+		remove_filter( 'use_default_gallery_style', '__return_true', 99 );
+		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
+	}
+
+
 	/**
 	 * Test output from gallery.
 	 *
@@ -117,6 +125,8 @@ EOF;
 		$gallery_args = $this->setup_gallery();
 		extract( $gallery_args );
 		$args['caption'] = '';
+
+		//
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
 		ob_start();
 		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post )  );
