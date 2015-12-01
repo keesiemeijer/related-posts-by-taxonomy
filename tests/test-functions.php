@@ -347,4 +347,88 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
 
+
+	/**
+	 * Test ascending order.
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 */
+	function test_order_asc() {
+		$this->create_posts();
+		$posts = $this->posts;
+
+		$taxonomies = array( 'category', 'post_tag' );
+		$args       = array( 'fields' => 'ids', 'order' => 'asc' );
+
+		// test post 0
+		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $posts[2], $posts[1],  $posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test unrelated ascending order.
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 */
+	function test_order_asc_non_related() {
+		$this->create_posts();
+		$posts = $this->posts;
+
+		$taxonomies = array( 'category', 'post_tag' );
+		$args       = array( 'fields' => 'ids', 'order' => 'asc', 'related' => false );
+
+		// test post 0
+		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $posts[3], $posts[2],  $posts[1] ), $rel_post0 );
+	}
+
+
+	/**
+	 * Test random order of posts.
+	 * Todo: Find out how to test random results and apply
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 */
+	function test_order_rand() {
+		$this->create_posts();
+		$posts = $this->posts;
+
+		$taxonomies = array( 'category', 'post_tag' );
+		$args       = array( 'fields' => 'ids', 'order' => 'rand' );
+
+		// test post 0
+		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+
+		$this->assertContains( $posts[1], $rel_post0  );
+		$this->assertContains( $posts[2], $rel_post0  );
+		$this->assertContains( $posts[3], $rel_post0  );
+		$this->assertEquals( count( $rel_post0 ), 3 );
+	}
+
+
+	/**
+	 * Test order by post_modified.
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 */
+	function test_orderby_post_modified() {
+		$this->create_posts();
+		$posts = $this->posts;
+
+		$mypost = array(
+			'ID' =>  $this->posts[2],
+			'post_content' => 'new content',
+		);
+
+		// Update post_modified
+		wp_update_post( $mypost );
+
+		$taxonomies = array( 'category', 'post_tag' );
+		$args       = array( 'fields' => 'ids', 'orderby' => 'post_modified' );
+		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+
+		// test post 0
+		$this->assertEquals( array( $posts[2], $posts[1],  $posts[3] ), $rel_post0 );
+	}
+
 }
