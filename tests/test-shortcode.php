@@ -56,7 +56,6 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 	 * Test output from shortcode.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
-	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function test_shortcode_output() {
 
@@ -91,7 +90,6 @@ EOF;
 	 * Test booleans in shortcode arguments.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
-	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function test_shortcode_booleans() {
 

@@ -36,7 +36,6 @@ class KM_RPBT_Gallery_Tests extends WP_UnitTestCase {
 	 * Test output from gallery.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
-	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function test_shortcode_no_gallery_style() {
 
@@ -68,7 +67,6 @@ EOF;
 	 * Test output from gallery with gallery style.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
-	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function test_shortcode_with_gallery_style() {
 
@@ -118,7 +116,6 @@ EOF;
 	 * Test output gallery with no caption.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
-	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function test_shortcode_gallery_no_caption() {
 
@@ -149,7 +146,6 @@ EOF;
 	 * Sets up posts for the gallery
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts
-	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function setup_gallery() {
 

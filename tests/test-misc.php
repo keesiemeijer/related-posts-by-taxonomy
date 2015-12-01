@@ -63,16 +63,6 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 
 
 	/**
-	 * Skip tests if the constant KM_RPBT_TEST_OUTPUT is set to false.
-	 */
-	function test_skip_output_tests() {
-		if ( defined( 'KM_RPBT_TEST_OUTPUT' ) && !KM_RPBT_TEST_OUTPUT ) {
-			$this->markTestSkipped();
-		}
-	}
-
-
-	/**
 	 * Test if default WordPress taxonomies exist.
 	 */
 	function test_get_post_taxonomies() {
@@ -95,7 +85,6 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 	 * Tests for functions that should not output anything.
 	 *
 	 * @depends test_create_posts_with_terms
-	 * @depends test_skip_output_tests
 	 */
 	function test_empty_output() {
 

@@ -66,7 +66,6 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 	 * Test output from widget.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
-	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function test_rpbt_widget_output() {
 
