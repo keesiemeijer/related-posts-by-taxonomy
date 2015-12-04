@@ -128,4 +128,23 @@ class RPBT_Test_Utils {
 		return $wpdb->get_var( $cache_query );
 	}
 
+	function create_image() {
+		add_theme_support( 'post-thumbnails' );
+
+		// create attachment
+		$filename = ( DIR_TESTDATA.'/images/test-image.jpg' );
+		$contents = file_get_contents( $filename );
+		$upload = wp_upload_bits( basename( $filename ), null, $contents );
+		$this->assertTrue( empty( $upload['error'] ) );
+
+		$attachment = array(
+			'post_title' => 'Post Thumbnail',
+			'post_type' => 'attachment',
+			'post_mime_type' => 'image/jpeg',
+			'guid' => $upload['url']
+		);
+
+		return wp_insert_attachment( $attachment, $upload['file'] );
+	}
+
 }
