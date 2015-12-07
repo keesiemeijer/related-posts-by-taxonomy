@@ -26,6 +26,11 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+	function tearDown(){
+		// use tearDown for WP < 4.0
+		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
+	}
+
 
 	function setup_cache() {
 		// Activate cache
@@ -236,7 +241,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		global $wpdb;
 
 		$this->setup_cache();
-		$attachment_id = $this->create_image();
+		$attachment_id = $this->utils->create_image();
 
 		$create_posts = $this->utils->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
@@ -296,26 +301,6 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 		// Cache should be empty.
 		$this->assertEmpty( $this->utils->get_cache_meta_key() );
-	}
-
-
-	function create_image() {
-		add_theme_support( 'post-thumbnails' );
-
-		// create attachment
-		$filename = ( DIR_TESTDATA.'/images/test-image.jpg' );
-		$contents = file_get_contents( $filename );
-		$upload = wp_upload_bits( basename( $filename ), null, $contents );
-		$this->assertTrue( empty( $upload['error'] ) );
-
-		$attachment = array(
-			'post_title' => 'Post Thumbnail',
-			'post_type' => 'attachment',
-			'post_mime_type' => 'image/jpeg',
-			'guid' => $upload['url']
-		);
-
-		return wp_insert_attachment( $attachment, $upload['file'] );
 	}
 
 }

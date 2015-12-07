@@ -24,11 +24,18 @@ class KM_RPBT_Gallery_Tests extends WP_UnitTestCase {
 	}
 
 
+	function tearDown() {
+		// use tearDown for WP < 4.0
+		remove_filter( 'use_default_gallery_style', '__return_false', 99 );
+		remove_filter( 'use_default_gallery_style', '__return_true', 99 );
+		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
+	}
+
+
 	/**
 	 * Test output from gallery.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
-	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function test_shortcode_no_gallery_style() {
 
@@ -60,7 +67,6 @@ EOF;
 	 * Test output from gallery with gallery style.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
-	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function test_shortcode_with_gallery_style() {
 
@@ -110,13 +116,14 @@ EOF;
 	 * Test output gallery with no caption.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
-	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function test_shortcode_gallery_no_caption() {
 
 		$gallery_args = $this->setup_gallery();
 		extract( $gallery_args );
 		$args['caption'] = '';
+
+		//
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
 		ob_start();
 		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post )  );
@@ -136,10 +143,80 @@ EOF;
 
 
 	/**
+	 * Test the output of a regular WordPress gallery.
+	 *
+	 * If anything changes in the WordPress gallery, change it in the Related posts gallery.
+	 */
+	function test_wordpress_gallery() {
+
+
+		$ids = '';
+		foreach ( range( 1, 3 ) as $i ) {
+			$attachment_id = $this->factory->attachment->create_object( "image$i.jpg", 0, array(
+					'post_mime_type' => 'image/jpeg',
+					'post_type' => 'attachment',
+					'post_excerpt' => "excerpt $i",
+				) );
+			$metadata = array_merge( array( "file" => "image$i.jpg" ), array( 'width' => 100, 'height' => 100, 'sizes' => '' ) );
+			wp_update_attachment_metadata( $attachment_id, $metadata );
+			$ids .= $attachment_id . ',';
+		}
+
+		$blob =<<<BLOB
+[gallery ids="$ids"]
+BLOB;
+
+		$content = do_shortcode( $blob );
+
+		$expected = <<<EOF
+<style type='text/css'>
+	#gallery-1 {
+		margin: auto;
+	}
+	#gallery-1 .gallery-item {
+		float: left;
+		margin-top: 10px;
+		text-align: center;
+		width: 33%;
+	}
+	#gallery-1 img {
+		border: 2px solid #cfcfcf;
+	}
+	#gallery-1 .gallery-caption {
+		margin-left: 0;
+	}
+	/* see gallery_shortcode() in wp-includes/media.php */
+</style>
+<div id='gallery-1' class='gallery galleryid-0 gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+	<dt class='gallery-icon landscape'>
+		<a href='http://example.org/?attachment_id=141'><img width="100" height="100" src="http://example.org/wp-content/uploads/image1.jpg" class="attachment-thumbnail" alt="excerpt 1" aria-describedby="gallery-1-141" /></a>
+	</dt>
+		<dd class='wp-caption-text gallery-caption' id='gallery-1-141'>
+		excerpt 1
+		</dd></dl><dl class='gallery-item'>
+	<dt class='gallery-icon landscape'>
+		<a href='http://example.org/?attachment_id=142'><img width="100" height="100" src="http://example.org/wp-content/uploads/image2.jpg" class="attachment-thumbnail" alt="excerpt 2" aria-describedby="gallery-1-142" /></a>
+	</dt>
+		<dd class='wp-caption-text gallery-caption' id='gallery-1-142'>
+		excerpt 2
+		</dd></dl><dl class='gallery-item'>
+	<dt class='gallery-icon landscape'>
+		<a href='http://example.org/?attachment_id=143'><img width="100" height="100" src="http://example.org/wp-content/uploads/image3.jpg" class="attachment-thumbnail" alt="excerpt 3" aria-describedby="gallery-1-143" /></a>
+	</dt>
+		<dd class='wp-caption-text gallery-caption' id='gallery-1-143'>
+		excerpt 3
+		</dd></dl><br style="clear: both" />
+</div>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $content )  );
+	}
+
+
+	/**
 	 * Sets up posts for the gallery
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts
-	 * @depends KM_RPBT_Misc_Tests::test_skip_output_tests
 	 */
 	function setup_gallery() {
 

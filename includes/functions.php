@@ -116,32 +116,16 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	// limit sql
 	$limit_sql = '';
-	if ( -1 !== (int) $args['posts_per_page'] ) {
-		$posts_per_page = absint( $args['posts_per_page'] );
-		$posts_per_page = ( $posts_per_page ) ? $posts_per_page : 5;
-		$limit_sql = 'LIMIT 0,' . $posts_per_page;
-	}
+	if ( -1 !== (int) $args['limit_posts'] ) {
+		$limit_posts = absint( $args['limit_posts'] );
+		if ( $limit_posts ) {
+			$limit_sql = 'LIMIT 0,' . $limit_posts;
+	    }
+    }
 
 	$orderby = strtolower( (string) $args['orderby'] );
 	if ( !in_array( $orderby, array( 'post_date', 'post_modified' ) ) ) {
 		$orderby = 'post_date';
-	}
-
-	$limit_posts_sql = '';
-	if ( ( -1 !== (int) $args['limit_posts'] ) && ( absint( $args['limit_posts'] ) ) ) {
-		$limit_posts = absint( $args['limit_posts'] );
-
-		$limit_args = array(
-			'posts_per_page' => 1,
-			'post_types'     => $args['post_types'],
-			'offset'         => $limit_posts,
-		);
-		$limit_post = get_posts( $limit_args );
-
-		if ( isset( $limit_post[0]->{$orderby} ) ) {
-			$limit_date = $limit_post[0]->{$orderby};
-			$limit_posts_sql  = " AND $wpdb->posts.$orderby >= '$limit_date'";
-		}
 	}
 
 	// limit date sql
@@ -153,7 +137,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		$last_date = date( 'Y-m-t', strtotime( "now" ) );
 		$first_date  = date( 'Y-m-d', strtotime( "$last_date -$time_limit $time_string" ) );
 		$limit_date_sql    = " AND $wpdb->posts.$orderby > '$first_date 23:59:59' AND $wpdb->posts.$orderby <= '$last_date 23:59:59'";
-		$limit_posts_sql = ''; // limit by date takes precedence over limit by posts
+		$limit_sql = '';
 	}
 
 	$order_by_sql = '';
@@ -163,12 +147,9 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		if ( $args['related'] ) {
 			// sql for related terms count
 			$select_sql .= " , count(distinct tt.term_taxonomy_id) as termcount";
-			$order_by_sql .= "termcount {$order_sql}, ";
 		}
-		$order_by_sql .= "$wpdb->posts.$orderby {$order_sql}";
-	} else {
-		$order_by_sql .= "RAND()";
-	}
+		$order_by_sql = "$wpdb->posts.$orderby";
+	} 
 
 	// post thumbnail sql
 	$meta_join_sql = $meta_where_sql = '';
@@ -206,7 +187,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	 */
 	$join_sql  = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_join', array( $join_sql, $post_id, $taxonomies, $args ) );
 
-	$where_sql = "{$where_sql} {$post_ids_sql}{$limit_date_sql} AND ( $term_ids_sql ){$meta_where_sql}{$limit_posts_sql}";
+	$where_sql = "{$where_sql} {$post_ids_sql}{$limit_date_sql} AND ( $term_ids_sql ){$meta_where_sql}";
 
 	/**
 	 * Filter the WHERE clause of the query.
@@ -225,6 +206,8 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	 * @param string  $groupby The GROUP BY clause of the query.
 	 */
 	$group_by_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_groupby', array( $group_by_sql, $post_id, $taxonomies, $args ) );
+
+	$order_by_sql = "{$order_by_sql} {$order_sql}";
 
 	/**
 	 * Filter the ORDER BY clause of the query.

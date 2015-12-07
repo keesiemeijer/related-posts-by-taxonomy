@@ -2,7 +2,7 @@
 
 Version:           2.1.0  
 Requires at least: 3.8  
-Tested up to:      4.3  
+Tested up to:      4.4  
 
 ### Welcome to the GitHub repository for this plugin ###
 This is the development repository for the WordPress plugin [Related Posts by Taxonomy](https://wordpress.org/plugins/related-posts-by-taxonomy).
@@ -60,7 +60,7 @@ This is a developer's portal for Related Posts by Taxonomy and should _not_ be u
 ### Translations ###
 Dutch  
 French (by [Annie Stasse](http://www.artisanathai.fr))  
-
+Spanish (by [msoravilla](http://www.ludobooks.com/))  
 ## Contributions ##
 
 There are various ways you can contribute:
