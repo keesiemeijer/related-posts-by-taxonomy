@@ -2,7 +2,7 @@
 Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 3.9
-Tested up to: 4.3
+Tested up to: 4.4
 Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,4 +198,4 @@ Updated unit tests to be more reliable.
 
 == Upgrade Notice ==
 = 2.0.1 =
-The persistant cache is now out of beta and fully functioning.
+Tested up to WordPress 4.4. and the persistant cache is now out of beta and fully functioning.

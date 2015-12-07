@@ -92,6 +92,15 @@ module.exports = function( grunt ) {
 				},
 				src: [ 'readme.txt' ]
 			},
+			tested_up_to: {
+				options: {
+					pkg: {
+						"version": "<%= pkg.tested_up_to %>"
+					},
+					prefix: 'Tested up to: *'
+				},
+				src: [ 'readme.txt', 'readme.md' ]
+			},
 			plugin: {
 				options: {
 					prefix: 'Version: *'
