@@ -75,7 +75,7 @@ See the [documentation](https://keesiemeijer.wordpress.com/related-posts-by-taxo
 = Translations =
 * Dutch
 * French (by [Annie Stasse](http://www.artisanathai.fr))
-* Spanish (by [msoravilla](www.ludobooks.com))
+* Spanish (by [msoravilla](http://www.ludobooks.com))
 
 == Installation ==
 * Unzip the <code>related-posts-by-taxonomy.zip</code> folder.
