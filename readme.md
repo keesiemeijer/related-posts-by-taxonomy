@@ -60,7 +60,7 @@ This is a developer's portal for Related Posts by Taxonomy and should _not_ be u
 ### Translations ###
 Dutch  
 French (by [Annie Stasse](http://www.artisanathai.fr))  
-
+Spanish (by [msoravilla](www.ludobooks.com))  
 ## Contributions ##
 
 There are various ways you can contribute:
