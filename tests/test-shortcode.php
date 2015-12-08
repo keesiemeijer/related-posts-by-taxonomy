@@ -38,6 +38,44 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		$this->assertArrayHasKey( 'related_posts_by_tax', $shortcode_tags );
 	}
 
+	/**
+	 * Test if atts are not changed due to debugging.
+	 */
+	function test_km_rpbt_get_shortcode_atts() {
+
+		$expected =  array(
+			'post_id' => '', 'taxonomies' => 'all',
+			'before_shortcode' => '<div class="rpbt_shortcode">', 'after_shortcode' => '</div>',
+			'before_title' => '<h3>', 'after_title' => '</h3>',
+			'title' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
+			'format' => 'links',
+			'image_size' => 'thumbnail', 'columns' => 3,
+			'caption' => 'post_title', 'type' => 'shortcode',
+		);
+
+
+		// km_rpbt_get_default_args() is also tested in test-functions.php
+		$expected = array_merge( km_rpbt_get_default_args(), $expected );
+
+		$atts = km_rpbt_get_shortcode_atts();
+		$this->assertEquals( $expected, $atts );
+	}
+
+
+	/**
+	 * Test validation of atts.
+	 *
+	 * todo: Needs more testing
+	 */
+	function test_km_rpbt_validate_shortcode_atts() {
+
+		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => '' ) );
+		$this->assertEquals( array( 'post' ), $atts['post_types'] );
+
+		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => 'post' ) );
+		$this->assertEquals( 'post', $atts['post_types'] );
+	}
+
 
 	/**
 	 * Test if the shortcode_hide_empty filter is set to true (by default).
