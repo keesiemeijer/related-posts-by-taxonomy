@@ -149,8 +149,7 @@ EOF;
 	 */
 	function test_wordpress_gallery() {
 
-
-		$ids = '';
+		$ids = array();
 		foreach ( range( 1, 3 ) as $i ) {
 			$attachment_id = $this->factory->attachment->create_object( "image$i.jpg", 0, array(
 					'post_mime_type' => 'image/jpeg',
@@ -159,11 +158,15 @@ EOF;
 				) );
 			$metadata = array_merge( array( "file" => "image$i.jpg" ), array( 'width' => 100, 'height' => 100, 'sizes' => '' ) );
 			wp_update_attachment_metadata( $attachment_id, $metadata );
-			$ids .= $attachment_id . ',';
+			$ids[] = $attachment_id;
+
 		}
 
+		$ids_str = implode(',', $ids);
+
+
 		$blob =<<<BLOB
-[gallery ids="$ids"]
+[gallery ids="$ids_str"]
 BLOB;
 
 		$content = do_shortcode( $blob );
@@ -189,21 +192,21 @@ BLOB;
 </style>
 <div id='gallery-1' class='gallery galleryid-0 gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
 	<dt class='gallery-icon landscape'>
-		<a href='http://example.org/?attachment_id=141'><img width="100" height="100" src="http://example.org/wp-content/uploads/image1.jpg" class="attachment-thumbnail" alt="excerpt 1" aria-describedby="gallery-1-141" /></a>
+		<a href='http://example.org/?attachment_id=$ids[0]'><img width="100" height="100" src="http://example.org/wp-content/uploads/image1.jpg" class="attachment-thumbnail" alt="excerpt 1" aria-describedby="gallery-1-$ids[0]" /></a>
 	</dt>
-		<dd class='wp-caption-text gallery-caption' id='gallery-1-141'>
+		<dd class='wp-caption-text gallery-caption' id='gallery-1-$ids[0]'>
 		excerpt 1
 		</dd></dl><dl class='gallery-item'>
 	<dt class='gallery-icon landscape'>
-		<a href='http://example.org/?attachment_id=142'><img width="100" height="100" src="http://example.org/wp-content/uploads/image2.jpg" class="attachment-thumbnail" alt="excerpt 2" aria-describedby="gallery-1-142" /></a>
+		<a href='http://example.org/?attachment_id=$ids[1]'><img width="100" height="100" src="http://example.org/wp-content/uploads/image2.jpg" class="attachment-thumbnail" alt="excerpt 2" aria-describedby="gallery-1-$ids[1]" /></a>
 	</dt>
-		<dd class='wp-caption-text gallery-caption' id='gallery-1-142'>
+		<dd class='wp-caption-text gallery-caption' id='gallery-1-$ids[1]'>
 		excerpt 2
 		</dd></dl><dl class='gallery-item'>
 	<dt class='gallery-icon landscape'>
-		<a href='http://example.org/?attachment_id=143'><img width="100" height="100" src="http://example.org/wp-content/uploads/image3.jpg" class="attachment-thumbnail" alt="excerpt 3" aria-describedby="gallery-1-143" /></a>
+		<a href='http://example.org/?attachment_id=$ids[2]'><img width="100" height="100" src="http://example.org/wp-content/uploads/image3.jpg" class="attachment-thumbnail" alt="excerpt 3" aria-describedby="gallery-1-$ids[2]" /></a>
 	</dt>
-		<dd class='wp-caption-text gallery-caption' id='gallery-1-143'>
+		<dd class='wp-caption-text gallery-caption' id='gallery-1-$ids[2]'>
 		excerpt 3
 		</dd></dl><br style="clear: both" />
 </div>
