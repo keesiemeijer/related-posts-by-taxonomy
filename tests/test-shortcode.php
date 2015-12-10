@@ -29,6 +29,14 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+	function tearDown() {
+		// use tearDown for WP < 4.0
+		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this->utils, 'return_bool' ) );
+		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', '__return_true' );
+		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_args' ), 10, 4 );
+		parent::tearDown();
+	}
+
 
 	/**
 	 * Test if shortcode is registered.
@@ -80,13 +88,35 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 	/**
 	 * Test if the shortcode_hide_empty filter is set to true (by default).
 	 */
-	function test_shortcode_hide_empty_filter() {
+	function test_shortcode_hide_empty_filter_bool() {
 		// shortcode
 		add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this->utils, 'return_bool' ) );
 		$id = $this->factory->post->create();
 		do_shortcode( '[related_posts_by_tax post_id="' . $id . '"]' );
 		$this->assertTrue( $this->utils->boolean );
 		$this->utils->boolean = null;
+	}
+
+	/**
+	 * Test if the shortcode_hide_empty filter works as intended.
+	 */
+	function test_shortcode_hide_empty_filter() {
+
+		$create_posts = $this->utils->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		ob_start();
+		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[4] . '"]' );
+		$shortcode = ob_get_clean();
+
+		$this->assertEmpty( $shortcode );
+
+		add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', '__return_false' );
+
+		ob_start();
+		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[4] . '"]' );
+		$shortcode = ob_get_clean();
+		$this->assertContains( '<p>No related posts found</p>', $shortcode );
 	}
 
 
