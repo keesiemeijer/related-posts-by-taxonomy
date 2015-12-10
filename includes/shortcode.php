@@ -112,10 +112,6 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
  */
 function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 
-	if ( empty( $related_posts ) ) {
-		return '';
-	}
-
 	/* make sure all defaults are present */
 	$rpbt_args = array_merge( km_rpbt_get_shortcode_atts(), $rpbt_args );
 
