@@ -170,6 +170,7 @@ EOF;
 BLOB;
 
 		$content = do_shortcode( $blob );
+		$content = preg_replace('/<img .*?\/>/', '', $content);
 
 		$expected = <<<EOF
 <style type='text/css'>
@@ -211,6 +212,7 @@ BLOB;
 		</dd></dl><br style="clear: both" />
 </div>
 EOF;
+		$expected = preg_replace('/<img .*?\/>/', '', $expected);
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $content )  );
 	}
