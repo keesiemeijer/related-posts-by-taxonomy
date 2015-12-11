@@ -1,123 +1,137 @@
-# Copyright (C) 2014 Related Posts By Taxonomy
-# This file is distributed under the same license as the Related Posts By Taxonomy package.
+# Copyright (C) 2015 keesiemijer
+# This file is distributed under the GPL v2.
 msgid ""
 msgstr ""
-"Project-Id-Version: FR Related Posts By Taxonomy 0.3\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2014-04-10 13:22:27+00:00\n"
+"Project-Id-Version: Related Posts By Taxonomy 2.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/related-posts-by-"
+"taxonomy\n"
+"POT-Creation-Date: 2015-12-08 10:58+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-12-06 15:11+0100\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.6\n"
-"X-Poedit-SourceCharset: UTF-8\n"
+"PO-Revision-Date: 2015-12-08 10:59+0100\n"
 "Language-Team: \n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
+"_nx_noop:1,2,3c;esc_attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;"
+"esc_html_x:1,2c\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: ..\n"
+"X-Textdomain-Support: yes\n"
 "Last-Translator: \n"
 "Language: es_ES\n"
+"X-Poedit-SearchPath-0: .\n"
 
-#: defaults.php:101
+#: includes/defaults.php:115
 msgid "Category"
 msgstr "Categoría"
 
-#: defaults.php:105
+#: includes/defaults.php:119
 msgid "Post"
 msgstr "Entrada"
 
-#: defaults.php:115
+#: includes/defaults.php:129
 msgid "Thumbnail"
 msgstr "Miniatura"
 
-#: defaults.php:229
+#: includes/defaults.php:272
 msgid "Links"
 msgstr "Enlaces"
 
-#: defaults.php:230
+#: includes/defaults.php:273
 msgid "Posts"
 msgstr "Publicaciones"
 
-#: defaults.php:231
+#: includes/defaults.php:274
 msgid "Excerpts"
 msgstr "Extractos"
 
-#: defaults.php:232
+#: includes/defaults.php:275
 msgid "Post thumbnails"
 msgstr "Miniatura de la publicación"
 
-#: shortcode.php:20
+#: includes/shortcode.php:215
 msgid "Related Posts"
 msgstr "Artículos Relacionados"
 
-#: templates/related-posts-excerpts.php:35 templates/related-posts-links.php:38
+#. Plugin Name of the plugin/theme
+msgid "Related Posts By Taxonomy"
+msgstr "Entradas Relacionadas por Taxonomía"
+
+#: includes/widget.php:41
+msgid "Show a list of related posts by taxonomy."
+msgstr "Mostrar una lista de Entradas Relacionadas por Taxonomía"
+
+#: includes/widget.php:263
+msgid "Oops, something went wrong"
+msgstr "Ups, algo no ha funcionado"
+
+#: includes/widget.php:275
+msgid "Title"
+msgstr "Título"
+
+#: includes/widget.php:281
+msgid "Number of related posts to show"
+msgstr "Número de Entradas Relacionadas para Mostrar"
+
+#: includes/widget.php:284
+msgid "Use -1 to show all related posts."
+msgstr "Usar - 1 para Mostrar Todas las Entradas Relacionadas"
+
+#: includes/widget.php:291
+msgid "Randomize related posts."
+msgstr "Sin Entradas Relacionadas"
+
+#: includes/widget.php:294
+msgid "Taxonomies"
+msgstr "Taxonomías"
+
+#: includes/widget.php:296
+msgid "Taxonomy"
+msgstr "Taxonomía"
+
+#: includes/widget.php:299
+msgid "All Taxonomies"
+msgstr "Todas las Taxonomías"
+
+#: includes/widget.php:306
+msgid "Post Types"
+msgstr "Tipos de Entrada"
+
+#: includes/widget.php:318
+msgid "Display"
+msgstr "Mostrar"
+
+#: includes/widget.php:322
+msgid "Format"
+msgstr "Formato"
+
+#: includes/widget.php:331
+msgid "Image Size"
+msgstr "Tamaño de Imagen"
+
+#: includes/widget.php:340
+msgid "Number of image columns"
+msgstr "Número de Columnas de Imágenes"
+
+#: includes/widget.php:343
+msgid "Use 0 for no columns."
+msgstr "Usar 0 para no mostrar columnas"
+
+#: includes/widget.php:351
+msgid "Display widget on single post pages only"
+msgstr "Mostrar widgets únicamente en páginas de una sola entrada"
+
+#: includes/widget.php:355
+msgid "Display related posts for post ID (optional)"
+msgstr "Mostrar Entradas Relacionadas por ID de Entrada (opcional)"
+
+#: templates/related-posts-excerpts.php:35 templates/related-posts-links.php:36
 #: templates/related-posts-posts.php:35
 #: templates/related-posts-thumbnails.php:54
 msgid "No related posts found"
 msgstr "Sin Entradas Relacionadas"
-
-#. Plugin Name of the plugin/theme
-#: widget.php:34
-msgid "Related Posts By Taxonomy"
-msgstr "Entradas Relacionadas por Taxonomía"
-
-#: widget.php:35
-msgid "Show a list of related posts by taxonomy."
-msgstr "Mostrar una lista de Entradas Relacionadas por Taxonomía"
-
-#: widget.php:262
-msgid "Title"
-msgstr "Título"
-
-#: widget.php:268
-msgid "Number of related posts to show"
-msgstr "Número de Entradas Relacionadas para Mostrar"
-
-#: widget.php:271
-msgid "Use -1 to show all related posts."
-msgstr "Usar - 1 para Mostrar Todas las Entradas Relacionadas"
-
-#: widget.php:275
-msgid "Taxonomies"
-msgstr "Taxonomías"
-
-#: widget.php:277
-msgid "Taxonomy"
-msgstr "Taxonomía"
-
-#: widget.php:280
-msgid "All Taxonomies"
-msgstr "Todas las Taxonomías"
-
-#: widget.php:287
-msgid "Post Types"
-msgstr "Tipos de Entrada"
-
-#: widget.php:299
-msgid "Display"
-msgstr "Mostrar"
-
-#: widget.php:303
-msgid "Format"
-msgstr "Formato"
-
-#: widget.php:312
-msgid "Image Size"
-msgstr "Tamaño de Imagen"
-
-#: widget.php:321
-msgid "Number of image columns"
-msgstr "Número de Columnas de Imágenes"
-
-#: widget.php:324
-msgid "Use 0 for no columns."
-msgstr "Usar 0 para no mostrar columnas"
-
-#: widget.php:332
-msgid "Display widget on single post pages only"
-msgstr "Mostrar widgets únicamente en páginas de una sola entrada"
-
-#: widget.php:336
-msgid "Display related posts for post ID (optional)"
-msgstr "Mostrar Entradas Relacionadas por ID de Entrada (opcional)"
 
 #. Plugin URI of the plugin/theme
 msgid "http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/"
