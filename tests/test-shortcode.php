@@ -64,6 +64,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 
 		// km_rpbt_get_default_args() is also tested in test-functions.php
 		$expected = array_merge( km_rpbt_get_default_args(), $expected );
+		$expected['post_types'] = '';
 
 		$atts = km_rpbt_get_shortcode_atts();
 		$this->assertEquals( $expected, $atts );

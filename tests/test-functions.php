@@ -56,6 +56,18 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 
 
 	/**
+	 * Test validating post types.
+	 */
+	function test_km_rpbt_validate_post_types() {
+		$post_types = 'lol,post';
+
+		$this->assertEquals( array( 'post' ), km_rpbt_validate_post_types( $post_types ) );
+	}
+
+
+
+
+	/**
 	 * test related posts for post type post
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
