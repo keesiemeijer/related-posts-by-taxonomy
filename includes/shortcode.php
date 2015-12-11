@@ -44,11 +44,8 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	 */
 	$defaults = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
 
-	/* Can be filtered in WordPress > 3.5 (hook: shortcode_atts_related_posts_by_tax) */
-	$rpbt_args = shortcode_atts( $defaults, $rpbt_args, 'related_posts_by_tax' );
-
-	/* Validate attributes */
-	$rpbt_args = km_rpbt_validate_shortcode_atts( $rpbt_args );
+	/* Can also be filtered in WordPress > 3.5 (hook: shortcode_atts_related_posts_by_tax) */
+	$rpbt_args = shortcode_atts( (array) $defaults, $rpbt_args, 'related_posts_by_tax' );
 
 	/**
 	 * Filter attributes.
@@ -57,8 +54,8 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	 */
 	$rpbt_args = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $rpbt_args );
 
-	/* Validate once more */
-	$rpbt_args = km_rpbt_validate_shortcode_atts( $rpbt_args );
+	/* Validate atts. Also sets the post type if not set in atts or filters */
+	$rpbt_args = km_rpbt_validate_shortcode_atts( (array) $rpbt_args );
 
 	$function_args = $rpbt_args;
 
@@ -214,6 +211,11 @@ function km_rpbt_get_shortcode_atts() {
 		'caption' => 'post_title', 'type' => 'shortcode',
 	);
 
+	$atts = array_merge( km_rpbt_get_default_args(), $atts );
+
+	// No default post type for shortcodes
+	$atts['post_types'] = '';
+
 	/* add default args to shortcode args */
-	return array_merge( km_rpbt_get_default_args(), $atts );
+	return $atts;
 }

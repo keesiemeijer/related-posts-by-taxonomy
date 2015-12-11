@@ -348,7 +348,7 @@ function km_rpbt_validate_post_types( $post_types = '' ) {
 	$post_types = array_unique( array_map( 'sanitize_key', (array) $post_types ) );
 	$post_types = array_filter( $post_types, 'post_type_exists' );
 
-	return $post_types;
+	return array_values( $post_types );
 }
 
 
