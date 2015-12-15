@@ -38,6 +38,36 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 
 
 	/**
+	 * Test if args are not changed due to debugging.
+	 */
+	function test_km_rpbt_get_default_args() {
+		$expected = array(
+			'post_types' => 'post', 'posts_per_page' => 5, 'order' => 'DESC',
+			'fields' => '', 'limit_posts' => -1, 'limit_year' => '',
+			'limit_month' => '', 'orderby' => 'post_date',
+			'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
+			'post_thumbnail' => false, 'related' => true,
+		);
+
+		$args = km_rpbt_get_default_args();
+
+		$this->assertEquals( $expected, $args );
+	}
+
+
+	/**
+	 * Test validating post types.
+	 */
+	function test_km_rpbt_validate_post_types() {
+		$post_types = 'lol,post';
+
+		$this->assertEquals( array( 'post' ), km_rpbt_validate_post_types( $post_types ) );
+	}
+
+
+
+
+	/**
 	 * test related posts for post type post
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms

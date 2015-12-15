@@ -29,6 +29,14 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+	function tearDown() {
+		// use tearDown for WP < 4.0
+		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this->utils, 'return_bool' ) );
+		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', '__return_true' );
+		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_args' ), 10, 4 );
+		parent::tearDown();
+	}
+
 
 	/**
 	 * Test if shortcode is registered.
@@ -38,17 +46,78 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		$this->assertArrayHasKey( 'related_posts_by_tax', $shortcode_tags );
 	}
 
+	/**
+	 * Test if atts are not changed due to debugging.
+	 */
+	function test_km_rpbt_get_shortcode_atts() {
+
+		$expected =  array(
+			'post_id' => '', 'taxonomies' => 'all',
+			'before_shortcode' => '<div class="rpbt_shortcode">', 'after_shortcode' => '</div>',
+			'before_title' => '<h3>', 'after_title' => '</h3>',
+			'title' => 'Related Posts',
+			'format' => 'links',
+			'image_size' => 'thumbnail', 'columns' => 3,
+			'caption' => 'post_title', 'type' => 'shortcode',
+		);
+
+
+		// km_rpbt_get_default_args() is also tested in test-functions.php
+		$expected = array_merge( km_rpbt_get_default_args(), $expected );
+		$expected['post_types'] = '';
+
+		$atts = km_rpbt_get_shortcode_atts();
+		$this->assertEquals( $expected, $atts );
+	}
+
+
+	/**
+	 * Test validation of atts.
+	 *
+	 * todo: Needs more testing
+	 */
+	function test_km_rpbt_validate_shortcode_atts() {
+
+		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => '' ) );
+		$this->assertEquals( array( 'post' ), $atts['post_types'] );
+
+		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => 'post' ) );
+		$this->assertEquals( 'post', $atts['post_types'] );
+	}
+
 
 	/**
 	 * Test if the shortcode_hide_empty filter is set to true (by default).
 	 */
-	function test_shortcode_hide_empty_filter() {
+	function test_shortcode_hide_empty_filter_bool() {
 		// shortcode
 		add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this->utils, 'return_bool' ) );
 		$id = $this->factory->post->create();
 		do_shortcode( '[related_posts_by_tax post_id="' . $id . '"]' );
 		$this->assertTrue( $this->utils->boolean );
 		$this->utils->boolean = null;
+	}
+
+	/**
+	 * Test if the shortcode_hide_empty filter works as intended.
+	 */
+	function test_shortcode_hide_empty_filter() {
+
+		$create_posts = $this->utils->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		ob_start();
+		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[4] . '"]' );
+		$shortcode = ob_get_clean();
+
+		$this->assertEmpty( $shortcode );
+
+		add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', '__return_false' );
+
+		ob_start();
+		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[4] . '"]' );
+		$shortcode = ob_get_clean();
+		$this->assertContains( '<p>No related posts found</p>', $shortcode );
 	}
 
 

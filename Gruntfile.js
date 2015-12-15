@@ -101,6 +101,15 @@ module.exports = function( grunt ) {
 				},
 				src: [ 'readme.txt', 'readme.md' ]
 			},
+			requires_at_least: {
+				options: {
+					pkg: {
+						"version": "<%= pkg.requires_at_least %>"
+					},
+					prefix: 'Requires at least: *'
+				},
+				src: [ 'readme.txt', 'readme.md' ]
+			},
 			plugin: {
 				options: {
 					prefix: 'Version: *'

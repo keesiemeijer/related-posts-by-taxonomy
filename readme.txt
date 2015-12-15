@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 3.9
 Tested up to: 4.4
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,9 +73,11 @@ Example to show 10 related posts instead of the default 5.
 
 See the [documentation](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#shortcode) for more information about these attributes.
 = Translations =
-* Dutch
-* French (by [Annie Stasse](http://www.artisanathai.fr))
-* Spanish (by [msoravilla](http://www.ludobooks.com))
+* Dutch  
+* French (by [Annie Stasse](http://www.artisanathai.fr))  
+* Spanish (by [msoravilla](http://www.ludobooks.com)) 
+* Catalan (by [msoravilla](http://www.ludobooks.com))  
+* Polish (by [koda0601](http://rekolekcje.net.pl))  
 
 == Installation ==
 * Unzip the <code>related-posts-by-taxonomy.zip</code> folder.
@@ -89,7 +91,7 @@ For more information about the plugin see the [plugin documentation](http://kees
 To customize this plugin see the [plugin recipes page](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/recipes/).
 
 = Can I change the layout for the related posts? =
-Yes. Review [this section](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/recipes/#styling) of the documuntation to style the related posts yourself.
+Yes. Review [this section](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/recipes/#styling) of the documentation to style the related posts yourself.
 
 = How can I automatically add related posts after the post content? =
 Review [Adding Related Posts After the Post Content](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#after-content).
@@ -112,6 +114,14 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+
+= 2.1.1 =
+* Enhancement
+	* Add Spanish, Catalan and Polish translation files
+* Bug fixes
+	* Fix minor regression bug with the hide empty filter.
+	* Fix minor bug where the wrong default post type was being used by the shortcode.
+
 = 2.1.0 =
 * Enhancement
 	* Optimised related posts query.
@@ -124,9 +134,9 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 * Enhancement
 	* New option for the widget to randomise the related posts.
 	* Refactored the query to get the related posts.
-	* Orginized files in the new 'includes' directory.
+	* Organized files in the new 'includes' directory.
 	* Added a new class for debugging (only loaded if needed, with a filter).
-	* New PHPUnit tests for the widged (GitHub only).
+	* New PHPUnit tests for the widget(GitHub only).
 	* Updated the widget constructor as it is deprecated with WP 4.3
 	* Added a new (beta) front end cache layer.
 
@@ -197,5 +207,5 @@ Updated unit tests to be more reliable.
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 2.0.1 =
-Tested up to WordPress 4.4. and the persistant cache is now out of beta and fully functioning.
+= 2.1.1 =
+Add Spanish, Catalan and Polish translation files. Fix some minor bugs.
