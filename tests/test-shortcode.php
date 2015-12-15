@@ -55,7 +55,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 			'post_id' => '', 'taxonomies' => 'all',
 			'before_shortcode' => '<div class="rpbt_shortcode">', 'after_shortcode' => '</div>',
 			'before_title' => '<h3>', 'after_title' => '</h3>',
-			'title' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
+			'title' => 'Related Posts',
 			'format' => 'links',
 			'image_size' => 'thumbnail', 'columns' => 3,
 			'caption' => 'post_title', 'type' => 'shortcode',
