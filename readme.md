@@ -59,8 +59,11 @@ This is a developer's portal for Related Posts by Taxonomy and should _not_ be u
 
 ### Translations ###
 Dutch  
-French (by [Annie Stasse](http://www.artisanathai.fr))  
+French (by [Annie Stasse](http://www.artisanathai.fr/))  
 Spanish (by [msoravilla](http://www.ludobooks.com/))  
+Catalan (by [msoravilla](http://www.ludobooks.com/))  
+Polish (by [koda0601](http://rekolekcje.net.pl/))  
+
 ## Contributions ##
 
 There are various ways you can contribute:
