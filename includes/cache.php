@@ -33,7 +33,14 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 *
 		 * @var array
 		 */
-		private $current;
+		private $current_args;
+
+		/**
+		 * Default args to get related posts by
+		 *
+		 * @var array
+		 */
+		private $default_args;
 
 		/**
 		 * Flush the cache or not (in shutdown hook)
@@ -47,6 +54,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			$this->setup();
 		}
 
+
 		/**
 		 * Setup actions and filters for the cache
 		 *
@@ -55,7 +63,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 */
 		private function setup() {
 
-			$this->cache = $this->get_cache_options();
+			$this->default_args = km_rpbt_get_default_args();
+			$this->cache        = $this->get_cache_options();
 
 			// Enable cache for the shortcode and widget.
 			add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'add_cache' ) );
@@ -133,17 +142,21 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 *
 		 * @since 2.0.1
 		 * @param array   $args Array with widget or shortcode args.
-		 * @return array Array Array with related post objects.
+		 * @return array  Array with related post objects .
 		 */
 		public function get_related_posts( $args ) {
 
+			$args = array_merge( $this->default_args, (array) $args );
+
+			// Check if post_id and taxonomies are set
+			if ( !$this->is_valid_cache_args( $args ) ) {
+				$this->cache_log[] = 'Failed getting cached posts';
+				return array();
+			}
+
 			$type = isset( $args['type'] ) ? $args['type'] : '';
 
-			// Returns sanitized arguments
-			// Arguments are used in post meta key.
-			$args = $this->sanitize_cache_args( $args );
-
-			// Get cached post ids (if they exist)
+			// Get cached post ids from meta (if they exist )
 			$posts = $this->get_post_meta( $args );
 
 			// If $posts is an empty array the current post doesn't have any related posts.
@@ -173,14 +186,20 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 
 		/**
-		 * Public function to update the cache of related posts
+		 * Public function to update the cache
 		 *
 		 * @since 2.1
 		 * @param array   $args Array with arguments to get the related posts.
-		 * @return array Array with related post objects that are cached.
+		 * @return array|bool Array with cached related post objects or false if arguments were invalid.
 		 */
 		public function update_cache( $args, $type = '' ) {
-			return $this->set_cache( $this->sanitize_cache_args( $args ), $type );
+			$args = array_merge( $this->default_args, (array) $args );
+
+			if ( $this->is_valid_cache_args( $args ) ) {
+				return $this->set_cache(  $args, $type );
+			}
+
+			return false;
 		}
 
 
@@ -188,7 +207,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Cache related posts
 		 *
 		 * @since 2.0.1
-		 * @param array   $args Array with sanitized Widget or shortcode arguments.
+		 * @param array   $args Array with Widget or shortcode arguments.
 		 * @return array Array with related post objects that are cached.
 		 */
 		private function set_cache( $args, $type = '' ) {
@@ -200,7 +219,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// Restricted function arguments.
 			unset( $function_args['taxonomies'], $function_args['post_id'], $function_args['fields'] );
 
-			// Add a filter to get the function arguments for the current post
+			// Add a filter to get the current arguments with related terms found
 			add_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
 
 			// Get related posts
@@ -220,13 +239,13 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			if ( !empty( $posts_arr ) ) {
 				$posts_arr['rpbt_current']['taxonomies'] = $args['taxonomies'];
 				$posts_arr['rpbt_current']['post_id']    = $args['post_id'];
-				if ( isset( $this->current['related_terms'] ) ) {
-					$posts_arr['rpbt_current']['related_terms'] = $this->current['related_terms'];
+				if ( isset( $this->current_args['related_terms'] ) ) {
+					$posts_arr['rpbt_current']['related_terms'] = $this->current_args['related_terms'];
 				}
 			}
 
 			// Reset current arguments.
-			$this->current = array();
+			$this->current_args = array();
 
 			// Cache the post ids.
 			$updated = update_post_meta( $args['post_id'], $key, $posts_arr );
@@ -311,6 +330,21 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 
 		/**
+		 * Checks if post id and taxonomies are in arguments.
+		 *
+		 * @since 2.1.2
+		 * @param array   $args Widget or Shortcode arguments.
+		 * @return boolean True if post_id and taxonomies are set.
+		 */
+		public function is_valid_cache_args( $args ) {
+			if ( isset( $args['post_id'] ) && isset( $args['taxonomies'] ) ) {
+				return true;
+			}
+			return false;
+		}
+
+
+		/**
 		 * Sanitizes widget or shortcode arguments.
 		 * Arguments are stored as the cache meta key.
 		 *
@@ -320,7 +354,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 */
 		public function sanitize_cache_args( $args ) {
 
-			$defaults   = km_rpbt_get_default_args();
+			$defaults   = $this->default_args;
 			$cache_args = wp_parse_args( $args, $defaults );
 
 			// Remove unnecessary args.
@@ -338,7 +372,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Returns the related posts post meta.
 		 *
 		 * @since 2.0.1
-		 * @param array   $args Array with sanitized widget or shortcode arguments.
+		 * @param array   $args Array with widget or shortcode arguments.
 		 * @return array Array with Related posts ids, empty string, or empty array.
 		 */
 		public function get_post_meta( $args ) {
@@ -351,11 +385,11 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Create a meta key from args.
 		 *
 		 * @since 2.0.1
-		 * @param array   $args Array with sanitized widget or shortcode arguments.
-		 * @return string Meta key created from args.
+		 * @param array   $args Array with widget or shortcode arguments.
+		 * @return string Meta key created from sanitized args.
 		 */
 		public function get_post_meta_key( $args ) {
-			$key = md5( maybe_serialize ( $args ) );
+			$key = md5( maybe_serialize ( $this->sanitize_cache_args( $args ) ) );
 			return "_rpbt_related_posts:$key";
 		}
 
@@ -368,7 +402,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array Array with widget or shortcode args.
 		 */
 		public function current_post( $results, $post_id, $taxonomies, $args ) {
-			$this->current = !empty( $args ) ? $args : array();
+			$this->current_args = !empty( $args ) ? $args : array();
 			return $results;
 		}
 
