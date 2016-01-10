@@ -122,7 +122,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$i['taxonomies'] =  array_keys( $this->plugin->taxonomies );
 		}
 
-		$i['post_thumbnail'] = false;
 		if ( 'thumbnails' === $i['format'] ) {
 			$i['post_thumbnail'] = true;
 		}

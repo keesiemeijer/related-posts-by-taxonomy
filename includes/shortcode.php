@@ -179,7 +179,6 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 		$atts['post_types'] = ( $post_types ) ? $post_types : array( 'post' );
 	}
 
-	$atts['post_thumbnail'] = false;
 	if ( 'thumbnails' === $atts['format'] ) {
 		$atts['post_thumbnail'] = true;
 	}
