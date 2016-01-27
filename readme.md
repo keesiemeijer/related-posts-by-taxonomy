@@ -1,6 +1,6 @@
 # [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Build Status](https://travis-ci.org/keesiemeijer/related-posts-by-taxonomy.svg?branch=develop)](http://travis-ci.org/keesiemeijer/related-posts-by-taxonomy) #
 
-Version:           2.1.1  
+Version:           2.1.2  
 Requires at least: 3.9  
 Tested up to:      4.4  
 
@@ -10,19 +10,6 @@ This is the development repository for the WordPress plugin [Related Posts by Ta
 The `master` branch is where you'll find the most recent, stable release.
 The `develop` branch is the current working branch for development. Both branches are required to pass all unit tests. Any pull requests are first merged with the `develop` branch before being merged into the `master` branch.
 
-To build the plugin without the development files (as in the WP repository) use the following commands:
-```bash
-# Go to the master branch
-git checkout master
-
-# Install Grunt tasks
-npm install
-
-# Build the production plugin
-grunt build
-```
-The plugin will be compiled in the `build` directory.
-
 ## Description ##
 This WordPress plugin displays related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the **most terms in common** will display at the top. Use multiple taxonomies and post types to get the related posts. Include or exclude terms. Change the look and feel with your own html templates in your (child) theme.
 
@@ -30,8 +17,8 @@ More information can be found at the [WordPress repository](https://wordpress.or
 
 ## Installation ##
 
-1. You can clone the GitHub repository: `https://github.com/keesiemeijer/related-posts-by-taxonomy.git`
-2. Or download it directly as a ZIP file: `https://github.com/keesiemeijer/related-posts-by-taxonomy/archive/master.zip`
+* Clone the GitHub repository: `https://github.com/keesiemeijer/related-posts-by-taxonomy.git`
+* Or download it directly as a ZIP file: `https://github.com/keesiemeijer/related-posts-by-taxonomy/archive/master.zip`
 
 This will download the latest stable copy of Related Posts by Taxonomy.
 
@@ -50,6 +37,20 @@ git checkout develop
 # create new branch newfeature and switch to it
 git checkout -b newfeature develop
 ```
+
+## Creating a new build ##
+To build the plugin without all the development files (as in the WP repository) use the following commands:
+```bash
+# Go to the master branch
+git checkout master
+
+# Install Grunt tasks
+npm install
+
+# Build the production plugin
+grunt build
+```
+The plugin will be compiled in the `build` directory.
 
 ## Bugs ##
 If you find an issue, let us know [here](https://github.com/keesiemeijer/related-posts-by-taxonomy/issues?state=open)!
