@@ -150,7 +150,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			// Check if post_id and taxonomies are set
 			if ( !$this->is_valid_cache_args( $args ) ) {
-				$this->cache_log[] = 'Failed getting cached posts';
+				$this->cache_log[] = 'Cache failed - invalid cache args';
 				return array();
 			}
 
@@ -167,7 +167,6 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				if ( !is_array( $posts ) ) {
 					// Related posts are not cached yet!
 
-					$this->cache_log[] = sprintf( 'Post ID %d - cache not exists', $args['post_id'] );
 					$posts = $this->set_cache( $args, $type );
 				} else {
 					// Already cached, but the current post has no related posts.
