@@ -437,7 +437,9 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$i['post_types']['post'] = 'on';
 		}
 
-		return $i;
+		$i['type'] = 'widget';
+
+		return array_merge( km_rpbt_get_default_args(), $i );
 	}
 
 
