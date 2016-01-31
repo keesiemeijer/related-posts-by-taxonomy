@@ -17,8 +17,8 @@ More information can be found at the [WordPress repository](https://wordpress.or
 
 ## Installation ##
 
-* Clone the GitHub repository: `https://github.com/keesiemeijer/related-posts-by-taxonomy.git`
-* Or download it directly as a ZIP file: `https://github.com/keesiemeijer/related-posts-by-taxonomy/archive/master.zip`
+* Clone the GitHub repository: `git clone https://github.com/keesiemeijer/related-posts-by-taxonomy.git`
+* Or download it directly as a ZIP file: [https://github.com/keesiemeijer/related-posts-by-taxonomy/archive/master.zip](https://github.com/keesiemeijer/related-posts-by-taxonomy/archive/master.zip)
 
 This will download the latest stable copy of Related Posts by Taxonomy.
 
