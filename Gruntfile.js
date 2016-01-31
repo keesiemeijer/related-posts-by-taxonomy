@@ -125,6 +125,9 @@ module.exports = function( grunt ) {
 				replacements: [ {
 					from: /related-posts-by-taxonomy.svg\?branch=(master|develop)/g,
 					to: "related-posts-by-taxonomy.svg?branch=<%= gitinfo.local.branch.current.name %>"
+				}, {
+					from: /related-posts-by-taxonomy\/tree\/(master|develop)#pull-requests/g,
+					to: "related-posts-by-taxonomy/tree/<%= gitinfo.local.branch.current.name %>#pull-requests"
 				} ]
 			}
 		}
