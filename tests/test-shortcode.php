@@ -81,8 +81,8 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => '' ) );
 		$this->assertEquals( array( 'post' ), $atts['post_types'] );
 
-		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => 'post' ) );
-		$this->assertEquals( 'post', $atts['post_types'] );
+		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => 'lalala, post ' ) );
+		$this->assertEquals( array('post'), $atts['post_types'] );
 	}
 
 
