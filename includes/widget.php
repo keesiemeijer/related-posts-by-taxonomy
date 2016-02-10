@@ -116,12 +116,10 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		 */
 		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $i, $rpbt_widget_args );
 		$i = array_merge( $i, (array) $filter );
-
-		/* convert "all" to array with all public taxonomies */
-		if ( $i['taxonomies'] === $this->plugin->all_tax ) {
-			$i['taxonomies'] =  array_keys( $this->plugin->taxonomies );
-		}
-
+		
+		/* if 'all' is used convert it to array with all taxonomies */
+		$i['taxonomies'] = km_rpbt_get_taxonomies( $i['taxonomies'] );
+		
 		if ( 'thumbnails' === $i['format'] ) {
 			$i['post_thumbnail'] = true;
 		}
