@@ -140,7 +140,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'travis', [ 'gitinfo', 'replace:replace_branch' ] );
 
 	// Creates build
-	grunt.registerTask( 'build', [ 'version', 'travis', 'clean:main', 'copy:main' ] );
+	grunt.registerTask( 'build', [ 'clean:main', 'makepot', 'version', 'travis', 'copy:main' ] );
 
 	// Removes ALL development files in the root directory
 	// !!! be careful with this
