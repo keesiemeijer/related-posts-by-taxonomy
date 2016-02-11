@@ -168,16 +168,11 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 		$atts['post_id'] = get_the_ID();
 	}
 
-	/* if 'all' is used convert it to array with all taxonomies */
-	$atts['taxonomies'] = km_rpbt_get_taxonomies( $atts['taxonomies'] );
-	
 	/* if no post type is set use the post type of the current post (new default since 0.3) */
 	if ( empty( $atts['post_types'] ) ) {
 		$post_type = get_post_type( $atts['post_id'] );
 		$atts['post_types'] = ( $post_type ) ? $post_type : 'post';
 	}
-
-	$atts['post_types'] = km_rpbt_get_post_types( $atts['post_types'] );
 
 	if ( 'thumbnails' === $atts['format'] ) {
 		$atts['post_thumbnail'] = true;
