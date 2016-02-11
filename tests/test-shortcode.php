@@ -77,12 +77,9 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 	 * todo: Needs more testing
 	 */
 	function test_km_rpbt_validate_shortcode_atts() {
-
+		// should default to current post post type or default post type post
 		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => '' ) );
-		$this->assertEquals( array( 'post' ), $atts['post_types'] );
-
-		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => 'lalala, post ' ) );
-		$this->assertEquals( array('post'), $atts['post_types'] );
+		$this->assertEquals( 'post', $atts['post_types'] );
 	}
 
 
