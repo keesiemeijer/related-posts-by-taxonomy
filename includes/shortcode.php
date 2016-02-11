@@ -88,7 +88,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	}
 
 	/**
-	 * After the related posts are displayed
+	 * Fires after the related posts are displayed
 	 *
 	 * @param string  Display type, widget or shortcode.
 	 */
@@ -113,37 +113,38 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 	/* make sure all defaults are present */
 	$rpbt_args = array_merge( km_rpbt_get_shortcode_atts(), $rpbt_args );
 
-	$rpbt_shortcode = $shortcode = '';
-
 	/* get the template depending on the format  */
 	$template = km_rpbt_related_posts_by_taxonomy_template( $rpbt_args['format'], 'shortcode' );
+
+	if ( !$template ) {
+		return '';
+	}
 
 	if ( $rpbt_args['title'] ) {
 		$rpbt_args['title'] = $rpbt_args['before_title'] . $rpbt_args['title'] . $rpbt_args['after_title'];
 	}
 
-	if ( $template ) {
-		global $post; // used for setup_postdata() in templates
+	global $post; // used for setup_postdata() in templates
 
-		/* public template variables */
-		$image_size = $rpbt_args['image_size']; // deprecated in version 0.3
-		$columns    = absint( $rpbt_args['columns'] ); // deprecated in version 0.3
+	/* public template variables */
+	$image_size = $rpbt_args['image_size']; // deprecated in version 0.3
+	$columns    = absint( $rpbt_args['columns'] ); // deprecated in version 0.3
 
-		ob_start();
-		require $template;
-		$shortcode = ob_get_clean();
-		$shortcode = trim( $shortcode );
-		wp_reset_postdata(); // clean up global $post variable;
+	ob_start();
+	require $template;
+	$output = ob_get_clean();
+	$output = trim( $output );
+	wp_reset_postdata(); // clean up global $post variable;
+
+	$shortcode = '';
+	if ( $output ) {
+		$shortcode = $rpbt_args['before_shortcode'] . "\n" ;
+		$shortcode .= trim( $rpbt_args['title'] ) . "\n";
+		$shortcode .= $output . "\n";
+		$shortcode .= $rpbt_args['after_shortcode'];
 	}
 
-	if ( $shortcode ) {
-		$rpbt_shortcode = $rpbt_args['before_shortcode'] . "\n" ;
-		$rpbt_shortcode .= trim( $rpbt_args['title'] ) . "\n";
-		$rpbt_shortcode .= $shortcode . "\n";
-		$rpbt_shortcode .= $rpbt_args['after_shortcode'];
-	}
-
-	return trim( $rpbt_shortcode );
+	return trim( $shortcode );
 }
 
 
