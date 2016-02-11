@@ -20,14 +20,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'category', $args = '' ) {
 	global $wpdb;
 
+	// Get valid taxonomies.
 	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
 
 	if ( !absint( $post_id ) || empty( $taxonomies ) ) {
 		return array();
 	}
 
-	$args       = km_rpbt_sanitize_args( $args );
-	$terms      = array();
+	$args  = km_rpbt_sanitize_args( $args );
+	$terms = array();
+
 
 	if ( !$args['related'] && !empty( $args['include_terms'] ) ) {
 		// related, use included term ids
@@ -430,42 +432,26 @@ function km_rpbt_sanitize_comma_separated_value( $value ) {
  * Returns sanitized arguments.
  *
  * @since 2.1
- * @param array   $args    Arguments to be sanitized.
- * @param int     $context Creates uniform sorted sanitized arguments if context is set to 'cache'.
+ * @param array   $args Arguments to be sanitized.
  * @return array Array with sanitized arguments.
  */
-function km_rpbt_sanitize_args( $args, $context = '' ) {
+function km_rpbt_sanitize_args( $args ) {
 
 	$defaults = km_rpbt_get_default_args();
 	$args     = wp_parse_args( $args, $defaults );
-	$types    = array( 'post_types' );
 
-	// Arrays| Strings
+	// Arrays - strings
 	if ( isset( $args['taxonomies'] ) ) {
-		$types[] = 'taxonomies';
 		$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
 	}
 
 	$post_types         = km_rpbt_get_post_types( $args['post_types'] );
-	$args['post_types'] = ( !empty( $post_types ) ) ? $post_types : array( 'post' );
+	$args['post_types'] = !empty( $post_types ) ? $post_types : array( 'post' );
 
-	if ( 'cache' === $context ) {
-		foreach ( $types as $type ) {
-
-			// Create sorted comma separated string for cache.
-			sort( $args[ $type ] );
-			$args[ $type ] = implode( ',', $args[ $type ] );
-		}
-	}
-
+	// Arrays - integers
 	$ids = array( 'exclude_terms', 'include_terms', 'exclude_posts' );
 	foreach ( $ids as $id ) {
 		$args[ $id ] = km_rpbt_related_posts_by_taxonomy_validate_ids( $args[ $id ] );
-		if ( 'cache' === $context ) {
-			// Create sorted comma separated string for cache.
-			sort( $args[ $id ] );
-			$args[ $id ] = implode( ',', $args[ $id ] );
-		}
 	}
 
 	// Strings
@@ -487,10 +473,6 @@ function km_rpbt_sanitize_args( $args, $context = '' ) {
 	// true, 1, "1", "true", "on", "yes". Everything else return false
 	$args['related']        = (bool) filter_var( $args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$args['post_thumbnail'] = (bool) filter_var( $args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-
-	if ( 'cache' === $context ) {
-		ksort( $args );
-	}
 
 	return $args;
 }
