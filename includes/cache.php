@@ -345,6 +345,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 		/**
 		 * Sanitizes widget or shortcode arguments.
+		 * Removes arguments not needed for the km_rpbt_related_posts_by_taxonomy() function
 		 * Arguments are stored as the cache meta key.
 		 *
 		 * @since 2.1
