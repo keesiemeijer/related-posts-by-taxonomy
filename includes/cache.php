@@ -364,7 +364,29 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			$cache_args[ 'post_id' ]    = isset( $args[ 'post_id' ] ) ? $args[ 'post_id' ] : 0;
 			$cache_args[ 'taxonomies' ] = isset( $args[ 'taxonomies' ] ) ? $args[ 'taxonomies' ] : '';
 
-			return km_rpbt_sanitize_args( $cache_args, 'cache' );
+			return $this->order_cache_args( km_rpbt_sanitize_args( $cache_args ) );
+		}
+
+
+		/**
+		 * Returns ordered uniform arguments to store as meta key
+		 *
+		 * @since 2.2
+		 * @param array   $args Arguments
+		 * @return array       Sorted arguments
+		 */
+		public function order_cache_args( $args ) {
+
+			foreach ( $args as $key => $value ) {
+				if ( is_array( $args[ $key ] ) ) {
+					sort( $args[ $key ] );
+					$args[ $key ] = implode( ',', $args[ $key ] );
+				}
+			}
+
+			ksort( $args );
+
+			return $args;
 		}
 
 
