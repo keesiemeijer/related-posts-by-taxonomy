@@ -81,30 +81,6 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 
 
 	/**
-	 * Test sanitizing arguments for cache.
-	 */
-	function test_km_rpbt_sanitize_args_context() {
-		$expected = array(
-			'post_types' => 'post', 'posts_per_page' => 0, 'order' => '',
-			'fields' => '', 'limit_posts' => -1, 'limit_year' => 0,
-			'limit_month' => 0, 'orderby' => '',
-			'exclude_terms' => '1,2,3', 'include_terms' => '',  'exclude_posts' => '',
-			'post_thumbnail' => false, 'related' => false,
-		);
-
-		$args = array(
-			'post_types' => false, 'posts_per_page' => false, 'order' => false,
-			'fields' => false, 'limit_posts' => -1, 'limit_year' => 'false',
-			'limit_month' => false, 'orderby' => false,
-			'exclude_terms' => array( 1, 2, 'string', false, 3, 2 ), 'include_terms' => false, 'exclude_posts' => false,
-			'post_thumbnail' => 'false', 'related' => 'lalala',
-		);
-
-		$this->assertEquals( $expected, km_rpbt_sanitize_args( $args, 'cache' ) );
-	}
-
-
-	/**
 	 * Test validating post types.
 	 */
 	function test_km_rpbt_get_post_types() {
