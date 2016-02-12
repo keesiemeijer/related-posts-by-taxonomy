@@ -154,8 +154,6 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				return array();
 			}
 
-			$type = isset( $args['type'] ) ? $args['type'] : '';
-
 			// Get cached post ids from meta (if they exist )
 			$posts = $this->get_post_meta( $args );
 
@@ -167,7 +165,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				if ( !is_array( $posts ) ) {
 					// Related posts are not cached yet!
 
-					$posts = $this->set_cache( $args, $type );
+					$posts = $this->set_cache( $args );
 				} else {
 					// Already cached, but the current post has no related posts.
 
@@ -177,7 +175,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			} else {
 				// Cached related post ids are found!
-				$posts = $this->get_cache( $args, $posts, $type );
+				$posts = $this->get_cache( $args, $posts );
 			}
 
 			return $posts;
@@ -191,11 +189,11 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @param array   $args Array with arguments to get the related posts.
 		 * @return array|bool Array with cached related post objects or false if arguments were invalid.
 		 */
-		public function update_cache( $args, $type = '' ) {
+		public function update_cache( $args ) {
 			$args = array_merge( $this->default_args, (array) $args );
 
 			if ( $this->is_valid_cache_args( $args ) ) {
-				return $this->set_cache(  $args, $type );
+				return $this->set_cache(  $args );
 			}
 
 			return false;
@@ -209,11 +207,10 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @param array   $args Array with Widget or shortcode arguments.
 		 * @return array Array with related post objects that are cached.
 		 */
-		private function set_cache( $args, $type = '' ) {
+		private function set_cache( $args ) {
 
-			$function_args         = $args;
-			$function_args['type'] = $type;
-			$key                   = $this->get_post_meta_key( $args );
+			$function_args = $args;
+			$key           = $this->get_post_meta_key( $args );
 
 			// Restricted function arguments.
 			unset( $function_args['taxonomies'], $function_args['post_id'], $function_args['fields'] );
@@ -267,7 +264,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @param array   $posts Array with cached post ids.
 		 * @return array Array with related post objects.
 		 */
-		private function get_cache( $args, $posts, $type = '' ) {
+		private function get_cache( $args, $posts ) {
 
 			if ( empty( $posts ) ) {
 				return array();
@@ -289,7 +286,6 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// set the function arguments for the related_posts_by_taxonomy filter
 			$function_args                  = $args;
 			$function_args['related_terms'] = $current['related_terms'];
-			$function_args['type']          = $type;
 
 			// Restricted arguments.
 			unset( $function_args['taxonomies'], $function_args['post_id'] );
