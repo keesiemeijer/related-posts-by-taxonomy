@@ -47,16 +47,19 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	/* Can also be filtered in WordPress > 3.5 (hook: shortcode_atts_related_posts_by_tax) */
 	$rpbt_args = shortcode_atts( (array) $defaults, $rpbt_args, 'related_posts_by_tax' );
 
+	/* Validates atts. Sets the post type and post id if not set in filters above */
+	$validated_args = km_rpbt_validate_shortcode_atts( (array) $rpbt_args );
+
 	/**
 	 * Filter attributes.
 	 *
 	 * @param array   $rpbt_args See $defaults above
 	 */
-	$rpbt_args = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $rpbt_args );
+	$rpbt_args = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $validated_args );
+	$rpbt_args = array_merge( $validated_args, (array) $rpbt_args );
 
-
-	/* Validate atts. Also sets the post type if not set in atts or filters */
-	$rpbt_args = km_rpbt_validate_shortcode_atts( (array) $rpbt_args );
+	/* Not filterable */
+	$rpbt_args['type'] = 'shortcode';
 
 	$function_args = $rpbt_args;
 
@@ -172,7 +175,7 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	/* if no post type is set use the post type of the current post (new default since 0.3) */
 	if ( empty( $atts['post_types'] ) ) {
 		$post_type = get_post_type( $atts['post_id'] );
-		$atts['post_types'] = ( $post_type ) ? $post_type : 'post';
+		$atts['post_types'] = ( $post_type ) ? array( $post_type ) : array( 'post' );
 	}
 
 	if ( 'thumbnails' === $atts['format'] ) {
