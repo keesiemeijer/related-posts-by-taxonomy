@@ -117,12 +117,12 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $i, $rpbt_widget_args );
 		$i = array_merge( $i, (array) $filter );
 
+		/* Not filterable */
+		$i['type'] = 'widget';
+
 		if ( 'thumbnails' === $i['format'] ) {
 			$i['post_thumbnail'] = true;
 		}
-
-		/* add type for use in templates */
-		$i['type'] = 'widget';
 
 		$rpbt_args  = $function_args = $i;
 
@@ -166,7 +166,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 *
 	 * @param array   $related_posts    Array with related post objects.
 	 * @param array   $rpbt_args        Widget arguments.
-	 * @param [type]  $rpbt_widget_args Widget display arguments.
+	 * @param array   $rpbt_widget_args Widget display arguments.
 	 * @return void
 	 */
 	function widget_output( $related_posts, $rpbt_args, $rpbt_widget_args ) {

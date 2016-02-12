@@ -492,7 +492,7 @@ function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $a
 
 	$plugin = km_rpbt_plugin();
 
-	// Check if the cache class is instantiated.
+	// Check if the Cache class is instantiated.
 	if ( $plugin && !( $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache ) ) {
 		return false;
 	}
