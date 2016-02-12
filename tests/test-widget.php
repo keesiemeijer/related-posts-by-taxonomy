@@ -22,6 +22,13 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
+	function tearDown() {
+		// use tearDown for WP < 4.0
+		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this->utils, 'return_bool' ) );
+		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', '__return_false' );
+		parent::tearDown();
+	}
+
 
 	/**
 	 * Test if the widget exists.
@@ -37,7 +44,7 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 	/**
 	 * Test if the widget_hide_empty filter is set to true (by default).
 	 */
-	function test_widget_hide_empty_filter() {
+	function test_widget_hide_empty_filter_set_to_true() {
 		$create_posts = $this->utils->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
@@ -59,6 +66,32 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 
 		$this->assertTrue( $this->utils->boolean  );
 		$this->utils->boolean = null;
+	}
+
+	/**
+	 * Test if the widget_hide_empty filter if set to false.
+	 */
+	function test_widget_hide_empty_filter_set_to_false() {
+		$create_posts = $this->utils->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		add_filter( 'related_posts_by_taxonomy_widget_hide_empty', '__return_false' );
+		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+
+		// run the widget
+		ob_start();
+		$args = array(
+			'before_widget' => '<section>',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2>',
+			'after_title'   => '</h2>',
+		);
+		$instance = array( 'post_id' => $posts[4] );
+		$widget->_set( 2 );
+		$widget->widget( $args, $instance );
+		$output = ob_get_clean();
+
+		$this->assertContains( '<p>No related posts found</p>', $output );
 	}
 
 
