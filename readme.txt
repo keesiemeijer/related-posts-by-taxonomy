@@ -45,28 +45,28 @@ Default usage for the shortcode is:
 
 Attributes for the shortcode are:
 
-* post_id
-* taxonomies
-* post_types
-* posts_per_page
-* order
-* orderby
-* before_shortcode
-* after_shortcode
-* title
-* before_title
-* after_title
-* exclude_terms
-* include_terms
-* exclude_posts
-* format
-* image_size
-* columns
-* caption
-* limit_posts
-* limit_year
-* limit_month
-* related
+* `post_id`
+* `taxonomies`
+* `post_types`
+* `posts_per_page`
+* `order`
+* `orderby`
+* `before_shortcode`
+* `after_shortcode`
+* `title`
+* `before_title`
+* `after_title`
+* `exclude_terms`
+* `include_terms`
+* `exclude_posts`
+* `format`
+* `image_size`
+* `columns`
+* `caption`
+* `limit_posts`
+* `limit_year`
+* `limit_month`
+* `related`
 
 Example to show 10 related posts instead of the default 5.
 <pre><code>[related_posts_by_tax posts_per_page="10"]</code></pre>
@@ -109,11 +109,16 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 == Screenshots ==
 
 1. The Widget
-2. Twenty Fifteen screenshot. Related posts in the sidebar
+2. Twenty Fifteen screenshot. Related posts in the sidebar and after post content
 3. Twenty Twelve screenshot. Post thumbnails (after post content) and the widget
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.2.0 =
+* Enhancement
+	* Refactor of the persistant cache for consistent results when using the plugin filters
+	* Better data sanitation for taxonomies and comma separated values
+	* New PHPunit tests (GitHub only)
 
 = 2.1.1 =
 * Enhancement
@@ -207,5 +212,5 @@ Updated unit tests to be more reliable.
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 2.1.1 =
-Add Spanish, Catalan and Polish translation files. Fix some minor bugs.
+= 2.2.0 =
+Refactoring of the persistant cache and some small improvements.
