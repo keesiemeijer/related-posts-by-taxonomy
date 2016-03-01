@@ -34,6 +34,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this->utils, 'return_bool' ) );
 		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', '__return_true' );
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_args' ), 10, 4 );
+
 		parent::tearDown();
 	}
 
@@ -77,12 +78,9 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 	 * todo: Needs more testing
 	 */
 	function test_km_rpbt_validate_shortcode_atts() {
-
+		// should default to current post post type or default post type post
 		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => '' ) );
 		$this->assertEquals( array( 'post' ), $atts['post_types'] );
-
-		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => 'post' ) );
-		$this->assertEquals( 'post', $atts['post_types'] );
 	}
 
 
@@ -97,6 +95,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		$this->assertTrue( $this->utils->boolean );
 		$this->utils->boolean = null;
 	}
+
 
 	/**
 	 * Test if the shortcode_hide_empty filter works as intended.
@@ -118,6 +117,49 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[4] . '"]' );
 		$shortcode = ob_get_clean();
 		$this->assertContains( '<p>No related posts found</p>', $shortcode );
+	}
+
+
+	/**
+	 * Test if the shortcode uses the post type from the current post.
+	 */
+	function test_shortcode_post_type() {
+
+		// register custom post type
+		register_post_type( 'cpt', array(
+				'public'      => true,
+				'has_archive' => true,
+				'taxonomies'  => array( 'post_tag', 'category' ),
+				'labels'      => array(
+					'name' => 'test_cpt',
+				),
+			) );
+
+		// create posts for custom post type
+		$create_posts = $this->utils->create_posts_with_terms( 'cpt' );
+		$posts        = $create_posts['posts'];
+
+		// Add a shortcode to post content.
+		wp_update_post( array(
+				'ID'          => $posts[0],
+				'post_content' => '[related_posts_by_tax]',
+			)
+		);
+
+		// use filter to get arguments used for the related posts
+		add_filter( 'related_posts_by_taxonomy', array( $this, 'return_args' ), 10, 4 );
+
+		// Go to a single post page
+		$this->go_to( '?post_type=cpt&p=' . $posts[0] );
+
+		// Trigger loop.
+		ob_start();
+		the_post();
+		the_content();
+		$content = ob_get_clean();
+
+		$this->assertEquals( array( 'cpt' ), $this->args['post_types']  );
+		$this->args = null;
 	}
 
 

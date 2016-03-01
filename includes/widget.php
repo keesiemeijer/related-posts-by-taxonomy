@@ -117,22 +117,13 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $i, $rpbt_widget_args );
 		$i = array_merge( $i, (array) $filter );
 
-		/* convert "all" to array with all public taxonomies */
-		if ( $i['taxonomies'] === $this->plugin->all_tax ) {
-			$i['taxonomies'] =  array_keys( $this->plugin->taxonomies );
-		}
+		/* Not filterable */
+		$i['type'] = 'widget';
 
-		$i['post_thumbnail'] = false;
 		if ( 'thumbnails' === $i['format'] ) {
 			$i['post_thumbnail'] = true;
 		}
 
-		/* add type for use in templates */
-		$i['type'] = 'widget';
-
-		/* public template variables */
-		$image_size = $i['image_size']; // deprecated in version 0.3
-		$columns    = $i['columns']; // deprecated in version 0.3
 		$rpbt_args  = $function_args = $i;
 
 		/* restricted arguments */
@@ -158,39 +149,54 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$hide_empty = (bool) apply_filters( 'related_posts_by_taxonomy_widget_hide_empty', true );
 
 		if ( !$hide_empty || !empty( $related_posts ) ) {
-
-			/* get the template depending on the format  */
-			$template = km_rpbt_related_posts_by_taxonomy_template( (string) $rpbt_args['format'], $rpbt_args['type'] );
-
-			if ( !$template ) {
-				return;
-			}
-
-			/* display of the widget */
-			echo $rpbt_widget_args['before_widget'];
-
-			$rpbt_args['title'] = apply_filters( 'widget_title', $rpbt_args['title'], $rpbt_args, $this->id_base );
-
-			/* show widget title if one was set. */
-			if ( '' !== trim( $rpbt_args['title'] ) ) {
-				echo $rpbt_widget_args['before_title'] . $rpbt_args['title'] . $rpbt_widget_args['after_title'];
-			}
-
-			/* clean up variables before calling the template */
-			unset( $i, $filter, $function_args, $hide_empty, $cache );
-
-			global $post; // used for setup_postdata() in templates
-			require $template;
-			wp_reset_postdata(); // Clean up global $post variable;
-			echo $rpbt_widget_args['after_widget'];
+			$this->widget_output( $related_posts, $rpbt_args, $rpbt_widget_args );
 		}
 
 		/**
-		 * After the related posts are displayed
+		 * Fires after the related posts are displayed
 		 *
 		 * @param string  Display type, widget or shortcode.
 		 */
 		do_action( 'related_posts_by_taxonomy_after_display', 'widget' );
+	}
+
+
+	/**
+	 * Widget output
+	 *
+	 * @param array   $related_posts    Array with related post objects.
+	 * @param array   $rpbt_args        Widget arguments.
+	 * @param array   $rpbt_widget_args Widget display arguments.
+	 * @return void
+	 */
+	function widget_output( $related_posts, $rpbt_args, $rpbt_widget_args ) {
+
+		/* get the template depending on the format  */
+		$template = km_rpbt_related_posts_by_taxonomy_template( (string) $rpbt_args['format'], $rpbt_args['type'] );
+
+		if ( !$template ) {
+			return;
+		}
+
+		/* public template variables */
+		$image_size = $rpbt_args['image_size']; // deprecated in version 0.3
+		$columns    = $rpbt_args['columns']; // deprecated in version 0.3
+
+		/* display of the widget */
+		echo $rpbt_widget_args['before_widget'];
+
+		$rpbt_args['title'] = apply_filters( 'widget_title', $rpbt_args['title'], $rpbt_args, $this->id_base );
+
+		/* show widget title if one was set. */
+		if ( '' !== trim( $rpbt_args['title'] ) ) {
+			echo $rpbt_widget_args['before_title'] . $rpbt_args['title'] . $rpbt_widget_args['after_title'];
+		}
+
+		global $post; // used for setup_postdata() in templates
+		require $template;
+		wp_reset_postdata(); // Clean up global $post variable;
+
+		echo $rpbt_widget_args['after_widget'];
 	}
 
 
@@ -438,7 +444,9 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$i['post_types']['post'] = 'on';
 		}
 
-		return $i;
+		$i['type'] = 'widget';
+
+		return array_merge( km_rpbt_get_default_args(), $i );
 	}
 
 

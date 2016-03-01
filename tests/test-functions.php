@@ -26,6 +26,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 		$this->tax_2_terms = $posts['tax2_terms'];
 	}
 
+
 	/**
 	 * Test if km_rpbt_plugin() returns an object.
 	 *
@@ -56,15 +57,61 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 
 
 	/**
-	 * Test validating post types.
+	 * Test sanitizing arguments.
 	 */
-	function test_km_rpbt_validate_post_types() {
-		$post_types = 'lol,post';
+	function test_km_rpbt_sanitize_args() {
+		$expected = array(
+			'post_types' => array( 'post' ), 'posts_per_page' => 0, 'order' => '',
+			'fields' => '', 'limit_posts' => -1, 'limit_year' => 0,
+			'limit_month' => 0, 'orderby' => '',
+			'exclude_terms' => array( 1, 2, 3 ), 'include_terms' => array(),  'exclude_posts' => array(),
+			'post_thumbnail' => false, 'related' => false,
+		);
 
-		$this->assertEquals( array( 'post' ), km_rpbt_validate_post_types( $post_types ) );
+		$args = array(
+			'post_types' => false, 'posts_per_page' => false, 'order' => false,
+			'fields' => false, 'limit_posts' => -1, 'limit_year' => 'false',
+			'limit_month' => false, 'orderby' => false,
+			'exclude_terms' => array( 1, 2, 'string', false, 3, 2 ), 'include_terms' => false, 'exclude_posts' => false,
+			'post_thumbnail' => 'false', 'related' => 'lalala',
+		);
+
+		$this->assertEquals( $expected, km_rpbt_sanitize_args( $args ) );
 	}
 
 
+	/**
+	 * Test validating post types.
+	 */
+	function test_km_rpbt_get_post_types() {
+		$post_types = 'post ,lol, post';
+
+		$this->assertEquals( array( 'post' ), km_rpbt_get_post_types( $post_types ) );
+	}
+
+
+	/**
+	 * Test validating taxonomies.
+	 */
+	function test_km_rpbt_get_taxonomies() {
+		$taxonomies = 'category ,lol, category';
+
+		$this->assertEquals( array( 'category' ), km_rpbt_get_taxonomies( $taxonomies ) );
+	}
+
+
+	/**
+	 * Test values separated by.
+	 */
+	function test_km_rpbt_get_comma_separated_values() {
+		$expected = array( 'lol', 'hihi' );
+		$value = ' lol, hihi,lol';
+
+		$this->assertEquals( $expected, km_rpbt_get_comma_separated_values( $value ) );
+
+		$value = array(' lol', 'hihi ', ' lol ');
+		$this->assertEquals( $expected, km_rpbt_get_comma_separated_values( $value ) );
+	}
 
 
 	/**
@@ -209,7 +256,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 
 		// Empty string should default to taxonomy 'category'.
 		$fail4 = km_rpbt_related_posts_by_taxonomy( $posts[0], '', $args );
-		$this->assertEquals( array( $posts[1] ), $fail4 );
+		$this->assertEmpty( $fail4 );
 
 		// No arguments should return an empty array.
 		$fail5 = km_rpbt_related_posts_by_taxonomy();

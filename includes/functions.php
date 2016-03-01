@@ -15,24 +15,21 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param int     $post_id    The post id to get related posts for.
  * @param array|string $taxonomies The taxonomies to retrieve related posts from
  * @param array|string $args       Optional. Change what is returned
- * @return array                    Empty array if no related posts found. Array with post objects.
+ * @return array                   Empty array if no related posts found. Array with post objects.
  */
 function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'category', $args = '' ) {
 	global $wpdb;
 
-	if ( !absint( $post_id ) ) {
+	// Get valid taxonomies.
+	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
+
+	if ( !absint( $post_id ) || empty( $taxonomies ) ) {
 		return array();
 	}
 
-	$args = km_rpbt_sanitize_args( $args );
-
-	$taxonomies = ( !empty( $taxonomies ) ) ? $taxonomies : array( 'category' );
-
-	if ( !is_array( $taxonomies ) ) {
-		$taxonomies = array_unique( explode( ',', (string) $taxonomies ) );
-	}
-
+	$args  = km_rpbt_sanitize_args( $args );
 	$terms = array();
+
 
 	if ( !$args['related'] && !empty( $args['include_terms'] ) ) {
 		// related, use included term ids
@@ -40,7 +37,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	} else {
 
 		// related and not related terms
-		$terms = wp_get_object_terms( $post_id, array_map( 'trim', (array) $taxonomies ), array( 'fields' => 'ids' ) );
+		$terms = wp_get_object_terms( $post_id, $taxonomies, array( 'fields' => 'ids' ) );
 
 		if ( is_wp_error( $terms ) || empty( $terms ) ) {
 			return array();
@@ -120,8 +117,8 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		$limit_posts = absint( $args['limit_posts'] );
 		if ( $limit_posts ) {
 			$limit_sql = 'LIMIT 0,' . $limit_posts;
-	    }
-    }
+		}
+	}
 
 	$orderby = strtolower( (string) $args['orderby'] );
 	if ( !in_array( $orderby, array( 'post_date', 'post_modified' ) ) ) {
@@ -149,7 +146,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 			$select_sql .= " , count(distinct tt.term_taxonomy_id) as termcount";
 		}
 		$order_by_sql = "$wpdb->posts.$orderby";
-	} 
+	}
 
 	// post thumbnail sql
 	$meta_join_sql = $meta_where_sql = '';
@@ -313,6 +310,25 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 
 /**
+ * Returns default arguments.
+ *
+ * @since 2.1
+ *
+ * @return array Array with default arguments.
+ */
+function km_rpbt_get_default_args() {
+
+	return array(
+		'post_types' => 'post', 'posts_per_page' => 5, 'order' => 'DESC',
+		'fields' => '', 'limit_posts' => -1, 'limit_year' => '',
+		'limit_month' => '', 'orderby' => 'post_date',
+		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
+		'post_thumbnail' => false, 'related' => true,
+	);
+}
+
+
+/**
  * comparison function to sort the related posts by common terms and post date order.
  *
  * @since 0.1
@@ -331,24 +347,42 @@ function km_rpbt_related_posts_by_taxonomy_cmp( $item1, $item2 ) {
 
 
 /**
- * Validate post types
+ * Returns array with validated post types.
  *
- * @since 2.1
- *
+ * @since 2.2
  * @param string|array $post_types Comma separated list or array with post type names
  * @return array Array with validated post types.
  */
-function km_rpbt_validate_post_types( $post_types = '' ) {
+function km_rpbt_get_post_types( $post_types = '' ) {
 
-	if ( !is_array( $post_types ) ) {
-		$post_types = explode( ',', (string) $post_types );
+	// Create array with unique values
+	$post_types = km_rpbt_get_comma_separated_values( $post_types );
+
+	// Sanitize post type names and remove duplicates after sanitation
+	$post_types = array_unique( array_map( 'sanitize_key', (array) $post_types ) );
+
+	return array_values( array_filter( $post_types, 'post_type_exists' ) );
+}
+
+
+/**
+ * Returns array with validated taxonomies.
+ *
+ * @since 2.2
+ * @param string|array $taxonomies Taxonomies.
+ * @return array        Array with taxonomy names.
+ */
+function km_rpbt_get_taxonomies( $taxonomies ) {
+
+	$plugin  = km_rpbt_plugin();
+
+	if ( $plugin && ( $taxonomies === $plugin->all_tax ) ) {
+		$taxonomies = array_keys( $plugin->taxonomies );
 	}
 
-	// sanitize post type names and remove duplicates
-	$post_types = array_unique( array_map( 'sanitize_key', (array) $post_types ) );
-	$post_types = array_filter( $post_types, 'post_type_exists' );
+	$taxonomies = km_rpbt_get_comma_separated_values( $taxonomies );
 
-	return array_values( $post_types );
+	return array_values( array_filter( $taxonomies, 'taxonomy_exists' ) );
 }
 
 
@@ -357,7 +391,6 @@ function km_rpbt_validate_post_types( $post_types = '' ) {
  * Checks if ids is a comma separated string or an array with ids
  *
  * @since 0.2
- *
  * @param string|array Comma separated list or array with ids
  * @return array Array with postive integers
  */
@@ -378,21 +411,20 @@ function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
 
 
 /**
- * Returns default arguments.
+ * Sanitizes comma separetad values.
+ * Returns an array.
  *
- * @since 2.1
- *
- * @return array Array with default arguments.
+ * @since 2.2
+ * @param string|array $value Comma seperated value or array with values.
+ * @return array       Array with unique array values
  */
-function km_rpbt_get_default_args() {
+function km_rpbt_get_comma_separated_values( $value ) {
 
-	return array(
-		'post_types' => 'post', 'posts_per_page' => 5, 'order' => 'DESC',
-		'fields' => '', 'limit_posts' => -1, 'limit_year' => '',
-		'limit_month' => '', 'orderby' => 'post_date',
-		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
-		'post_thumbnail' => false, 'related' => true,
-	);
+	if ( !is_array( $value ) ) {
+		$value = explode( ',', (string) $value );
+	}
+
+	return array_values( array_filter( array_unique( array_map( 'trim', $value ) ) ) );
 }
 
 
@@ -400,52 +432,26 @@ function km_rpbt_get_default_args() {
  * Returns sanitized arguments.
  *
  * @since 2.1
+ * @param array   $args Arguments to be sanitized.
  * @return array Array with sanitized arguments.
  */
-function km_rpbt_sanitize_args( $args, $context = '' ) {
+function km_rpbt_sanitize_args( $args ) {
 
 	$defaults = km_rpbt_get_default_args();
 	$args     = wp_parse_args( $args, $defaults );
-	$types    = array( 'post_types' );
 
-	// Arrays| Strings
+	// Arrays - strings
 	if ( isset( $args['taxonomies'] ) ) {
-		$plugin  = km_rpbt_plugin();
-		$types[] = 'taxonomies';
-
-		if ( $plugin && ( $args['taxonomies'] === $plugin->all_tax ) ) {
-			$args['taxonomies'] = array_keys( $plugin->taxonomies );
-		}
-
+		$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
 	}
 
-	$post_types         = km_rpbt_validate_post_types( $args['post_types'] );
-	$args['post_types'] = ( !empty( $post_types ) ) ? $post_types : array( 'post' );
+	$post_types         = km_rpbt_get_post_types( $args['post_types'] );
+	$args['post_types'] = !empty( $post_types ) ? $post_types : array( 'post' );
 
-	foreach ( $types as $type ) {
-
-		// Return an array
-		if ( !is_array( $args[ $type ] ) ) {
-			$args[ $type ] = explode( ',', (string) $args[ $type ] );
-		}
-
-		$args[ $type ] = array_map( 'trim', $args[ $type ] );
-
-		if ( 'cache' === $context ) {
-			// Create sorted comma separated string for cache.
-			sort( $args[ $type ] );
-			$args[ $type ] = implode( ',', $args[ $type ] );
-		}
-	}
-
+	// Arrays - integers
 	$ids = array( 'exclude_terms', 'include_terms', 'exclude_posts' );
 	foreach ( $ids as $id ) {
 		$args[ $id ] = km_rpbt_related_posts_by_taxonomy_validate_ids( $args[ $id ] );
-		if ( 'cache' === $context ) {
-			// Create sorted comma separated string for cache.
-			sort( $args[ $id ] );
-			$args[ $id ] = implode( ',', $args[ $id ] );
-		}
 	}
 
 	// Strings
@@ -468,10 +474,6 @@ function km_rpbt_sanitize_args( $args, $context = '' ) {
 	$args['related']        = (bool) filter_var( $args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$args['post_thumbnail'] = (bool) filter_var( $args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 
-	if ( 'cache' === $context ) {
-		ksort( $args );
-	}
-
 	return $args;
 }
 
@@ -490,7 +492,7 @@ function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $a
 
 	$plugin = km_rpbt_plugin();
 
-	// Check if the cache class is instantiated.
+	// Check if the Cache class is instantiated.
 	if ( $plugin && !( $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache ) ) {
 		return false;
 	}
