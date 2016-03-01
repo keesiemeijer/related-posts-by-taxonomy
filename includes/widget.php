@@ -106,6 +106,10 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		/* Added in 0.3 (not part of the widget settings). Can be filtered below */
 		$i['caption'] = 'post_title';
 
+		if ( 'thumbnails' === $i['format'] ) {
+			$i['post_thumbnail'] = true;
+		}
+
 		/**
 		 * Filter widget arguments to get the related posts.
 		 *
@@ -119,10 +123,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		/* Not filterable */
 		$i['type'] = 'widget';
-
-		if ( 'thumbnails' === $i['format'] ) {
-			$i['post_thumbnail'] = true;
-		}
 
 		$rpbt_args  = $function_args = $i;
 
