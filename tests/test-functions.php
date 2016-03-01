@@ -103,14 +103,14 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	/**
 	 * Test values separated by.
 	 */
-	function test_km_rpbt_sanitize_comma_separated_value() {
+	function test_km_rpbt_get_comma_separated_values() {
 		$expected = array( 'lol', 'hihi' );
 		$value = ' lol, hihi,lol';
 
-		$this->assertEquals( $expected, km_rpbt_sanitize_comma_separated_value( $value ) );
+		$this->assertEquals( $expected, km_rpbt_get_comma_separated_values( $value ) );
 
 		$value = array(' lol', 'hihi ', ' lol ');
-		$this->assertEquals( $expected, km_rpbt_sanitize_comma_separated_value( $value ) );
+		$this->assertEquals( $expected, km_rpbt_get_comma_separated_values( $value ) );
 	}
 
 

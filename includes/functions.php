@@ -356,7 +356,7 @@ function km_rpbt_related_posts_by_taxonomy_cmp( $item1, $item2 ) {
 function km_rpbt_get_post_types( $post_types = '' ) {
 
 	// Create array with unique values
-	$post_types = km_rpbt_sanitize_comma_separated_value( $post_types );
+	$post_types = km_rpbt_get_comma_separated_values( $post_types );
 
 	// Sanitize post type names and remove duplicates after sanitation
 	$post_types = array_unique( array_map( 'sanitize_key', (array) $post_types ) );
@@ -380,7 +380,7 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
 		$taxonomies = array_keys( $plugin->taxonomies );
 	}
 
-	$taxonomies = km_rpbt_sanitize_comma_separated_value( $taxonomies );
+	$taxonomies = km_rpbt_get_comma_separated_values( $taxonomies );
 
 	return array_values( array_filter( $taxonomies, 'taxonomy_exists' ) );
 }
@@ -418,7 +418,7 @@ function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
  * @param string|array $value Comma seperated value or array with values.
  * @return array       Array with unique array values
  */
-function km_rpbt_sanitize_comma_separated_value( $value ) {
+function km_rpbt_get_comma_separated_values( $value ) {
 
 	if ( !is_array( $value ) ) {
 		$value = explode( ',', (string) $value );

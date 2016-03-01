@@ -110,7 +110,7 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 		$_sc_output   = km_rpbt_shortcode_output( $_posts, $_sc_validate );
 		$_post_types  = km_rpbt_get_post_types('post,page');
 		$_taxonomies  = km_rpbt_get_taxonomies($taxonomies);
-		$_value       = km_rpbt_sanitize_comma_separated_value( 'hello,world' );
+		$_value       = km_rpbt_get_comma_separated_values( 'hello,world' );
 		$_template    = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
 		$_ids         = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
 
