@@ -41,7 +41,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				return;
 			}
 
-			$this->debug[ 'cached' ] = 'none';
+			$this->debug[ 'cache' ] = 'none';
 
 			$this->plugin  = km_rpbt_plugin();
 			$this->cache   = $this->plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
@@ -103,7 +103,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			if ( $this->cache ) {
 				$this->check_cache( $args );
 			} else {
-				$this->debug[ 'cached' ] = 'no persistent cache';
+				$this->debug[ 'cache' ] = 'no persistent cache';
 			}
 
 			// Gets current post terms, taxonomies and post ID.
@@ -121,32 +121,26 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 */
 		function check_cache( $args ) {
 
-			// returns only function args
-			$args = $this->plugin->cache->sanitize_cache_args( $args );
-
 			// Get cached post ids (if they exist)
-			$posts = $this->plugin->cache->get_post_meta( $args );
+			$cache = $this->plugin->cache->get_post_meta( $args );
 
-			if ( is_array( $posts ) ) {
+			if ( isset( $cache['ids'] ) ) {
 
 				// Related posts were cached for this post
-
-				$current  = isset( $posts['rpbt_current'] ) ? $posts['rpbt_current'] : array();
-				unset( $posts['rpbt_current'] );
-				$posts = array_keys( $posts );
-				$this->debug[ 'cached' ] = 'current post cached';
-				$this->debug[ 'cached post ids'] = !empty( $posts ) ? $posts : array();
+				$cache_args = $cache['args'];
+				$post_ids = array_keys( (array) $cache['ids'] );
+				$this->debug[ 'cache' ] = 'current post cached';
+				$this->debug[ 'cached post ids'] = !empty( $post_ids  ) ? $post_ids  : array();
 				$defaults = km_rpbt_get_default_args();
 				$this->debug[ 'function args'] = array_intersect_key( $args , $defaults );
-				$taxonomies = is_array(  $args['taxonomies'] ) ? implode( ', ',  $args['taxonomies'] ) : $args['taxonomies'];
-				$this->debug[ 'cached taxonomies'] = isset( $current['taxonomies'] ) ? $current['taxonomies'] : $taxonomies;
-				$this->debug[ 'cached taxonomies'] = str_replace( ',', ', ', $this->debug[ 'cached taxonomies'] );
-				$this->debug[ 'cached terms'] = isset( $current['related_terms'] ) ? $current['related_terms'] : 'not in cache for post that doesn\'t have related posts';
+				$taxonomies = km_rpbt_get_taxonomies( $cache_args[ 'taxonomies'] );
+				$this->debug[ 'cached taxonomies'] = implode( ', ', $taxonomies );
+				$this->debug[ 'cached terms'] = isset( $cache_args['related_terms'] ) ? $cache_args['related_terms'] : 'not in cache for post that doesn\'t have related posts';
 				$this->debug[ 'current post id'] = isset( $args['post_id'] ) ? $args['post_id'] : '';
 			} else {
 
 				// Related posts not yet in cache
-				$this->debug[ 'cached' ] = 'current post is not yet cached';
+				$this->debug[ 'cache' ] = 'current post is not yet cached';
 			}
 		}
 
@@ -319,7 +313,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		function wp_footer() {
 
 			$order = array(
-				'type', 'cached', 'current post id', 'taxonomies used for related query', 'cached taxonomies',
+				'type', 'cache', 'current post id', 'taxonomies used for related query', 'cached taxonomies',
 				'terms found for current post', 'terms used for related query', 'cached terms',
 				'related post ids found', 'cached post ids',
 				'widget args', 'shortcode args', 'function args',
@@ -363,7 +357,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 					// reorder debug array;
 					$debug_arr = array_merge( $_order, $debug_arr );
 
-					if ( $debug_arr[ 'cached' ] === 'current post cached' ) {
+					if ( $debug_arr[ 'cache' ] === 'current post cached' ) {
 						unset( $debug_arr['related post ids found'] );
 						unset( $debug_arr['terms used for related query'] );
 						unset( $debug_arr['terms found for current post'] );

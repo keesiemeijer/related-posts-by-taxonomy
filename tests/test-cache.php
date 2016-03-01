@@ -26,7 +26,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->utils = new RPBT_Test_Utils( $this->factory );
 	}
 
-	function tearDown(){
+	function tearDown() {
 		// use tearDown for WP < 4.0
 		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
 	}
@@ -120,9 +120,9 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 		// Get related post ids for $post[0] from cache.
 		// This also tests if the cache is set for the right post ID
-		$cache_ids = get_post_meta( $posts[0], $meta_key, true );
-		unset( $cache_ids['rpbt_current'] );
-		$cache_ids = array_keys( $cache_ids );
+		$cache = get_post_meta( $posts[0], $meta_key, true );
+
+		$cache_ids = array_keys( $cache['ids'] );
 		$this->assertNotEmpty( $cache_ids );
 
 		// Get related post ids with function.
@@ -157,9 +157,8 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->assertNotEmpty( $meta_key );
 
 		// Get cache for $post[1];
-		$cache_ids = get_post_meta( $posts[1], $meta_key, true );
-		unset( $cache_ids['rpbt_current'] );
-		$cache_ids = array_keys( $cache_ids );
+		$cache = get_post_meta( $posts[1], $meta_key, true );
+		$cache_ids = array_keys( $cache['ids'] );
 		$this->assertNotEmpty( $cache_ids );
 
 		$this->assertEquals( array( $posts[0], $posts[2], $posts[3] ), $cache_ids );

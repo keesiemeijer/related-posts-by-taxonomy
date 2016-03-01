@@ -154,28 +154,26 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				return array();
 			}
 
-			// Get cached post ids from meta (if they exist )
-			$posts = $this->get_post_meta( $args );
+			// Get cached post ids from meta
+			$cache = $this->get_post_meta( $args );
 
-			// If $posts is an empty array the current post doesn't have any related posts.
-			// If $posts is an empty string the related posts are not cached.
+			if ( isset( $cache['ids'] ) ) {
 
-			if ( empty( $posts ) ) {
-
-				if ( !is_array( $posts ) ) {
-					// Related posts are not cached yet!
-
-					$posts = $this->set_cache( $args );
-				} else {
-					// Already cached, but the current post has no related posts.
+				if ( empty( $cache['ids'] ) ) {
+					// Cached, but the current post has no related posts.
 
 					$posts = array();
 					$this->cache_log[] = sprintf( 'Post ID %d - cache exists empty', $args['post_id'] );
+				} else {
+					// Cached related post ids are found!
+
+					$posts = $this->get_cache( $args, $cache );
 				}
 
 			} else {
-				// Cached related post ids are found!
-				$posts = $this->get_cache( $args, $posts );
+				// Related posts are not cached yet!
+
+				$posts = $this->set_cache( $args );
 			}
 
 			return $posts;
@@ -211,6 +209,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			$function_args = $args;
 			$key           = $this->get_post_meta_key( $args );
+			$cache         = array( 'ids' => array(), 'args' => array() );
 
 			// Restricted function arguments.
 			unset( $function_args['taxonomies'], $function_args['post_id'], $function_args['fields'] );
@@ -226,25 +225,22 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			// Create the array with cached post ids
 			// and add the related term count.
-			$posts_arr = array();
-			foreach ( $posts as  $post ) {
-				$posts_arr[ $post->ID ] = isset( $post->termcount ) ? $post->termcount : 0;
+			foreach ( $posts as $post ) {
+				$cache['ids'][ $post->ID ] = isset( $post->termcount ) ? $post->termcount : 0;
 			}
 
 			// Add the properties used in the related_posts_by_taxonomy filter.
-			if ( !empty( $posts_arr ) ) {
-				$posts_arr['rpbt_current']['taxonomies'] = $args['taxonomies'];
-				$posts_arr['rpbt_current']['post_id']    = $args['post_id'];
-				if ( isset( $this->current_args['related_terms'] ) ) {
-					$posts_arr['rpbt_current']['related_terms'] = $this->current_args['related_terms'];
-				}
+			$cache['args']['post_id']    = $args['post_id'];
+			$cache['args']['taxonomies'] = $args['taxonomies'];
+			if ( isset( $this->current_args['related_terms'] ) ) {
+				$cache['args']['related_terms'] = $this->current_args['related_terms'];
 			}
 
 			// Reset current arguments.
 			$this->current_args = array();
 
 			// Cache the post ids.
-			$updated = update_post_meta( $args['post_id'], $key, $posts_arr );
+			$updated = update_post_meta( $args['post_id'], $key, $cache );
 
 			if ( !empty( $updated ) ) {
 				$this->cache_log[] = sprintf( 'Post ID %d - caching posts...', $args['post_id'] );
@@ -264,9 +260,14 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @param array   $posts Array with cached post ids.
 		 * @return array Array with related post objects.
 		 */
-		private function get_cache( $args, $posts ) {
+		private function get_cache( $args, $cache ) {
 
-			if ( empty( $posts ) ) {
+			if ( !isset( $cache['ids'] ) ) {
+				return array();
+			}
+
+			if ( empty( $cache['ids'] ) ) {
+				$this->cache_log[] = sprintf( 'Post ID %d - cache exists empty', $args['post_id'] );
 				return array();
 			}
 
@@ -277,50 +278,47 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			);
 
 			// Get the related_posts_by_taxonomy filter properties
-			$current = isset( $posts['rpbt_current'] ) ? $posts['rpbt_current'] : array();
-			$current = array_merge( $defaults, (array) $current );
-
-			// Remove the related_posts_by_taxonomy filter properties.
-			unset( $posts['rpbt_current'] );
+			$cache_args = isset( $cache['args'] ) ? $cache['args'] : array();
+			$cache_args = array_merge( $defaults, (array) $cache_args );
 
 			// set the function arguments for the related_posts_by_taxonomy filter
 			$function_args                  = $args;
-			$function_args['related_terms'] = $current['related_terms'];
+			$function_args['related_terms'] = $cache_args['related_terms'];
 
 			// Restricted arguments.
 			unset( $function_args['taxonomies'], $function_args['post_id'] );
 
-			$post_ids = array_keys( $posts );
-
 			$_args = array(
 				'posts_per_page'         => $args['posts_per_page'],
-				'post__in'               => $post_ids,
+				'post__in'               => array_keys( $cache['ids'] ),
 				'orderby'                => 'post__in',
 				'update_post_term_cache' => false,
 				'update_post_meta_cache' => false,
 			);
 
 			// Get related posts with get_posts().
-			$_posts = get_posts( $_args );
+			$posts = get_posts( $_args );
 
-			if ( !empty( $_posts ) ) {
+			if ( !empty( $posts ) ) {
 
 				// Add the termcount back to the found posts
-				foreach ( $_posts as $key => $post ) {
-					if ( isset( $posts[ $post->ID ] ) ) {
-						$_posts[ $key ]->termcount = $posts[ $post->ID ];
+				foreach ( $posts as $key => $post ) {
+					if ( isset( $cache['ids'][ $post->ID ] ) ) {
+						$posts[ $key ]->termcount = $cache['ids'][ $post->ID ];
 					}
 				}
 
-				$posts = $_posts;
 				$this->cache_log[] = sprintf( 'Post ID %d - cache exists', $args['post_id'] );
 			} else {
 				$posts = array();
 				$this->cache_log[] = sprintf( 'Post ID %d - cache exists empty', $args['post_id'] );
 			}
 
+			$post_id    = $cache_args['post_id'];
+			$taxonomies = km_rpbt_get_taxonomies( $cache_args['taxonomies'] );
+
 			// See km_rpbt_related_posts_by_taxonomy filter in includes/functions.php
-			return apply_filters( 'related_posts_by_taxonomy', $posts, $current['post_id'], $current['taxonomies'], $function_args );
+			return apply_filters( 'related_posts_by_taxonomy', $posts, $post_id, $taxonomies, $function_args );
 		}
 
 
