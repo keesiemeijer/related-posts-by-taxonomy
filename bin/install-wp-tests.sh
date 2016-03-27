@@ -10,6 +10,10 @@ DB_USER=$2
 DB_PASS=$3
 DB_HOST=${4-localhost}
 WP_VERSION=${5-latest}
+TEST_SUITE_VERSION=${6-core_version}
+
+# To test release candidates use
+# bash bin/install-wp-tests.sh wordpress_test root '' localhost 4.5-RC1 trunk
 
 WP_TESTS_DIR=/tmp/wordpress-tests-lib
 WP_CORE_DIR=/tmp/wordpress/
@@ -112,6 +116,14 @@ install_test_suite() {
 
 	if [ $core_version != 'trunk' ]; then
 		core_version="tags/"$core_version
+	fi
+
+	if [ $TEST_SUITE_VERSION != 'core_version' ]; then
+		if [ $TEST_SUITE_VERSION != 'trunk' ]; then
+			core_version="tags/"$TEST_SUITE_VERSION
+		else
+			core_version='trunk'
+		fi
 	fi
 
 	# Set up the testing suite from the core version
