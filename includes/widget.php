@@ -31,7 +31,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 *
 	 * @since 0.1
 	 */
-	function Related_Posts_By_Taxonomy() {
+	function __construct() {
 
 		/* Get defaults for this plugin. */
 		$this->plugin = km_rpbt_plugin();
