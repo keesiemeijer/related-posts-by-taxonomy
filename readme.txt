@@ -114,6 +114,13 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.2.1 =
+
+* Enhancement
+	* Add selective refresh to the widget for the customizer
+* Bug fixes
+	* Fix deprecated notice (by removing PHP4 style constructor) when installing this plugin with PHP7. Props: @dima-stefantsov
+
 = 2.2.0 =
 * Enhancement
 	* Refactor of the persistant cache for consistent results when using the plugin filters
@@ -212,5 +219,5 @@ Updated unit tests to be more reliable.
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 2.2.0 =
-Refactoring of the persistant cache and some small improvements.
+= 2.2.1 =
+Add selective refresh to the widget for improved usage in the customizer. Fix a (deprecated) notice when installing this plugin with PHP7. 
