@@ -31,7 +31,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 *
 	 * @since 0.1
 	 */
-	function Related_Posts_By_Taxonomy() {
+	function __construct() {
 
 		/* Get defaults for this plugin. */
 		$this->plugin = km_rpbt_plugin();
@@ -53,7 +53,11 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$widget = array_merge( $widget, $widget_filter );
 
 		/* Widget settings. */
-		$widget_ops = array( 'classname'   => 'related_posts_by_taxonomy', 'description' => $widget['description'] );
+		$widget_ops = array(
+			'classname'                   => 'related_posts_by_taxonomy',
+			'description'                 => $widget['description'],
+			'customize_selective_refresh' => true
+		);
 
 		/* Widget control settings. */
 		$control_ops = array( 'id_base' => 'related-posts-by-taxonomy' );

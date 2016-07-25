@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Related Posts By Taxonomy 2.2.1-alpha\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2016-03-27 14:23:26+00:00\n"
+"POT-Creation-Date: 2016-07-25 10:11:36+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -65,67 +65,67 @@ msgstr ""
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/widget.php:269
+#: includes/widget.php:273
 msgid "Oops, something went wrong"
 msgstr ""
 
-#: includes/widget.php:281
+#: includes/widget.php:285
 msgid "Title"
 msgstr ""
 
-#: includes/widget.php:287
+#: includes/widget.php:291
 msgid "Number of related posts to show"
 msgstr ""
 
-#: includes/widget.php:290
+#: includes/widget.php:294
 msgid "Use -1 to show all related posts."
 msgstr ""
 
-#: includes/widget.php:297
+#: includes/widget.php:301
 msgid "Randomize related posts."
 msgstr ""
 
-#: includes/widget.php:300
+#: includes/widget.php:304
 msgid "Taxonomies"
 msgstr ""
 
-#: includes/widget.php:302
+#: includes/widget.php:306
 msgid "Taxonomy"
 msgstr ""
 
-#: includes/widget.php:305
+#: includes/widget.php:309
 msgid "All Taxonomies"
 msgstr ""
 
-#: includes/widget.php:312
+#: includes/widget.php:316
 msgid "Post Types"
 msgstr ""
 
-#: includes/widget.php:324
+#: includes/widget.php:328
 msgid "Display"
 msgstr ""
 
-#: includes/widget.php:328
+#: includes/widget.php:332
 msgid "Format"
 msgstr ""
 
-#: includes/widget.php:337
+#: includes/widget.php:341
 msgid "Image Size"
 msgstr ""
 
-#: includes/widget.php:346
+#: includes/widget.php:350
 msgid "Number of image columns"
 msgstr ""
 
-#: includes/widget.php:349
+#: includes/widget.php:353
 msgid "Use 0 for no columns."
 msgstr ""
 
-#: includes/widget.php:357
+#: includes/widget.php:361
 msgid "Display widget on single post pages only"
 msgstr ""
 
-#: includes/widget.php:361
+#: includes/widget.php:365
 msgid "Display related posts for post ID (optional)"
 msgstr ""
 
