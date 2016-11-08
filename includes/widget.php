@@ -107,8 +107,9 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$i['order'] = 'RAND';
 		}
 
-		/* Added in 0.3 (not part of the widget settings). Can be filtered below */
-		$i['caption'] = 'post_title';
+		/* Not part of the widget settings. Can be filtered below */
+		$i['caption']      = 'post_title';
+		$i['link_caption'] = false;
 
 		if ( 'thumbnails' === $i['format'] ) {
 			$i['post_thumbnail'] = true;

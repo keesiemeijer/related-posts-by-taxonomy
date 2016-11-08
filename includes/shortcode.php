@@ -184,8 +184,11 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 		$atts['post_thumbnail'] = true;
 	}
 
-	// convert 'related' string to boolean true if empty.
-	$atts['related'] = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
+	// Set to defaults or convert to booleans if not empty.
+	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
+	$atts['related']      = (bool) filter_var( $atts['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	$atts['link_caption'] = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
+	$atts['link_caption'] = (bool) filter_var( $atts['link_caption'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 
 	return $atts;
 }
@@ -208,7 +211,8 @@ function km_rpbt_get_shortcode_atts() {
 		'title' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
 		'format' => 'links',
 		'image_size' => 'thumbnail', 'columns' => 3,
-		'caption' => 'post_title', 'type' => 'shortcode',
+		'caption' => 'post_title', 'link_caption' => false,
+		'type' => 'shortcode',
 	);
 
 	$atts = array_merge( km_rpbt_get_default_args(), $atts );

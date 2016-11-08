@@ -40,13 +40,15 @@
 		// 'itemtag'    => 'dl',
 		// 'icontag'    => 'dt',
 		// 'captiontag' => 'dd',
-
-		'id'         => $rpbt_args['post_id'],
-		'columns'    => $rpbt_args['columns'],    // zero or positive number
-		'size'       => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
-		'caption'    => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
+		
+		'id'           => $rpbt_args['post_id'],
+		'columns'      => $rpbt_args['columns'],    // zero or positive number
+		'size'         => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
+		'caption'      => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
+		'link_caption' => $rpbt_args['link_caption'],
 	);
 
+// Plugin function in /includes/functions-thumbnail.php
 echo km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts );
 ?>
 
