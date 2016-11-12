@@ -278,6 +278,59 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		}
 
 
+		/**
+		 * returns default settings for the shortcode and widget.
+		 *
+		 * @since 2.2.2
+		 * @param tring   $type Type of settings. Choose from 'widget', 'shortcode' or 'all'.
+		 * @return string ype of settings. Values can be 'shortcode' or 'widget'
+		 */
+		public function get_default_settings( $type = '' ) {
+
+			// Settings for the km_rpbt_related_posts_by_taxonomy() function.
+			$defaults = km_rpbt_get_default_args();
+
+			// Common settings for the widget and shortcode.
+			$settings =   array(
+				'post_id'        => '',
+				'taxonomies'     => 'all',
+				'title'          => __( 'Related Posts', 'related-posts-by-taxonomy' ),
+				'format'         => 'links',
+				'image_size'     => 'thumbnail',
+				'columns'        => 3,
+				'link_caption'   => false,
+				'caption'        => 'post_title',
+			);
+
+			$settings = array_merge( $defaults, $settings );
+
+			// Custom settings for the widget.
+			if ( ( 'widget' === $type ) || ( 'all' === $type ) ) {
+				$settings['random']            = false;
+				$settings['singular_template'] = false;
+				$settings['type']              = 'widget';
+			}
+
+			// Custom settings for the shortcode.
+			if ( ( 'shortcode' === $type ) || ( 'all' === $type ) ) {
+				$shortcode_args = array(
+					'before_shortcode' => '<div class="rpbt_shortcode">',
+					'after_shortcode'  => '</div>',
+					'before_title'     => '<h3>',
+					'after_title'      => '</h3>',
+					'type'             => 'shortcode',
+				);
+
+				$settings = array_merge( $settings, $shortcode_args );
+			}
+
+			// No default setting for post types.
+			$settings['post_types'] = '';
+			$settings['type'] = in_array( $type, array( 'shortcode', 'widget' ) ) ? $type : '';
+
+			return $settings;
+		}
+
 	} // end class
 
 	Related_Posts_By_Taxonomy_Defaults::init();
