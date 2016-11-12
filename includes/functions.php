@@ -486,7 +486,7 @@ function km_rpbt_sanitize_args( $args ) {
  * @param int     $post_id    The post id to cache related posts for.
  * @param array|string $taxonomies The taxonomies to cache related posts from
  * @param array|string $args       Optional. Cache arguments
- * @return array Array Array with cached related posts objects or false if no posts where cached.
+ * @return array Array with cached related posts objects or false if no posts where cached.
  */
 function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $args = '' ) {
 
@@ -522,6 +522,22 @@ function km_rpbt_flush_cache() {
 	}
 
 	return false;
+}
+
+/**
+ * km_rpbt_get_default_settings().
+ *
+ * @since 2.2.2
+ * @return array|false Array with default settings by type 'shortcode', 'widget' or 'all'.
+ */
+function km_rpbt_get_default_settings( $type = '' ) {
+	$plugin = km_rpbt_plugin();
+
+	if ( !$plugin ) {
+		return false;
+	}
+
+	return $plugin->get_default_settings( $type );
 }
 
 
