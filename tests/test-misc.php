@@ -85,14 +85,14 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 	 * Tests for functions that should not output anything.
 	 *
 	 * @depends test_create_posts_with_terms
+	 * @expectedDeprecated km_rpbt_get_shortcode_atts
 	 */
 	function test_empty_output() {
-
 		$create_posts = $this->utils->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 		$args         =  array( 'fields' => 'ids' );
 		$taxonomies   = array( 'category', 'post_tag' );
-
+		$this->expectDeprecated();
 		ob_start();
 
 		// these functions should not output anything.
@@ -106,6 +106,7 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 		$_sc_args     = km_rpbt_get_shortcode_atts();
 		$_sc_args['post_id'] = $posts[0];
 		$_sc_validate = km_rpbt_validate_shortcode_atts( $_sc_args );
+		$_settings    = km_rpbt_get_default_settings();
 		$_posts       = get_posts();
 		$_sc_output   = km_rpbt_shortcode_output( $_posts, $_sc_validate );
 		$_post_types  = km_rpbt_get_post_types('post,page');
