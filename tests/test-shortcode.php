@@ -68,7 +68,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		$expected = array_merge( km_rpbt_get_default_args(), $expected );
 		$expected['post_types'] = '';
 
-		$atts = km_rpbt_get_shortcode_atts();
+		$atts = km_rpbt_get_default_settings( 'shortcode' );
 		$this->assertEquals( $expected, $atts );
 	}
 
@@ -160,6 +160,31 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 		$content = ob_get_clean();
 
 		$this->assertEquals( array( 'cpt' ), $this->args['post_types']  );
+		$this->args = null;
+	}
+
+
+	/**
+	 * Test the arguments for the related_posts_by_taxonomy_shortcode_atts filter.
+	 * Should be te similar to the arguments as for the related_posts_by_taxonomy_widget_args filter
+	 */
+	function test_related_posts_by_taxonomy_shortcode_atts() {
+
+		$create_posts = $this->utils->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// use filter to get arguments used for the related posts
+		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_args' ) );
+
+		do_shortcode( '[related_posts_by_tax]' );
+		$expected =  km_rpbt_get_default_settings( 'shortcode' );
+
+		// false if outside the loop
+		$expected['post_id'] = get_the_ID();
+		// array after validation
+		$expected['post_types'] = array( 'post' );
+
+		$this->assertEquals( $expected, $this->args  );
 		$this->args = null;
 	}
 
