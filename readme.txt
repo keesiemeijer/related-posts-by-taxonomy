@@ -1,9 +1,9 @@
 === Related Posts by Taxonomy ===
 Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
-Requires at least: 3.9
-Tested up to: 4.6
-Stable tag: 2.2.2-alpha
+Requires at least: 4.0
+Tested up to: 4.7
+Stable tag: 2.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -63,6 +63,7 @@ Attributes for the shortcode are:
 * `image_size`
 * `columns`
 * `caption`
+* `link_caption`
 * `limit_posts`
 * `limit_year`
 * `limit_month`
@@ -114,6 +115,12 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.2.2 =
+
+* Enhancement
+	* New option to link thumbnail captions (post titles) to posts in the widget and shortcode
+	* Make the widget UI more intuitive
+
 = 2.2.1 =
 
 * Enhancement
@@ -219,5 +226,5 @@ Updated unit tests to be more reliable.
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 2.2.1 =
-Add selective refresh to the widget for improved usage in the customizer. Fix a (deprecated) notice when installing this plugin with PHP7. 
+= 2.2.2 =
+New option to link thumbnail captions (post titles) to posts in the widget and shortcode. 

@@ -1,8 +1,8 @@
 # [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Build Status](https://travis-ci.org/keesiemeijer/related-posts-by-taxonomy.svg?branch=develop)](http://travis-ci.org/keesiemeijer/related-posts-by-taxonomy) #
 
-Version:           2.2.2-alpha  
-Requires at least: 3.9  
-Tested up to:      4.6  
+Version:           2.2.2  
+Requires at least: 4.0  
+Tested up to:      4.7  
 
 ### Welcome to the GitHub repository for this plugin ###
 This is the development repository for the WordPress plugin [Related Posts by Taxonomy](https://wordpress.org/plugins/related-posts-by-taxonomy).

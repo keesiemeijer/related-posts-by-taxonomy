@@ -92,7 +92,7 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 		$posts        = $create_posts['posts'];
 		$args         =  array( 'fields' => 'ids' );
 		$taxonomies   = array( 'category', 'post_tag' );
-		$this->expectDeprecated();
+
 		ob_start();
 
 		// these functions should not output anything.
