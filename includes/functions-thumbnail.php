@@ -33,13 +33,14 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$html5 = current_theme_supports( 'html5', 'gallery' );
 
 	$defaults = array(
-		'id'         => $post ? $post->ID : 0,
-		'itemtag'    => $html5 ? 'figure'     : 'dl',
-		'icontag'    => $html5 ? 'div'        : 'dt',
-		'captiontag' => $html5 ? 'figcaption' : 'dd',
-		'columns'    => 3,
-		'size'       => 'thumbnail',
-		'caption'    => 'post_title', // 'post_title', 'post_excerpt', 'attachment_caption', attachment_alt, or a custom string
+		'id'           => $post ? $post->ID : 0,
+		'itemtag'      => $html5 ? 'figure'     : 'dl',
+		'icontag'      => $html5 ? 'div'        : 'dt',
+		'captiontag'   => $html5 ? 'figcaption' : 'dd',
+		'columns'      => 3,
+		'size'         => 'thumbnail',
+		'caption'      => 'post_title', // 'post_title', 'post_excerpt', 'attachment_caption', attachment_alt, or a custom string
+		'link_caption' => false,
 	);
 
 	/* Can be filtered in WordPress > 3.5 (hook: shortcode_atts_gallery) */
@@ -101,12 +102,10 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		$icontag = 'dt';
 	}
 
-	$columns   = intval( $args['columns'] );
-	$itemwidth = $columns > 0 ? floor( 100/$columns ) : 100;
-	$float     = is_rtl() ? 'right' : 'left';
-
-	$selector = "gallery-{$instance}";
-
+	$columns       = intval( $args['columns'] );
+	$itemwidth     = $columns > 0 ? floor( 100/$columns ) : 100;
+	$float         = is_rtl() ? 'right' : 'left';
+	$selector      = "gallery-{$instance}";
 	$gallery_style = '';
 
 	/**
@@ -157,6 +156,9 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 		if ( 'post_title' === $args['caption'] ) {
 			$caption = $title;
+			if ( (bool)  $args['link_caption'] ) {
+				$caption = "<a href='" . get_permalink( $related->ID ) . "'>" . $caption . '</a>';
+			}
 		} elseif ( 'post_excerpt' === $args['caption'] ) {
 			global $post;
 			$post = $related;
@@ -187,9 +189,8 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		$thumbnail   = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $describedby );
 		$permalink   = get_permalink(  $related->ID );
 		$title_attr  = esc_attr( $title );
-
-		$image_link = ( $thumbnail ) ? "<a href='$permalink' title='$title_attr'>$thumbnail</a>" : '';
-		$image_attr = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
+		$image_link  = ( $thumbnail ) ? "<a href='$permalink' title='$title_attr'>$thumbnail</a>" : '';
+		$image_attr  = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
 
 		/**
 		 * Filter the gallery image.

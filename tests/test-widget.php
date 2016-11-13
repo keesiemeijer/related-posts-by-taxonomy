@@ -11,6 +11,13 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 	 */
 	private $utils;
 
+	/**
+	 * Widget settings.
+	 *
+	 * @var array
+	 */
+	private $settings;
+
 
 	/**
 	 * Set up.
@@ -96,6 +103,51 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 
 
 	/**
+	 * Test the arguments for the filter related_posts_by_taxonomy_widget_args.
+	 * Should be te similar to the arguments as for the related_posts_by_taxonomy_shortcode_atts filter
+	 */
+	function test_widget_filter_settings() {
+		$create_posts = $this->utils->create_posts_with_terms();
+
+		add_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_settings' ) );
+		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+
+		// run the widget
+		ob_start();
+		$args = array(
+			'before_widget' => '<section>',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2>',
+			'after_title'   => '</h2>',
+		);
+
+		$widget->widget( $args, array() );
+		$output = ob_get_clean();
+
+		$expected               = km_rpbt_get_default_settings( 'widget' );
+		$expected['post_types'] = array( 'post' ); // set in the widget as default
+		$expected['post_id']    = false; // not in the loop
+
+		$this->assertEquals( $expected, $this->settings );
+	}
+
+
+	/**
+	 * Test args validation.
+	 */
+	function test_widget_get_instance_settings() {
+		$create_posts = $this->utils->create_posts_with_terms();
+		$widget       = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+
+		$settings = $widget->get_instance_settings( array() );
+		$expected = km_rpbt_get_default_settings( 'widget' );
+		$expected['post_types'] = array( 'post' ); // set in the widget as default
+
+		$this->assertEquals( $expected, $settings );
+	}
+
+
+	/**
 	 * Test output from widget.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
@@ -141,6 +193,10 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $output ) );
+	}
+
+	function return_settings( $settings ) {
+		return $this->settings = $settings;
 	}
 
 }

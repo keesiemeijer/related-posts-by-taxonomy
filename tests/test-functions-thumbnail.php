@@ -143,6 +143,39 @@ EOF;
 
 
 	/**
+	 * Test linked caption.
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 */
+	function test_shortcode_with_linked_caption() {
+
+		$gallery_args = $this->setup_gallery();
+		extract( $gallery_args );
+
+		$args['link_caption'] = true;
+
+		add_filter( 'use_default_gallery_style', '__return_false', 99 );
+		ob_start();
+		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post )  );
+		$gallery = ob_get_clean();
+
+		$expected = <<<EOF
+<div id='gallery-4' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+<dt class='gallery-icon '>
+<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='gallery-4-{$args['id']}'>
+<a href='{$permalink}'>{$related_post->post_title}</a>
+</dd></dl>
+<br style='clear: both' />
+</div>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery )  );
+	}
+
+
+	/**
 	 * Test the output of a regular WordPress gallery.
 	 *
 	 * If anything changes in the WordPress gallery, change it in the Related posts gallery.
@@ -162,7 +195,7 @@ EOF;
 
 		}
 
-		$ids_str = implode(',', $ids);
+		$ids_str = implode( ',', $ids );
 
 
 		$blob =<<<BLOB
@@ -170,7 +203,7 @@ EOF;
 BLOB;
 
 		$content = do_shortcode( $blob );
-		$content = preg_replace('/<img .*?\/>/', '', $content);
+		$content = preg_replace( '/<img .*?\/>/', '', $content );
 
 		$expected = <<<EOF
 <style type='text/css'>
@@ -212,7 +245,7 @@ BLOB;
 		</dd></dl><br style="clear: both" />
 </div>
 EOF;
-		$expected = preg_replace('/<img .*?\/>/', '', $expected);
+		$expected = preg_replace( '/<img .*?\/>/', '', $expected );
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $content )  );
 	}
