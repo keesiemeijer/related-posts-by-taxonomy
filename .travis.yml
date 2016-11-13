@@ -29,8 +29,6 @@ matrix:
       env: WP_VERSION=latest WP_MULTISITE=0
     - php: 5.3
       env: WP_VERSION=latest WP_MULTISITE=0
-    - php: 5.2
-      env: WP_VERSION=latest WP_MULTISITE=0
     - php: hhvm
       env: WP_VERSION=latest WP_MULTISITE=0
 
