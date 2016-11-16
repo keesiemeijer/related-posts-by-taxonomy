@@ -97,6 +97,10 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$i['post_id'] = $this->get_the_ID();
 		}
 
+		if ( !empty( $i['post_types'] ) ) {
+			$i['post_types'] = array_keys( $i['post_types'] );
+		}
+
 		/* added in 2.0 */
 		if ( $i['random'] ) {
 			unset( $i['random'] );
@@ -214,7 +218,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$i['format']            = sanitize_text_field( $new_instance['format'] );
 		$i['taxonomies']        = sanitize_text_field( $new_instance['taxonomies'] );
 		$i['image_size']        = sanitize_text_field( $new_instance['image_size'] );
-		$i['post_types']        = array_map( 'sanitize_text_field', $new_instance['post_types'] );
+		$i['post_types']        = array_map( 'sanitize_text_field', (array) $new_instance['post_types'] );
 		$i['singular_template'] = isset( $new_instance['singular_template'] ) ? (bool) $new_instance['singular_template'] : '';
 		$i['link_caption']      = isset( $new_instance['link_caption'] ) ? (bool) $new_instance['link_caption'] : '';
 		$i['random']            = isset( $new_instance['random'] ) ? (bool) $new_instance['random'] : '';
@@ -258,11 +262,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 
 		$i = $this->get_instance_settings( $instance );
-
-		if ( !$instance ) {
-			// new widgets
-			$i['post_types'] = array_fill_keys( $i['post_types'], 'on' );
-		}
 
 		/* widget form fields */
 
@@ -442,11 +441,10 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * @return array Widget instance
 	 */
 	function get_instance_settings( $instance ) {
-
 		$i = $this->back_compat_settings( $instance );
-
 		$defaults = km_rpbt_get_default_settings( 'widget' );
-		$defaults['post_types'] = array( 'post' );
+		// Set default post type
+		$defaults['post_types'] = array( 'post' => 'on' );
 
 		return array_merge( $defaults, $i );
 	}
