@@ -167,6 +167,47 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->assertEquals( $cache_ids, $related );
 	}
 
+
+	/**
+	 * test cache for custom post type and custom taxonomy.
+	 *
+	 * @depends test_cache_setup
+	 */
+	function test_custom_post_type_cache() {
+		$this->setup_cache();
+
+		register_post_type( 'rel_cpt', array( 'taxonomies' => array( 'post_tag', 'rel_ctax' ) ) );
+		register_taxonomy( 'rel_ctax', 'rel_cpt' );
+
+		$posts = $this->utils->create_posts_with_terms( 'rel_cpt', 'post_tag', 'rel_ctax' );
+		$posts = $posts['posts'];
+
+		$args =  array( 'post_types' => array( 'rel_cpt' ) );
+
+		// Test with a single taxonomy.
+		$taxonomies = array( 'rel_ctax' );
+
+		$rel_post0 = km_rpbt_cache_related_posts( $posts[0], $taxonomies, $args );
+
+		// Check if one related post was found
+		$this->assertEquals( 1, count( $rel_post0 ) );
+
+		$this->assertEquals( $posts[1], $rel_post0[0]->ID );
+
+		$args = array_merge( $args, $taxonomies );
+
+		$args =  array(
+			'post_id' => $posts[0],
+			'post_types' => array( 'rel_cpt' ),
+			'taxonomies' => array( 'rel_ctax' ),
+
+		);
+
+		$related_posts = $this->plugin->cache->get_related_posts( $args );
+		$this->assertEquals( $posts[1], $related_posts[0]->ID );
+	}
+
+
 	/**
 	 * Test manually setting the cache for a post id.
 	 *

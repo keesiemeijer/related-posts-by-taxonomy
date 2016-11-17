@@ -120,6 +120,8 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 * Enhancement
 	* New option to link thumbnail captions (post titles) to posts in the widget and shortcode
 	* Make the widget UI more intuitive
+* Bug fixes
+	* Fix wrong results for cached custom post type related posts 
 
 = 2.2.1 =
 

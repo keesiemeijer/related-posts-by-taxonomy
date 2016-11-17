@@ -21,6 +21,7 @@ class KM_RPBT_Uninstall_Tests extends WP_UnitTestCase {
 
 		// Use the utils class to create posts with terms.
 		$this->utils = new RPBT_Test_Utils( $this->factory );
+		delete_transient( 'rpbt_related_posts_flush_cache' );
 	}
 
 
