@@ -349,7 +349,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$field .= 'id="' . $this->get_field_id( 'link_caption' ) . '" name="' . $this->get_field_name( 'link_caption' ) . '" />';
 		$field .= ' <label for="' . $this->get_field_id( 'link_caption' ) . '">';
 		$field =  $field . __( 'Link image captions to posts', 'related-posts-by-taxonomy' ) . '</label>';
-		$desc = '<br/><span class="description">' . __( 'Links image post titles to posts.', 'related-posts-by-taxonomy' ) . '</span>';
 		$link_caption = $before . $field . '</p>' . $after;
 
 		$widget_display = $before . '<h4 class="rpbt_widget_display_title" ' . $style . '>' . __( 'Widget Display', 'related-posts-by-taxonomy' ) . '</h4>' . $after;

@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.0
 Tested up to: 4.7
-Stable tag: 2.2.2
+Stable tag: 2.2.3-alpha
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,8 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 * Enhancement
 	* New option to link thumbnail captions (post titles) to posts in the widget and shortcode
 	* Make the widget UI more intuitive
+* Bug fixes
+	* Fix wrong results for cached custom post type related posts 
 
 = 2.2.1 =
 

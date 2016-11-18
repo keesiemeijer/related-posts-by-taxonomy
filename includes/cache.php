@@ -290,6 +290,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			$_args = array(
 				'posts_per_page'         => $args['posts_per_page'],
+				'post_type'              => $args['post_types'],
 				'post__in'               => array_keys( $cache['ids'] ),
 				'orderby'                => 'post__in',
 				'update_post_term_cache' => false,
