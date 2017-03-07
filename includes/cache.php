@@ -6,7 +6,7 @@
  * Notice: Cache log messages can't be translated.
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -89,11 +89,11 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				add_action( "deleted_post_meta", array( $this, 'updated_postmeta' ), 10, 4 );
 				add_action( "added_post_meta",   array( $this, 'updated_postmeta' ), 10, 4 );
 
-				// Flush cache when PHP is almost shutting down and page is loaded
 				add_action ( "shutdown", array( $this, 'shutdown_flush_cache' ) );
+				// Flush cache when PHP is almost shutting down and page is loaded.
 			}
 
-			// Flush cache by expiration date if set
+			// Flush cache by expiration date if set.
 			if ( $this->cache['expiration'] ) {
 				$cache = get_transient( 'rpbt_related_posts_flush_cache' );
 				if ( !$cache ) {
@@ -128,7 +128,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Add 'cache' to the widget and shortcode arguments.
 		 *
 		 * @since 2.0.1
-		 * @param array   $args Array with widget or shortcode args.
+		 * @param array $args Array with widget or shortcode args.
 		 * @return array Array with widget or shortcode args.
 		 */
 		public function add_cache( $args ) {
@@ -141,38 +141,34 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Get related posts from cache.
 		 *
 		 * @since 2.0.1
-		 * @param array   $args Array with widget or shortcode args.
+		 * @param array $args Array with widget or shortcode args.
 		 * @return array  Array with related post objects .
 		 */
 		public function get_related_posts( $args ) {
 
 			$args = array_merge( $this->default_args, (array) $args );
 
-			// Check if post_id and taxonomies are set
 			if ( !$this->is_valid_cache_args( $args ) ) {
+			// Check if post_id and taxonomies are set.
 				$this->cache_log[] = 'Cache failed - invalid cache args';
 				return array();
 			}
 
-			// Get cached post ids from meta
+			// Get cached post ids from meta.
 			$cache = $this->get_post_meta( $args );
 
 			if ( isset( $cache['ids'] ) ) {
 
 				if ( empty( $cache['ids'] ) ) {
 					// Cached, but the current post has no related posts.
-
 					$posts = array();
 					$this->cache_log[] = sprintf( 'Post ID %d - cache exists empty', $args['post_id'] );
 				} else {
 					// Cached related post ids are found!
-
 					$posts = $this->get_cache( $args, $cache );
 				}
-
 			} else {
-				// Related posts are not cached yet!
-
+				// Related posts are not cached yet.
 				$posts = $this->set_cache( $args );
 			}
 
@@ -184,7 +180,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Public function to update the cache
 		 *
 		 * @since 2.1
-		 * @param array   $args Array with arguments to get the related posts.
+		 * @param array $args Array with arguments to get the related posts.
 		 * @return array|bool Array with cached related post objects or false if arguments were invalid.
 		 */
 		public function update_cache( $args ) {
@@ -202,7 +198,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Cache related posts
 		 *
 		 * @since 2.0.1
-		 * @param array   $args Array with Widget or shortcode arguments.
+		 * @param array $args Array with Widget or shortcode arguments.
 		 * @return array Array with related post objects that are cached.
 		 */
 		private function set_cache( $args ) {
@@ -214,13 +210,13 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// Restricted function arguments.
 			unset( $function_args['taxonomies'], $function_args['post_id'], $function_args['fields'] );
 
-			// Add a filter to get the current arguments with related terms found
+			// Add a filter to get the current arguments with related terms found.
 			add_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
 
-			// Get related posts
+			// Get related posts.
 			$posts = km_rpbt_related_posts_by_taxonomy( $args['post_id'], $args['taxonomies'], $function_args );
 
-			// Remove the filter
+			// Remove the filter.
 			remove_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
 
 			// Create the array with cached post ids
@@ -256,8 +252,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Get related posts from cache
 		 *
 		 * @since 2.0.1
-		 * @param array   $args  Array with sanitized widget or shortcode arguments.
-		 * @param array   $posts Array with cached post ids.
+		 * @param array $args  Array with sanitized widget or shortcode arguments.
+		 * @param array $cache Array with cached post ids.
 		 * @return array Array with related post objects.
 		 */
 		private function get_cache( $args, $cache ) {
@@ -277,11 +273,11 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				'related_terms' => array(),
 			);
 
-			// Get the related_posts_by_taxonomy filter properties
+			// Get the related_posts_by_taxonomy filter properties.
 			$cache_args = isset( $cache['args'] ) ? $cache['args'] : array();
 			$cache_args = array_merge( $defaults, (array) $cache_args );
 
-			// set the function arguments for the related_posts_by_taxonomy filter
+			// set the function arguments for the related_posts_by_taxonomy filter.
 			$function_args                  = $args;
 			$function_args['related_terms'] = $cache_args['related_terms'];
 
@@ -302,7 +298,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			if ( !empty( $posts ) ) {
 
-				// Add the termcount back to the found posts
+				// Add the termcount back to the found posts.
 				foreach ( $posts as $key => $post ) {
 					if ( isset( $cache['ids'][ $post->ID ] ) ) {
 						$posts[ $key ]->termcount = $cache['ids'][ $post->ID ];
@@ -318,7 +314,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			$post_id    = $cache_args['post_id'];
 			$taxonomies = km_rpbt_get_taxonomies( $cache_args['taxonomies'] );
 
-			// See km_rpbt_related_posts_by_taxonomy filter in includes/functions.php
+			// See km_rpbt_related_posts_by_taxonomy filter in includes/functions.php.
 			return apply_filters( 'related_posts_by_taxonomy', $posts, $post_id, $taxonomies, $function_args );
 		}
 
@@ -327,7 +323,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Checks if post id and taxonomies are in arguments.
 		 *
 		 * @since 2.1.2
-		 * @param array   $args Widget or Shortcode arguments.
+		 * @param array $args Widget or Shortcode arguments.
 		 * @return boolean True if post_id and taxonomies are set.
 		 */
 		public function is_valid_cache_args( $args ) {
@@ -340,11 +336,11 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 		/**
 		 * Sanitizes widget or shortcode arguments.
-		 * Removes arguments not needed for the km_rpbt_related_posts_by_taxonomy() function
+		 * Removes arguments not needed for the km_rpbt_related_posts_by_taxonomy() function.
 		 * Arguments are stored as the cache meta key.
 		 *
 		 * @since 2.1
-		 * @param array   $args Array with widget or shortcode argument.
+		 * @param array $args Array with widget or shortcode argument.
 		 * @return array      Array with sanitized widget or shortcode arguments.
 		 */
 		public function sanitize_cache_args( $args ) {
@@ -364,11 +360,11 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 
 		/**
-		 * Returns ordered uniform arguments to store as meta key
+		 * Returns ordered uniform arguments to store as meta key.
 		 *
 		 * @since 2.2
-		 * @param array   $args Arguments
-		 * @return array       Sorted arguments
+		 * @param array $args Arguments.
+		 * @return array       Sorted arguments.
 		 */
 		public function order_cache_args( $args ) {
 
@@ -389,7 +385,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Returns the related posts post meta.
 		 *
 		 * @since 2.0.1
-		 * @param array   $args Array with widget or shortcode arguments.
+		 * @param array $args Array with widget or shortcode arguments.
 		 * @return array Array with Related posts ids, empty string, or empty array.
 		 */
 		public function get_post_meta( $args ) {
@@ -402,7 +398,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Create a meta key from args.
 		 *
 		 * @since 2.0.1
-		 * @param array   $args Array with widget or shortcode arguments.
+		 * @param array $args Array with widget or shortcode arguments.
 		 * @return string Meta key created from sanitized args.
 		 */
 		public function get_post_meta_key( $args ) {
@@ -415,7 +411,10 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Get related post arguments for the current post.
 		 *
 		 * @since 2.0.1
-		 * @param array   $args Array with widget or shortcode args.
+		 * @param array $results    Related posts. Array with Post objects or post IDs or post titles or post slugs.
+		 * @param int   $post_id    Post id used to get the related posts.
+		 * @param array $taxonomies Taxonomies used to get the related posts.
+		 * @param array $args       Function arguments used to get the related posts.
 		 * @return array Array with widget or shortcode args.
 		 */
 		public function current_post( $results, $post_id, $taxonomies, $args ) {
@@ -428,7 +427,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Flush the related posts cache.
 		 *
 		 * @since 2.0.1
-		 * @return void.
+		 * @return int|false. Returns number of deleted rows (0,1,2 etc.) or false on failure.
 		 */
 		public function flush_cache() {
 			global $wpdb;
@@ -437,7 +436,6 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				$this->set_transient();
 			}
 
-			// Returns number of deleted rows (0,1,2 etc.) or false on failure.
 			$flush = $wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_rpbt_related_posts%'" );
 
 			if ( false === $flush ) {
@@ -477,12 +475,16 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 		}
 
-
 		/**
 		 * Flush the cache if a post thumbnail is added, updated or deleted.
 		 * Callback for the post meta actions.
 		 *
 		 * @since 2.0.1
+		 *
+		 * @param int    $meta_id    ID of updated metadata entry.
+		 * @param int    $object_id  Object ID.
+		 * @param string $meta_key   Meta key.
+		 * @param mixed  $meta_value Meta value.
 		 */
 		public function updated_postmeta( $meta_id, $object_id, $meta_key = '', $meta_value = '' ) {
 			if ( '_thumbnail_id' === $meta_key ) {
@@ -497,6 +499,13 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Callback for the set_object_terms action.
 		 *
 		 * @since 2.0.1
+		 *
+		 * @param int    $object_id  Object ID.
+		 * @param array  $terms      An array of object terms.
+		 * @param array  $tt_ids     An array of term taxonomy IDs.
+		 * @param string $taxonomy   Taxonomy slug.
+		 * @param bool   $append     Whether to append new terms to the old terms.
+		 * @param array  $old_tt_ids Old array of term taxonomy IDs.
 		 */
 		public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
 			sort( $tt_ids );
@@ -533,6 +542,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Displays cache log in the toolbar.
 		 *
 		 * @since 2.1
+		 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
 		 * @return void.
 		 */
 		public function display_cache_log( $wp_admin_bar ) {
@@ -550,7 +560,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			$this->cache_log = $cache_log = array_values( $this->cache_log );
 			$notices         = array( 'failed', 'flushed' );
 
-			// Add color to toolbar nodes if needed
+			// Add color to toolbar nodes if needed.
 			foreach ( $this->cache_log as $key => $log ) {
 				foreach ( $notices as $notice ) {
 					if ( false !== strpos( strtolower( $log ), $notice ) ) {
@@ -560,7 +570,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				}
 			}
 
-			// Add color to top level node if needed
+			// Add color to top level node if needed.
 			if ( $this->cache_log != $cache_log ) {
 				$this->cache_log[ 0 ] = "<span style='color:orange;'>{$this->cache_log[ 0 ]}</span>";
 			}
@@ -580,5 +590,5 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 		}
 
-	} // Class
-} // Class exists
+	} // Class.
+} // Class exists.
