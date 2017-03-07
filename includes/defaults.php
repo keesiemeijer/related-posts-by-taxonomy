@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
+if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 	class Related_Posts_By_Taxonomy_Defaults {
 
 		/**
@@ -153,7 +153,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			 */
 			$debug = apply_filters( 'related_posts_by_taxonomy_debug', false );
 
-			if ( $debug && !is_admin() ) {
+			if ( $debug && ! is_admin() ) {
 				// Only load the debug file when $debug is set to true.
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/debug.php';
 				$debug = new Related_Posts_By_Taxonomy_Debug();
@@ -176,7 +176,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			$post_types_obj = array( 'post' => get_post_type_object( 'post' ) ) + $post_types_obj;
 
 			foreach ( (array) $post_types_obj as $key => $value ) {
-				$post_types[$key] = esc_attr( $value->labels->menu_name );
+				$post_types[ $key ] = esc_attr( $value->labels->menu_name );
 			}
 			return $post_types;
 		}
@@ -240,20 +240,19 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			foreach ( $image_sizes as $s ) {
 
 				$width = $height = false;
-				if ( isset( $_wp_additional_image_sizes[$s] ) ) {
-					$width = intval( $_wp_additional_image_sizes[$s]['width'] );
-					$height = intval( $_wp_additional_image_sizes[$s]['height'] );
+				if ( isset( $_wp_additional_image_sizes[ $s ] ) ) {
+					$width  = intval( $_wp_additional_image_sizes[ $s ]['width'] );
+					$height = intval( $_wp_additional_image_sizes[ $s ]['height'] );
 				} else {
-					$width = get_option( $s.'_size_w' );
-					$height = get_option( $s.'_size_h' );
+					$width  = get_option( $s . '_size_w' );
+					$height = get_option( $s . '_size_h' );
 				}
 
 				if ( $width && $height ) {
 					$size = sanitize_title( $s );
 					$size = ucwords( str_replace( array( '-', '_' ), ' ', $s ) );
-					$sizes[$s] = $size . ' (' . $width . ' x ' . $height . ')';
+					$sizes[ $s ] = $size . ' (' . $width . ' x ' . $height . ')';
 				}
-
 			}
 
 			return $sizes;
@@ -291,7 +290,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			$defaults = km_rpbt_get_default_args();
 
 			// Common settings for the widget and shortcode.
-			$settings =   array(
+			$settings = array(
 				'post_id'        => '',
 				'taxonomies'     => 'all',
 				'title'          => __( 'Related Posts', 'related-posts-by-taxonomy' ),

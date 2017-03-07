@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
+if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 	class Related_Posts_By_Taxonomy_Cache {
 
 		/**
@@ -74,7 +74,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				add_action( 'admin_bar_menu', array( $this, 'display_cache_log' ), 999 );
 			}
 
-			if ( !$this->cache['flush_manually'] ) {
+			if ( ! $this->cache['flush_manually'] ) {
 
 				// Flush the cache when a post is deleted.
 				add_action( 'after_delete_post', array( $this, '_flush_cache' ) );
@@ -86,22 +86,22 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 				// Flush the cache if a post thumbnail is added, updated or deleted.
 				add_action( 'updated_post_meta', array( $this, 'updated_postmeta' ), 10, 4 );
-				add_action( "deleted_post_meta", array( $this, 'updated_postmeta' ), 10, 4 );
-				add_action( "added_post_meta",   array( $this, 'updated_postmeta' ), 10, 4 );
+				add_action( 'deleted_post_meta', array( $this, 'updated_postmeta' ), 10, 4 );
+				add_action( 'added_post_meta',   array( $this, 'updated_postmeta' ), 10, 4 );
 
-				add_action ( "shutdown", array( $this, 'shutdown_flush_cache' ) );
 				// Flush cache when PHP is almost shutting down and page is loaded.
+				add_action( 'shutdown', array( $this, 'shutdown_flush_cache' ) );
 			}
 
 			// Flush cache by expiration date if set.
 			if ( $this->cache['expiration'] ) {
 				$cache = get_transient( 'rpbt_related_posts_flush_cache' );
-				if ( !$cache ) {
+				if ( ! $cache ) {
 					$this->flush_cache();
 				}
 
 				// Flush cache if transient expires.
-				add_action ( "delete_transient_rpbt_related_posts_flush_cache", array( $this, 'delete_cache_transient' ) );
+				add_action( 'delete_transient_rpbt_related_posts_flush_cache', array( $this, 'delete_cache_transient' ) );
 			}
 		}
 
@@ -116,9 +116,9 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			$cache_log = (bool) apply_filters( 'related_posts_by_taxonomy_display_cache_log', false );
 			return apply_filters( 'related_posts_by_taxonomy_cache_args', array(
-					'expiration'        => DAY_IN_SECONDS * 5, // five days
+					'expiration'        => DAY_IN_SECONDS * 5, // Five days.
 					'flush_manually'    => false,
-					'display_cache_log' => $cache_log
+					'display_cache_log' => $cache_log,
 				)
 			);
 		}
@@ -148,8 +148,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			$args = array_merge( $this->default_args, (array) $args );
 
-			if ( !$this->is_valid_cache_args( $args ) ) {
 			// Check if post_id and taxonomies are set.
+			if ( ! $this->is_valid_cache_args( $args ) ) {
 				$this->cache_log[] = 'Cache failed - invalid cache args';
 				return array();
 			}
@@ -187,7 +187,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			$args = array_merge( $this->default_args, (array) $args );
 
 			if ( $this->is_valid_cache_args( $args ) ) {
-				return $this->set_cache(  $args );
+				return $this->set_cache( $args );
 			}
 
 			return false;
@@ -238,7 +238,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// Cache the post ids.
 			$updated = update_post_meta( $args['post_id'], $key, $cache );
 
-			if ( !empty( $updated ) ) {
+			if ( ! empty( $updated ) ) {
 				$this->cache_log[] = sprintf( 'Post ID %d - caching posts...', $args['post_id'] );
 			} else {
 				$this->cache_log[] = sprintf( 'Post ID %d - failed caching posts', $args['post_id'] );
@@ -258,7 +258,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 */
 		private function get_cache( $args, $cache ) {
 
-			if ( !isset( $cache['ids'] ) ) {
+			if ( ! isset( $cache['ids'] ) ) {
 				return array();
 			}
 
@@ -267,7 +267,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				return array();
 			}
 
-			$defaults =  array(
+			$defaults = array(
 				'post_id'       => 0,
 				'taxonomies'    => array(),
 				'related_terms' => array(),
@@ -296,7 +296,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// Get related posts with get_posts().
 			$posts = get_posts( $_args );
 
-			if ( !empty( $posts ) ) {
+			if ( ! empty( $posts ) ) {
 
 				// Add the termcount back to the found posts.
 				foreach ( $posts as $key => $post ) {
@@ -352,8 +352,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			$cache_args = array_intersect_key( $cache_args, $defaults );
 
 			// Add post id and taxonomies back to the cache args.
-			$cache_args[ 'post_id' ]    = isset( $args[ 'post_id' ] ) ? $args[ 'post_id' ] : 0;
-			$cache_args[ 'taxonomies' ] = isset( $args[ 'taxonomies' ] ) ? $args[ 'taxonomies' ] : '';
+			$cache_args['post_id']    = isset( $args['post_id'] ) ? $args['post_id'] : 0;
+			$cache_args['taxonomies'] = isset( $args['taxonomies'] ) ? $args['taxonomies'] : '';
 
 			return $this->order_cache_args( km_rpbt_sanitize_args( $cache_args ) );
 		}
@@ -402,7 +402,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return string Meta key created from sanitized args.
 		 */
 		public function get_post_meta_key( $args ) {
-			$key = md5( maybe_serialize ( $this->sanitize_cache_args( $args ) ) );
+			$key = md5( maybe_serialize( $this->sanitize_cache_args( $args ) ) );
 			return "_rpbt_related_posts:$key";
 		}
 
@@ -418,7 +418,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array Array with widget or shortcode args.
 		 */
 		public function current_post( $results, $post_id, $taxonomies, $args ) {
-			$this->current_args = !empty( $args ) ? $args : array();
+			$this->current_args = ! empty( $args ) ? $args : array();
 			return $results;
 		}
 
@@ -470,7 +470,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return void.
 		 */
 		public function shutdown_flush_cache() {
-			if ( !$this->cache['flush_manually'] && ( true === $this->flush_cache ) ) {
+			if ( ! $this->cache['flush_manually'] && ( true === $this->flush_cache ) ) {
 				$this->flush_cache();
 			}
 		}
@@ -547,7 +547,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 */
 		public function display_cache_log( $wp_admin_bar ) {
 
-			if ( is_admin() || !is_super_admin() ) {
+			if ( is_admin() || ! is_super_admin() ) {
 				return;
 			}
 
@@ -555,7 +555,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				$this->cache_log[] = 'Cache not used';
 			}
 
-			array_unshift( $this->cache_log, "Related Posts Cache" );
+			array_unshift( $this->cache_log, 'Related Posts Cache' );
 
 			$this->cache_log = $cache_log = array_values( $this->cache_log );
 			$notices         = array( 'failed', 'flushed' );
@@ -572,10 +572,10 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			// Add color to top level node if needed.
 			if ( $this->cache_log != $cache_log ) {
-				$this->cache_log[ 0 ] = "<span style='color:orange;'>{$this->cache_log[ 0 ]}</span>";
+				$this->cache_log[0] = "<span style='color:orange;'>{$this->cache_log[0]}</span>";
 			}
 
-			for ( $i=0; $i < count( $this->cache_log ) ; $i++ ) {
+			for ( $i = 0; $i < count( $this->cache_log ); $i++ ) {
 
 				$args = array(
 					'id'    => 'related_posts_by_tax-' . $i,

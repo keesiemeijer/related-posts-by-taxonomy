@@ -31,7 +31,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 
 	$plugin = km_rpbt_plugin();
 
-	if ( !$plugin ) {
+	if ( ! $plugin ) {
 		return '';
 	}
 
@@ -88,7 +88,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	$hide_empty = (bool) apply_filters( 'related_posts_by_taxonomy_shortcode_hide_empty', true );
 
 	$shortcode = '';
-	if ( !$hide_empty || !empty( $related_posts ) ) {
+	if ( ! $hide_empty || ! empty( $related_posts ) ) {
 		$shortcode = km_rpbt_shortcode_output( $related_posts, $rpbt_args );
 	}
 
@@ -121,7 +121,7 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 	/* get the template depending on the format  */
 	$template = km_rpbt_related_posts_by_taxonomy_template( $rpbt_args['format'], 'shortcode' );
 
-	if ( !$template ) {
+	if ( ! $template ) {
 		return '';
 	}
 

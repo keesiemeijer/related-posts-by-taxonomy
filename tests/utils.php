@@ -44,6 +44,7 @@ class RPBT_Test_Utils {
 	 * @return array                  Array with post ids.
 	 */
 	function create_posts( $post_type = 'post', $posts_per_page = 5 ) {
+		_delete_all_posts();
 
 		// create posts with decreasing timestamp
 		$posts = array();
