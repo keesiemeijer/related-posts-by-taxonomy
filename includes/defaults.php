@@ -3,12 +3,12 @@
  * Class to get all the defaults needed for this plugin.
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
+if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 	class Related_Posts_By_Taxonomy_Defaults {
 
 		/**
@@ -28,7 +28,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		public $taxonomies;
 
 		/**
-		 * slug for "all" taxonomies.
+		 * Slug for "all" taxonomies.
 		 *
 		 * @since 0.2.1
 		 * @var string
@@ -110,8 +110,8 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 */
 		public function _setup() {
 
-			// default taxonomies
-			$this->all_tax = 'all'; // all taxonomies
+			// Default taxonomies
+			$this->all_tax = 'all'; // All taxonomies.
 			$this->default_tax = array( 'category' => __( 'Category', 'related-posts-by-taxonomy' ) );
 
 			$this->post_types = $this->get_post_types();
@@ -135,12 +135,12 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			 * Adds a cache layer for this plugin.
 			 *
 			 * @since 2.1.0
-			 * @param bool    $cache Default false
+			 * @param bool $cache Default false
 			 */
 			$cache = apply_filters( 'related_posts_by_taxonomy_cache', false );
 
 			if ( $cache ) {
-				// Only load the cache class when $cache is set to true
+				// Only load the cache class when $cache is set to true.
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/cache.php';
 				$this->cache = new Related_Posts_By_Taxonomy_Cache();
 			}
@@ -149,12 +149,12 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			 * Adds debug information to the footer.
 			 *
 			 * @since 2.0.0
-			 * @param bool    $debug Default false
+			 * @param bool $debug Default false
 			 */
 			$debug = apply_filters( 'related_posts_by_taxonomy_debug', false );
 
-			if ( $debug && !is_admin() ) {
-				// Only load the debug file when $debug is set to true
+			if ( $debug && ! is_admin() ) {
+				// Only load the debug file when $debug is set to true.
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/debug.php';
 				$debug = new Related_Posts_By_Taxonomy_Debug();
 			}
@@ -176,7 +176,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			$post_types_obj = array( 'post' => get_post_type_object( 'post' ) ) + $post_types_obj;
 
 			foreach ( (array) $post_types_obj as $key => $value ) {
-				$post_types[$key] = esc_attr( $value->labels->menu_name );
+				$post_types[ $key ] = esc_attr( $value->labels->menu_name );
 			}
 			return $post_types;
 		}
@@ -195,19 +195,19 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			$tax = array();
 			$taxonomies = get_taxonomies( array( 'public' => true ), 'objects', 'and' );
 
-			$i=0;
+			$i = 0;
 			foreach ( (array) $taxonomies as $key => $value ) {
 
-				$tax[$key] = esc_attr( $value->labels->menu_name );
+				$tax[ $key ] = esc_attr( $value->labels->menu_name );
 
-				// set first taxonomy as the default taxonomy
-				if ( !$i++ ) {
+				// Set first taxonomy as the default taxonomy.
+				if ( ! $i++ ) {
 					$this->default_tax = array( $key => esc_attr( $value->labels->menu_name ) );
 				}
 			}
 
-			// if 'all' is a registered taxonomy change the all_tax value (slug: all-2)
-			if ( !empty( $tax ) ) {
+			// If 'all' is a registered taxonomy change the all_tax value (slug: all-2).
+			if ( ! empty( $tax ) ) {
 				if ( in_array( $this->all_tax, array_keys( $tax ) ) ) {
 					$num = 2;
 					do {
@@ -240,20 +240,19 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			foreach ( $image_sizes as $s ) {
 
 				$width = $height = false;
-				if ( isset( $_wp_additional_image_sizes[$s] ) ) {
-					$width = intval( $_wp_additional_image_sizes[$s]['width'] );
-					$height = intval( $_wp_additional_image_sizes[$s]['height'] );
+				if ( isset( $_wp_additional_image_sizes[ $s ] ) ) {
+					$width  = intval( $_wp_additional_image_sizes[ $s ]['width'] );
+					$height = intval( $_wp_additional_image_sizes[ $s ]['height'] );
 				} else {
-					$width = get_option( $s.'_size_w' );
-					$height = get_option( $s.'_size_h' );
+					$width  = get_option( $s . '_size_w' );
+					$height = get_option( $s . '_size_h' );
 				}
 
 				if ( $width && $height ) {
 					$size = sanitize_title( $s );
 					$size = ucwords( str_replace( array( '-', '_' ), ' ', $s ) );
-					$sizes[$s] = $size . ' (' . $width . ' x ' . $height . ')';
+					$sizes[ $s ] = $size . ' (' . $width . ' x ' . $height . ')';
 				}
-
 			}
 
 			return $sizes;
@@ -261,7 +260,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 
 
 		/**
-		 * returns all formats.
+		 * Returns all formats.
 		 *
 		 * @since 0.2.1
 		 *
@@ -279,10 +278,10 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 
 
 		/**
-		 * returns default settings for the shortcode and widget.
+		 * Returns default settings for the shortcode and widget.
 		 *
 		 * @since 2.2.2
-		 * @param tring   $type Type of settings. Choose from 'widget', 'shortcode' or 'all'.
+		 * @param tring $type Type of settings. Choose from 'widget', 'shortcode' or 'all'.
 		 * @return string ype of settings. Values can be 'shortcode' or 'widget'
 		 */
 		public function get_default_settings( $type = '' ) {
@@ -291,7 +290,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			$defaults = km_rpbt_get_default_args();
 
 			// Common settings for the widget and shortcode.
-			$settings =   array(
+			$settings = array(
 				'post_id'        => '',
 				'taxonomies'     => 'all',
 				'title'          => __( 'Related Posts', 'related-posts-by-taxonomy' ),

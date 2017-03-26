@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
+if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 	class Related_Posts_By_Taxonomy_Debug {
 
 		public $debug             = array();
@@ -34,14 +34,14 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			// Check if the current user can view debug results.
 			//
-			// True if the current user is an admin or super admin
-			// OR the current user has the 'view_rpbt_debug_results' capability
+			// True if the current user is an admin or super admin.
+			// OR the current user has the 'view_rpbt_debug_results' capability.
 
-			if ( !( is_super_admin() || current_user_can( 'view_rpbt_debug_results' ) ) ) {
+			if ( ! ( is_super_admin() || current_user_can( 'view_rpbt_debug_results' ) ) ) {
 				return;
 			}
 
-			$this->debug[ 'cache' ] = 'none';
+			$this->debug['cache'] = 'none';
 
 			$this->plugin  = km_rpbt_plugin();
 			$this->cache   = $this->plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
@@ -65,7 +65,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			// Get the requested template.
 			add_filter( 'related_posts_by_taxonomy_template', array( $this, 'get_template' ), 99, 2 );
 
-			// Store the results
+			// Store the results.
 			add_action( 'related_posts_by_taxonomy_after_display', array( $this, 'after_display' ) );
 			add_action( 'related_posts_by_taxonomy_after_display', array( $this, 'after_display' ) );
 
@@ -89,21 +89,21 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$args['title'] = empty( $args['title'] ) ? 'Related Posts Debug Title' : $args['title'];
 
 			if ( 'related_posts_by_taxonomy_widget_args' === current_filter() ) {
-				$this->debug['type']         = 'widget';
-				$this->debug[ 'widget args'] = $args;
-				$this->debug[ 'widget']      = $widget;
+				$this->debug['type']        = 'widget';
+				$this->debug['widget args'] = $args;
+				$this->debug['widget']      = $widget;
 
 			} else {
-				$this->debug[ 'type']           = 'shortcode';
-				$this->debug[ 'shortcode args'] = $args;
-				$args['before_shortcode']       = '<div class="rpbt_shortcode">' . $this->debug_link( 'shortcode' ) . '<br/>';
-				$args['after_shortcode']        = '</div>';
+				$this->debug['type']           = 'shortcode';
+				$this->debug['shortcode args'] = $args;
+				$args['before_shortcode']      = '<div class="rpbt_shortcode">' . $this->debug_link( 'shortcode' ) . '<br/>';
+				$args['after_shortcode']       = '</div>';
 			}
 
 			if ( $this->cache ) {
 				$this->check_cache( $args );
 			} else {
-				$this->debug[ 'cache' ] = 'no persistent cache';
+				$this->debug['cache'] = 'no persistent cache';
 			}
 
 			// Gets current post terms, taxonomies and post ID.
@@ -116,31 +116,31 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Check if related posts are cached.
 		 *
 		 * @since 2.1
-		 * @param array   $args Array with widget or shortcode arguments
-		 * @return voie
+		 * @param array $args Array with widget or shortcode arguments.
+		 * @return void
 		 */
 		function check_cache( $args ) {
 
-			// Get cached post ids (if they exist)
+			// Get cached post ids (if they exist).
 			$cache = $this->plugin->cache->get_post_meta( $args );
 
 			if ( isset( $cache['ids'] ) ) {
 
-				// Related posts were cached for this post
+				// Related posts were cached for this post.
 				$cache_args = $cache['args'];
 				$post_ids = array_keys( (array) $cache['ids'] );
-				$this->debug[ 'cache' ] = 'current post cached';
-				$this->debug[ 'cached post ids'] = !empty( $post_ids  ) ? $post_ids  : array();
+				$this->debug['cache'] = 'current post cached';
+				$this->debug['cached post ids'] = ! empty( $post_ids ) ? $post_ids  : array();
 				$defaults = km_rpbt_get_default_args();
-				$this->debug[ 'function args'] = array_intersect_key( $args , $defaults );
-				$taxonomies = km_rpbt_get_taxonomies( $cache_args[ 'taxonomies'] );
-				$this->debug[ 'cached taxonomies'] = implode( ', ', $taxonomies );
-				$this->debug[ 'cached terms'] = isset( $cache_args['related_terms'] ) ? $cache_args['related_terms'] : 'not in cache for post that doesn\'t have related posts';
-				$this->debug[ 'current post id'] = isset( $args['post_id'] ) ? $args['post_id'] : '';
+				$this->debug['function args'] = array_intersect_key( $args , $defaults );
+				$taxonomies = km_rpbt_get_taxonomies( $cache_args['taxonomies'] );
+				$this->debug['cached taxonomies'] = implode( ', ', $taxonomies );
+				$this->debug['cached terms'] = isset( $cache_args['related_terms'] ) ? $cache_args['related_terms'] : 'not in cache for post that doesn\'t have related posts';
+				$this->debug['current post id'] = isset( $args['post_id'] ) ? $args['post_id'] : '';
 			} else {
 
-				// Related posts not yet in cache
-				$this->debug[ 'cache' ] = 'current post is not yet cached';
+				// Related posts not yet in cache.
+				$this->debug['cache'] = 'current post is not yet cached';
 			}
 		}
 
@@ -149,12 +149,12 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Adds debug link before widget title.
 		 *
 		 * @since 2.0.0
-		 * @param array   $params Array with widget parameters.
+		 * @param array $params Array with widget parameters.
 		 * @return array Array with widget parameters.
 		 */
 		function widget_params( $params ) {
 
-			if ( !isset( $params[0]['widget_id'] )  ) {
+			if ( ! isset( $params[0]['widget_id'] )  ) {
 				return $params;
 			}
 
@@ -162,7 +162,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				return $params;
 			}
 
-			$params[0]['before_widget'] =   $params[0]['before_widget'] . $this->debug_link() . '<br/>';
+			$params[0]['before_widget'] = $params[0]['before_widget'] . $this->debug_link() . '<br/>';
 
 			return $params;
 		}
@@ -172,12 +172,12 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Creates a debug link.
 		 *
 		 * @since 2.0.0
-		 * @param string  $type Type shortcode or widget.
+		 * @param string $type Type shortcode or widget.
 		 * @return string Link to debug information,
 		 */
 		function debug_link( $type = 'widget' ) {
 
-			$counter = ( $type === 'widget' ) ? ++$this->widget_counter : ++$this->shortcode_counter;
+			$counter = ( 'widget' === $type ) ? ++$this->widget_counter : ++$this->shortcode_counter;
 
 			$this->debug['debug_id'] = 'rpbt-' . $type . '-debug-' . $counter;
 			$this->debug['debug_link'] = '(<a href="#' . $this->debug['debug_id'] . '">Debug ' . ucfirst( $type ) . '</a>)';
@@ -207,7 +207,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Removes filter wp_get_object_terms.
 		 *
 		 * @since 2.0.0
-		 * @return void.
+		 * @return false.
 		 */
 		function hide_empty() {
 			// Remove filter after related posts are retrieved from the database.
@@ -230,11 +230,11 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			extract( $pieces );
 
-			if ( !empty( $group_by_sql ) ) {
+			if ( ! empty( $group_by_sql ) ) {
 				$group_by_sql = 'GROUP BY ' . $group_by_sql;
 			}
 
-			if ( !empty( $order_by_sql ) ) {
+			if ( ! empty( $order_by_sql ) ) {
 				$order_by_sql = 'ORDER BY ' . $order_by_sql;
 			}
 
@@ -242,12 +242,12 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			$query = str_replace( $wpdb->prefix , '' , $query );
 
-			$this->debug[ 'terms used for related query'] = $args['related_terms'];
+			$this->debug['terms used for related query'] = $args['related_terms'];
 			unset( $args['related_terms'] );
 
 			$defaults = km_rpbt_get_default_args();
-			$this->debug[ 'function args'] = array_intersect_key( $args , $defaults );
-			$this->debug[ 'related posts query'] = $query;
+			$this->debug['function args'] = array_intersect_key( $args , $defaults );
+			$this->debug['related posts query'] = $query;
 
 			add_filter( 'related_posts_by_taxonomy', array( $this, 'posts_found' ) );
 
@@ -260,20 +260,20 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Gets the post ids if related posts where found.
 		 *
 		 * @since 2.0.0
-		 * @param array   $results Array with post objects.
+		 * @param array $results Array with post objects.
 		 * @return array Array with with post objects.
 		 */
 		function posts_found( $results ) {
 
-			if ( !empty( $results ) ) {
+			if ( ! empty( $results ) ) {
 				if ( isset( $results[0]->ID ) ) {
-					$this->debug[ 'related post ids found'] = wp_list_pluck( $results, 'ID' );
+					$this->debug['related post ids found'] = wp_list_pluck( $results, 'ID' );
 				} else {
-					$this->debug[ 'related post ids found']['error'] = 'results found but could not get post IDs';
-					$this->debug[ 'related post ids found']['results'] = $results;
+					$this->debug['related post ids found']['error'] = 'results found but could not get post IDs';
+					$this->debug['related post ids found']['results'] = $results;
 				}
 			} else {
-				$this->debug[ 'related post ids found'] = $results;
+				$this->debug['related post ids found'] = $results;
 			}
 
 			return $results;
@@ -284,7 +284,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Gets the requested template.
 		 *
 		 * @since 2.0.0
-		 * @param string  $template Template.
+		 * @param string $template Template.
 		 * @return string Template.
 		 */
 		function get_template( $template, $type ) {
@@ -332,7 +332,7 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 **                                       **
 *******************************************";
 
-			if ( !empty( $this->results ) ) {
+			if ( ! empty( $this->results ) ) {
 				echo '<p>';
 				foreach ( (array) $this->results as $debug_arr ) {
 
@@ -354,10 +354,10 @@ if ( !class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 						unset( $_order['widget args'], $_order['widget'] );
 					}
 
-					// reorder debug array;
+					// reorder debug array.
 					$debug_arr = array_merge( $_order, $debug_arr );
 
-					if ( $debug_arr[ 'cache' ] === 'current post cached' ) {
+					if ( $debug_arr['cache'] === 'current post cached' ) {
 						unset( $debug_arr['related post ids found'] );
 						unset( $debug_arr['terms used for related query'] );
 						unset( $debug_arr['terms found for current post'] );
