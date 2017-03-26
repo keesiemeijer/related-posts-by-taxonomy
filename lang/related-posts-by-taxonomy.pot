@@ -1,15 +1,15 @@
-# Copyright (C) 2016 keesiemijer
+# Copyright (C) 2017 keesiemijer
 # This file is distributed under the GPL v2.
 msgid ""
 msgstr ""
 "Project-Id-Version: Related Posts By Taxonomy 2.2.3-alpha\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2016-11-18 15:10:37+00:00\n"
+"POT-Creation-Date: 2017-03-26 11:58:30+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 0.5.4\n"
@@ -37,23 +37,23 @@ msgstr ""
 msgid "Thumbnail"
 msgstr ""
 
-#: includes/defaults.php:272
+#: includes/defaults.php:271
 msgid "Links"
 msgstr ""
 
-#: includes/defaults.php:273
+#: includes/defaults.php:272
 msgid "Posts"
 msgstr ""
 
-#: includes/defaults.php:274
+#: includes/defaults.php:273
 msgid "Excerpts"
 msgstr ""
 
-#: includes/defaults.php:275
+#: includes/defaults.php:274
 msgid "Post thumbnails"
 msgstr ""
 
-#: includes/defaults.php:297
+#: includes/defaults.php:296
 msgid "Related Posts"
 msgstr ""
 
@@ -65,75 +65,75 @@ msgstr ""
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/widget.php:261
+#: includes/widget.php:266
 msgid "Oops, something went wrong"
 msgstr ""
 
-#: includes/widget.php:274
+#: includes/widget.php:280
 msgid "Title"
 msgstr ""
 
-#: includes/widget.php:280
+#: includes/widget.php:286
 msgid "Number of related posts to show"
 msgstr ""
 
-#: includes/widget.php:283
+#: includes/widget.php:289
 msgid "Use -1 to show all related posts."
 msgstr ""
 
-#: includes/widget.php:290
+#: includes/widget.php:296
 msgid "Randomize related posts."
 msgstr ""
 
-#: includes/widget.php:293
+#: includes/widget.php:299
 msgid "Taxonomies"
 msgstr ""
 
-#: includes/widget.php:295
+#: includes/widget.php:301
 msgid "Taxonomy"
 msgstr ""
 
-#: includes/widget.php:298
+#: includes/widget.php:304
 msgid "All Taxonomies"
 msgstr ""
 
-#: includes/widget.php:305
+#: includes/widget.php:311
 msgid "Post Types"
 msgstr ""
 
-#: includes/widget.php:317
+#: includes/widget.php:323
 msgid "Display"
 msgstr ""
 
-#: includes/widget.php:321
+#: includes/widget.php:327
 msgid "Format"
 msgstr ""
 
-#: includes/widget.php:328
+#: includes/widget.php:334
 msgid "Image Display"
 msgstr ""
 
-#: includes/widget.php:332
+#: includes/widget.php:338
 msgid "Image Size"
 msgstr ""
 
-#: includes/widget.php:341
+#: includes/widget.php:347
 msgid "Number of image columns"
 msgstr ""
 
-#: includes/widget.php:351
+#: includes/widget.php:357
 msgid "Link image captions to posts"
 msgstr ""
 
-#: includes/widget.php:354
+#: includes/widget.php:360
 msgid "Widget Display"
 msgstr ""
 
-#: includes/widget.php:361
+#: includes/widget.php:367
 msgid "Display this widget on single post pages only"
 msgstr ""
 
-#: includes/widget.php:365
+#: includes/widget.php:371
 msgid "Display related posts for post ID (optional)"
 msgstr ""
 
