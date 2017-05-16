@@ -64,6 +64,9 @@ if ( !function_exists( 'related_posts_by_taxonomy_init' ) ) {
 
 		// displays the related posts from the shortcode
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
+
+		// displays the related posts from the shortcode
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/wp-rest-api.php';
 	}
 
 

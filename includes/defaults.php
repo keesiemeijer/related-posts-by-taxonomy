@@ -281,13 +281,18 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * Returns default settings for the shortcode and widget.
 		 *
 		 * @since 2.2.2
-		 * @param tring $type Type of settings. Choose from 'widget', 'shortcode' or 'all'.
+		 * @param tring $type Type of settings. Choose from 'widget', 'shortcode', 'wp_rest_api' or 'all'.
 		 * @return string ype of settings. Values can be 'shortcode' or 'widget'
 		 */
 		public function get_default_settings( $type = '' ) {
 
 			// Settings for the km_rpbt_related_posts_by_taxonomy() function.
 			$defaults = km_rpbt_get_default_args();
+
+			$_type = $type;
+
+			// wp_rest_api settings are the same as a shortcode.
+			$type  = ( 'wp_rest_api' === $type ) ? 'shortcode' : $type;
 
 			// Common settings for the widget and shortcode.
 			$settings = array(
@@ -307,7 +312,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			if ( ( 'widget' === $type ) || ( 'all' === $type ) ) {
 				$settings['random']            = false;
 				$settings['singular_template'] = false;
-				$settings['type']              = 'widget';
 			}
 
 			// Custom settings for the shortcode.
@@ -317,15 +321,20 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 					'after_shortcode'  => '</div>',
 					'before_title'     => '<h3>',
 					'after_title'      => '</h3>',
-					'type'             => 'shortcode',
 				);
 
 				$settings = array_merge( $settings, $shortcode_args );
 			}
 
+			// Custom settings for the WP rest API.
+			if( 'wp_rest_api' === $_type ) {
+				$settings['before_shortcode'] = '<div class="rpbt_wp_rest_api">';
+				$settings['after_shortcode']  = '</div>';
+			}
+
 			// No default setting for post types.
 			$settings['post_types'] = '';
-			$settings['type'] = in_array( $type, array( 'shortcode', 'widget' ) ) ? $type : '';
+			$settings['type'] = in_array( $_type, array( 'shortcode', 'widget', 'wp_rest_api' ) ) ? $_type : '';
 
 			return $settings;
 		}
