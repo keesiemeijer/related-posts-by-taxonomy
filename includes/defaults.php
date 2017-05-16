@@ -71,12 +71,13 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		/**
 		 * Class instance.
 		 *
+		 * @access private
+		 *
 		 * @since 0.2.1
 		 * @see get_instance()
 		 * @var object
 		 */
 		private static $instance = null;
-
 
 		/**
 		 * Acces this plugin's working instance.
@@ -91,7 +92,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			return self::$instance;
 		}
 
-
 		/**
 		 * Sets up class properties on action hook wp_loaded.
 		 * wp_loaded is fired after custom post types and taxonomies are registered by themes and plugins.
@@ -100,8 +100,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 */
 		public static function init() {
 			add_action( 'wp_loaded', array( self::get_instance(), '_setup' ) );
+			add_action( 'rest_api_init', array( self::get_instance(), '_setup_wp_rest_api' ) );
 		}
-
 
 		/**
 		 * Sets up class properties.
@@ -158,9 +158,37 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/debug.php';
 				$debug = new Related_Posts_By_Taxonomy_Debug();
 			}
-
 		}
 
+		/**
+		 * Sets up the WordPress REST API
+		 *
+		 * @since 2.3.0
+		 *
+		 * @return array Array with post type objects.
+		 */
+		public function _setup_wp_rest_api() {
+
+			// Class exists for WordPress 4.7 and up.
+			if ( ! class_exists( 'WP_REST_Controller' ) ) {
+				return;
+			}
+
+			/**
+			 * Adds a WordPress REST API endpoint.
+			 *
+			 * @since 2.3.0
+			 * @param bool $cache Default false
+			 */
+			$wp_rest_api = apply_filters( 'related_posts_by_taxonomy_wp_rest_api', false );
+
+			if ( $wp_rest_api ) {
+				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/wp-rest-api.php';
+
+				$rest_api = new Related_Posts_By_Taxonomy_Rest_API();
+				$rest_api->register_routes();
+			}
+		}
 
 		/**
 		 * Returns all public post types.
@@ -180,7 +208,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			}
 			return $post_types;
 		}
-
 
 		/**
 		 * Returns all public taxonomies
@@ -222,7 +249,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			return array_unique( $tax );
 		}
 
-
 		/**
 		 * Returns all image sizes.
 		 *
@@ -258,7 +284,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			return $sizes;
 		}
 
-
 		/**
 		 * Returns all formats.
 		 *
@@ -275,7 +300,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			);
 			return $formats;
 		}
-
 
 		/**
 		 * Returns default settings for the shortcode and widget.
@@ -327,7 +351,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			}
 
 			// Custom settings for the WP rest API.
-			if( 'wp_rest_api' === $_type ) {
+			if ( 'wp_rest_api' === $_type ) {
 				$settings['before_shortcode'] = '<div class="rpbt_wp_rest_api">';
 				$settings['after_shortcode']  = '</div>';
 			}
