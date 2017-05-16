@@ -38,7 +38,7 @@ if ( ! defined( 'RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR' ) ) {
 }
 
 /* loads plugin files, adds the shortcode and sets the text domain */
-if ( !function_exists( 'related_posts_by_taxonomy_init' ) ) {
+if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 
 	function related_posts_by_taxonomy_init() {
 
@@ -65,8 +65,10 @@ if ( !function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		// displays the related posts from the shortcode
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
 
-		// displays the related posts from the shortcode
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/wp-rest-api.php';
+		if ( class_exists( 'WP_REST_Controller' ) ) {
+			// displays the related posts from the shortcode
+			require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/wp-rest-api.php';
+		}
 	}
 
 
