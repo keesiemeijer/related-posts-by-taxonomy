@@ -110,7 +110,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 */
 		public function _setup() {
 
-			// Default taxonomies
+			// Default taxonomies.
 			$this->all_tax = 'all'; // All taxonomies.
 			$this->default_tax = array( 'category' => __( 'Category', 'related-posts-by-taxonomy' ) );
 
@@ -131,29 +131,13 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 
 			$this->formats = $this->get_formats();
 
-			/**
-			 * Adds a cache layer for this plugin.
-			 *
-			 * @since 2.1.0
-			 * @param bool $cache Default false
-			 */
-			$cache = apply_filters( 'related_posts_by_taxonomy_cache', false );
-
-			if ( $cache ) {
+			if ( $this->plugin_supports( 'cache' ) ) {
 				// Only load the cache class when $cache is set to true.
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/cache.php';
 				$this->cache = new Related_Posts_By_Taxonomy_Cache();
 			}
 
-			/**
-			 * Adds debug information to the footer.
-			 *
-			 * @since 2.0.0
-			 * @param bool $debug Default false
-			 */
-			$debug = apply_filters( 'related_posts_by_taxonomy_debug', false );
-
-			if ( $debug && ! is_admin() ) {
+			if ( $this->plugin_supports( 'debug' ) && ! is_admin() ) {
 				// Only load the debug file when $debug is set to true.
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/debug.php';
 				$debug = new Related_Posts_By_Taxonomy_Debug();
@@ -174,20 +158,36 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				return;
 			}
 
-			/**
-			 * Adds a WordPress REST API endpoint.
-			 *
-			 * @since 2.3.0
-			 * @param bool $cache Default false
-			 */
-			$wp_rest_api = apply_filters( 'related_posts_by_taxonomy_wp_rest_api', false );
-
-			if ( $wp_rest_api ) {
+			if ( $this->plugin_supports( 'wp_rest_api' ) ) {
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/wp-rest-api.php';
 
 				$rest_api = new Related_Posts_By_Taxonomy_Rest_API();
 				$rest_api->register_routes();
 			}
+		}
+
+		/**
+		 * Adds opt in support with a filter for cache, WP REST API and debug.
+		 *
+		 * @since  2.3.0
+		 *
+		 * @param string $type Type of support ('cache', 'wp_rest_api', 'debug').
+		 * @return bool True if set to true with a filter. Default false.
+		 */
+		public function plugin_supports( $type = '' ) {
+			if ( ! in_array( $type , array( 'cache', 'wp_rest_api', 'debug' ) ) ) {
+				return false;
+			}
+
+			/**
+			 * Filter whether to support cache, wp_rest_api or debug.
+			 *
+			 * The dynamic portion of the hook name, `$type`, refers to the
+			 * type type of support ('cache', 'wp_rest_api', 'debug').
+			 *
+			 * @param bool $bool Add support if true. Default false
+			 */
+			return apply_filters( "related_posts_by_taxonomy_{$type}", false );
 		}
 
 		/**
