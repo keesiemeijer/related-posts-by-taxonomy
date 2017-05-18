@@ -39,7 +39,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)', array(
 				'args' => array(
 					'id' => array(
-						'description' => __( 'Unique identifier for the object.' ),
+						'description' => __( 'Unique identifier for the object.', 'related-posts-by-taxonomy' ),
 						'type'        => 'integer',
 					),
 				),
@@ -67,7 +67,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 */
 	public function get_item( $request ) {
 		$args  = $request->get_params();
-		$error = new WP_Error( 'rest_post_invalid_id', __( 'Invalid post ID.' ), array( 'status' => 404 ) );
+		$error = new WP_Error( 'rest_post_invalid_id', __( 'Invalid post ID.', 'related-posts-by-taxonomy' ), array( 'status' => 404 ) );
 
 		if ( ! isset( $args['id'] ) || ( (int) $args['id'] <= 0 ) ) {
 			return $error;
@@ -193,7 +193,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 			'type'       => 'object',
 			'properties' => array(
 				'posts'            => array(
-					'description' => __( 'The related posts.' ),
+					'description' => __( 'The related posts.', 'related-posts-by-taxonomy' ),
 					'type'        => 'array',
 					'items'       => array(
 						'type'    => 'object|string|integer',
@@ -201,7 +201,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 					'context'     => array( 'view' ),
 				),
 				'termcount'            => array(
-					'description' => __( 'Number of related terms in common with the post.' ),
+					'description' => __( 'Number of related terms in common with the post.', 'related-posts-by-taxonomy' ),
 					'type'        => 'array',
 					'items'       => array(
 						'type'    => 'integer',
@@ -209,12 +209,12 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 					'context'     => array( 'view' ),
 				),
 				'post_id'            => array(
-					'description' => __( 'The Post ID to get related posts for.' ),
+					'description' => __( 'The Post ID to get related posts for.', 'related-posts-by-taxonomy' ),
 					'type'        => 'integer',
 					'context'     => array( 'view' ),
 				),
 				'post_types'            => array(
-					'description' => __( 'Post types used in query for related posts.' ),
+					'description' => __( 'Post types used in query for related posts.', 'related-posts-by-taxonomy' ),
 					'type'        => 'array',
 					'items'       => array(
 						'type'    => 'string',
@@ -222,7 +222,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 					'context'     => array( 'view' ),
 				),
 				'taxonomies'            => array(
-					'description' => __( 'Taxonomies used in query for related posts.' ),
+					'description' => __( 'Taxonomies used in query for related posts.', 'related-posts-by-taxonomy' ),
 					'type'        => 'array',
 					'items'       => array(
 						'type'    => 'string',
@@ -230,7 +230,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 					'context'     => array( 'view' ),
 				),
 				'related_terms'            => array(
-					'description' => __( 'Related term ids used in query for related posts.' ),
+					'description' => __( 'Related term ids used in query for related posts.', 'related-posts-by-taxonomy' ),
 					'type'        => 'array',
 					'items'       => array(
 						'type'    => 'integer',
@@ -238,7 +238,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 					'context'     => array( 'view' ),
 				),
 				'rendered'            => array(
-					'description' => __( 'Rendered related posts HTML' ),
+					'description' => __( 'Rendered related posts HTML', 'related-posts-by-taxonomy' ),
 					'type'        => 'string',
 					'context'     => array( 'view' ),
 				),
