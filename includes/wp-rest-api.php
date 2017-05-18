@@ -123,7 +123,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @return WP_Error|bool
 	 */
 	public function get_items_permissions_check( $request ) {
-		return true;
+		return apply_filters( 'related_posts_by_taxonomy_wp_rest_api', false );
 	}
 
 	/**
