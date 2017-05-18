@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.0
 Tested up to: 4.7
-Stable tag: 2.3.0-beta1
+Stable tag: 2.2.3-alpha
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,12 +24,13 @@ Plugin features:
 * Widget and Shortcode.
 * Display related posts as **post thumbnails**, links, excerpts or full posts.
 * **Small Footprint**. Doesn't slow down your site!
-* Object **and** persistent cache to get the related posts.
 * Automatic display of related posts after the post content.
 * Search for related posts in single or multiple **taxonomies** and **post types**.
 * **Exclude** or **include** terms and posts.
 * **Limit the search** of related posts by date or number.
 * Use your own **HTML templates** for display of the related posts.
+* Use the **WordPress REST API** to get related posts. (opt-in feature)
+* Use a persistent cache layer for the related posts. (opt-in feature)
 * Use **plugin functions** in your theme templates to display related posts yourself.
 * Use Filters to **change the default behavior** of the plugin. 
 * Extensive **[plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/)**.
@@ -115,6 +116,12 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.3.0 =
+
+* Enhancement
+	* Add a WordPress REST API layer to get related posts (opt-in feature)
+	* Add new filter to activate the WordPress REST API layer
+
 = 2.2.2 =
 
 * Enhancement
@@ -228,5 +235,5 @@ Updated unit tests to be more reliable.
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 2.2.2 =
-New option to link thumbnail captions (post titles) to posts in the widget and shortcode. 
+= 2.3.0 =
+This update adds support to get related post with the WordPress REST API. This is an opt-in feature that has to be activated with a filter.
