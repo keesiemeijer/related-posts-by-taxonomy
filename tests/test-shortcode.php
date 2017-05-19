@@ -2,14 +2,7 @@
 /**
  * Tests for the shortcode in shortcode.php
  */
-class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
-
-	/**
-	 * Utils object to create posts with terms
-	 *
-	 * @var object
-	 */
-	private $utils;
+class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Returned args from filter
@@ -18,20 +11,9 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 	 */
 	private $args;
 
-
-	/**
-	 * Set up.
-	 */
-	function setUp() {
-		parent::setUp();
-
-		// Use the utils class to create posts with terms.
-		$this->utils = new RPBT_Test_Utils( $this->factory );
-	}
-
 	function tearDown() {
 		// use tearDown for WP < 4.0
-		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this->utils, 'return_bool' ) );
+		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'return_bool' ) );
 		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', '__return_true' );
 		remove_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_args' ) );
 
@@ -90,11 +72,11 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 	 */
 	function test_shortcode_hide_empty_filter_bool() {
 		// shortcode
-		add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this->utils, 'return_bool' ) );
+		add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'return_bool' ) );
 		$id = $this->factory->post->create();
 		do_shortcode( '[related_posts_by_tax post_id="' . $id . '"]' );
-		$this->assertTrue( $this->utils->boolean );
-		$this->utils->boolean = null;
+		$this->assertTrue( $this->boolean );
+		$this->boolean = null;
 	}
 
 
@@ -103,7 +85,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 	 */
 	function test_shortcode_hide_empty_filter() {
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		ob_start();
@@ -137,7 +119,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 			) );
 
 		// create posts for custom post type
-		$create_posts = $this->utils->create_posts_with_terms( 'cpt' );
+		$create_posts = $this->create_posts_with_terms( 'cpt' );
 		$posts        = $create_posts['posts'];
 
 		// Add a shortcode to post content.
@@ -170,7 +152,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 	 */
 	function test_related_posts_by_taxonomy_shortcode_atts() {
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		// use filter to get arguments used for the related posts
@@ -196,7 +178,7 @@ class KM_RPBT_Shortcode_Tests extends WP_UnitTestCase {
 	 */
 	function test_shortcode_output() {
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		// get post ids array and permalinks array
@@ -230,7 +212,7 @@ EOF;
 	 */
 	function test_shortcode_related_value() {
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		// use filter to get arguments used for the related posts
@@ -266,7 +248,7 @@ EOF;
 	 */
 	function test_shortcode_link_caption_value() {
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		// use filter to get arguments used for the related posts

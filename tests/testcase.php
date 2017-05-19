@@ -1,13 +1,15 @@
 <?php
-class RPBT_Test_Utils {
+class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 
-	private $factory;
 	public $boolean;
 
-	function __construct( $factory = null ) {
-		$this->factory = $factory;
+	function setUp() {
+		parent::setUp();
 	}
 
+	function tearDown() {
+		parent::tearDown();
+	}
 
 	/**
 	 * Creates 5 posts and assigns terms from two taxonomies.

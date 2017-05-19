@@ -2,14 +2,7 @@
 /**
  * Tests for the widget in /includes/widget.php
  */
-class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
-
-	/**
-	 * Utils object to create posts with terms.
-	 *
-	 * @var object
-	 */
-	private $utils;
+class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Widget settings.
@@ -18,20 +11,9 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 	 */
 	private $settings;
 
-
-	/**
-	 * Set up.
-	 */
-	function setUp() {
-		parent::setUp();
-
-		// Use the utils class to create posts with terms.
-		$this->utils = new RPBT_Test_Utils( $this->factory );
-	}
-
 	function tearDown() {
 		// use tearDown for WP < 4.0
-		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this->utils, 'return_bool' ) );
+		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_bool' ) );
 		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', '__return_false' );
 		parent::tearDown();
 	}
@@ -52,10 +34,10 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 	 * Test if the widget_hide_empty filter is set to true (by default).
 	 */
 	function test_widget_hide_empty_filter_set_to_true() {
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this->utils, 'return_bool' ) );
+		add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_bool' ) );
 		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 
 		// run the widget
@@ -71,15 +53,15 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
 
-		$this->assertTrue( $this->utils->boolean  );
-		$this->utils->boolean = null;
+		$this->assertTrue( $this->boolean  );
+		$this->boolean = null;
 	}
 
 	/**
 	 * Test if the widget_hide_empty filter if set to false.
 	 */
 	function test_widget_hide_empty_filter_set_to_false() {
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		add_filter( 'related_posts_by_taxonomy_widget_hide_empty', '__return_false' );
@@ -107,7 +89,7 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 	 * Should be te similar to the arguments as for the related_posts_by_taxonomy_shortcode_atts filter
 	 */
 	function test_widget_filter_settings() {
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 
 		add_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_settings' ) );
 		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
@@ -136,7 +118,7 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 	 * Test args validation.
 	 */
 	function test_widget_get_instance_settings() {
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$widget       = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 
 		$settings = $widget->get_instance_settings( array() );
@@ -154,7 +136,7 @@ class KM_RPBT_Widget_Tests extends WP_UnitTestCase {
 	 */
 	function test_rpbt_widget_output() {
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );

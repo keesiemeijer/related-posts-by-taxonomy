@@ -2,29 +2,11 @@
 /**
  * Tests for the widget in /includes/widget.php
  */
-class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
-
-	/**
-	 * Utils object to create posts with terms.
-	 *
-	 * @var object
-	 */
-	private $utils;
+class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 	private $args = null;
 
 	private $plugin;
-
-
-	/**
-	 * Set up.
-	 */
-	function setUp() {
-		parent::setUp();
-
-		// Use the utils class to create posts with terms.
-		$this->utils = new RPBT_Test_Utils( $this->factory );
-	}
 
 	function tearDown() {
 		// use tearDown for WP < 4.0
@@ -62,11 +44,11 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
 	 */
 	function test_cache_filter() {
-		add_filter( 'related_posts_by_taxonomy_cache', array( $this->utils, 'return_bool' ) );
+		add_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_bool' ) );
 		$plugin = km_rpbt_plugin();
 		$plugin->_setup();
-		$this->assertFalse( $this->utils->boolean  );
-		$this->utils->boolean = null;
+		$this->assertFalse( $this->boolean  );
+		$this->boolean = null;
 	}
 
 
@@ -91,7 +73,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 		$this->setup_cache();
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		// Add a shortcode to cache.
@@ -105,7 +87,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->go_to( get_permalink( $posts[0] ) );
 
 		// Cache should be empty.
-		$this->assertEmpty( $this->utils->get_cache_meta_key() );
+		$this->assertEmpty( $this->get_cache_meta_key() );
 
 		// Trigger cache.
 		ob_start();
@@ -113,7 +95,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		the_content();
 		$content = ob_get_clean();
 
-		$meta_key = $this->utils->get_cache_meta_key();
+		$meta_key = $this->get_cache_meta_key();
 
 		// Cache should be set for the shortcode in $post[0] content.
 		$this->assertNotEmpty( $meta_key );
@@ -144,14 +126,14 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 		$this->setup_cache();
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		$args = array( 'fields' => 'ids' );
 		$taxonomies = array( 'post_tag' );
 		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, $args );
 
-		$meta_key = $this->utils->get_cache_meta_key();
+		$meta_key = $this->get_cache_meta_key();
 
 		// Cache should be set for $post[1].
 		$this->assertNotEmpty( $meta_key );
@@ -179,7 +161,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		register_post_type( 'rel_cpt', array( 'taxonomies' => array( 'post_tag', 'rel_ctax' ) ) );
 		register_taxonomy( 'rel_ctax', 'rel_cpt' );
 
-		$posts = $this->utils->create_posts_with_terms( 'rel_cpt', 'post_tag', 'rel_ctax' );
+		$posts = $this->create_posts_with_terms( 'rel_cpt', 'post_tag', 'rel_ctax' );
 		$posts = $posts['posts'];
 
 		$args =  array( 'post_types' => array( 'rel_cpt' ) );
@@ -218,7 +200,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 		$this->setup_cache();
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		$args = array( 'fields' => 'ids' );
@@ -228,12 +210,12 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$related_posts = km_rpbt_cache_related_posts( $posts[2], $taxonomies, $args );
 
 		// Cache should be set for $post[2].
-		$this->assertNotEmpty( $this->utils->get_cache_meta_key() );
+		$this->assertNotEmpty( $this->get_cache_meta_key() );
 
 		km_rpbt_flush_cache();
 
 		// Cache should be empty.
-		$this->assertEmpty( $this->utils->get_cache_meta_key() );
+		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
 
 
@@ -247,7 +229,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 		$this->setup_cache();
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		// Was set to true with create_posts_with_terms()
@@ -260,7 +242,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$related_posts = km_rpbt_cache_related_posts( $posts[2], $taxonomies, $args );
 
 		// Cache should be set for $post[2].
-		$this->assertNotEmpty( $this->utils->get_cache_meta_key() );
+		$this->assertNotEmpty( $this->get_cache_meta_key() );
 
 		wp_delete_post( $posts[2] );
 
@@ -268,7 +250,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->plugin->cache->shutdown_flush_cache();
 
 		// Cache should be empty.
-		$this->assertEmpty( $this->utils->get_cache_meta_key() );
+		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
 
 
@@ -281,9 +263,9 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		global $wpdb;
 
 		$this->setup_cache();
-		$attachment_id = $this->utils->create_image();
+		$attachment_id = $this->create_image();
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		// Was set to true with create_posts_with_terms()
@@ -296,7 +278,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$related_posts = km_rpbt_cache_related_posts( $posts[2], $taxonomies, $args );
 
 		// Cache should be set for $post[2].
-		$this->assertNotEmpty( $this->utils->get_cache_meta_key() );
+		$this->assertNotEmpty( $this->get_cache_meta_key() );
 
 		set_post_thumbnail ( $posts[2], $attachment_id );
 
@@ -304,7 +286,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->plugin->cache->shutdown_flush_cache();
 
 		// Cache should be empty.
-		$this->assertEmpty( $this->utils->get_cache_meta_key() );
+		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
 
 
@@ -318,7 +300,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 
 		$this->setup_cache();
 
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 		$terms        = $create_posts['tax1_terms'];
 
@@ -332,7 +314,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$related_posts = km_rpbt_cache_related_posts( $posts[2], $taxonomies, $args );
 
 		// Cache should be set for $post[2].
-		$this->assertNotEmpty( $this->utils->get_cache_meta_key() );
+		$this->assertNotEmpty( $this->get_cache_meta_key() );
 
 		wp_delete_term ( $terms[2], 'post_tag' );
 
@@ -340,7 +322,7 @@ class KM_RPBT_Cache_Tests extends WP_UnitTestCase {
 		$this->plugin->cache->shutdown_flush_cache();
 
 		// Cache should be empty.
-		$this->assertEmpty( $this->utils->get_cache_meta_key() );
+		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
 
 }
