@@ -1,7 +1,7 @@
 {
   "name": "related-posts-by-taxonomy",
-  "version": "2.3.0-beta1",
-  "tested_up_to": "4.7",
+  "version": "2.3.0",
+  "tested_up_to": "4.8",
   "requires_at_least": "4.0",
   "main": "Gruntfile.js",
   "author": "keesiemeijer",
