@@ -27,7 +27,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -44,25 +44,25 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 
 		load_plugin_textdomain( 'related-posts-by-taxonomy', '', dirname( plugin_basename( __FILE__ ) ) . '/lang' );
 
-		// defaults needed for this plugin
+		// Defaults used by this plugin.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/defaults.php';
 
-		// deprecated functions
+		// Deprecated functions.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/deprecated.php';
 
-		// the widget
+		// The widget.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/widget.php';
 
-		// functions to retrieve related posts from the database
+		// Functions to retrieve related posts from the database.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions.php';
 
-		// functions for display of the related post thumbnail gallery
+		// Functions for display of the related post thumbnail gallery.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions-thumbnail.php';
 
-		// loads the different templates used for the widget and shortcode
+		// loads the different templates used for the widget and shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-loader.php';
 
-		// displays the related posts from the shortcode
+		// displays the related posts from the shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
 
 		// Instantiate the defaults class.
