@@ -19,14 +19,6 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	public $filter_args;
 
 	/**
-	 * Post id to get related posts for.
-	 *
-	 * @since 2.3.0
-	 * @var integer
-	 */
-	public $post_id;
-
-	/**
 	 * Register the routes for the objects of the controller.
 	 *
 	 * @since 2.3.0
@@ -78,8 +70,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 			return $error;
 		}
 
-		$this->post_id = $args['id'];
-		$defaults      = km_rpbt_get_default_settings( 'wp_rest_api' );
+		$defaults = km_rpbt_get_default_settings( 'wp_rest_api' );
 
 		/**
 		 * Filter default wp_rest_api arguments.
