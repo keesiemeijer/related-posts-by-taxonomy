@@ -278,7 +278,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 			uasort( $results, 'km_rpbt_related_posts_by_taxonomy_cmp' );
 
 			/* add termcount to args so we can use it later */
-			$termcount =  wp_list_pluck( array_values( $results ), 'score' );
+			$termcount = wp_list_pluck( array_values( $results ), 'score' );
 			foreach ( $termcount as $key => $count ) {
 				$termcount[ $key ] = $count[0];
 			}
