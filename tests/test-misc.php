@@ -2,34 +2,13 @@
 /**
  * Tests for dependencies and various plugin functions
  */
-class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
-
-	/**
-	 * Utils object to create posts with terms to test with.
-	 *
-	 * @var object
-	 */
-	private $utils;
-
-	private $boolean;
-
-
-	/**
-	 * Set up.
-	 */
-	function setUp() {
-		parent::setUp();
-
-		// Use the utils class to create posts with terms
-		$this->utils = new RPBT_Test_Utils( $this->factory );
-	}
-
+class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test if posts are created with the factory class.
 	 */
 	function test_create_posts() {
-		$posts = $this->utils->create_posts();
+		$posts = $this->create_posts();
 		$this->assertNotEmpty( $posts );
 		return $posts;
 	}
@@ -42,7 +21,7 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 	 */
 	function test_assign_taxonomy_terms( array $posts ) {
 		$this->assertNotEmpty( $posts );
-		$terms = $this->utils->assign_taxonomy_terms( $posts, 'category', 1 );
+		$terms = $this->assign_taxonomy_terms( $posts, 'category', 1 );
 		$this->assertNotEmpty( $terms );
 	}
 
@@ -53,7 +32,7 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 	 * Other test methods that create posts depend on this function to succeed.
 	 */
 	function test_create_posts_with_terms() {
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		//$create_posts = array();
 		$this->assertNotEmpty( $create_posts );
 		$this->assertCount( 5, $create_posts['posts'] );
@@ -88,7 +67,7 @@ class KM_RPBT_Misc_Tests extends WP_UnitTestCase {
 	 * @expectedDeprecated km_rpbt_get_shortcode_atts
 	 */
 	function test_empty_output() {
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 		$args         =  array( 'fields' => 'ids' );
 		$taxonomies   = array( 'category', 'post_tag' );

@@ -3,7 +3,7 @@
 /**
  * Tests for deprecated.php
  */
-class KM_RPBT_Deprecated_Tests extends WP_UnitTestCase {
+class KM_RPBT_Deprecated_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Tests for deprecated function km_rpbt_get_shortcode_atts().

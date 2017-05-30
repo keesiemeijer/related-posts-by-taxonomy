@@ -2,25 +2,18 @@
 /**
  * Tests for the km_rpbt_related_posts_by_taxonomy() function in functions.php.
  */
-class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
+class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 
-	private $utils;
 	private $posts;
 	private $tax_1_terms;
 	private $tax_2_terms;
 	private $taxonomies = array( 'category', 'post_tag' );
 
-	function setUp() {
-		parent::setUp();
-		$this->utils = new RPBT_Test_Utils( $this->factory );
-	}
-
-
 	/**
 	 * Helper function to create 5 posts with 5 terms from two taxonomies.
 	 */
-	function create_posts( $post_type = 'post', $tax1 = 'post_tag', $tax2 = 'category' ) {
-		$posts = $this->utils->create_posts_with_terms( $post_type, $tax1, $tax2 );
+	function setup_posts( $post_type = 'post', $tax1 = 'post_tag', $tax2 = 'category' ) {
+		$posts = $this->create_posts_with_terms( $post_type, $tax1, $tax2 );
 		$this->posts       = $posts['posts'];
 		$this->tax_1_terms = $posts['tax1_terms'];
 		$this->tax_2_terms = $posts['tax2_terms'];
@@ -120,7 +113,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_post_type_post() {
-		$this->create_posts();
+		$this->setup_posts();
 		$posts = $this->posts;
 
 		// Test with a single taxonomy.
@@ -180,7 +173,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 
 		$this->assertFalse( is_taxonomy_hierarchical( 'rel_ctax' ) );
 
-		$this->create_posts( 'rel_cpt', 'post_tag', 'rel_ctax' );
+		$this->setup_posts( 'rel_cpt', 'post_tag', 'rel_ctax' );
 		$posts = $this->posts;
 
 		$args =  array( 'post_types' => array( 'rel_cpt', 'post' ), 'fields' => 'ids', );
@@ -234,7 +227,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 */
 	function test_invalid_arguments() {
 
-		$this->create_posts();
+		$this->setup_posts();
 		$posts = $this->posts;
 
 		$args =  array( 'fields' => 'ids' );
@@ -270,7 +263,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_exclude_terms() {
-		$this->create_posts();
+		$this->setup_posts();
 		$args       = array( 'exclude_terms' => $this->tax_1_terms[2], 'fields' => 'ids' );
 		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[2] ), $rel_post0 );
@@ -283,7 +276,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_include_terms() {
-		$this->create_posts();
+		$this->setup_posts();
 		$args       = array( 'include_terms' => $this->tax_1_terms[0], 'fields' => 'ids' );
 		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[2] ), $rel_post0 );
@@ -296,7 +289,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_include_terms_unrelated() {
-		$this->create_posts();
+		$this->setup_posts();
 		$args = array(
 			'include_terms' => array(  $this->tax_2_terms[2], $this->tax_1_terms[3] ),
 			'related'       => false,
@@ -313,7 +306,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_related() {
-		$this->create_posts();
+		$this->setup_posts();
 		$args = array(
 			'related'       => false,
 			'fields'        => 'ids',
@@ -329,7 +322,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_exclude_posts() {
-		$this->create_posts();
+		$this->setup_posts();
 		$args       = array( 'exclude_posts' => $this->posts[2], 'fields' => 'ids' );
 		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
@@ -342,7 +335,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_limit_posts() {
-		$this->create_posts();
+		$this->setup_posts();
 		$args      = array( 'limit_posts' => 2, 'fields' => 'ids' );
 		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[2] ), $rel_post0 );
@@ -355,7 +348,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_posts_per_page() {
-		$this->create_posts();
+		$this->setup_posts();
 		$args      = array( 'posts_per_page' => 1, 'fields' => 'ids' );
 		$rel_post3 = km_rpbt_related_posts_by_taxonomy( $this->posts[3], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1] ), $rel_post3 );
@@ -368,7 +361,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_fields() {
-		$this->create_posts();
+		$this->setup_posts();
 		$_posts = get_posts( array( 'posts__in' => $this->posts, 'order' => 'post__in' ) );
 
 		$slugs      = wp_list_pluck( $_posts, 'post_name' );
@@ -391,7 +384,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_post_thumbnail() {
-		$this->create_posts();
+		$this->setup_posts();
 
 		// Fake post thumbnails for post 1 and 3
 		add_post_meta( $this->posts[1], '_thumbnail_id' , 22 ); // fake attachment ID's
@@ -409,7 +402,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_limit_month() {
-		$this->create_posts();
+		$this->setup_posts();
 		$_posts = get_posts( array( 'posts__in' => $this->posts, 'order' => 'post__in' ) );
 
 		list( $date, $time ) = explode( ' ', $_posts[2]->post_date );
@@ -431,7 +424,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_order_asc() {
-		$this->create_posts();
+		$this->setup_posts();
 		$posts = $this->posts;
 
 		$taxonomies = array( 'category', 'post_tag' );
@@ -448,7 +441,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_order_asc_non_related() {
-		$this->create_posts();
+		$this->setup_posts();
 		$posts = $this->posts;
 
 		$taxonomies = array( 'category', 'post_tag' );
@@ -467,7 +460,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_order_rand() {
-		$this->create_posts();
+		$this->setup_posts();
 		$posts = $this->posts;
 
 		$taxonomies = array( 'category', 'post_tag' );
@@ -489,7 +482,7 @@ class KM_RPBT_Functions_Tests extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_orderby_post_modified() {
-		$this->create_posts();
+		$this->setup_posts();
 		$posts = $this->posts;
 
 		$mypost = array(

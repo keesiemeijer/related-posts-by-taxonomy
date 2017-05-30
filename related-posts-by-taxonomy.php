@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Related Posts By Taxonomy
-Version: 2.2.2
+Version: 2.3.0-beta1
 Plugin URI: http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/
 Description: Display related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the most terms in common will display at the top.
 Author: keesiemijer
@@ -27,7 +27,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -38,32 +38,35 @@ if ( ! defined( 'RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR' ) ) {
 }
 
 /* loads plugin files, adds the shortcode and sets the text domain */
-if ( !function_exists( 'related_posts_by_taxonomy_init' ) ) {
+if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 
 	function related_posts_by_taxonomy_init() {
 
 		load_plugin_textdomain( 'related-posts-by-taxonomy', '', dirname( plugin_basename( __FILE__ ) ) . '/lang' );
 
-		// defaults needed for this plugin
+		// Defaults used by this plugin.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/defaults.php';
 
-		// deprecated functions
+		// Deprecated functions.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/deprecated.php';
 
-		// the widget
+		// The widget.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/widget.php';
 
-		// functions to retrieve related posts from the database
+		// Functions to retrieve related posts from the database.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions.php';
 
-		// functions for display of the related post thumbnail gallery
+		// Functions for display of the related post thumbnail gallery.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions-thumbnail.php';
 
-		// loads the different templates used for the widget and shortcode
+		// loads the different templates used for the widget and shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-loader.php';
 
-		// displays the related posts from the shortcode
+		// displays the related posts from the shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
+
+		// Instantiate the defaults class.
+		Related_Posts_By_Taxonomy_Defaults::init();
 	}
 
 

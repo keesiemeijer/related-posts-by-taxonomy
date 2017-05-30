@@ -3,24 +3,13 @@
 /**
  * Tests for uninstall.php
  */
-class KM_RPBT_Uninstall_Tests extends WP_UnitTestCase {
-
-	/**
-	 * Utils object to create posts with terms.
-	 *
-	 * @var object
-	 */
-	private $utils;
-
+class KM_RPBT_Uninstall_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Set up.
 	 */
 	function setUp() {
 		parent::setUp();
-
-		// Use the utils class to create posts with terms.
-		$this->utils = new RPBT_Test_Utils( $this->factory );
 		delete_transient( 'rpbt_related_posts_flush_cache' );
 	}
 
@@ -32,7 +21,7 @@ class KM_RPBT_Uninstall_Tests extends WP_UnitTestCase {
 	 */
 	function test_uninstall() {
 		global $wpdb;
-		$create_posts = $this->utils->create_posts_with_terms();
+		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
 		$args = array( 'fields' => 'ids' );
@@ -40,7 +29,7 @@ class KM_RPBT_Uninstall_Tests extends WP_UnitTestCase {
 		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, $args );
 
 		// Test if cache for $post[1] exists.
-		$this->assertNotEmpty( $this->utils->get_cache_meta_key() );
+		$this->assertNotEmpty( $this->get_cache_meta_key() );
 
 		$transient = set_transient( 'rpbt_related_posts_flush_cache', 1, DAY_IN_SECONDS * 5 );
 
@@ -56,6 +45,6 @@ class KM_RPBT_Uninstall_Tests extends WP_UnitTestCase {
 		$this->assertFalse( $transient );
 
 		// Cache should be empty.
-		$this->assertEmpty( $this->utils->get_cache_meta_key() );
+		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
 }

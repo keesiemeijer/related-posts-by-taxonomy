@@ -162,7 +162,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				if ( empty( $cache['ids'] ) ) {
 					// Cached, but the current post has no related posts.
 					$posts = array();
-					$this->cache_log[] = sprintf( 'Post ID %d - cache exists empty', $args['post_id'] );
+					$this->cache_log[] = sprintf( 'Post ID %d - cache exists (no related posts found)', $args['post_id'] );
 				} else {
 					// Cached related post ids are found!
 					$posts = $this->get_cache( $args, $cache );
@@ -263,7 +263,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 
 			if ( empty( $cache['ids'] ) ) {
-				$this->cache_log[] = sprintf( 'Post ID %d - cache exists empty', $args['post_id'] );
+				$this->cache_log[] = sprintf( 'Post ID %d - cache exists (no related posts found)', $args['post_id'] );
 				return array();
 			}
 
@@ -308,7 +308,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				$this->cache_log[] = sprintf( 'Post ID %d - cache exists', $args['post_id'] );
 			} else {
 				$posts = array();
-				$this->cache_log[] = sprintf( 'Post ID %d - cache exists empty', $args['post_id'] );
+				$this->cache_log[] = sprintf( 'Post ID %d - cache exists (no related posts found)', $args['post_id'] );
 			}
 
 			$post_id    = $cache_args['post_id'];
@@ -552,7 +552,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 
 			if ( empty( $this->cache_log ) ) {
-				$this->cache_log[] = 'Cache not used';
+				$this->cache_log[] = 'This page has no related posts';
 			}
 
 			array_unshift( $this->cache_log, 'Related Posts Cache' );

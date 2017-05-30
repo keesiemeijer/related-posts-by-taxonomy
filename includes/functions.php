@@ -276,6 +276,13 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 			/* order related posts */
 			uasort( $results, 'km_rpbt_related_posts_by_taxonomy_cmp' );
+
+			/* add termcount to args so we can use it later */
+			$termcount = wp_list_pluck( array_values( $results ), 'score' );
+			foreach ( $termcount as $key => $count ) {
+				$termcount[ $key ] = $count[0];
+			}
+			$args['termcount'] = $termcount;
 		}
 
 		$results = array_values( $results );
@@ -288,6 +295,9 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 			$posts_per_page = absint( $args['posts_per_page'] );
 			$posts_per_page = ( $posts_per_page ) ? $posts_per_page : 5;
 			$results = array_slice( $results, 0, $posts_per_page );
+			if ( isset( $args['termcount'] ) && $args['termcount'] ) {
+				$args['termcount'] = array_slice( $args['termcount'], 0, $posts_per_page );
+			}
 		}
 	} else {
 		$results = array();

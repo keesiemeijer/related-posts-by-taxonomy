@@ -3,26 +3,7 @@
 /**
  * Tests for gallery in functions-thumbnail.php
  */
-class KM_RPBT_Gallery_Tests extends WP_UnitTestCase {
-
-	/**
-	 * Utils object to create posts with terms
-	 *
-	 * @var object
-	 */
-	private $utils;
-
-
-	/**
-	 * Set up.
-	 */
-	function setUp() {
-		parent::setUp();
-
-		// Use the utils class to create posts with terms.
-		$this->utils = new RPBT_Test_Utils( $this->factory );
-	}
-
+class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 
 	function tearDown() {
 		// use tearDown for WP < 4.0
@@ -258,7 +239,7 @@ EOF;
 	 */
 	function setup_gallery() {
 
-		$posts        = $this->utils->create_posts();
+		$posts        = $this->create_posts();
 		$related_post = get_post( $posts[0] );
 		$permalink    = get_permalink( $related_post->ID );
 
