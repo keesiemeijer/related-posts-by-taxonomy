@@ -85,6 +85,34 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
+	 * Test success response for rest request.
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_wp_rest_api_success_response() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+		$request->set_param( 'fields', 'ids' );
+
+		$response = rest_do_request( $request );
+		$data     = $response->get_data();
+		$expected = array(
+			'posts',
+			'termcount',
+			'post_id',
+			'post_types',
+			'taxonomies',
+			'related_terms',
+			'rendered',
+		);
+
+		$this->assertEquals( $expected, array_keys( $data ) );
+	}
+
+	/**
 	 * Test related posts for post type post.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
