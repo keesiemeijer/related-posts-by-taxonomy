@@ -236,4 +236,4 @@ Updated unit tests to be more reliable.
 
 == Upgrade Notice ==
 = 2.3.0 =
-This update adds support to get related post with the WordPress REST API. This is an opt-in feature that has to be activated with a filter.
+This update adds support to get related post with the WordPress REST API. This is an opt-in feature that has to be activated before you can use it (see the plugin documentation).
