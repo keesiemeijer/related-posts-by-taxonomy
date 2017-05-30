@@ -312,6 +312,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 
 			// Settings for the km_rpbt_related_posts_by_taxonomy() function.
 			$defaults = km_rpbt_get_default_args();
+			$types    = array(
+				'shortcode',
+				'widget',
+				'wp_rest_api',
+			);
 
 			$_type = $type;
 
@@ -332,14 +337,21 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 
 			$settings = array_merge( $defaults, $settings );
 
+			// No default setting for post types.
+			$settings['post_types'] = '';
+
+			if ( ! in_array( $type, $types ) ) {
+				return $settings;
+			}
+
 			// Custom settings for the widget.
-			if ( ( 'widget' === $type ) || ( 'all' === $type ) ) {
+			if ( ( 'widget' === $type ) ) {
 				$settings['random']            = false;
 				$settings['singular_template'] = false;
 			}
 
 			// Custom settings for the shortcode.
-			if ( ( 'shortcode' === $type ) || ( 'all' === $type ) ) {
+			if ( ( 'shortcode' === $type ) ) {
 				$shortcode_args = array(
 					'before_shortcode' => '<div class="rpbt_shortcode">',
 					'after_shortcode'  => '</div>',
@@ -356,15 +368,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				$settings['after_shortcode']  = '</div>';
 			}
 
-			// No default setting for post types.
-			$settings['post_types'] = '';
-			$settings['type'] = in_array( $_type, array( 'shortcode', 'widget', 'wp_rest_api' ) ) ? $_type : '';
+			$settings['type'] = $_type;
 
 			return $settings;
 		}
 
 	} // end class
-
-	Related_Posts_By_Taxonomy_Defaults::init();
 
 } // class exists
