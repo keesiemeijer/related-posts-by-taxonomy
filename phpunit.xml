@@ -9,6 +9,7 @@
 	<testsuites>
 		<testsuite>
 			<file>tests/test-misc.php</file>
+			<file>tests/test-supports.php</file>
 			<file>tests/test-functions.php</file>
 			<file>tests/test-wp-rest-api.php</file>
 			<file>tests/test-shortcode.php</file>

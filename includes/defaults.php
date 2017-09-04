@@ -167,6 +167,25 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		}
 
 		/**
+		 * Get the features this plugin supports
+		 *
+		 * @return Array Array with plugin support types
+		 */
+		public function get_plugin_supports() {
+			$supports = array(
+				'cache'                => false,
+				'wp_rest_api'          => false,
+				'debug'                => false,
+				'widget'               => true,
+				'shortcode'            => true,
+				'shortcode_hide_empty' => true,
+				'widget_hide_empty'    => true,
+			);
+
+			return apply_filters( 'related_posts_by_taxonomy_supports', $supports );
+		}
+
+		/**
 		 * Adds opt in support with a filter for cache, WP REST API and debug.
 		 *
 		 * @since  2.3.0
@@ -175,7 +194,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @return bool True if set to true with a filter. Default false.
 		 */
 		public function plugin_supports( $type = '' ) {
-			if ( ! in_array( $type , array( 'cache', 'wp_rest_api', 'debug' ) ) ) {
+			$supports = $this->get_plugin_supports();
+
+			if ( ! in_array( $type , array_keys( $supports ) ) ) {
 				return false;
 			}
 
@@ -187,7 +208,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			 *
 			 * @param bool $bool Add support if true. Default false
 			 */
-			return apply_filters( "related_posts_by_taxonomy_{$type}", false );
+			return apply_filters( "related_posts_by_taxonomy_{$type}", (bool) $supports[ $type ] );
 		}
 
 		/**

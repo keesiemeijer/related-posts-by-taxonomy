@@ -16,6 +16,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'return_bool' ) );
 		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', '__return_true' );
 		remove_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_args' ) );
+		remove_filter( 'related_posts_by_taxonomy_shortcode', '__return_false' );
 
 		parent::tearDown();
 	}
@@ -204,6 +205,23 @@ EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );
 	}
+
+	function test_shortcode_disabled_output() {
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// Removes support for the widget.
+		add_filter( 'related_posts_by_taxonomy_shortcode', '__return_false' );
+
+		$shortcode = do_shortcode( '[related_posts_by_tax post_id="' . $posts[1] . '"]' );
+		add_filter( 'related_posts_by_taxonomy_shortcode', '__return_true' );
+		//remove_filter( 'related_posts_by_taxonomy_shortcode', '__return_false' );
+		//echo '$shortcode=' .$shortcode;
+		$this->assertEmpty( $shortcode );
+
+	}
+
+
 
 	/**
 	 * Test booleans in shortcode arguments.

@@ -116,6 +116,11 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.3.1 =
+
+* Enhancement
+	* Add support to disable the shortcode or widget for this plugin
+
 = 2.3.0 =
 
 * Enhancement
@@ -235,5 +240,5 @@ Updated unit tests to be more reliable.
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 2.3.0 =
-This update adds support to get related post with the WordPress REST API. This is an opt-in feature that has to be activated before you can use it (see the plugin documentation).
+= 2.3.1 =
+This update adds the ability to disable features of this plugin with a filter.

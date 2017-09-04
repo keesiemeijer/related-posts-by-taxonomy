@@ -15,6 +15,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		// use tearDown for WP < 4.0
 		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_bool' ) );
 		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', '__return_false' );
+		remove_filter( 'related_posts_by_taxonomy_widget', '__return_false' );
 		parent::tearDown();
 	}
 
@@ -29,6 +30,24 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertArrayHasKey( $widget_class, $wp_widget_factory->widgets );
 	}
 
+	/**
+	 * Test if the widget exists.
+	 */
+	function test_rpbt_widget_disabled() {
+		global $wp_widget_factory;
+
+		// Unregister widget for this test.
+		unregister_widget( 'Related_Posts_By_Taxonomy' );
+
+		// Removes support for the widget.
+		add_filter( 'related_posts_by_taxonomy_widget', '__return_false' );
+
+		// Registers the widget if supported.
+		km_rpbt_related_posts_by_taxonomy_widget();
+
+		$widget_class = 'Related_Posts_By_Taxonomy';
+		$this->assertArrayNotHasKey( $widget_class, $wp_widget_factory->widgets );
+	}
 
 	/**
 	 * Test if the widget_hide_empty filter is set to true (by default).
@@ -123,7 +142,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
 		$settings = $widget->get_instance_settings( array() );
 		$expected = km_rpbt_get_default_settings( 'widget' );
-		$expected['post_types'] = array( 'post' => 'on'); // set in the widget as default
+		$expected['post_types'] = array( 'post' => 'on' ); // set in the widget as default
 
 		$this->assertEquals( $expected, $settings );
 	}
