@@ -8,13 +8,14 @@ class KM_RPBT_Plugin_Supports_Tests extends KM_RPBT_UnitTestCase {
 		$plugin = km_rpbt_plugin();
 
 		$expected = array(
-			'cache'                => false,
-			'wp_rest_api'          => false,
-			'debug'                => false,
 			'widget'               => true,
 			'shortcode'            => true,
 			'shortcode_hide_empty' => true,
 			'widget_hide_empty'    => true,
+			'cache'                => false,
+			'display_cache_log'    => false,
+			'wp_rest_api'          => false,
+			'debug'                => false,
 		);
 
 		$this->assertEquals( $expected, $plugin->get_plugin_supports() );
@@ -23,6 +24,11 @@ class KM_RPBT_Plugin_Supports_Tests extends KM_RPBT_UnitTestCase {
 	function test_cache_support() {
 		$plugin = km_rpbt_plugin();
 		$this->assertFalse( $plugin->plugin_supports( 'cache' ) );
+	}
+
+	function test_display_cache_log_support() {
+		$plugin = km_rpbt_plugin();
+		$this->assertFalse( $plugin->plugin_supports( 'display_cache_log' ) );
 	}
 
 	function test_wp_rest_api_support() {
@@ -54,4 +60,5 @@ class KM_RPBT_Plugin_Supports_Tests extends KM_RPBT_UnitTestCase {
 		$plugin = km_rpbt_plugin();
 		$this->assertTrue( $plugin->plugin_supports( 'widget_hide_empty' ) );
 	}
+
 }

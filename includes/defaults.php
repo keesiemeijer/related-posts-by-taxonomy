@@ -169,20 +169,32 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		/**
 		 * Get the features this plugin supports
 		 *
+		 * @since  2.3.1
+		 *
 		 * @return Array Array with plugin support types
 		 */
 		public function get_plugin_supports() {
 			$supports = array(
-				'cache'                => false,
-				'wp_rest_api'          => false,
-				'debug'                => false,
 				'widget'               => true,
 				'shortcode'            => true,
 				'shortcode_hide_empty' => true,
 				'widget_hide_empty'    => true,
+				'cache'                => false,
+				'display_cache_log'    => false,
+				'wp_rest_api'          => false,
+				'debug'                => false,
 			);
 
-			return apply_filters( 'related_posts_by_taxonomy_supports', $supports );
+			/**
+			 * Filter plugin features.
+			 *
+			 * @since 2.3.1
+			 *
+			 * @param array $support Array with all supported plugin features.
+			 */
+			$plugin = apply_filters( 'related_posts_by_taxonomy_supports', $supports );
+
+			return array_merge( $supports, (array) $plugin );
 		}
 
 		/**
