@@ -111,25 +111,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		public function _setup() {
 
 			// Default taxonomies.
-			$this->all_tax = 'all'; // All taxonomies.
+			$this->all_tax     = 'all'; // All taxonomies.
 			$this->default_tax = array( 'category' => __( 'Category', 'related-posts-by-taxonomy' ) );
-
-			$this->post_types = $this->get_post_types();
-			if ( empty( $this->post_types ) ) {
-				$this->post_types = array( 'post' => __( 'Post', 'related-posts-by-taxonomy' ) );
-			}
-
-			$this->taxonomies = $this->get_taxonomies();
-			if ( empty( $this->taxonomies ) ) {
-				$this->taxonomies = $this->default_tax;
-			}
-
+			$this->post_types  = $this->get_post_types();
+			$this->taxonomies  = $this->get_taxonomies();
 			$this->image_sizes = $this->get_image_sizes();
-			if ( empty( $this->image_sizes ) ) {
-				$this->image_sizes = array( 'thumbnail' => __( 'Thumbnail', 'related-posts-by-taxonomy' ) );
-			}
-
-			$this->formats = $this->get_formats();
+			$this->formats     = $this->get_formats();
 
 			if ( $this->plugin_supports( 'cache' ) ) {
 				// Only load the cache class when $cache is set to true.
@@ -239,6 +226,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			foreach ( (array) $post_types_obj as $key => $value ) {
 				$post_types[ $key ] = esc_attr( $value->labels->menu_name );
 			}
+
+			if ( empty( $post_types ) ) {
+				$post_types = array( 'post' => __( 'Post', 'related-posts-by-taxonomy' ) );
+			}
+
 			return $post_types;
 		}
 
@@ -279,6 +271,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				}
 			}
 
+			if ( empty( $tax ) ) {
+				$tax = $this->default_tax;
+			}
+
 			return array_unique( $tax );
 		}
 
@@ -312,6 +308,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 					$size = ucwords( str_replace( array( '-', '_' ), ' ', $s ) );
 					$sizes[ $s ] = $size . ' (' . $width . ' x ' . $height . ')';
 				}
+			}
+
+			if ( empty( $sizes ) ) {
+				$sizes = array( 'thumbnail' => __( 'Thumbnail', 'related-posts-by-taxonomy' ) );
 			}
 
 			return $sizes;
