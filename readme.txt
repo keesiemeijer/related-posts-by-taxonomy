@@ -120,6 +120,7 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 
 * Enhancement
 	* Add support to disable the shortcode or widget for this plugin
+	* Add support to update all plugin settings with one filter.
 
 = 2.3.0 =
 
@@ -241,4 +242,4 @@ Updated unit tests to be more reliable.
 
 == Upgrade Notice ==
 = 2.3.1 =
-This update adds the ability to disable features of this plugin with a filter.
+This update adds the ability to disable plugin features with a filter.
