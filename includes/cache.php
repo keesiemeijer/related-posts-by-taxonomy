@@ -113,8 +113,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array Array with cache arguments.
 		 */
 		private function get_cache_options() {
+			$plugin    = km_rpbt_plugin();
+			$cache_log = (bool) $plugin->plugin_supports( 'display_cache_log' );
 
-			$cache_log = (bool) apply_filters( 'related_posts_by_taxonomy_display_cache_log', false );
 			return apply_filters( 'related_posts_by_taxonomy_cache_args', array(
 					'expiration'        => DAY_IN_SECONDS * 5, // Five days.
 					'flush_manually'    => false,

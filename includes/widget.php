@@ -13,7 +13,10 @@ add_action( 'widgets_init', 'km_rpbt_related_posts_by_taxonomy_widget' );
  * @since 0.1
  */
 function km_rpbt_related_posts_by_taxonomy_widget() {
-	register_widget( 'Related_Posts_By_Taxonomy' );
+	$plugin = km_rpbt_plugin();
+	if ( $plugin && $plugin->plugin_supports( 'widget' ) ) {
+		register_widget( 'Related_Posts_By_Taxonomy' );
+	}
 }
 
 
@@ -48,7 +51,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		 *
 		 * @param array $widget Array with widget name and description.
 		 */
-		$widget_filter = (array) apply_filters( 'related_posts_by_taxonomy_widget', $widget );
+		$widget_filter = (array) apply_filters( 'related_posts_by_taxonomy_admin_widget', $widget );
 
 		$widget = array_merge( $widget, $widget_filter );
 
@@ -141,15 +144,12 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
 		}
 
-		/**
-		 * Filter whether to hide the widget if no related posts are found.
-		 *
-		 * @since 0.1
-		 *
-		 * @param bool $hide Whether to hide the widget if no related posts are found.
-		 *                      Defaults to true.
+		/*
+		 * Whether to hide the widget if no related posts are found.
+		 * Set by the related_posts_by_taxonomy_widget_hide_empty filter.
+		 * Default true.
 		 */
-		$hide_empty = (bool) apply_filters( 'related_posts_by_taxonomy_widget_hide_empty', true );
+		$hide_empty = (bool) $this->plugin->plugin_supports( 'widget_hide_empty' );
 
 		if ( ! $hide_empty || ! empty( $related_posts ) ) {
 			$this->widget_output( $related_posts, $rpbt_args, $rpbt_widget_args );

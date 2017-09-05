@@ -111,25 +111,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		public function _setup() {
 
 			// Default taxonomies.
-			$this->all_tax = 'all'; // All taxonomies.
+			$this->all_tax     = 'all'; // All taxonomies.
 			$this->default_tax = array( 'category' => __( 'Category', 'related-posts-by-taxonomy' ) );
-
-			$this->post_types = $this->get_post_types();
-			if ( empty( $this->post_types ) ) {
-				$this->post_types = array( 'post' => __( 'Post', 'related-posts-by-taxonomy' ) );
-			}
-
-			$this->taxonomies = $this->get_taxonomies();
-			if ( empty( $this->taxonomies ) ) {
-				$this->taxonomies = $this->default_tax;
-			}
-
+			$this->post_types  = $this->get_post_types();
+			$this->taxonomies  = $this->get_taxonomies();
 			$this->image_sizes = $this->get_image_sizes();
-			if ( empty( $this->image_sizes ) ) {
-				$this->image_sizes = array( 'thumbnail' => __( 'Thumbnail', 'related-posts-by-taxonomy' ) );
-			}
-
-			$this->formats = $this->get_formats();
+			$this->formats     = $this->get_formats();
 
 			if ( $this->plugin_supports( 'cache' ) ) {
 				// Only load the cache class when $cache is set to true.
@@ -167,6 +154,37 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		}
 
 		/**
+		 * Get the features this plugin supports
+		 *
+		 * @since  2.3.1
+		 *
+		 * @return Array Array with plugin support types
+		 */
+		public function get_plugin_supports() {
+			$supports = array(
+				'widget'               => true,
+				'shortcode'            => true,
+				'shortcode_hide_empty' => true,
+				'widget_hide_empty'    => true,
+				'cache'                => false,
+				'display_cache_log'    => false,
+				'wp_rest_api'          => false,
+				'debug'                => false,
+			);
+
+			/**
+			 * Filter plugin features.
+			 *
+			 * @since 2.3.1
+			 *
+			 * @param array $support Array with all supported plugin features.
+			 */
+			$plugin = apply_filters( 'related_posts_by_taxonomy_supports', $supports );
+
+			return array_merge( $supports, (array) $plugin );
+		}
+
+		/**
 		 * Adds opt in support with a filter for cache, WP REST API and debug.
 		 *
 		 * @since  2.3.0
@@ -175,7 +193,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @return bool True if set to true with a filter. Default false.
 		 */
 		public function plugin_supports( $type = '' ) {
-			if ( ! in_array( $type , array( 'cache', 'wp_rest_api', 'debug' ) ) ) {
+			$supports = $this->get_plugin_supports();
+
+			if ( ! in_array( $type , array_keys( $supports ) ) ) {
 				return false;
 			}
 
@@ -187,7 +207,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			 *
 			 * @param bool $bool Add support if true. Default false
 			 */
-			return apply_filters( "related_posts_by_taxonomy_{$type}", false );
+			return apply_filters( "related_posts_by_taxonomy_{$type}", (bool) $supports[ $type ] );
 		}
 
 		/**
@@ -206,6 +226,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			foreach ( (array) $post_types_obj as $key => $value ) {
 				$post_types[ $key ] = esc_attr( $value->labels->menu_name );
 			}
+
+			if ( empty( $post_types ) ) {
+				$post_types = array( 'post' => __( 'Post', 'related-posts-by-taxonomy' ) );
+			}
+
 			return $post_types;
 		}
 
@@ -246,6 +271,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				}
 			}
 
+			if ( empty( $tax ) ) {
+				$tax = $this->default_tax;
+			}
+
 			return array_unique( $tax );
 		}
 
@@ -279,6 +308,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 					$size = ucwords( str_replace( array( '-', '_' ), ' ', $s ) );
 					$sizes[ $s ] = $size . ' (' . $width . ' x ' . $height . ')';
 				}
+			}
+
+			if ( empty( $sizes ) ) {
+				$sizes = array( 'thumbnail' => __( 'Thumbnail', 'related-posts-by-taxonomy' ) );
 			}
 
 			return $sizes;

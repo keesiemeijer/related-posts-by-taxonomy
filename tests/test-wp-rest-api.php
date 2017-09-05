@@ -85,6 +85,21 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
+	 * Test the route is registered
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_wp_rest_api_route_is_registered() {
+		$plugin = km_rpbt_plugin();
+		global $wp_rest_server;
+		$wp_rest_server = new Spy_REST_Server;
+		do_action( 'rest_api_init' );
+		$plugin->_setup_wp_rest_api();
+		$this->assertTrue( in_array( '/related-posts-by-taxonomy/v1', array_keys( $wp_rest_server->get_routes() ) ) );
+		$wp_rest_server = null;
+	}
+
+	/**
 	 * Test success response for rest request.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms

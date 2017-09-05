@@ -31,7 +31,8 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 
 	$plugin = km_rpbt_plugin();
 
-	if ( ! $plugin ) {
+	if ( ! ( $plugin && $plugin->plugin_supports( 'shortcode' ) ) ) {
+		$recursing = false;
 		return '';
 	}
 
@@ -77,15 +78,12 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
 	}
 
-	/**
-	 * Filter whether to hide the widget if no related posts are found.
-	 *
-	 * @since 0.1
-	 *
-	 * @param bool $hide Whether to hide the shortcode if no related posts are found.
-	 *                      Defaults to true.
+	/*
+	 * Whether to hide the shortcode if no related posts are found.
+	 * Set by the related_posts_by_taxonomy_shortcode_hide_empty filter.
+	 * Default true.
 	 */
-	$hide_empty = (bool) apply_filters( 'related_posts_by_taxonomy_shortcode_hide_empty', true );
+	$hide_empty = (bool) $plugin->plugin_supports( 'shortcode_hide_empty' );
 
 	$shortcode = '';
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {

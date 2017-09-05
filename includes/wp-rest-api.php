@@ -24,6 +24,12 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @since 2.3.0
 	 */
 	public function register_routes() {
+		$plugin = km_rpbt_plugin();
+
+		if ( ! ( $plugin && $plugin->plugin_supports( 'wp_rest_api' ) ) ) {
+			return;
+		}
+
 		$version = '1';
 		$namespace = 'related-posts-by-taxonomy/v' . $version;
 		$base = 'posts';

@@ -78,8 +78,18 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_km_rpbt_get_post_types() {
 		$post_types = 'post ,lol, post';
-
 		$this->assertEquals( array( 'post' ), km_rpbt_get_post_types( $post_types ) );
+	}
+
+	/**
+	 * Test validating custom post types.
+	 */
+	function test_km_rpbt_get_post_types_custom() {
+		register_post_type( 'cpt' );
+		$expected = array( 'cpt', 'post' );
+		$post_types = km_rpbt_get_post_types( $expected );
+		sort( $post_types );
+		$this->assertEquals( $expected, km_rpbt_get_post_types( $post_types ) );
 	}
 
 
@@ -88,8 +98,18 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_km_rpbt_get_taxonomies() {
 		$taxonomies = 'category ,lol, category';
-
 		$this->assertEquals( array( 'category' ), km_rpbt_get_taxonomies( $taxonomies ) );
+	}
+
+	/**
+	 * Test validating custom taxonomies.
+	 */
+	function test_km_rpbt_get_taxonomies_custom() {
+		register_taxonomy( 'ctax', 'post' );
+		$expected = array( 'category', 'ctax' );
+		$taxonomies = km_rpbt_get_taxonomies( $expected );
+		sort( $taxonomies );
+		$this->assertEquals( $expected, $taxonomies );
 	}
 
 
@@ -99,10 +119,9 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 	function test_km_rpbt_get_comma_separated_values() {
 		$expected = array( 'lol', 'hihi' );
 		$value = ' lol, hihi,lol';
-
 		$this->assertEquals( $expected, km_rpbt_get_comma_separated_values( $value ) );
 
-		$value = array(' lol', 'hihi ', ' lol ');
+		$value = array( ' lol', 'hihi ', ' lol ' );
 		$this->assertEquals( $expected, km_rpbt_get_comma_separated_values( $value ) );
 	}
 
@@ -408,7 +427,7 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 		list( $date, $time ) = explode( ' ', $_posts[2]->post_date );
 		$mypost = array(
 			'ID' =>  $this->posts[2],
-			'post_date' => date( 'Y-m-d H:i:s', strtotime( $date .' -6 month' ) ),
+			'post_date' => date( 'Y-m-d H:i:s', strtotime( $date . ' -6 month' ) ),
 		);
 		wp_update_post( $mypost );
 

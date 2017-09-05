@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.0
 Tested up to: 4.8
-Stable tag: 2.3.0
+Stable tag: 2.3.1-alpha
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -116,6 +116,12 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.3.1 =
+
+* Enhancement
+	* Add support to disable the shortcode or widget for this plugin
+	* Add support to update all plugin settings with one filter.
+
 = 2.3.0 =
 
 * Enhancement
@@ -235,5 +241,5 @@ Updated unit tests to be more reliable.
 * some minor bug fixing for the shortcode.
 
 == Upgrade Notice ==
-= 2.3.0 =
-This update adds support to get related post with the WordPress REST API. This is an opt-in feature that has to be activated before you can use it (see the plugin documentation).
+= 2.3.1 =
+This update adds the ability to disable plugin features with a filter.

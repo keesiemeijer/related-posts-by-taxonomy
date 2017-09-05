@@ -2,10 +2,10 @@
 # This file is distributed under the GPL v2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Related Posts By Taxonomy 2.3.0\n"
+"Project-Id-Version: Related Posts By Taxonomy 2.3.1-alpha\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2017-05-30 13:01:15+00:00\n"
+"POT-Creation-Date: 2017-09-05 14:27:26+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -29,31 +29,31 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: includes/defaults.php:119
+#: includes/defaults.php:231
 msgid "Post"
 msgstr ""
 
-#: includes/defaults.php:129
+#: includes/defaults.php:314
 msgid "Thumbnail"
 msgstr ""
 
-#: includes/defaults.php:296
+#: includes/defaults.php:329
 msgid "Links"
 msgstr ""
 
-#: includes/defaults.php:297
+#: includes/defaults.php:330
 msgid "Posts"
 msgstr ""
 
-#: includes/defaults.php:298
+#: includes/defaults.php:331
 msgid "Excerpts"
 msgstr ""
 
-#: includes/defaults.php:299
+#: includes/defaults.php:332
 msgid "Post thumbnails"
 msgstr ""
 
-#: includes/defaults.php:330
+#: includes/defaults.php:363
 msgid "Related Posts"
 msgstr ""
 
@@ -61,7 +61,7 @@ msgstr ""
 msgid "Related Posts By Taxonomy"
 msgstr ""
 
-#: includes/widget.php:41
+#: includes/widget.php:44
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
@@ -137,39 +137,39 @@ msgstr ""
 msgid "Display related posts for post ID (optional)"
 msgstr ""
 
-#: includes/wp-rest-api.php:34
+#: includes/wp-rest-api.php:40
 msgid "Unique identifier for the object."
 msgstr ""
 
-#: includes/wp-rest-api.php:62
+#: includes/wp-rest-api.php:68
 msgid "Invalid post ID."
 msgstr ""
 
-#: includes/wp-rest-api.php:187
+#: includes/wp-rest-api.php:193
 msgid "The related posts."
 msgstr ""
 
-#: includes/wp-rest-api.php:195
+#: includes/wp-rest-api.php:201
 msgid "Number of related terms in common with the post."
 msgstr ""
 
-#: includes/wp-rest-api.php:203
+#: includes/wp-rest-api.php:209
 msgid "The Post ID to get related posts for."
 msgstr ""
 
-#: includes/wp-rest-api.php:208
+#: includes/wp-rest-api.php:214
 msgid "Post types used in query for related posts."
 msgstr ""
 
-#: includes/wp-rest-api.php:216
+#: includes/wp-rest-api.php:222
 msgid "Taxonomies used in query for related posts."
 msgstr ""
 
-#: includes/wp-rest-api.php:224
+#: includes/wp-rest-api.php:230
 msgid "Related term ids used in query for related posts."
 msgstr ""
 
-#: includes/wp-rest-api.php:232
+#: includes/wp-rest-api.php:238
 msgid "Rendered related posts HTML"
 msgstr ""
 
