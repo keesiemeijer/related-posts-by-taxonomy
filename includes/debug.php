@@ -5,7 +5,7 @@
  * Notice: This file is only loaded if you activate debugging with the filter related_posts_by_taxonomy_debug.
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -19,7 +19,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		public $widget_counter    = 0;
 		public $shortcode_counter = 0;
 
-
 		function __construct() {
 			$this->debug_setup();
 		}
@@ -31,11 +30,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return void
 		 */
 		function debug_setup() {
-
-			// Check if the current user can view debug results.
-			//
-			// True if the current user is an admin or super admin.
-			// OR the current user has the 'view_rpbt_debug_results' capability.
+			/*
+			 * Check if the current user can view debug results.
+			 * True if the current user is an admin or super admin.
+			 * OR the current user has the 'view_rpbt_debug_results' capability.
+			 */
 
 			if ( ! ( is_super_admin() || current_user_can( 'view_rpbt_debug_results' ) ) ) {
 				return;
@@ -67,23 +66,24 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			// Store the results.
 			add_action( 'related_posts_by_taxonomy_after_display', array( $this, 'after_display' ) );
-			add_action( 'related_posts_by_taxonomy_after_display', array( $this, 'after_display' ) );
 
 			// Display debug results in footer.
-			add_action( 'wp_footer', array( $this, 'wp_footer' ) );
+			add_action( 'wp_footer', array( $this, 'wp_footer' ), 99 );
 		}
-
 
 		/**
 		 * Starts debugging at the arguments hook for widged and shortcode.
 		 * Adds filter to wp_get_object_terms.
 		 *
 		 * @since 2.0.0
-		 * @return array Array with widget or shortcode arguments
+		 *
+		 * @param array $args   Widget or shortcode arguments.
+		 * @param array $widget Widget args.
+		 * @return array Array with widget or shortcode arguments.
 		 */
 		function debug_start( $args, $widget = '' ) {
 
-			// First filter called for debugging.
+			/* First filter called for debugging. */
 
 			// Force a title if empty.
 			$args['title'] = empty( $args['title'] ) ? 'Related Posts Debug Title' : $args['title'];
@@ -102,8 +102,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			if ( $this->cache ) {
 				$this->check_cache( $args );
-			} else {
-				$this->debug['cache'] = 'no persistent cache';
 			}
 
 			// Gets current post terms, taxonomies and post ID.
@@ -127,23 +125,22 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			if ( isset( $cache['ids'] ) ) {
 
 				// Related posts were cached for this post.
-				$cache_args = $cache['args'];
-				$post_ids = array_keys( (array) $cache['ids'] );
-				$this->debug['cache'] = 'current post cached';
-				$this->debug['cached post ids'] = ! empty( $post_ids ) ? $post_ids  : array();
-				$defaults = km_rpbt_get_default_args();
-				$this->debug['function args'] = array_intersect_key( $args , $defaults );
-				$taxonomies = km_rpbt_get_taxonomies( $cache_args['taxonomies'] );
+				$cache_args                       = $cache['args'];
+				$post_ids                         = array_keys( (array) $cache['ids'] );
+				$this->debug['cache']             = 'current post cached';
+				$this->debug['cached post ids']   = ! empty( $post_ids ) ? $post_ids : array();
+				$defaults                         = km_rpbt_get_default_args();
+				$this->debug['function args']     = array_intersect_key( $args , $defaults );
+				$taxonomies                       = km_rpbt_get_taxonomies( $cache_args['taxonomies'] );
 				$this->debug['cached taxonomies'] = implode( ', ', $taxonomies );
-				$this->debug['cached terms'] = isset( $cache_args['related_terms'] ) ? $cache_args['related_terms'] : 'not in cache for post that doesn\'t have related posts';
-				$this->debug['current post id'] = isset( $args['post_id'] ) ? $args['post_id'] : '';
+				$this->debug['cached terms']      = isset( $cache_args['related_terms'] ) ? $cache_args['related_terms'] : 'not in cache for post that doesn\'t have related posts';
+				$this->debug['current post id']   = isset( $args['post_id'] ) ? $args['post_id'] : '';
 			} else {
 
 				// Related posts not yet in cache.
 				$this->debug['cache'] = 'current post is not yet cached';
 			}
 		}
-
 
 		/**
 		 * Adds debug link before widget title.
@@ -154,7 +151,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 */
 		function widget_params( $params ) {
 
-			if ( ! isset( $params[0]['widget_id'] )  ) {
+			if ( ! isset( $params[0]['widget_id'] ) ) {
 				return $params;
 			}
 
@@ -166,7 +163,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			return $params;
 		}
-
 
 		/**
 		 * Creates a debug link.
@@ -185,7 +181,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			return $this->debug['debug_link'];
 		}
 
-
 		/**
 		 * Gets debug information
 		 * Callback function for filter wp_get_object_terms.
@@ -194,13 +189,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return array Array term objects.
 		 */
 		function object_terms( $terms, $object_ids, $taxonomies, $args ) {
-			$this->debug[ 'current post id']                   = $object_ids;
-			$this->debug[ 'taxonomies used for related query'] = $taxonomies;
-			$this->debug[ 'terms found for current post']      = $terms;
+			$this->debug['current post id']                   = $object_ids;
+			$this->debug['taxonomies used for related query'] = $taxonomies;
+			$this->debug['terms found for current post']      = $terms;
 
 			return $terms;
 		}
-
 
 		/**
 		 * Shows widget or shortcode even if no related posts were found.
@@ -216,7 +210,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			// Always show the widget or shortcode.
 			return false;
 		}
-
 
 		/**
 		 * Gets query and function args from km_rpbt_related_posts_by_taxonomy().
@@ -254,8 +247,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			return $pieces;
 		}
 
-
-
 		/**
 		 * Gets the post ids if related posts where found.
 		 *
@@ -279,7 +270,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			return $results;
 		}
 
-
 		/**
 		 * Gets the requested template.
 		 *
@@ -288,10 +278,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return string Template.
 		 */
 		function get_template( $template, $type ) {
-			$this->debug[ 'requested template'] = $template;
+			$this->debug['requested template'] = $template;
 			return $template;
 		}
-
 
 		/**
 		 * Stores the result after display
@@ -306,6 +295,45 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$this->debug = array();
 		}
 
+		/**
+		 * Returns a fancy header for the debug information.
+		 *
+		 * @since  2.3.1
+		 *
+		 * @param string $type Type of debug.
+		 * @return string Fancy header.
+		 */
+		function get_header( $type = '' ) {
+			$type  = ( 'Supports' !== $type ) ? 'Debug ' . $type : $type;
+			$title = 'Related Posts by Taxonomy ' . $type;
+			$title = '**    ' . $title . '    **';
+			$length = strlen( $title );
+			$rows = str_repeat( "*", $length ) . "\n";
+			$rows .= '**' . str_repeat( " ", $length - 4 ) . "**\n";
+			$rows .= $title . "\n";
+			$rows .= '**' . str_repeat( " ", $length - 4 ) . "**\n";
+			$rows .= str_repeat( "*", $length ) . "\n";
+			return $rows;
+		}
+
+		/**
+		 * Returns supported plugin features
+		 *
+		 * @since 2.3.1
+		 *
+		 * @return array Array with supported plugin features.
+		 */
+		function get_supports() {
+			remove_filter( 'related_posts_by_taxonomy_widget_hide_empty',    array( $this, 'hide_empty' ), 99 );
+			remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'hide_empty' ), 99 );
+
+			$supports = $this->plugin->get_plugin_supports();
+			foreach ( $supports as $key => $support ) {
+				$supports[ $key ] = $this->plugin->plugin_supports( $key );
+			}
+
+			return $supports;
+		}
 
 		/**
 		 * Displays the results in the footer
@@ -325,12 +353,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$style .= 'color: #333;background: #f5f5f5;font-family: monospace;font-size: 16px;font-style: normal;font-weight: normal;line-height: 1.5;white-space: pre;overflow:auto;';
 			$style .= 'width:100%;display:block;float:none;clear:both;text-align:left;z-index: 999;position:relative;';
 
-			$fancy_header = "
-*******************************************
-**                                       **
-**    Related Posts by Taxonomy Debug    **
-**                                       **
-*******************************************";
+			echo "<pre style='{$style}'>" . $this->get_header( 'Supports' ) . "\n\n";
+			echo "Plugin Supports \n\n";
+			echo htmlspecialchars( print_r(  $this->get_supports(), true ) );
+			echo "</pre>";
+
 
 			if ( ! empty( $this->results ) ) {
 				echo '<p>';
@@ -340,7 +367,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 					if ( isset( $debug_arr['debug_id'] ) ) {
 						$id = ' id="' . $debug_arr['debug_id'] . '"';
 					}
-					echo "<pre{$id} style='{$style}'>{$fancy_header}\n\n";
+
+					echo "<pre{$id} style='{$style}'>" .  $this->get_header( $debug_arr['type'] ) . "\n\n";
 
 					unset( $debug_arr['debug_id'], $debug_arr['debug_link'] );
 
@@ -357,13 +385,16 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 					// reorder debug array.
 					$debug_arr = array_merge( $_order, $debug_arr );
 
-					if ( $debug_arr['cache'] === 'current post cached' ) {
+					unset( $debug_arr['type'] );
+
+					if ( $this->cache ) {
 						unset( $debug_arr['related post ids found'] );
 						unset( $debug_arr['terms used for related query'] );
 						unset( $debug_arr['terms found for current post'] );
 						unset( $debug_arr['taxonomies used for related query'] );
 						unset( $debug_arr['related posts query'] );
 					} else {
+						unset( $debug_arr['cache'] );
 						unset( $debug_arr['cached post ids'] );
 						unset( $debug_arr['cached terms'] );
 						unset( $debug_arr['cached taxonomies'] );
@@ -388,7 +419,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				}
 				echo '<p>';
 			} else {
-				echo "<p><pre>$fancy_header\n\nNo debug information found</pre></p>";
+				echo '<p><pre>' . $this->get_header() . "\n\nNo widget or shortcode found to debug on this page</pre></p>";
 			}
 		}
 
