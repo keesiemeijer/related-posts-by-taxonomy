@@ -74,6 +74,7 @@ module.exports = function( grunt ) {
 					'!**/package.json',
 					'!**/phpunit.xml',
 					'!**/composer.lock',
+					'!**/package-lock.json',
 					'!**/README.md',
 					'!**/readme.md',
 					'!**/CHANGELOG.md',
