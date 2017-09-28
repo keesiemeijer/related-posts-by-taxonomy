@@ -186,6 +186,8 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	$atts['related']      = (bool) filter_var( $atts['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$atts['link_caption'] = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
 	$atts['link_caption'] = (bool) filter_var( $atts['link_caption'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
+	$atts['public_only']  = (bool) filter_var( $atts['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 
 	return $atts;
 }

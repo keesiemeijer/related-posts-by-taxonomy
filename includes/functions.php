@@ -36,7 +36,11 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	} else {
 
 		// Related and not related terms.
-		$terms = wp_get_object_terms( $post_id, $taxonomies, array( 'fields' => 'ids' ) );
+		$terms = wp_get_object_terms(
+			$post_id, $taxonomies, array(
+				'fields' => 'ids',
+			)
+		);
 
 		if ( is_wp_error( $terms ) || empty( $terms ) ) {
 			return array();
@@ -83,23 +87,34 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	// Where sql (post types and post status).
 	if ( count( $args['post_types'] ) > 1 ) {
-		$where         = get_posts_by_author_sql( 'post' );
+		$where         = get_posts_by_author_sql( 'post', true, null, $args['public_only'] );
 		$post_type_sql = "'" . implode( "', '", $args['post_types'] ) . "'";
 		$where_sql     = preg_replace( "/post_type = 'post'/", "post_type IN ($post_type_sql)", $where );
 	} else {
-		$where_sql = get_posts_by_author_sql( $args['post_types'][0] );
+		$where_sql = get_posts_by_author_sql( $args['post_types'][0], true, null, $args['public_only'] );
 	}
 
 	$order_by_rand = false;
 
 	// Order sql.
 	switch ( strtoupper( (string) $args['order'] ) ) {
-		case 'ASC':  $order_sql = 'ASC'; break;
-		case 'RAND': $order_sql = 'RAND()'; $order_by_rand = true; break;
-		default:     $order_sql = 'DESC'; break;
+		case 'ASC':
+			$order_sql = 'ASC';
+			break;
+		case 'RAND':
+			$order_sql = 'RAND()';
+			$order_by_rand = true;
+			break;
+		default:
+			$order_sql = 'DESC';
+			break;
 	}
 
-	$allowed_fields = array( 'ids' => 'ID', 'names' => 'post_title', 'slugs' => 'post_name' );
+	$allowed_fields = array(
+		'ids' => 'ID',
+		'names' => 'post_title',
+		'slugs' => 'post_name',
+	);
 
 	// Select sql.
 	$fields = strtolower( (string) $args['fields'] );
@@ -150,7 +165,11 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	// Post thumbnail sql.
 	$meta_join_sql = $meta_where_sql = '';
 	if ( $args['post_thumbnail'] ) {
-		$meta_query = array( array( 'key' => '_thumbnail_id' ) );
+		$meta_query = array(
+			array(
+				'key' => '_thumbnail_id',
+			),
+		);
 		$meta = get_meta_sql( $meta_query, 'post', $wpdb->posts, 'ID' );
 		$meta_join_sql = ( isset( $meta['join'] ) && $meta['join'] ) ? $meta['join'] : '';
 		$meta_where_sql = ( isset( $meta['where'] ) && $meta['where'] ) ? $meta['where'] : '';
@@ -235,12 +254,12 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	 */
 	$clauses = (array) apply_filters_ref_array( 'related_posts_by_taxonomy_posts_clauses', array( compact( $pieces ), $post_id, $taxonomies, $args ) );
 
-	$select_sql   = isset( $clauses['select_sql'] )   ? $clauses['select_sql']   : '';
-	$join_sql     = isset( $clauses['join_sql'] )     ? $clauses['join_sql']     : '';
-	$where_sql    = isset( $clauses['where_sql'] )    ? $clauses['where_sql']    : '';
+	$select_sql   = isset( $clauses['select_sql'] ) ? $clauses['select_sql'] : '';
+	$join_sql     = isset( $clauses['join_sql'] ) ? $clauses['join_sql'] : '';
+	$where_sql    = isset( $clauses['where_sql'] ) ? $clauses['where_sql'] : '';
 	$group_by_sql = isset( $clauses['group_by_sql'] ) ? $clauses['group_by_sql'] : '';
 	$order_by_sql = isset( $clauses['order_by_sql'] ) ? $clauses['order_by_sql'] : '';
-	$limit_sql    = isset( $clauses['limit_sql'] )    ? $clauses['limit_sql']    : '';
+	$limit_sql    = isset( $clauses['limit_sql'] ) ? $clauses['limit_sql'] : '';
 
 	if ( ! empty( $group_by_sql ) ) {
 		$group_by_sql = 'GROUP BY ' . $group_by_sql;
@@ -327,11 +346,20 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 function km_rpbt_get_default_args() {
 
 	return array(
-		'post_types' => 'post', 'posts_per_page' => 5, 'order' => 'DESC',
-		'fields' => '', 'limit_posts' => -1, 'limit_year' => '',
-		'limit_month' => '', 'orderby' => 'post_date',
-		'exclude_terms' => '', 'include_terms' => '',  'exclude_posts' => '',
-		'post_thumbnail' => false, 'related' => true,
+		'post_types' => 'post',
+		'posts_per_page' => 5,
+		'order' => 'DESC',
+		'fields' => '',
+		'limit_posts' => -1,
+		'limit_year' => '',
+		'limit_month' => '',
+		'orderby' => 'post_date',
+		'exclude_terms' => '',
+		'include_terms' => '',
+		'exclude_posts' => '',
+		'post_thumbnail' => false,
+		'related' => true,
+		'public_only' => false,
 	);
 }
 
@@ -481,6 +509,7 @@ function km_rpbt_sanitize_args( $args ) {
 	// True for true, 1, "1", "true", "on", "yes". Everything else return false.
 	$args['related']        = (bool) filter_var( $args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$args['post_thumbnail'] = (bool) filter_var( $args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	$args['public_only']    = (bool) filter_var( $args['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 
 	return $args;
 }

@@ -35,17 +35,21 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_km_rpbt_get_shortcode_atts() {
 
-		$expected =  array(
-			'post_id' => '', 'taxonomies' => 'all',
-			'before_shortcode' => '<div class="rpbt_shortcode">', 'after_shortcode' => '</div>',
-			'before_title' => '<h3>', 'after_title' => '</h3>',
+		$expected = array(
+			'post_id' => '',
+			'taxonomies' => 'all',
+			'before_shortcode' => '<div class="rpbt_shortcode">',
+			'after_shortcode' => '</div>',
+			'before_title' => '<h3>',
+			'after_title' => '</h3>',
 			'title' => 'Related Posts',
 			'format' => 'links',
-			'image_size' => 'thumbnail', 'columns' => 3,
-			'caption' => 'post_title', 'link_caption' => false,
+			'image_size' => 'thumbnail',
+			'columns' => 3,
+			'caption' => 'post_title',
+			'link_caption' => false,
 			'type' => 'shortcode',
 		);
-
 
 		// km_rpbt_get_default_args() is also tested in test-functions.php
 		$expected = array_merge( km_rpbt_get_default_args(), $expected );
@@ -63,7 +67,11 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_km_rpbt_validate_shortcode_atts() {
 		// should default to current post post type or default post type post
-		$atts = km_rpbt_validate_shortcode_atts( array( 'post_types' => '' ) );
+		$atts = km_rpbt_validate_shortcode_atts(
+			array(
+				'post_types' => '',
+			)
+		);
 		$this->assertEquals( array( 'post' ), $atts['post_types'] );
 	}
 
@@ -110,21 +118,24 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 	function test_shortcode_post_type() {
 
 		// register custom post type
-		register_post_type( 'cpt', array(
+		register_post_type(
+			'cpt', array(
 				'public'      => true,
 				'has_archive' => true,
 				'taxonomies'  => array( 'post_tag', 'category' ),
 				'labels'      => array(
 					'name' => 'test_cpt',
 				),
-			) );
+			)
+		);
 
 		// create posts for custom post type
 		$create_posts = $this->create_posts_with_terms( 'cpt' );
 		$posts        = $create_posts['posts'];
 
 		// Add a shortcode to post content.
-		wp_update_post( array(
+		wp_update_post(
+			array(
 				'ID'          => $posts[0],
 				'post_content' => '[related_posts_by_tax]',
 			)
@@ -142,7 +153,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		the_content();
 		$content = ob_get_clean();
 
-		$this->assertEquals( array( 'cpt' ), $this->args['post_types']  );
+		$this->assertEquals( array( 'cpt' ), $this->args['post_types'] );
 		$this->args = null;
 	}
 
@@ -160,14 +171,14 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_args' ) );
 
 		do_shortcode( '[related_posts_by_tax]' );
-		$expected =  km_rpbt_get_default_settings( 'shortcode' );
+		$expected = km_rpbt_get_default_settings( 'shortcode' );
 
 		// false if outside the loop
 		$expected['post_id'] = get_the_ID();
 		// array after validation
 		$expected['post_types'] = array( 'post' );
 
-		$this->assertEquals( $expected, $this->args  );
+		$this->assertEquals( $expected, $this->args );
 		$this->args = null;
 	}
 
@@ -183,7 +194,12 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$posts        = $create_posts['posts'];
 
 		// get post ids array and permalinks array
-		$_posts     = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $posts,
+				'order' => 'post__in',
+			)
+		);
 		$ids        = wp_list_pluck( $_posts, 'ID' );
 		$permalinks = array_map( 'get_permalink', $ids );
 
