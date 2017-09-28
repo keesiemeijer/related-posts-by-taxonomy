@@ -34,8 +34,8 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 	$defaults = array(
 		'id'           => $post ? $post->ID : 0,
-		'itemtag'      => $html5 ? 'figure'     : 'dl',
-		'icontag'      => $html5 ? 'div'        : 'dt',
+		'itemtag'      => $html5 ? 'figure' : 'dl',
+		'icontag'      => $html5 ? 'div' : 'dt',
 		'captiontag'   => $html5 ? 'figcaption' : 'dd',
 		'columns'      => 3,
 		'size'         => 'thumbnail',
@@ -105,7 +105,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$columns       = intval( $args['columns'] );
 	$itemwidth     = $columns > 0 ? floor( 100 / $columns ) : 100;
 	$float         = is_rtl() ? 'right' : 'left';
-	$selector      = "gallery-{$instance}";
+	$selector      = "rpbt-related-gallery-{$instance}";
 	$gallery_style = '';
 
 	/**
@@ -185,7 +185,9 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		 */
 		$caption = apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args );
 
-		$describedby = ( trim( $caption ) ) ? array( 'aria-describedby' => "{$selector}-{$related->ID}" ) : '';
+		$describedby = ( trim( $caption ) ) ? array(
+			'aria-describedby' => "{$selector}-{$related->ID}",
+		) : '';
 		$thumbnail   = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $describedby );
 		$permalink   = get_permalink( $related->ID );
 		$title_attr  = esc_attr( $title );
