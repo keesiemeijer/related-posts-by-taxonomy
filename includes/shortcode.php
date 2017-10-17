@@ -188,6 +188,8 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	$atts['link_caption'] = (bool) filter_var( $atts['link_caption'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
 	$atts['public_only']  = (bool) filter_var( $atts['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
+	$atts['include_self']  = (bool) filter_var( $atts['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 
 	return $atts;
 }

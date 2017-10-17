@@ -1,6 +1,8 @@
 <?php
 /**
  * Tests for the shortcode in shortcode.php
+ *
+ * @group Shortcode
  */
 class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 
@@ -246,7 +248,7 @@ EOF;
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
-	function test_shortcode_related_value() {
+	function test_shortcode_boolean_values() {
 
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
@@ -273,6 +275,30 @@ EOF;
 
 		do_shortcode( '[related_posts_by_tax related="false" post_id="' . $posts[0] . '"]' );
 		$this->assertFalse( $this->args['related'] );
+		$this->args = null;
+
+		do_shortcode( '[related_posts_by_tax public_only="true" post_id="' . $posts[0] . '"]' );
+		$this->assertTrue( $this->args['public_only'] );
+		$this->args = null;
+
+		do_shortcode( '[related_posts_by_tax include_self="true" post_id="' . $posts[0] . '"]' );
+		$this->assertTrue( $this->args['include_self'] );
+		$this->args = null;
+
+		do_shortcode( '[related_posts_by_tax public_only="hohoho" post_id="' . $posts[0] . '"]' );
+		$this->assertFalse( $this->args['public_only'] );
+		$this->args = null;
+
+		do_shortcode( '[related_posts_by_tax include_self="hohoho" post_id="' . $posts[0] . '"]' );
+		$this->assertFalse( $this->args['include_self'] );
+		$this->args = null;
+
+		do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '"]' );
+		$this->assertFalse( $this->args['public_only'] );
+		$this->args = null;
+
+		do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '"]' );
+		$this->assertFalse( $this->args['include_self'] );
 		$this->args = null;
 	}
 

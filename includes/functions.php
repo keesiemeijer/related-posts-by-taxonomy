@@ -70,16 +70,17 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		$term_ids_sql = ( isset( $terms[0] ) ) ? 'tt.term_id = ' . $terms[0] : 'tt.term_id = 0';
 	}
 
-	// Add current post ID to exclude.
-	$args['exclude_posts'][] = $post_id;
-	$args['exclude_posts']   = array_unique( $args['exclude_posts'] );
+	if ( ! $args['include_self'] ) {
+		// Add current post ID to exclude.
+		$args['exclude_posts'][] = $post_id;
+	}
+	$args['exclude_posts'] = array_unique( $args['exclude_posts'] );
 
-	// Post ids sql.
-	$post_ids_sql = "AND $wpdb->posts.ID";
-	if ( count( $args['exclude_posts'] ) > 1 ) {
+	$post_ids_sql = '';
+	if ( $args['exclude_posts'] ) {
+		// Post ids sql.
+		$post_ids_sql = "AND $wpdb->posts.ID";
 		$post_ids_sql .= ' NOT IN (' . implode( ', ', $args['exclude_posts'] ) . ')';
-	} else {
-		$post_ids_sql .= " != $post_id";
 	}
 
 	// Default to post type post if no post types are found.
@@ -360,6 +361,7 @@ function km_rpbt_get_default_args() {
 		'post_thumbnail' => false,
 		'related' => true,
 		'public_only' => false,
+		'include_self' => false,
 	);
 }
 
@@ -510,6 +512,7 @@ function km_rpbt_sanitize_args( $args ) {
 	$args['related']        = (bool) filter_var( $args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$args['post_thumbnail'] = (bool) filter_var( $args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$args['public_only']    = (bool) filter_var( $args['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	$args['include_self']   = (bool) filter_var( $args['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 
 	return $args;
 }
