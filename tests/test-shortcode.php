@@ -19,6 +19,8 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', '__return_true' );
 		remove_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_args' ) );
 		remove_filter( 'related_posts_by_taxonomy_shortcode', '__return_false' );
+		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_args' ) );
+		remove_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'override_related_posts' ), 10, 2 );
 
 		parent::tearDown();
 	}
@@ -113,6 +115,51 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertContains( '<p>No related posts found</p>', $shortcode );
 	}
 
+
+	/**
+	 * Test the related posts retrieved by the shortcode
+	 *
+	 *
+	 */
+	function test_shortcode_posts() {
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+		$post_id      = ' post_id="' . $posts[0] . '"';
+		$taxonomies   = ' taxonomies="category,post_tag"';
+
+		add_filter( 'related_posts_by_taxonomy', array( $this, 'return_args' ) );
+		$shortcode = do_shortcode( "[related_posts_by_tax{$post_id}{$taxonomies}]" );
+
+		$post_ids = wp_list_pluck( $this->args, 'ID' );
+		$this->assertEquals( array( $posts[1], $posts[2], $posts[3] ), $post_ids );
+		$this->args = null;
+
+
+		// Create custom post type posts.
+		$this->factory->post->create_many( 5,
+			array(
+				'post_type' => 'cpt',
+			)
+		);
+
+		$cpt_posts = get_posts( 'post_type=cpt&fields=ids' );
+		$cpt_links = array_map( 'get_permalink', $cpt_posts );
+
+		// add a filter to override the related posts.
+		add_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'override_related_posts' ), 10, 2 );
+
+		// Use the same shortcode as before (post_type 'post' by default).
+		$shortcode = do_shortcode( "[related_posts_by_tax{$post_id}{$taxonomies}]" );
+
+		$count = 0;
+		foreach ( $cpt_links as $link ) {
+			if ( false !== strpos( $shortcode, $link ) ) {
+				$count++;
+			}
+		}
+
+		$this->assertTrue( ( 5 === $count ) );
+	}
 
 	/**
 	 * Test if the shortcode uses the post type from the current post.
@@ -342,6 +389,10 @@ EOF;
 	function return_args( $args ) {
 		$this->args = $args;
 		return $args;
+	}
+
+	function override_related_posts( $related_posts, $args ) {
+		return get_posts( 'post_type=cpt' );
 	}
 
 }

@@ -130,7 +130,49 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		/* Not filterable */
 		$i['type'] = 'widget';
 
-		$rpbt_args  = $function_args = $i;
+		$related_posts = $this->get_related_posts( $i );
+
+		/*
+		 * Whether to hide the widget if no related posts are found.
+		 * Set by the related_posts_by_taxonomy_widget_hide_empty filter.
+		 * Default true.
+		 */
+		$hide_empty = (bool) $this->plugin->plugin_supports( 'widget_hide_empty' );
+
+		if ( ! $hide_empty || ! empty( $related_posts ) ) {
+			$this->widget_output( $related_posts, $i, $rpbt_widget_args );
+		}
+
+		/**
+		 * Fires after the related posts are displayed
+		 *
+		 * @param string Display type, widget or shortcode.
+		 */
+		do_action( 'related_posts_by_taxonomy_after_display', 'widget' );
+	}
+
+	/**
+	 * Get the related posts used by the widget.
+	 *
+	 * @since 2.3.2
+	 * @param array $rpbt_args Widget arguments.
+	 * @return array Array with related post objects.
+	 */
+	function get_related_posts( $rpbt_args ) {
+
+		/**
+		 * Filter whether to use your own related posts.
+		 *
+		 * @since  2.3.2
+		 * @param array Array with shortcode attributes.
+		 */
+		$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', '', $rpbt_args );
+
+		if ( $related_posts && is_array( $related_posts ) ) {
+			return $related_posts;
+		}
+
+		$function_args = $rpbt_args;
 
 		/* restricted arguments */
 		unset( $function_args['fields'], $function_args['post_id'], $function_args['taxonomies'] );
@@ -144,25 +186,8 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
 		}
 
-		/*
-		 * Whether to hide the widget if no related posts are found.
-		 * Set by the related_posts_by_taxonomy_widget_hide_empty filter.
-		 * Default true.
-		 */
-		$hide_empty = (bool) $this->plugin->plugin_supports( 'widget_hide_empty' );
-
-		if ( ! $hide_empty || ! empty( $related_posts ) ) {
-			$this->widget_output( $related_posts, $rpbt_args, $rpbt_widget_args );
-		}
-
-		/**
-		 * Fires after the related posts are displayed
-		 *
-		 * @param string Display type, widget or shortcode.
-		 */
-		do_action( 'related_posts_by_taxonomy_after_display', 'widget' );
+		return $related_posts;
 	}
-
 
 	/**
 	 * Widget output

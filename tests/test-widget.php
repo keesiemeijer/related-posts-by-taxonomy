@@ -16,6 +16,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_bool' ) );
 		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', '__return_false' );
 		remove_filter( 'related_posts_by_taxonomy_widget', '__return_false' );
+		remove_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'override_related_posts' ), 10, 2 );
 		parent::tearDown();
 	}
 
@@ -74,6 +75,73 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
 		$this->assertTrue( $this->boolean  );
 		$this->boolean = null;
+	}
+
+	/**
+	 * Test if the widget_hide_empty filter is set to true (by default).
+	 *
+	 *  @group fail
+	 */
+	function test_widget_posts() {
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		//add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_bool' ) );
+		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+		$args   = array(
+			'before_widget' => '<section>',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2>',
+			'after_title'   => '</h2>',
+		);
+
+		// run the widget
+		ob_start();
+		$instance = array( 'post_id' => $posts[0] );
+		$widget->_set( 2 );
+		$widget->widget( $args, $instance );
+		$output = ob_get_clean();
+
+		$links = array_map( 'get_permalink', $posts );
+
+		$count = 0;
+		foreach ( $links as $link ) {
+			if ( false !== strpos( $output, $link ) ) {
+				$count++;
+			}
+		}
+
+		// Found 3 related posts.
+		$this->assertTrue( ( 3 === $count ) );
+
+		// Create custom post type posts.
+		$this->factory->post->create_many( 5,
+			array(
+				'post_type' => 'cpt',
+			)
+		);
+
+		$cpt_posts = get_posts( 'post_type=cpt&fields=ids' );
+		$cpt_links = array_map( 'get_permalink', $cpt_posts );
+
+		// Add a filter to override the related posts.
+		add_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'override_related_posts' ), 10, 2 );
+
+		// Run the same widget with the same arguments as before.
+		ob_start();
+		$instance = array( 'post_id' => $posts[0] );
+		$widget->_set( 2 );
+		$widget->widget( $args, $instance );
+		$cpt_output = ob_get_clean();
+
+		$count = 0;
+		foreach ( $cpt_links as $cpt_link ) {
+			if ( false !== strpos( $cpt_output, $cpt_link ) ) {
+				$count++;
+			}
+		}
+		// Found 5 custom post type posts.
+		$this->assertTrue( ( 5 === $count ) );
 	}
 
 	/**
@@ -198,6 +266,10 @@ EOF;
 
 	function return_settings( $settings ) {
 		return $this->settings = $settings;
+	}
+
+	function override_related_posts( $related_posts, $args ) {
+		return get_posts( 'post_type=cpt' );
 	}
 
 }
