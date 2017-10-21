@@ -69,6 +69,8 @@ Attributes for the shortcode are:
 * `limit_year`
 * `limit_month`
 * `related`
+* `public_only`
+* `include_self`
 
 Example to show 10 related posts instead of the default 5.
 <pre><code>[related_posts_by_tax posts_per_page="10"]</code></pre>
