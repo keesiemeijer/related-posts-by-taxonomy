@@ -1,7 +1,7 @@
 # [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Build Status](https://travis-ci.org/keesiemeijer/related-posts-by-taxonomy.svg?branch=develop)](http://travis-ci.org/keesiemeijer/related-posts-by-taxonomy) #
 
-Version:           2.3.2-alpha  
-Requires at least: 4.0  
+Version:           2.3.2  
+Requires at least: 4.1  
 Tested up to:      4.8  
 
 ### Welcome to the GitHub repository for this plugin ###
@@ -61,8 +61,8 @@ This is a developer's portal for Related Posts by Taxonomy and should _not_ be u
 ### Translations ###
 Dutch  
 French (by [Annie Stasse](http://www.artisanathai.fr/))  
-Spanish (by [msoravilla](http://www.ludobooks.com/))  
-Catalan (by [msoravilla](http://www.ludobooks.com/))  
+Spanish (by [Ludobooks – Cuentos personalizados](http://www.ludobooks.com))  
+Catalan (by [Ludobooks – Cuentos personalizados](http://www.ludobooks.com))  
 Polish (by [koda0601](http://rekolekcje.net.pl/))  
 
 ## Contributions ##
