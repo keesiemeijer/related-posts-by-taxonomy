@@ -25,22 +25,22 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
 		ob_start();
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post )  );
+		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 		$gallery = ob_get_clean();
 
 		$expected = <<<EOF
-<div id='gallery-1' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+<div id='rpbt-related-gallery-1' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
-<dd class='wp-caption-text gallery-caption' id='gallery-1-{$args['id']}'>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-1-{$args['id']}'>
 {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
 EOF;
 
-		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery )  );
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
 	}
 
 
@@ -56,40 +56,40 @@ EOF;
 
 		add_filter( 'use_default_gallery_style', '__return_true', 99 );
 		ob_start();
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post )  );
+		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 		$gallery = ob_get_clean();
 
 		$expected = <<<EOF
 <style type='text/css'>
-#gallery-2 {
+#rpbt-related-gallery-2 {
 margin: auto;
 }
-#gallery-2 .gallery-item {
+#rpbt-related-gallery-2 .gallery-item {
 float: left;
 margin-top: 10px;
 text-align: center;
 width: 33%;
 }
-#gallery-2 img {
+#rpbt-related-gallery-2 img {
 border: 2px solid #cfcfcf;
 }
-#gallery-2 .gallery-caption {
+#rpbt-related-gallery-2 .gallery-caption {
 margin-left: 0;
 }
 /* see gallery_shortcode() in wp-includes/media.php */
 </style>
-<div id='gallery-2' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+<div id='rpbt-related-gallery-2' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
-<dd class='wp-caption-text gallery-caption' id='gallery-2-{$args['id']}'>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-2-{$args['id']}'>
 {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
 EOF;
 
-		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery )  );
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
 	}
 
 
@@ -104,14 +104,13 @@ EOF;
 		extract( $gallery_args );
 		$args['caption'] = '';
 
-		//
-		add_filter( 'use_default_gallery_style', '__return_false', 99 );
+				add_filter( 'use_default_gallery_style', '__return_false', 99 );
 		ob_start();
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post )  );
+		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 		$gallery = ob_get_clean();
 
 		$expected = <<<EOF
-<div id='gallery-3' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+<div id='rpbt-related-gallery-3' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt></dl>
@@ -119,7 +118,7 @@ EOF;
 </div>
 EOF;
 
-		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery )  );
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
 	}
 
 
@@ -137,22 +136,22 @@ EOF;
 
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
 		ob_start();
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post )  );
+		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 		$gallery = ob_get_clean();
 
 		$expected = <<<EOF
-<div id='gallery-4' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+<div id='rpbt-related-gallery-4' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
-<dd class='wp-caption-text gallery-caption' id='gallery-4-{$args['id']}'>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-4-{$args['id']}'>
 <a href='{$permalink}'>{$related_post->post_title}</a>
 </dd></dl>
 <br style='clear: both' />
 </div>
 EOF;
 
-		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery )  );
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
 	}
 
 
@@ -165,12 +164,22 @@ EOF;
 
 		$ids = array();
 		foreach ( range( 1, 3 ) as $i ) {
-			$attachment_id = $this->factory->attachment->create_object( "image$i.jpg", 0, array(
+			$attachment_id = $this->factory->attachment->create_object(
+				"image$i.jpg", 0, array(
 					'post_mime_type' => 'image/jpeg',
 					'post_type' => 'attachment',
 					'post_excerpt' => "excerpt $i",
-				) );
-			$metadata = array_merge( array( "file" => "image$i.jpg" ), array( 'width' => 100, 'height' => 100, 'sizes' => '' ) );
+				)
+			);
+			$metadata = array_merge(
+				array(
+					'file' => "image$i.jpg",
+				), array(
+					'width' => 100,
+					'height' => 100,
+					'sizes' => '',
+				)
+			);
 			wp_update_attachment_metadata( $attachment_id, $metadata );
 			$ids[] = $attachment_id;
 
@@ -178,8 +187,7 @@ EOF;
 
 		$ids_str = implode( ',', $ids );
 
-
-		$blob =<<<BLOB
+		$blob = <<<BLOB
 [gallery ids="$ids_str"]
 BLOB;
 
@@ -228,7 +236,7 @@ BLOB;
 EOF;
 		$expected = preg_replace( '/<img .*?\/>/', '', $expected );
 
-		$this->assertEquals( strip_ws( $expected ), strip_ws( $content )  );
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $content ) );
 	}
 
 

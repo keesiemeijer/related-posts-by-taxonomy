@@ -64,19 +64,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	/* Not filterable */
 	$rpbt_args['type'] = 'shortcode';
 
-	$function_args = $rpbt_args;
-
-	/* restricted arguments */
-	unset( $function_args['post_id'], $function_args['taxonomies'], $function_args['fields'] );
-
-	$cache = $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
-
-	if ( $cache && ( isset( $rpbt_args['cache'] ) && $rpbt_args['cache'] ) ) {
-		$related_posts = $plugin->cache->get_related_posts( $rpbt_args );
-	} else {
-		/* get related posts */
-		$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
-	}
+	$related_posts = km_rpbt_shortcode_get_related_posts( $rpbt_args, $plugin->cache );
 
 	/*
 	 * Whether to hide the shortcode if no related posts are found.
@@ -102,6 +90,42 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	return $shortcode;
 } // end km_rpbt_related_posts_by_taxonomy_shortcode()
 
+/**
+ * Get the related posts used by the shortcode.
+ *
+ * @since 2.3.2
+ * @param array  $rpbt_args Widget arguments.
+ * @param object $cache_obj This plugins cache object. Default null.
+ * @return array Array with related post objects.
+ */
+function km_rpbt_shortcode_get_related_posts( $rpbt_args, $cache_obj = null ) {
+
+	/**
+	 * Filter whether to use your own related posts.
+	 *
+	 * @param array Array with shortcode attributes.
+	 */
+	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', '', $rpbt_args );
+
+	if ( $related_posts && is_array( $related_posts ) ) {
+		return $related_posts;
+	}
+
+	$function_args = $rpbt_args;
+
+	/* restricted arguments */
+	unset( $function_args['post_id'], $function_args['taxonomies'], $function_args['fields'] );
+
+	$cache = $cache_obj instanceof Related_Posts_By_Taxonomy_Cache;
+	if ( $cache && ( isset( $rpbt_args['cache'] ) && $rpbt_args['cache'] ) ) {
+		$related_posts = $cache_obj->get_related_posts( $rpbt_args );
+	} else {
+		/* get related posts */
+		$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
+	}
+
+	return $related_posts;
+}
 
 /**
  * Returns shortcode output.
@@ -150,7 +174,6 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 	return trim( $shortcode );
 }
 
-
 /**
  * Validate shortcode attributes.
  *
@@ -186,6 +209,10 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	$atts['related']      = (bool) filter_var( $atts['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$atts['link_caption'] = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
 	$atts['link_caption'] = (bool) filter_var( $atts['link_caption'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
+	$atts['public_only']  = (bool) filter_var( $atts['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
+	$atts['include_self']  = (bool) filter_var( $atts['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 
 	return $atts;
 }
