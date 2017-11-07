@@ -121,6 +121,9 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	$fields = strtolower( (string) $args['fields'] );
 	if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {
 		$select_sql = "$wpdb->posts." . $allowed_fields[ $fields ];
+		if ( 'ids' !== $fields ) {
+			$select_sql .= ", $wpdb->posts.ID";
+		}
 	} else {
 		// Not an allowed field - return full post objects.
 		$select_sql = "$wpdb->posts.*";
@@ -307,6 +310,21 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 		$results = array_values( $results );
 
+		if ( $args['include_self'] && ! in_array( $post_id, $args['exclude_posts'] ) ) {
+			$search = wp_list_pluck( $results, 'ID' );
+
+			if ( in_array( $post_id, $search ) ) {
+				if ( $post_id !== $search[0] ) {
+					// Inclusive post is not at the top of the results.
+					$inclusive_key = array_search( $post_id, $search );
+					$inclusive_post = $results[ $inclusive_key ];
+					unset( $results[ $inclusive_key ] );
+					array_unshift( $results , $inclusive_post );
+					$results = array_values( $results );
+				}
+			}
+		}
+
 		if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {
 			$results = wp_list_pluck( $results, $allowed_fields[ $fields ] );
 		}
@@ -382,7 +400,6 @@ function km_rpbt_related_posts_by_taxonomy_cmp( $item1, $item2 ) {
 		return $item1->score[1] < $item2->score[1] ? -1 : 1;
 	}
 }
-
 
 /**
  * Returns array with validated post types.

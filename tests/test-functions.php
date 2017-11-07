@@ -650,10 +650,8 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( $posts[1], $posts[0], $posts[2] ), $rel_post3 );
 	}
 
-		/**
+	/**
 	 * test related posts for post type post
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_include_self() {
 		$this->setup_posts();
@@ -669,6 +667,10 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 		// test post 0
 		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
 		$this->assertEquals( array( $posts[0], $posts[2], $posts[1], $posts[3] ), $rel_post0 );
+
+		// test post with post date prior then inclusive post
+		$rel_post1 = km_rpbt_related_posts_by_taxonomy( $posts[1], $taxonomies, $args );
+		$this->assertEquals( array( $posts[1], $posts[0], $posts[2], $posts[3] ), $rel_post1 );
 	}
 
 }
