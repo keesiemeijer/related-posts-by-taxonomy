@@ -157,6 +157,8 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 	$image_size = $rpbt_args['image_size']; // deprecated in version 0.3.
 	$columns    = absint( $rpbt_args['columns'] ); // deprecated in version 0.3.
 
+	$related_posts = km_rpbt_add_post_classes( $related_posts, $rpbt_args );
+
 	ob_start();
 	require $template;
 	$output = ob_get_clean();

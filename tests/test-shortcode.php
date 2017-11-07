@@ -40,19 +40,20 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 	function test_km_rpbt_get_shortcode_atts() {
 
 		$expected = array(
-			'post_id' => '',
-			'taxonomies' => 'all',
+			'post_id'          => '',
+			'taxonomies'       => 'all',
 			'before_shortcode' => '<div class="rpbt_shortcode">',
-			'after_shortcode' => '</div>',
-			'before_title' => '<h3>',
-			'after_title' => '</h3>',
-			'title' => 'Related Posts',
-			'format' => 'links',
-			'image_size' => 'thumbnail',
-			'columns' => 3,
-			'caption' => 'post_title',
-			'link_caption' => false,
-			'type' => 'shortcode',
+			'after_shortcode'  => '</div>',
+			'before_title'     => '<h3>',
+			'after_title'      => '</h3>',
+			'title'            => 'Related Posts',
+			'format'           => 'links',
+			'image_size'       => 'thumbnail',
+			'columns'          => 3,
+			'caption'          => 'post_title',
+			'post_class'       => '',
+			'link_caption'     => false,
+			'type'             => 'shortcode',
 		);
 
 		// km_rpbt_get_default_args() is also tested in test-functions.php

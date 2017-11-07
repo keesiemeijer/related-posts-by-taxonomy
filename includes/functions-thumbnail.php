@@ -218,12 +218,9 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		 * @param object $related Related post object
 		 * @param array  $args    Function arguments.
 		 */
-		$itemclass = apply_filters( 'related_posts_by_taxonomy_gallery_item_class', 'gallery-item', $related, $args );
-		$itemclass = trim( preg_replace( '/\s+/', ' ', (string) $itemclass ) );
-		$itemclass = array_map( 'sanitize_html_class', explode( ' ', $itemclass ) );
-		$itemclass = implode( ' ', $itemclass );
-
-		$image_meta  = wp_get_attachment_metadata( $thumbnail_id );
+		$itemclass  = apply_filters( 'related_posts_by_taxonomy_gallery_item_class', 'gallery-item', $related, $args );
+		$itemclass  = km_rpbt_get_post_classes( $related, $itemclass );
+		$image_meta = wp_get_attachment_metadata( $thumbnail_id );
 
 		$orientation = '';
 		if ( isset( $image_meta['height'], $image_meta['width'] ) ) {

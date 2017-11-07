@@ -50,6 +50,9 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		// Deprecated functions.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/deprecated.php';
 
+		// Functions used in the templates to add classes to the related posts.
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/post-classes.php';
+
 		// The widget.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/widget.php';
 

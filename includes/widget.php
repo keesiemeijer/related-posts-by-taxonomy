@@ -220,6 +220,8 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			echo $rpbt_widget_args['before_title'] . $rpbt_args['title'] . $rpbt_widget_args['after_title'];
 		}
 
+		$related_posts = km_rpbt_add_post_classes( $related_posts, $rpbt_args );
+
 		global $post; // Used for setup_postdata() in templates.
 		require $template;
 		wp_reset_postdata(); // Clean up global $post variable.

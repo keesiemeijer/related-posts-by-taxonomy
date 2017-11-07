@@ -15,8 +15,6 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test output from gallery.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_no_gallery_style() {
 
@@ -104,7 +102,7 @@ EOF;
 		extract( $gallery_args );
 		$args['caption'] = '';
 
-				add_filter( 'use_default_gallery_style', '__return_false', 99 );
+		add_filter( 'use_default_gallery_style', '__return_false', 99 );
 		ob_start();
 		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 		$gallery = ob_get_clean();
@@ -238,38 +236,4 @@ EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $content ) );
 	}
-
-
-	/**
-	 * Sets up posts for the gallery
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts
-	 */
-	function setup_gallery() {
-
-		$posts        = $this->create_posts();
-		$related_post = get_post( $posts[0] );
-		$permalink    = get_permalink( $related_post->ID );
-
-		// Adds a fake image <img>, otherwhise the function will return nothing.
-		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
-
-		$args = array(
-			'id'         => $related_post->ID,
-			'itemtag'    => 'dl',
-			'icontag'    => 'dt',
-			'captiontag' => 'dd',
-		);
-
-		return compact( 'related_post', 'permalink', 'args' );
-	}
-
-
-	/**
-	 * Adds a fake image for testing.
-	 */
-	function add_image( $image, $attr, $related, $args ) {
-		return "<a href='{$attr['permalink']}' title='{$attr['title_attr']}'><img></a>";
-	}
-
 }

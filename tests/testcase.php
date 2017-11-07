@@ -14,9 +14,9 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 	/**
 	 * Creates 5 posts and assigns terms from two taxonomies.
 	 *
-	 * @param string  $post_type Post type.
-	 * @param string  $tax1      First taxonomy name.
-	 * @param string  $tax2      Second taxonomy name
+	 * @param string $post_type Post type.
+	 * @param string $tax1      First taxonomy name.
+	 * @param string $tax2      Second taxonomy name
 	 * @return array             Array with post ids and term ids from both taxonomies
 	 */
 	function create_posts_with_terms( $post_type = 'post', $tax1 = 'post_tag', $tax2 = 'category' ) {
@@ -76,8 +76,8 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 	/**
 	 * Assings terms to posts.
 	 *
-	 * @param array   $posts    Array with 5 post ids.
-	 * @param string  $taxonomy Taxonomy name.
+	 * @param array  $posts    Array with 5 post ids.
+	 * @param string $taxonomy Taxonomy name.
 	 * @return array            Array with created term ids.
 	 */
 	function assign_taxonomy_terms( $posts, $taxonomy, $schema = 1 ) {
@@ -113,7 +113,7 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		}
 
 		foreach ( $post_terms as $key => $terms ) {
-			if ( !empty( $terms ) ) {
+			if ( ! empty( $terms ) ) {
 				wp_set_post_terms ( $posts[ $key ], $terms, $taxonomy );
 			}
 		}
@@ -135,7 +135,7 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		add_theme_support( 'post-thumbnails' );
 
 		// create attachment
-		$filename = ( DIR_TESTDATA.'/images/test-image.jpg' );
+		$filename = ( DIR_TESTDATA . '/images/test-image.jpg' );
 		$contents = file_get_contents( $filename );
 		$upload = wp_upload_bits( basename( $filename ), null, $contents );
 		$this->assertTrue( empty( $upload['error'] ) );
@@ -148,6 +148,39 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		);
 
 		return wp_insert_attachment( $attachment, $upload['file'] );
+	}
+
+	/**
+	 * Sets up posts for the gallery
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts
+	 */
+	function setup_gallery() {
+		$posts        = $this->create_posts();
+		$related_post = get_post( $posts[0] );
+		$related_post = km_rpbt_add_post_classes( array( $related_post ) );
+		$related_post = $related_post[0];
+		$permalink    = get_permalink( $related_post->ID );
+
+		// Adds a fake image <img>, otherwhise the function will return nothing.
+		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
+
+		$args = array(
+			'id'         => $related_post->ID,
+			'itemtag'    => 'dl',
+			'icontag'    => 'dt',
+			'captiontag' => 'dd',
+		);
+
+		return compact( 'related_post', 'permalink', 'args' );
+	}
+
+
+	/**
+	 * Adds a fake image for testing.
+	 */
+	function add_image( $image, $attr, $related, $args ) {
+		return "<a href='{$attr['permalink']}' title='{$attr['title_attr']}'><img></a>";
 	}
 
 }
