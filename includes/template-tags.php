@@ -64,7 +64,7 @@ function km_rpbt_sanitize_classes( $classes ) {
 }
 
 /**
- * Add classes to (related) post objects.
+ * Add classes to array of (related) post objects.
  *
  * @since  2.4.0
  *
@@ -96,16 +96,59 @@ function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
 		 *
 		 * @since 2.4.0
 		 *
-		 * @param array $classes Array with post classes.
-		 * @param int   $post_id Current post id.
-		 * @param int   $index   Index position of related post. Starts at 0.
-		 * @param array $args    Widget or shortcode arguments.
+		 * @param array  $classes Array with post classes.
+		 * @param object $post    Current related post object.
+		 * @param int    $index   Index position of related post. Starts at 0.
+		 * @param array  $args    Widget or shortcode arguments.
 		 */
-		$classes = apply_filters( 'related_posts_by_taxonomy_post_class', $classes, $args, $index );
+		$classes = apply_filters( 'related_posts_by_taxonomy_post_class', $classes, $post, $args, $index );
 		$classes = km_rpbt_sanitize_classes( implode( ' ', $classes ) );
 
 		$related_posts[ $index ]->rpbt_post_class = $classes;
 	}
 
 	return $related_posts;
+}
+
+/**
+ * Display of the related post link.
+ *
+ * @since 2.4.0
+ *
+ * @param object $post Post object.
+ * @param bool   $title_attr Whether to use a title attribute in the link. Default false.
+ */
+function km_rpbt_post_title_link( $post, $title_attr = false ) {
+	echo km_rpbt_get_related_post_title_link( $post, $title_attr );
+}
+
+/**
+ * Get the related $post link.
+ *
+ * @since 2.4.0
+ *
+ * @param object $post       Post object.
+ * @param bool   $title_attr Whether to use a title attribute in the link. Default false.
+ * @return string Related post link HTML.
+ */
+function km_rpbt_get_related_post_title_link( $post, $title_attr = false ) {
+	$link = '';
+	$title = get_the_title( $post );
+
+	if ( ! $title ) {
+		$title = get_the_ID();
+	}
+
+	$title_attr = '';
+	if ( $title_attr ) {
+		$title_attr = ' title="' . esc_attr( $title ) . '"';
+	}
+
+	$permalink = esc_url( apply_filters( 'the_permalink', get_permalink( $post ), $post ) );
+
+	if ( $permalink && $title ) {
+		$link = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . '</a>';
+	}
+
+	return apply_filters( 'related_posts_by_taxonomy_post_link', $link, $post, compact( 'title', 'permalink' ) );
 }
