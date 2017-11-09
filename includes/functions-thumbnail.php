@@ -150,14 +150,14 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 	foreach ( (array) $related_posts as $related ) {
 
-		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
 		$caption       = '';
+		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
 		$title         = apply_filters( 'the_title', $related->post_title, $related->ID );
 
 		if ( 'post_title' === $args['caption'] ) {
 			$caption = $title;
 			if ( (bool) $args['link_caption'] ) {
-				$caption = "<a href='" . get_permalink( $related->ID ) . "'>" . $caption . '</a>';
+				$caption = km_rpbt_get_related_post_title_link( $related );
 			}
 		} elseif ( 'post_excerpt' === $args['caption'] ) {
 			global $post;

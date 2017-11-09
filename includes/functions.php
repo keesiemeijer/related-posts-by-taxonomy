@@ -290,26 +290,22 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	if ( $results ) {
 
+		/* Order the related posts */
 		if ( ! $order_by_rand && $args['related'] ) {
 
-			/* add (termcount) score and key to results */
+			/* Add the (termcount) score and key to results */
 			for ( $i = 0; $i < count( $results ); $i++ ) {
 				$results[ $i ]->score = array( $results[ $i ]->termcount, $i );
 			}
 
-			/* order related posts */
+			/* Order the related posts */
 			uasort( $results, 'km_rpbt_related_posts_by_taxonomy_cmp' );
-
-			/* add termcount to args so we can use it later */
-			$termcount = wp_list_pluck( array_values( $results ), 'score' );
-			foreach ( $termcount as $key => $count ) {
-				$termcount[ $key ] = $count[0];
-			}
-			$args['termcount'] = $termcount;
+			$args['termcount'] = array();
 		}
 
 		$results = array_values( $results );
 
+		/* Move include_self post to the top of the stack */
 		if ( $args['include_self'] && ! in_array( $post_id, $args['exclude_posts'] ) ) {
 			$search = wp_list_pluck( $results, 'ID' );
 
@@ -325,16 +321,23 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 			}
 		}
 
-		if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {
-			$results = wp_list_pluck( $results, $allowed_fields[ $fields ] );
-		}
-
+		/* Get the number of related posts */
 		if ( -1 !== (int) $args['posts_per_page'] ) {
 			$posts_per_page = absint( $args['posts_per_page'] );
 			$posts_per_page = ( $posts_per_page ) ? $posts_per_page : 5;
 			$results = array_slice( $results, 0, $posts_per_page );
-			if ( isset( $args['termcount'] ) && $args['termcount'] ) {
-				$args['termcount'] = array_slice( $args['termcount'], 0, $posts_per_page );
+		}
+
+		if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {
+			/* Get the field used in the query */
+			$results = wp_list_pluck( $results, $allowed_fields[ $fields ] );
+		} else {
+			for ( $i = 0; $i < count( $results ); $i++ ) {
+				$results[ $i ]->rpbt_current    = $post_id;
+				$results[ $i ]->rpbt_post_class = '';
+				if ( isset( $results[ $i ]->termcount ) ) {
+					$args['termcount'][] = $results[ $i ]->termcount;
+				}
 			}
 		}
 	} else {

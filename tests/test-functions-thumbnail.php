@@ -123,7 +123,7 @@ EOF;
 	/**
 	 * Test linked caption.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 * @group sails
 	 */
 	function test_shortcode_with_linked_caption() {
 
@@ -143,7 +143,7 @@ EOF;
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-4-{$args['id']}'>
-<a href='{$permalink}'>{$related_post->post_title}</a>
+<a href="{$permalink}">{$related_post->post_title}</a>
 </dd></dl>
 <br style='clear: both' />
 </div>

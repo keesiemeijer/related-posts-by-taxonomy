@@ -6,7 +6,7 @@ class KM_RPBT_Post_Class_Tests extends KM_RPBT_UnitTestCase {
 
 	function tearDown() {
 		remove_filter( 'use_default_gallery_style', '__return_false', 99 );
-		remove_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 3 );
+		remove_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 4 );
 	}
 
 	/**
@@ -34,9 +34,9 @@ class KM_RPBT_Post_Class_Tests extends KM_RPBT_UnitTestCase {
 <div class="rpbt_shortcode">
 <h3>Related Posts</h3>
 <ul>
-<li class="someclass"><a href="{$permalinks[1]}" title="{$_posts[1]->post_title}">{$_posts[1]->post_title}</a></li>
-<li class="someclass"><a href="{$permalinks[2]}" title="{$_posts[2]->post_title}">{$_posts[2]->post_title}</a></li>
-<li class="someclass"><a href="{$permalinks[3]}" title="{$_posts[3]->post_title}">{$_posts[3]->post_title}</a></li>
+<li class="someclass"><a href="{$permalinks[1]}">{$_posts[1]->post_title}</a></li>
+<li class="someclass"><a href="{$permalinks[2]}">{$_posts[2]->post_title}</a></li>
+<li class="someclass"><a href="{$permalinks[3]}">{$_posts[3]->post_title}</a></li>
 </ul>
 </div>
 EOF;
@@ -52,7 +52,7 @@ EOF;
 	 * Test output from gallery with post class added by a filter.
 	 */
 	function test_shortcode_no_gallery_style_post_class() {
-		add_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 3 );
+		add_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 4 );
 		$gallery_args = $this->setup_gallery();
 		extract( $gallery_args );
 
@@ -78,7 +78,7 @@ EOF;
 	}
 
 
-	function post_class( $classes, $post, $args ) {
+	function post_class( $classes, $post, $args, $index ) {
 		$classes[] = 'someclass';
 		return $classes;
 	}

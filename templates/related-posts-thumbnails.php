@@ -7,6 +7,9 @@
  * plugin:        https://wordpress.org/plugins/related-posts-by-taxonomy
  * Documentation: https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/
  *
+ * Only edit this file after you've copied it to your (child) theme's related-post-plugin folder.
+ * See: https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/templates/
+ *
  * @package Related Posts by Taxonomy
  * @since 0.3
  *
@@ -19,6 +22,7 @@
  * @var string $image_size    Image size. (deprecated - use $rpbt_args['image_size'] instead)
  * @var string $columns       Columns.    (deprecated - use $rpbt_args['columns'] instead)
  */
+
 ?>
 
 <?php
@@ -29,35 +33,35 @@
 
 <?php if ( $related_posts ) : ?>
 
-<?php
-	/**
-	 * Arguments for km_rpbt_related_posts_by_taxonomy_gallery() function.
-	 *
-	 * use the defaults 'itemtag', 'icontag', 'captiontag'
-	 */
-	$args = array(
+	<?php
+		/**
+		 * Arguments for km_rpbt_related_posts_by_taxonomy_gallery() function.
+		 *
+		 * Here we use the defaults for 'itemtag', 'icontag', 'captiontag'
+		 */
+		$args = array(
 
-		// 'itemtag'    => 'dl',
-		// 'icontag'    => 'dt',
-		// 'captiontag' => 'dd',
-		
-		'id'           => $rpbt_args['post_id'],
-		'columns'      => $rpbt_args['columns'],    // zero or positive number
-		'size'         => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
-		'caption'      => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
-		'link_caption' => $rpbt_args['link_caption'],
-	);
+			// 'itemtag'    => 'dl',
+			// 'icontag'    => 'dt',
+			// 'captiontag' => 'dd',
 
-// Plugin function in /includes/functions-thumbnail.php
-echo km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts );
-?>
+			'id'           => $rpbt_args['post_id'],
+			'columns'      => $rpbt_args['columns'],    // zero or positive number
+			'size'         => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
+			'caption'      => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
+			'link_caption' => $rpbt_args['link_caption'],
+		);
+
+		// Plugin function to display the galllery in /includes/functions-thumbnail.php
+		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts );
+	?>
 
 <?php else : ?>
-<p><?php _e( 'No related posts found', 'related-posts-by-taxonomy' ); ?></p>
+	<p><?php _e( 'No related posts found', 'related-posts-by-taxonomy' ); ?></p>
 <?php endif; ?>
 
 <?php
 /**
- * note: wp_reset_postdata(); is used after this template by the widget and the shortcode
+ * Note: wp_reset_postdata(); is used after this template by the widget and the shortcode
  */
 ?>

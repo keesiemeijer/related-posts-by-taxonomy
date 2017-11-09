@@ -254,9 +254,9 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$expected = <<<EOF
 <section><h2>Related Posts</h2>
 <ul>
-<li><a href="{$permalinks[1]}" title="{$_posts[1]->post_title}">{$_posts[1]->post_title}</a></li>
-<li><a href="{$permalinks[2]}" title="{$_posts[2]->post_title}">{$_posts[2]->post_title}</a></li>
-<li><a href="{$permalinks[3]}" title="{$_posts[3]->post_title}">{$_posts[3]->post_title}</a></li>
+<li><a href="{$permalinks[1]}">{$_posts[1]->post_title}</a></li>
+<li><a href="{$permalinks[2]}">{$_posts[2]->post_title}</a></li>
+<li><a href="{$permalinks[3]}">{$_posts[3]->post_title}</a></li>
 </ul>
 </section>
 EOF;

@@ -258,9 +258,9 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 <div class="rpbt_shortcode">
 <h3>Related Posts</h3>
 <ul>
-<li><a href="{$permalinks[1]}" title="{$_posts[1]->post_title}">{$_posts[1]->post_title}</a></li>
-<li><a href="{$permalinks[2]}" title="{$_posts[2]->post_title}">{$_posts[2]->post_title}</a></li>
-<li><a href="{$permalinks[3]}" title="{$_posts[3]->post_title}">{$_posts[3]->post_title}</a></li>
+<li><a href="{$permalinks[1]}">{$_posts[1]->post_title}</a></li>
+<li><a href="{$permalinks[2]}">{$_posts[2]->post_title}</a></li>
+<li><a href="{$permalinks[3]}">{$_posts[3]->post_title}</a></li>
 </ul>
 </div>
 EOF;
