@@ -99,19 +99,24 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
  * @return array Array with related post objects.
  */
 function km_rpbt_shortcode_get_related_posts( $rpbt_args, $cache_obj = null ) {
+	$function_args = $rpbt_args;
 
 	/**
 	 * Filter whether to use your own related posts.
 	 *
-	 * @param array Array with shortcode attributes.
+	 * @since  2.3.2
+	 *
+	 * @param boolean|array $related_posts Array with (related) post objects.
+	 *                                     Default false (Don't use your own related posts).
+	 *                                     Use empty array to not retrieve related posts from the database.
+	 *
+	 * @param array         Array with widget or shortcode arguments.
 	 */
-	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', '', $rpbt_args );
+	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $rpbt_args );
 
-	if ( $related_posts && is_array( $related_posts ) ) {
+	if ( is_array( $related_posts ) ) {
 		return $related_posts;
 	}
-
-	$function_args = $rpbt_args;
 
 	/* restricted arguments */
 	unset( $function_args['post_id'], $function_args['taxonomies'], $function_args['fields'] );

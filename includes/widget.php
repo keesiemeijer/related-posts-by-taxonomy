@@ -160,15 +160,10 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 */
 	function get_related_posts( $rpbt_args ) {
 
-		/**
-		 * Filter whether to use your own related posts.
-		 *
-		 * @since  2.3.2
-		 * @param array Array with shortcode attributes.
-		 */
-		$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', '', $rpbt_args );
+		/** This filter is documented in includes/shortcode.php */
+		$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $rpbt_args );
 
-		if ( $related_posts && is_array( $related_posts ) ) {
+		if ( is_array( $related_posts ) ) {
 			return $related_posts;
 		}
 
