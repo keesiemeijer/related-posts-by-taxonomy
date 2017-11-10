@@ -304,9 +304,10 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		}
 
 		$results = array_values( $results );
+		$order_self = ( true === $args['include_self'] );
 
 		/* Move include_self post to the top of the stack */
-		if ( $args['include_self'] && ! in_array( $post_id, $args['exclude_posts'] ) ) {
+		if ( $order_self && ! in_array( $post_id, $args['exclude_posts'] ) ) {
 			$search = wp_list_pluck( $results, 'ID' );
 
 			if ( in_array( $post_id, $search ) ) {
@@ -532,7 +533,10 @@ function km_rpbt_sanitize_args( $args ) {
 	$args['related']        = (bool) filter_var( $args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$args['post_thumbnail'] = (bool) filter_var( $args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$args['public_only']    = (bool) filter_var( $args['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	$args['include_self']   = (bool) filter_var( $args['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+
+	if ( 'regular_order' !== $args['include_self'] ) {
+		$args['include_self'] = (bool) filter_var( $args['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	}
 
 	return $args;
 }
