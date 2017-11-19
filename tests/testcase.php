@@ -2,6 +2,7 @@
 class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 
 	public $boolean;
+	//public $gallery = 0;
 
 	function setUp() {
 		parent::setUp();
@@ -183,4 +184,17 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return "<a href='{$attr['permalink']}' title='{$attr['title_attr']}'><img></a>";
 	}
 
+	function get_gallery_instance_id( $gallery ) {
+		if ( false === strpos( $gallery, "id='rpbt-related-gallery-" ) ) {
+			return '';
+		}
+
+		preg_match( "/id='rpbt-related-gallery-(\d+)'/", $gallery, $matches );
+
+		if ( ! isset( $matches[1] ) ) {
+			return '';
+		}
+
+		return (int) $matches[1];
+	}
 }

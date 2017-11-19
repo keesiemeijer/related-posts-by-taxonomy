@@ -115,7 +115,7 @@ function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
  *
  * @since 2.4.0
  *
- * @param object $post Post object.
+ * @param object $post       Post object.
  * @param bool   $title_attr Whether to use a title attribute in the link. Default false.
  */
 function km_rpbt_post_title_link( $post, $title_attr = false ) {

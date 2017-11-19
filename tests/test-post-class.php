@@ -62,12 +62,13 @@ EOF;
 		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 		$gallery = ob_get_clean();
 
+		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-5' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='someclass gallery-item'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='someclass gallery-item'>
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
-<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-5-{$args['id']}'>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
 {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
