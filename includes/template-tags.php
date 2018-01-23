@@ -59,6 +59,7 @@ function km_rpbt_sanitize_classes( $classes ) {
 	$classes = esc_attr( trim( $classes ) );
 	$classes = preg_replace( '/\s+/', ' ', $classes );
 	$classes = array_map( 'sanitize_html_class', explode( ' ', $classes ) );
+	$classes = array_unique( $classes );
 
 	return implode( ' ', $classes );
 }

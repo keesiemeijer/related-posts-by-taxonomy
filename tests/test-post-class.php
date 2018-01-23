@@ -78,11 +78,24 @@ EOF;
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
 	}
 
+	function test_km_rpbt_duplicate_post_classes() {
+		$classes = km_rpbt_get_post_classes( null, ' class class ' );
+		$this->assertSame( 'class', $classes );
+	}
+
+	function test_km_rpbt_sanitize_classes() {
+		$classes = km_rpbt_sanitize_classes( '' );
+		$this->assertSame( '', $classes );
+
+		$classes = km_rpbt_sanitize_classes( array( 'class' ) );
+		$this->assertSame( '', $classes );
+
+		$classes = km_rpbt_sanitize_classes( ' class  otherclass   class   ' );
+		$this->assertSame( 'class otherclass', $classes );
+	}
 
 	function post_class( $classes, $post, $args, $index ) {
 		$classes[] = 'someclass';
 		return $classes;
 	}
-
-
 }
