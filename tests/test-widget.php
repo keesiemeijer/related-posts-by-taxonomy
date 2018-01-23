@@ -79,8 +79,6 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test if the widget_hide_empty filter is set to true (by default).
-	 *
-	 *  @group fail
 	 */
 	function test_widget_posts() {
 		$create_posts = $this->create_posts_with_terms();

@@ -153,8 +153,6 @@ EOF;
 
 	/**
 	 * Test linked caption.
-	 *
-	 * @group sails
 	 */
 	function test_shortcode_with_linked_caption() {
 
