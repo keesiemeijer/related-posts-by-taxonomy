@@ -131,7 +131,9 @@ install_test_suite() {
 
 	if wp_download_exists "https://develop.svn.wordpress.org/$core_version/wp-tests-config-sample.php"; then
 
-		svn export --quiet --force https://develop.svn.wordpress.org/$core_version/tests/phpunit/includes/ $WP_TESTS_DIR/includes
+		svn export --quiet --force "https://develop.svn.wordpress.org/$core_version/tests/phpunit/includes/" "$WP_TESTS_DIR/includes"
+		svn export --quiet --force "https://develop.svn.wordpress.org/$core_version/tests/phpunit/data/" "$WP_TESTS_DIR/data"
+
 		cd $WP_TESTS_DIR
 
 		download https://develop.svn.wordpress.org/$core_version/wp-tests-config-sample.php "$WP_TESTS_DIR"/wp-tests-config.php
