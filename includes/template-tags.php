@@ -140,12 +140,12 @@ function km_rpbt_get_related_post_title_link( $post, $title_attr = false ) {
 		$title = get_the_ID();
 	}
 
-	$title_attr = '';
-	if ( $title_attr ) {
+	if ( $title_attr && $title ) {
 		$title_attr = ' title="' . esc_attr( $title ) . '"';
 	}
 
-	$permalink = esc_url( apply_filters( 'the_permalink', get_permalink( $post ), $post ) );
+	$title_attr = is_string( $title_attr ) ? $title_attr : '';
+	$permalink  = esc_url( apply_filters( 'the_permalink', get_permalink( $post ), $post ) );
 
 	if ( $permalink && $title ) {
 		$link = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . '</a>';

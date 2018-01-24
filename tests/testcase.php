@@ -73,7 +73,6 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return $posts;
 	}
 
-
 	/**
 	 * Assings terms to posts.
 	 *
@@ -132,6 +131,9 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return $wpdb->get_var( $cache_query );
 	}
 
+	/**
+	 * Create_image (for use in gallery)
+	 */
 	function create_image() {
 		add_theme_support( 'post-thumbnails' );
 
@@ -176,7 +178,6 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return compact( 'related_post', 'permalink', 'args' );
 	}
 
-
 	/**
 	 * Adds a fake image for testing.
 	 */
@@ -184,6 +185,9 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return "<a href='{$attr['permalink']}' title='{$attr['title_attr']}'><img></a>";
 	}
 
+	/**
+	 * Get the (static variable) gallery instance.
+	 */
 	function get_gallery_instance_id( $gallery ) {
 		if ( false === strpos( $gallery, "id='rpbt-related-gallery-" ) ) {
 			return '';
