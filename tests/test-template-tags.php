@@ -2,7 +2,7 @@
 /**
  * Tests for the km_rpbt_related_posts_by_taxonomy() function in functions.php.
  */
-class KM_RPBT_Post_Class_Tests extends KM_RPBT_UnitTestCase {
+class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 
 	function tearDown() {
 		remove_filter( 'use_default_gallery_style', '__return_false', 99 );
@@ -87,9 +87,11 @@ EOF;
 		$classes = km_rpbt_sanitize_classes( '' );
 		$this->assertSame( '', $classes );
 
+		// Should only return classes if it's a string
 		$classes = km_rpbt_sanitize_classes( array( 'class' ) );
 		$this->assertSame( '', $classes );
 
+		// Sanitezed string with duplicates removed
 		$classes = km_rpbt_sanitize_classes( ' class  otherclass   class   ' );
 		$this->assertSame( 'class otherclass', $classes );
 	}
@@ -97,5 +99,23 @@ EOF;
 	function post_class( $classes, $post, $args, $index ) {
 		$classes[] = 'someclass';
 		return $classes;
+	}
+
+	/**
+	 * Test getting the link for a related post title
+	 * used in the templates
+	 */
+	function test_km_rpbt_get_related_post_title_link() {
+		$posts = $this->create_posts();
+		$posts = get_posts();
+
+		$link = km_rpbt_get_related_post_title_link( $posts[0] );
+		$permalink = get_permalink( $posts[0] );
+		$expected = '<a href="' . $permalink . '">' . $posts[0]->post_title . '</a>';
+		$this->assertSame( $expected, $link );
+
+		$link = km_rpbt_get_related_post_title_link( $posts[0], true );
+		$expected = '<a href="' . $permalink . '" title="' . $posts[0]->post_title . '">' . $posts[0]->post_title . '</a>';
+		$this->assertSame( $expected, $link );
 	}
 }
