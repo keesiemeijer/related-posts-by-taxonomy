@@ -118,7 +118,7 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
-= 2.4.0 =
+= 2.4.1 =
 * Enhancement
 	* Add post classes with filters or as a shortcode or widget argument
 	* Move included current post to the top of the stack by default 
@@ -147,5 +147,5 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.4.0 =
+= 2.4.1 =
 This update adds the ability to add CSS classes with a widget or shortcode argument. See the changelog.
