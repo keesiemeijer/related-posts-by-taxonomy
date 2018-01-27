@@ -181,6 +181,8 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
 		}
 
+		$related_posts = km_rpbt_add_post_classes( $related_posts, $rpbt_args );
+
 		return $related_posts;
 	}
 
@@ -214,8 +216,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		if ( '' !== trim( $rpbt_args['title'] ) ) {
 			echo $rpbt_widget_args['before_title'] . $rpbt_args['title'] . $rpbt_widget_args['after_title'];
 		}
-
-		$related_posts = km_rpbt_add_post_classes( $related_posts, $rpbt_args );
 
 		global $post; // Used for setup_postdata() in templates.
 		require $template;

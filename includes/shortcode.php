@@ -129,6 +129,8 @@ function km_rpbt_shortcode_get_related_posts( $rpbt_args, $cache_obj = null ) {
 		$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
 	}
 
+	$related_posts = km_rpbt_add_post_classes( $related_posts, $rpbt_args );
+
 	return $related_posts;
 }
 
@@ -161,8 +163,6 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 	/* public template variables */
 	$image_size = $rpbt_args['image_size']; // deprecated in version 0.3.
 	$columns    = absint( $rpbt_args['columns'] ); // deprecated in version 0.3.
-
-	$related_posts = km_rpbt_add_post_classes( $related_posts, $rpbt_args );
 
 	ob_start();
 	require $template;
