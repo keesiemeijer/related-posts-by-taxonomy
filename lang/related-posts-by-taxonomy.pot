@@ -1,15 +1,15 @@
-# Copyright (C) 2017 keesiemijer
+# Copyright (C) 2018 keesiemijer
 # This file is distributed under the GPL v2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Related Posts By Taxonomy 2.4.1-alpha\n"
+"Project-Id-Version: Related Posts By Taxonomy 2.4.0-alpha\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2017-11-10 12:35:04+00:00\n"
+"POT-Creation-Date: 2018-01-27 15:37:30+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en\n"
@@ -65,75 +65,75 @@ msgstr ""
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/widget.php:293
+#: includes/widget.php:288
 msgid "Oops, something went wrong"
 msgstr ""
 
-#: includes/widget.php:307
+#: includes/widget.php:302
 msgid "Title"
 msgstr ""
 
-#: includes/widget.php:313
+#: includes/widget.php:308
 msgid "Number of related posts to show"
 msgstr ""
 
-#: includes/widget.php:316
+#: includes/widget.php:311
 msgid "Use -1 to show all related posts."
 msgstr ""
 
-#: includes/widget.php:323
+#: includes/widget.php:318
 msgid "Randomize related posts."
 msgstr ""
 
-#: includes/widget.php:326
+#: includes/widget.php:321
 msgid "Taxonomies"
 msgstr ""
 
-#: includes/widget.php:328
+#: includes/widget.php:323
 msgid "Taxonomy"
 msgstr ""
 
-#: includes/widget.php:331
+#: includes/widget.php:326
 msgid "All Taxonomies"
 msgstr ""
 
-#: includes/widget.php:338
+#: includes/widget.php:333
 msgid "Post Types"
 msgstr ""
 
-#: includes/widget.php:350
+#: includes/widget.php:345
 msgid "Display"
 msgstr ""
 
-#: includes/widget.php:354
+#: includes/widget.php:349
 msgid "Format"
 msgstr ""
 
-#: includes/widget.php:361
+#: includes/widget.php:356
 msgid "Image Display"
 msgstr ""
 
-#: includes/widget.php:365
+#: includes/widget.php:360
 msgid "Image Size"
 msgstr ""
 
-#: includes/widget.php:374
+#: includes/widget.php:369
 msgid "Number of image columns"
 msgstr ""
 
-#: includes/widget.php:384
+#: includes/widget.php:379
 msgid "Link image captions to posts"
 msgstr ""
 
-#: includes/widget.php:387
+#: includes/widget.php:382
 msgid "Widget Display"
 msgstr ""
 
-#: includes/widget.php:394
+#: includes/widget.php:389
 msgid "Display this widget on single post pages only"
 msgstr ""
 
-#: includes/widget.php:398
+#: includes/widget.php:393
 msgid "Display related posts for post ID (optional)"
 msgstr ""
 

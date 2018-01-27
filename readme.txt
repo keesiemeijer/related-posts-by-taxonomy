@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.1
 Tested up to: 4.9
-Stable tag: 2.4.1-alpha
+Stable tag: 2.4.0-alpha
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,11 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.4.0 =
+* Enhancement
+	* Add post classes with filters or as a shortcode or widget argument
+	* Move included current post to the top of the stack by default 
+
 = 2.3.2 =
 * Enhancement
 	* Add public_only parameter to not display private related posts from the current author.
@@ -138,14 +143,9 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 	* Add a WordPress REST API layer to get related posts (opt-in feature)
 	* Add new filter to activate the WordPress REST API layer
 
-= 2.2.2 =
-
-* Enhancement
-	* New option to link thumbnail captions (post titles) to posts in the widget and shortcode
-	* Make the widget UI more intuitive
-* Bug fixes
-	* Fix wrong results for cached custom post type related posts 
+= Changelog =
+For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.3.1 =
-This update adds the ability to include the current post in the related posts, and fixes a minor bug with the related galleries. See the changelog.
+= 2.4.0 =
+This update adds the ability to add CSS classes with a widget or shortcode argument. See the changelog.

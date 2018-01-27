@@ -318,7 +318,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		/**
 		 * Get the term names from ids.
 		 *
-		 * @since 2.4.1
+		 * @since 2.4.0
 		 *
 		 * @param array $term_ids Array with term ids.
 		 * @return string Term_names.

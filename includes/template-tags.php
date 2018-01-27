@@ -99,8 +99,8 @@ function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
 		 *
 		 * @param array  $classes Array with post classes.
 		 * @param object $post    Current related post object.
-		 * @param int    $index   Index position of related post. Starts at 0.
 		 * @param array  $args    Widget or shortcode arguments.
+		 * @param int    $index   Index position of related post. Starts at 0.
 		 */
 		$classes = apply_filters( 'related_posts_by_taxonomy_post_class', $classes, $post, $args, $index );
 		$classes = km_rpbt_sanitize_classes( implode( ' ', $classes ) );
