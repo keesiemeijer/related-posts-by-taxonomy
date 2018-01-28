@@ -99,19 +99,24 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
  * @return array Array with related post objects.
  */
 function km_rpbt_shortcode_get_related_posts( $rpbt_args, $cache_obj = null ) {
+	$function_args = $rpbt_args;
 
 	/**
 	 * Filter whether to use your own related posts.
 	 *
-	 * @param array Array with shortcode attributes.
+	 * @since  2.3.2
+	 *
+	 * @param boolean|array $related_posts Array with (related) post objects.
+	 *                                     Default false (Don't use your own related posts).
+	 *                                     Use empty array to not retrieve related posts from the database.
+	 *
+	 * @param array         Array with widget or shortcode arguments.
 	 */
-	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', '', $rpbt_args );
+	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $rpbt_args );
 
-	if ( $related_posts && is_array( $related_posts ) ) {
+	if ( is_array( $related_posts ) ) {
 		return $related_posts;
 	}
-
-	$function_args = $rpbt_args;
 
 	/* restricted arguments */
 	unset( $function_args['post_id'], $function_args['taxonomies'], $function_args['fields'] );
@@ -123,6 +128,8 @@ function km_rpbt_shortcode_get_related_posts( $rpbt_args, $cache_obj = null ) {
 		/* get related posts */
 		$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
 	}
+
+	$related_posts = km_rpbt_add_post_classes( $related_posts, $rpbt_args );
 
 	return $related_posts;
 }
@@ -211,8 +218,10 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	$atts['link_caption'] = (bool) filter_var( $atts['link_caption'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
 	$atts['public_only']  = (bool) filter_var( $atts['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
-	$atts['include_self']  = (bool) filter_var( $atts['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	if ( 'regular_order' !== $atts['include_self'] ) {
+		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
+		$atts['include_self']  = (bool) filter_var( $atts['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	}
 
 	return $atts;
 }

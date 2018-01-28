@@ -15,10 +15,9 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test output from gallery.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_no_gallery_style() {
+
 
 		$gallery_args = $this->setup_gallery();
 		extract( $gallery_args );
@@ -28,12 +27,42 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 		$gallery = ob_get_clean();
 
+		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-1' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
-<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-1-{$args['id']}'>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
+{$related_post->post_title}
+</dd></dl>
+<br style='clear: both' />
+</div>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
+	}
+
+	/**
+	 * Test output from gallery.
+	 */
+	function test_shortcode_no_gallery_class() {
+		$gallery_args = $this->setup_gallery();
+		extract( $gallery_args );
+
+		add_filter( 'use_default_gallery_style', '__return_false', 99 );
+		$args['gallery_class'] = '';
+		ob_start();
+		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+		$gallery = ob_get_clean();
+
+		$static   = $this->get_gallery_instance_id( $gallery );
+		$expected = <<<EOF
+<div id='rpbt-related-gallery-$static' class='related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+<dt class='gallery-icon '>
+<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
 {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
@@ -50,7 +79,6 @@ EOF;
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_with_gallery_style() {
-
 		$gallery_args = $this->setup_gallery();
 		extract( $gallery_args );
 
@@ -59,30 +87,31 @@ EOF;
 		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 		$gallery = ob_get_clean();
 
+		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
 <style type='text/css'>
-#rpbt-related-gallery-2 {
+#rpbt-related-gallery-$static {
 margin: auto;
 }
-#rpbt-related-gallery-2 .gallery-item {
+#rpbt-related-gallery-$static .gallery-item {
 float: left;
 margin-top: 10px;
 text-align: center;
 width: 33%;
 }
-#rpbt-related-gallery-2 img {
+#rpbt-related-gallery-$static img {
 border: 2px solid #cfcfcf;
 }
-#rpbt-related-gallery-2 .gallery-caption {
+#rpbt-related-gallery-$static .gallery-caption {
 margin-left: 0;
 }
 /* see gallery_shortcode() in wp-includes/media.php */
 </style>
-<div id='rpbt-related-gallery-2' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
-<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-2-{$args['id']}'>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
 {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
@@ -99,18 +128,18 @@ EOF;
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_gallery_no_caption() {
-
 		$gallery_args = $this->setup_gallery();
 		extract( $gallery_args );
 		$args['caption'] = '';
 
-				add_filter( 'use_default_gallery_style', '__return_false', 99 );
+		add_filter( 'use_default_gallery_style', '__return_false', 99 );
 		ob_start();
 		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 		$gallery = ob_get_clean();
 
+		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-3' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt></dl>
@@ -124,8 +153,6 @@ EOF;
 
 	/**
 	 * Test linked caption.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_with_linked_caption() {
 
@@ -139,13 +166,14 @@ EOF;
 		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 		$gallery = ob_get_clean();
 
+		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-4' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
-<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-4-{$args['id']}'>
-<a href='{$permalink}'>{$related_post->post_title}</a>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
+<a href="{$permalink}">{$related_post->post_title}</a>
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -238,38 +266,4 @@ EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $content ) );
 	}
-
-
-	/**
-	 * Sets up posts for the gallery
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts
-	 */
-	function setup_gallery() {
-
-		$posts        = $this->create_posts();
-		$related_post = get_post( $posts[0] );
-		$permalink    = get_permalink( $related_post->ID );
-
-		// Adds a fake image <img>, otherwhise the function will return nothing.
-		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
-
-		$args = array(
-			'id'         => $related_post->ID,
-			'itemtag'    => 'dl',
-			'icontag'    => 'dt',
-			'captiontag' => 'dd',
-		);
-
-		return compact( 'related_post', 'permalink', 'args' );
-	}
-
-
-	/**
-	 * Adds a fake image for testing.
-	 */
-	function add_image( $image, $attr, $related, $args ) {
-		return "<a href='{$attr['permalink']}' title='{$attr['title_attr']}'><img></a>";
-	}
-
 }

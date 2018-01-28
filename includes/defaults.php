@@ -366,6 +366,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				'columns'        => 3,
 				'link_caption'   => false,
 				'caption'        => 'post_title',
+				'post_class'     => '',
 			);
 
 			$settings = array_merge( $defaults, $settings );

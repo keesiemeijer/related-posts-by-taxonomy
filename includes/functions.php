@@ -121,6 +121,9 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	$fields = strtolower( (string) $args['fields'] );
 	if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {
 		$select_sql = "$wpdb->posts." . $allowed_fields[ $fields ];
+		if ( 'ids' !== $fields ) {
+			$select_sql .= ", $wpdb->posts.ID";
+		}
 	} else {
 		// Not an allowed field - return full post objects.
 		$select_sql = "$wpdb->posts.*";
@@ -287,36 +290,55 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 	if ( $results ) {
 
+		/* Order the related posts */
 		if ( ! $order_by_rand && $args['related'] ) {
 
-			/* add (termcount) score and key to results */
+			/* Add the (termcount) score and key to results */
 			for ( $i = 0; $i < count( $results ); $i++ ) {
 				$results[ $i ]->score = array( $results[ $i ]->termcount, $i );
 			}
 
-			/* order related posts */
+			/* Order the related posts */
 			uasort( $results, 'km_rpbt_related_posts_by_taxonomy_cmp' );
-
-			/* add termcount to args so we can use it later */
-			$termcount = wp_list_pluck( array_values( $results ), 'score' );
-			foreach ( $termcount as $key => $count ) {
-				$termcount[ $key ] = $count[0];
-			}
-			$args['termcount'] = $termcount;
+			$args['termcount'] = array();
 		}
 
 		$results = array_values( $results );
+		$order_self = ( true === $args['include_self'] );
 
-		if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {
-			$results = wp_list_pluck( $results, $allowed_fields[ $fields ] );
+		/* Move include_self post to the top of the stack */
+		if ( $order_self && ! in_array( $post_id, $args['exclude_posts'] ) ) {
+			$search = wp_list_pluck( $results, 'ID' );
+
+			if ( in_array( $post_id, $search ) ) {
+				if ( $post_id !== $search[0] ) {
+					// Inclusive post is not at the top of the results.
+					$inclusive_key = array_search( $post_id, $search );
+					$inclusive_post = $results[ $inclusive_key ];
+					unset( $results[ $inclusive_key ] );
+					array_unshift( $results , $inclusive_post );
+					$results = array_values( $results );
+				}
+			}
 		}
 
+		/* Get the number of related posts */
 		if ( -1 !== (int) $args['posts_per_page'] ) {
 			$posts_per_page = absint( $args['posts_per_page'] );
 			$posts_per_page = ( $posts_per_page ) ? $posts_per_page : 5;
 			$results = array_slice( $results, 0, $posts_per_page );
-			if ( isset( $args['termcount'] ) && $args['termcount'] ) {
-				$args['termcount'] = array_slice( $args['termcount'], 0, $posts_per_page );
+		}
+
+		if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {
+			/* Get the field used in the query */
+			$results = wp_list_pluck( $results, $allowed_fields[ $fields ] );
+		} else {
+			for ( $i = 0; $i < count( $results ); $i++ ) {
+				$results[ $i ]->rpbt_current    = $post_id;
+				$results[ $i ]->rpbt_post_class = '';
+				if ( isset( $results[ $i ]->termcount ) ) {
+					$args['termcount'][] = $results[ $i ]->termcount;
+				}
 			}
 		}
 	} else {
@@ -382,7 +404,6 @@ function km_rpbt_related_posts_by_taxonomy_cmp( $item1, $item2 ) {
 		return $item1->score[1] < $item2->score[1] ? -1 : 1;
 	}
 }
-
 
 /**
  * Returns array with validated post types.
@@ -512,7 +533,10 @@ function km_rpbt_sanitize_args( $args ) {
 	$args['related']        = (bool) filter_var( $args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$args['post_thumbnail'] = (bool) filter_var( $args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$args['public_only']    = (bool) filter_var( $args['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	$args['include_self']   = (bool) filter_var( $args['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+
+	if ( 'regular_order' !== $args['include_self'] ) {
+		$args['include_self'] = (bool) filter_var( $args['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	}
 
 	return $args;
 }

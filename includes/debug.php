@@ -15,6 +15,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 		public $debug             = array();
 		public $results           = array();
+		public $post_types        = array();
+		public $taxonomies        = array();
 		public $plugin            = 0;
 		public $widget_counter    = 0;
 		public $shortcode_counter = 0;
@@ -41,6 +43,16 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			}
 
 			$this->debug['cache'] = 'none';
+
+			// Get all post types when widget or shortcode is called.
+			$post_types = array_keys( get_post_types() );
+			$this->post_types = array_merge( $this->post_types, $post_types );
+			$this->post_types = array_unique( $this->post_types );
+
+			// Get all taxonomies when widget or shortcode is called.
+			$taxonomies = array_keys( get_taxonomies() );
+			$this->taxonomies = array_merge( $this->taxonomies, $taxonomies );
+			$this->taxonomies = array_unique( $this->taxonomies );
 
 			$this->plugin  = km_rpbt_plugin();
 			$this->cache   = $this->plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
@@ -128,13 +140,18 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				$cache_args                       = $cache['args'];
 				$post_ids                         = array_keys( (array) $cache['ids'] );
 				$this->debug['cache']             = 'current post cached';
-				$this->debug['cached post ids']   = ! empty( $post_ids ) ? $post_ids : array();
+				$this->debug['cached post ids']   = ! empty( $post_ids ) ? implode( ', ', $post_ids ) : '';
 				$defaults                         = km_rpbt_get_default_args();
 				$this->debug['function args']     = array_intersect_key( $args , $defaults );
 				$taxonomies                       = km_rpbt_get_taxonomies( $cache_args['taxonomies'] );
 				$this->debug['cached taxonomies'] = implode( ', ', $taxonomies );
-				$this->debug['cached terms']      = isset( $cache_args['related_terms'] ) ? $cache_args['related_terms'] : 'not in cache for post that doesn\'t have related posts';
 				$this->debug['current post id']   = isset( $args['post_id'] ) ? $args['post_id'] : '';
+				if ( isset( $cache_args['related_terms'] ) ) {
+					$this->debug['cached terms'] = $this->get_terms_names( $cache_args['related_terms'] );
+				} else {
+					// not in cache for post that doesn't have related posts???
+					$this->debug['cached terms'] = 'Could not find cached terms';
+				}
 			} else {
 
 				// Related posts not yet in cache.
@@ -191,7 +208,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		function object_terms( $terms, $object_ids, $taxonomies, $args ) {
 			$this->debug['current post id']                   = $object_ids;
 			$this->debug['taxonomies used for related query'] = $taxonomies;
-			$this->debug['terms found for current post']      = $terms;
+			$this->debug['terms found for current post']      = $this->get_terms_names( $terms );
 
 			return $terms;
 		}
@@ -235,7 +252,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			$query = str_replace( $wpdb->prefix , '' , $query );
 
-			$this->debug['terms used for related query'] = $args['related_terms'];
+			$term_names = $this->get_terms_names( $args['related_terms'] );
+
+			$this->debug['terms used for related query'] = $term_names;
+
 			unset( $args['related_terms'] );
 
 			$defaults = km_rpbt_get_default_args();
@@ -296,6 +316,33 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		}
 
 		/**
+		 * Get the term names from ids.
+		 *
+		 * @since 2.4.0
+		 *
+		 * @param array $term_ids Array with term ids.
+		 * @return string Term_names.
+		 */
+		function get_terms_names( $term_ids ) {
+			if ( ! $term_ids ) {
+				return array();
+			}
+
+			$args = array(
+				'include' => $term_ids,
+				'fields'  => 'names',
+			);
+
+			$term_names = get_terms( $args );
+
+			if ( is_wp_error( $term_names ) || empty( $term_names ) ) {
+				return 'No terms found';
+			}
+
+			return implode( ', ', $term_names );
+		}
+
+		/**
 		 * Returns a fancy header for the debug information.
 		 *
 		 * @since  2.3.1
@@ -304,8 +351,21 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return string Fancy header.
 		 */
 		function get_header( $type = '' ) {
-			$type  = ( 'Supports' !== $type ) ? 'Debug ' . $type : $type;
-			$title = 'Related Posts by Taxonomy ' . $type;
+			static $shortcode = 0;
+			static $widget = 0;
+
+			$type_count =  '';
+			$debug_type =  '';
+			if ( 'shortcode' === $type ) {
+				$type_count = ' ' . ++$shortcode;
+				$debug_type = 'Debug: ';
+			} elseif ( 'widget' === $type ) {
+				$type_count = ' ' . ++$widget;
+				$debug_type = 'Debug: ';
+			}
+
+			//$type  = ( 'Supports' !== $type ) ? 'Debug: ' . $type : $type;
+			$title = 'Related Posts by Taxonomy ' . $debug_type . $type . $type_count;
 			$title = '**    ' . $title . '    **';
 			$length = strlen( $title );
 			$rows = str_repeat( "*", $length ) . "\n";
@@ -340,9 +400,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 */
 		function wp_footer() {
 
+			$seperator = str_repeat( "-", 43 ) . "\n";
+
 			$order = array(
-				'type', 'cache', 'current post id', 'taxonomies used for related query', 'cached taxonomies',
-				'terms found for current post', 'terms used for related query', 'cached terms',
+				'type', 'cache', 'current post id', 'terms found for current post',
+				'taxonomies used for related query', 'cached taxonomies',
+				'terms used for related query', 'cached terms',
 				'related post ids found', 'cached post ids',
 				'widget args', 'shortcode args', 'function args',
 				'related posts query',
@@ -353,11 +416,18 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$style .= 'color: #333;background: #f5f5f5;font-family: monospace;font-size: 16px;font-style: normal;font-weight: normal;line-height: 1.5;white-space: pre;overflow:auto;';
 			$style .= 'width:100%;display:block;float:none;clear:both;text-align:left;z-index: 999;position:relative;';
 
-			echo "<pre style='{$style}'>" . $this->get_header( 'Supports' ) . "\n\n";
+			echo "<pre style='{$style}'>" . $this->get_header( 'General Debug Information' ) . "\n\n";
 			echo "Plugin Supports \n\n";
 			echo htmlspecialchars( print_r(  $this->get_supports(), true ) );
+			echo $seperator;
+			echo "All post types found (public and private)\n\n";
+			$post_types = implode( ', ', $this->post_types );
+			echo $post_types  . "\n";
+			echo $seperator;
+			echo "All taxonomies found (public and private)\n\n";
+			$taxonomies = implode( ', ', $this->taxonomies );
+			echo $taxonomies;
 			echo "</pre>";
-
 
 			if ( ! empty( $this->results ) ) {
 				echo '<p>';
@@ -402,8 +472,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 					}
 
 					foreach ( $debug_arr as $key => $value ) {
+						$title = $key;
+						if ( 'function args' === $title ) {
+							$title = 'Arguments used to get related posts';
+						}
 
-						echo $key . ":\n\n";
+						echo $title . ":\n\n";
 						if ( is_array( $value ) ) {
 							echo '<pre>';
 							echo htmlspecialchars( print_r( $value, true ) );
@@ -413,7 +487,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 						}
 
 						echo "\n";
-						echo str_repeat( "-", 43 ) . "\n";
+						echo $seperator;
 					}
 					echo '</pre>';
 				}

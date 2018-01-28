@@ -40,19 +40,20 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 	function test_km_rpbt_get_shortcode_atts() {
 
 		$expected = array(
-			'post_id' => '',
-			'taxonomies' => 'all',
+			'post_id'          => '',
+			'taxonomies'       => 'all',
 			'before_shortcode' => '<div class="rpbt_shortcode">',
-			'after_shortcode' => '</div>',
-			'before_title' => '<h3>',
-			'after_title' => '</h3>',
-			'title' => 'Related Posts',
-			'format' => 'links',
-			'image_size' => 'thumbnail',
-			'columns' => 3,
-			'caption' => 'post_title',
-			'link_caption' => false,
-			'type' => 'shortcode',
+			'after_shortcode'  => '</div>',
+			'before_title'     => '<h3>',
+			'after_title'      => '</h3>',
+			'title'            => 'Related Posts',
+			'format'           => 'links',
+			'image_size'       => 'thumbnail',
+			'columns'          => 3,
+			'caption'          => 'post_title',
+			'post_class'       => '',
+			'link_caption'     => false,
+			'type'             => 'shortcode',
 		);
 
 		// km_rpbt_get_default_args() is also tested in test-functions.php
@@ -257,9 +258,9 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 <div class="rpbt_shortcode">
 <h3>Related Posts</h3>
 <ul>
-<li><a href="{$permalinks[1]}" title="{$_posts[1]->post_title}">{$_posts[1]->post_title}</a></li>
-<li><a href="{$permalinks[2]}" title="{$_posts[2]->post_title}">{$_posts[2]->post_title}</a></li>
-<li><a href="{$permalinks[3]}" title="{$_posts[3]->post_title}">{$_posts[3]->post_title}</a></li>
+<li><a href="{$permalinks[1]}">{$_posts[1]->post_title}</a></li>
+<li><a href="{$permalinks[2]}">{$_posts[2]->post_title}</a></li>
+<li><a href="{$permalinks[3]}">{$_posts[3]->post_title}</a></li>
 </ul>
 </div>
 EOF;

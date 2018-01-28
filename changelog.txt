@@ -1,3 +1,7 @@
+= 2.4.0 =
+* Enhancement
+	* Add post classes with filters or as a shortcode or widget argument
+
 = 2.3.2 =
 * Enhancement
 	* Add public_only parameter to not display private related posts from the current author.

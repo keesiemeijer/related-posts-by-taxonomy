@@ -88,11 +88,16 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$_settings    = km_rpbt_get_default_settings();
 		$_posts       = get_posts();
 		$_sc_output   = km_rpbt_shortcode_output( $_posts, $_sc_validate );
-		$_post_types  = km_rpbt_get_post_types('post,page');
-		$_taxonomies  = km_rpbt_get_taxonomies($taxonomies);
+		$_post_types  = km_rpbt_get_post_types( 'post,page' );
+		$_taxonomies  = km_rpbt_get_taxonomies( $taxonomies );
 		$_value       = km_rpbt_get_comma_separated_values( 'hello,world' );
 		$_template    = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
 		$_ids         = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
+		$classes1     = km_rpbt_get_post_classes( $_posts[0], 'add-this-class' );
+		$classes2     = km_rpbt_sanitize_classes( $classes1 );
+		$classes3     = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );
+		$classes4     = km_rpbt_post_class();
+		$link         = km_rpbt_get_related_post_title_link( $_posts[0], true );
 
 		$out = ob_get_clean();
 
