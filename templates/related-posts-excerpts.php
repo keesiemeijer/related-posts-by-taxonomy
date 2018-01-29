@@ -35,8 +35,10 @@
 			// In this loop you can use WordPress functions to display the related posts.
 		?>
 
-		<?php km_rpbt_post_title_link( $post ); ?>
-		<?php the_excerpt(); ?>
+		<div<?php km_rpbt_post_class( $post ); ?>>
+			<?php km_rpbt_post_title_link( $post ); ?>
+			<?php the_excerpt(); ?>
+		</div>
 
 	<?php endforeach; ?>
 
