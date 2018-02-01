@@ -71,6 +71,7 @@ Attributes for the shortcode are:
 * `related`
 * `public_only`
 * `include_self`
+* `post_class`
 
 Example to show 10 related posts instead of the default 5.
 <pre><code>[related_posts_by_tax posts_per_page="10"]</code></pre>
@@ -143,7 +144,7 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 	* Add a WordPress REST API layer to get related posts (opt-in feature)
 	* Add new filter to activate the WordPress REST API layer
 
-= Changelog =
+
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
