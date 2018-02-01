@@ -4,7 +4,7 @@
  *
  * Enqueue CSS/JS of all the blocks.
  *
- * @since 	1.0.0
+ * @since  1.0.0
  * @package CGB
  */
 
@@ -42,25 +42,26 @@ function rpbt_block_editor_assets() {
 
 /**
  * Render related posts block on the front end.
- * 
- * @param  array $attributes Block attributes
+ *
+ * @param array $attributes Block attributes
  * @return string Rendered related posts
  */
 function rpbt_render_block_related_post( $attributes ) {
 	return '';
 }
 
-register_block_type( 'related-posts-by-taxonomy/related-posts-block', array(
-	'attributes'      => array(
-		'taxonomies'      => array(
-			'type' => 'string',
-		),
-		'post_id'     => array(
-			'type'    => 'number',
-			'default' => 0,
-		),
-	),
+if ( function_exists( 'register_block_type' ) ) {
+	register_block_type( 'related-posts-by-taxonomy/related-posts-block', array(
+			'attributes'      => array(
+				'taxonomies'      => array(
+					'type' => 'string',
+				),
+				'post_id'     => array(
+					'type'    => 'number',
+					'default' => 0,
+				),
+			),
 
-	'render_callback' => 'rpbt_render_block_related_posts',
-) );
-
+			'render_callback' => 'rpbt_render_block_related_posts',
+		) );
+}
