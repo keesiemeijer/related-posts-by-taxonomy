@@ -80,6 +80,7 @@ module.exports = function( grunt ) {
 					'!**/CHANGELOG.md',
 					'!**/CONTRIBUTING.md',
 					'!**/travis.yml',
+					'!**/block.js',
 					'!**/*~'
 				],
 				dest: 'build/<%= pkg.name %>/'

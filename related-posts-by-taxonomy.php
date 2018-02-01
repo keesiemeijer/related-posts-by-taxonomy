@@ -68,6 +68,9 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		// displays the related posts from the shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
 
+		// Ads the related posts editor block.
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/block/init.php';
+
 		// Instantiate the defaults class.
 		Related_Posts_By_Taxonomy_Defaults::init();
 	}

@@ -17,6 +17,20 @@
     "grunt-text-replace": "^0.4.0",
     "grunt-version": "^1.0.0",
     "grunt-wp-i18n": "^1.0.0",
-    "load-grunt-tasks": "^3.2.0"
+    "load-grunt-tasks": "^3.2.0",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
+    "cross-env": "^5.0.1",
+    "react": "^16.2.0",
+    "react-autosize-textarea": "^3.0.0",
+    "webpack": "^3.1.0",
+    "querystringify": "^1.0.0",
+    "lodash": "^4.17.4"
+  },
+  "scripts": {
+    "build": "cross-env BABEL_ENV=default NODE_ENV=production webpack",
+    "dev": "cross-env BABEL_ENV=default webpack --watch"
   }
 }
