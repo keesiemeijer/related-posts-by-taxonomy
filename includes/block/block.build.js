@@ -60,197 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__block__ = __webpack_require__(1);
-/**
- * WordPress dependencies
- */
-var __ = wp.i18n.__;
-
-/**
- * Internal dependencies
- */
-
-
-var registerBlockType = wp.blocks.registerBlockType;
-
-
-registerBlockType('related-posts-by-taxonomy/related-posts-block', {
-	title: 'Related Posts by Taxonomy',
-	icon: 'megaphone',
-	category: 'widgets',
-	supports: {
-		html: false
-	},
-
-	edit: __WEBPACK_IMPORTED_MODULE_0__block__["a" /* default */],
-
-	save: function save() {
-		// Rendering in PHP
-		return null;
-	}
-});
-
-/***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_querystringify__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_querystringify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_querystringify__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/**
- * External dependencies
- */
-
-
-
-var _wp$blocks = wp.blocks,
-    InspectorControls = _wp$blocks.InspectorControls,
-    BlockDescription = _wp$blocks.BlockDescription;
-var withAPIData = wp.components.withAPIData;
-var Component = wp.element.Component;
-
-var RelatedPostsBlock = function (_Component) {
-	_inherits(RelatedPostsBlock, _Component);
-
-	function RelatedPostsBlock() {
-		_classCallCheck(this, RelatedPostsBlock);
-
-		return _possibleConstructorReturn(this, (RelatedPostsBlock.__proto__ || Object.getPrototypeOf(RelatedPostsBlock)).apply(this, arguments));
-	}
-
-	_createClass(RelatedPostsBlock, [{
-		key: 'render',
-		value: function render() {
-			if (!this.props.related_posts.data) {
-				return "loading !";
-			}
-			if (this.props.related_posts.data.length === 0) {
-				return "No posts";
-			}
-
-			var relatedPosts = this.props.related_posts.data;
-
-			return wp.element.createElement('div', { dangerouslySetInnerHTML: { __html: relatedPosts.rendered } });
-		}
-	}]);
-
-	return RelatedPostsBlock;
-}(Component);
-
-/* harmony default export */ __webpack_exports__["a"] = (withAPIData(function (props) {
-	var taxonomies = props.attributes.taxonomies;
-
-	var queryString = Object(__WEBPACK_IMPORTED_MODULE_0_querystringify__["stringify"])(Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["pickBy"])({
-		taxonomies: taxonomies,
-		_fields: ['date_gmt', 'link', 'title']
-	}, function (value) {
-		return !Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["isUndefined"])(value);
-	}));
-	return {
-		related_posts: '/related-posts-by-taxonomy/v1/posts/' + _wpGutenbergPost.id
-	};
-})(RelatedPostsBlock));
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var has = Object.prototype.hasOwnProperty;
-
-/**
- * Decode a URI encoded string.
- *
- * @param {String} input The URI encoded string.
- * @returns {String} The decoded string.
- * @api private
- */
-function decode(input) {
-  return decodeURIComponent(input.replace(/\+/g, ' '));
-}
-
-/**
- * Simple query string parser.
- *
- * @param {String} query The query string that needs to be parsed.
- * @returns {Object}
- * @api public
- */
-function querystring(query) {
-  var parser = /([^=?&]+)=?([^&]*)/g
-    , result = {}
-    , part;
-
-  //
-  // Little nifty parsing hack, leverage the fact that RegExp.exec increments
-  // the lastIndex property so we can continue executing this loop until we've
-  // parsed all results.
-  //
-  for (;
-    part = parser.exec(query);
-    result[decode(part[1])] = decode(part[2])
-  );
-
-  return result;
-}
-
-/**
- * Transform a query string to an object.
- *
- * @param {Object} obj Object that should be transformed.
- * @param {String} prefix Optional prefix.
- * @returns {String}
- * @api public
- */
-function querystringify(obj, prefix) {
-  prefix = prefix || '';
-
-  var pairs = [];
-
-  //
-  // Optionally prefix with a '?' if needed
-  //
-  if ('string' !== typeof prefix) prefix = '?';
-
-  for (var key in obj) {
-    if (has.call(obj, key)) {
-      pairs.push(encodeURIComponent(key) +'='+ encodeURIComponent(obj[key]));
-    }
-  }
-
-  return pairs.length ? prefix + pairs.join('&') : '';
-}
-
-//
-// Expose the module.
-//
-exports.stringify = querystringify;
-exports.parse = querystring;
-
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -17342,6 +17156,216 @@ exports.parse = querystring;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(5)(module)))
 
 /***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__block__ = __webpack_require__(2);
+/**
+ * WordPress dependencies
+ */
+var __ = wp.i18n.__;
+
+/**
+ * Internal dependencies
+ */
+
+
+var registerBlockType = wp.blocks.registerBlockType;
+
+
+registerBlockType('related-posts-by-taxonomy/related-posts-block', {
+	title: 'Related Posts by Taxonomy',
+	icon: 'megaphone',
+	category: 'widgets',
+	supports: {
+		html: false
+	},
+
+	edit: __WEBPACK_IMPORTED_MODULE_0__block__["a" /* default */],
+
+	save: function save() {
+		// Rendering in PHP
+		return null;
+	}
+});
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_querystringify__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_querystringify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_querystringify__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__query_panel__ = __webpack_require__(6);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * External dependencies
+ */
+
+
+
+
+var _wp$blocks = wp.blocks,
+    InspectorControls = _wp$blocks.InspectorControls,
+    BlockDescription = _wp$blocks.BlockDescription;
+var withAPIData = wp.components.withAPIData;
+var Component = wp.element.Component;
+var __ = wp.i18n.__;
+
+var RelatedPostsBlock = function (_Component) {
+	_inherits(RelatedPostsBlock, _Component);
+
+	function RelatedPostsBlock() {
+		_classCallCheck(this, RelatedPostsBlock);
+
+		return _possibleConstructorReturn(this, (RelatedPostsBlock.__proto__ || Object.getPrototypeOf(RelatedPostsBlock)).apply(this, arguments));
+	}
+
+	_createClass(RelatedPostsBlock, [{
+		key: 'render',
+		value: function render() {
+			if (!this.props.relatedPostsByTax.data) {
+				return "loading !";
+			}
+			if (this.props.relatedPostsByTax.data.length === 0) {
+				return "No posts";
+			}
+
+			var _props = this.props,
+			    attributes = _props.attributes,
+			    focus = _props.focus,
+			    setAttributes = _props.setAttributes;
+
+			var relatedPosts = this.props.relatedPostsByTax.data;
+
+			var inspectorControls = focus && wp.element.createElement(
+				InspectorControls,
+				{ key: 'inspector' },
+				wp.element.createElement(
+					'h3',
+					null,
+					__('Latest Posts Settings')
+				),
+				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_2__query_panel__["a" /* default */], {
+					taxonomies: attributes.taxonomies,
+					onTaxonomiesChange: function onTaxonomiesChange(value) {
+						return setAttributes({ taxonomies: value });
+					}
+				})
+			);
+
+			return [inspectorControls, wp.element.createElement('div', { dangerouslySetInnerHTML: { __html: relatedPosts.rendered } })];
+		}
+	}]);
+
+	return RelatedPostsBlock;
+}(Component);
+
+/* harmony default export */ __webpack_exports__["a"] = (withAPIData(function (props) {
+	var taxonomies = props.attributes.taxonomies;
+
+	var query = Object(__WEBPACK_IMPORTED_MODULE_0_querystringify__["stringify"])(Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["pickBy"])({
+		taxonomies: taxonomies
+	}, function (value) {
+		return !Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["isUndefined"])(value);
+	}), true);
+
+	return {
+		relatedPostsByTax: '/related-posts-by-taxonomy/v1/posts/' + _wpGutenbergPost.id + ('' + query)
+	};
+})(RelatedPostsBlock));
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var has = Object.prototype.hasOwnProperty;
+
+/**
+ * Decode a URI encoded string.
+ *
+ * @param {String} input The URI encoded string.
+ * @returns {String} The decoded string.
+ * @api private
+ */
+function decode(input) {
+  return decodeURIComponent(input.replace(/\+/g, ' '));
+}
+
+/**
+ * Simple query string parser.
+ *
+ * @param {String} query The query string that needs to be parsed.
+ * @returns {Object}
+ * @api public
+ */
+function querystring(query) {
+  var parser = /([^=?&]+)=?([^&]*)/g
+    , result = {}
+    , part;
+
+  //
+  // Little nifty parsing hack, leverage the fact that RegExp.exec increments
+  // the lastIndex property so we can continue executing this loop until we've
+  // parsed all results.
+  //
+  for (;
+    part = parser.exec(query);
+    result[decode(part[1])] = decode(part[2])
+  );
+
+  return result;
+}
+
+/**
+ * Transform a query string to an object.
+ *
+ * @param {Object} obj Object that should be transformed.
+ * @param {String} prefix Optional prefix.
+ * @returns {String}
+ * @api public
+ */
+function querystringify(obj, prefix) {
+  prefix = prefix || '';
+
+  var pairs = [];
+
+  //
+  // Optionally prefix with a '?' if needed
+  //
+  if ('string' !== typeof prefix) prefix = '?';
+
+  for (var key in obj) {
+    if (has.call(obj, key)) {
+      pairs.push(encodeURIComponent(key) +'='+ encodeURIComponent(obj[key]));
+    }
+  }
+
+  return pairs.length ? prefix + pairs.join('&') : '';
+}
+
+//
+// Expose the module.
+//
+exports.stringify = querystringify;
+exports.parse = querystring;
+
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
@@ -17395,6 +17419,64 @@ module.exports = function(module) {
 	return module;
 };
 
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = QueryPanel;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
+/**
+ * External dependencies
+ */
+
+
+/**
+ * WordPress dependencies
+ */
+var __ = wp.i18n.__;
+var InspectorControls = wp.blocks.InspectorControls;
+var SelectControl = InspectorControls.SelectControl;
+
+
+var tax_options = get_taxonomy_options();
+
+function QueryPanel(_ref) {
+	var taxonomies = _ref.taxonomies,
+	    onTaxonomiesChange = _ref.onTaxonomiesChange;
+
+	return [onTaxonomiesChange && wp.element.createElement(SelectControl, {
+		key: 'query-panel-select',
+		label: __('Taxonomies'),
+		value: '' + taxonomies,
+		options: tax_options,
+		onChange: function onChange(value) {
+			onTaxonomiesChange(value);
+		}
+	})];
+}
+
+function get_taxonomy_options() {
+	var options = [{
+		label: __('all taxonomies'),
+		value: km_rpbt_plugin_data.all_tax
+	}];
+
+	var taxonomies = km_rpbt_plugin_data.taxonomies;
+
+	for (var key in taxonomies) {
+		if (taxonomies.hasOwnProperty(key)) {
+			options.push({
+				label: taxonomies[key],
+				value: key
+			});
+		}
+	}
+
+	return options;
+}
 
 /***/ })
 /******/ ]);

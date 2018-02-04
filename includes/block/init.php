@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_action( 'enqueue_block_editor_assets', 'rpbt_block_editor_assets' );
+add_action( 'enqueue_block_editor_assets', 'km_rpbt_block_editor_assets' );
 
 /**
  * Enqueue Gutenberg block assets for backend editor.
@@ -24,7 +24,12 @@ add_action( 'enqueue_block_editor_assets', 'rpbt_block_editor_assets' );
  *
  * @since 1.0.0
  */
-function rpbt_block_editor_assets() {
+function km_rpbt_block_editor_assets() {
+	$plugin = km_rpbt_plugin();
+	if ( ! ( $plugin && $plugin->plugin_supports( 'wp_rest_api' ) ) ) {
+		return;
+	}
+
 	// Scripts.
 	wp_enqueue_script(
 		'rpbt-related-posts-block', // Handle.
@@ -38,6 +43,17 @@ function rpbt_block_editor_assets() {
 		plugins_url( 'editor.css', dirname( __FILE__ ) ),
 		array( 'wp-edit-blocks' )
 	);
+
+	wp_localize_script( 'rpbt-related-posts-block', 'km_rpbt_plugin_data',
+		array(
+			'post_types'  => $plugin->post_types,
+			'taxonomies'  => $plugin->taxonomies,
+			'default_tax' => $plugin->default_tax,
+			'all_tax'     => $plugin->all_tax,
+			'formats'     => $plugin->formats,
+			'image_sizes' => $plugin->image_sizes,
+		)
+	);
 }
 
 /**
@@ -46,19 +62,21 @@ function rpbt_block_editor_assets() {
  * @param array $attributes Block attributes
  * @return string Rendered related posts
  */
-function rpbt_render_block_related_post( $attributes ) {
+function km_rpbt_render_block_related_post( $attributes ) {
 	return '';
 }
 
 if ( function_exists( 'register_block_type' ) ) {
+	$plugin = km_rpbt_plugin();
+	if ( ! ( $plugin && $plugin->plugin_supports( 'wp_rest_api' ) ) ) {
+		return;
+	}
+
 	register_block_type( 'related-posts-by-taxonomy/related-posts-block', array(
 			'attributes'      => array(
 				'taxonomies'      => array(
 					'type' => 'string',
-				),
-				'post_id'     => array(
-					'type'    => 'number',
-					'default' => 0,
+					'default' => $plugin->all_tax,
 				),
 			),
 
