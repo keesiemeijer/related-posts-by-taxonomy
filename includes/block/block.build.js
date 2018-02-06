@@ -17182,6 +17182,12 @@ registerBlockType('related-posts-by-taxonomy/related-posts-block', {
 	supports: {
 		html: false
 	},
+	attributes: {
+		taxonomies: {
+			type: 'string',
+			default: 'category'
+		}
+	},
 
 	edit: __WEBPACK_IMPORTED_MODULE_0__block__["a" /* default */],
 

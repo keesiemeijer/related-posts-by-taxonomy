@@ -16,6 +16,12 @@ registerBlockType('related-posts-by-taxonomy/related-posts-block', {
 	supports: {
 		html: false
 	},
+	attributes: {
+			taxonomies: {
+				type: 'string',
+				default: 'category',
+			},
+	},
 
 	edit: RelatedPostsBlock,
 
