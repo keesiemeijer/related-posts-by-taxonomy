@@ -17183,6 +17183,10 @@ registerBlockType('related-posts-by-taxonomy/related-posts-block', {
 		html: false
 	},
 	attributes: {
+		title: {
+			type: 'string',
+			default: 'Related Post'
+		},
 		taxonomies: {
 			type: 'string',
 			default: 'category'
@@ -17225,9 +17229,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var _wp$blocks = wp.blocks,
     InspectorControls = _wp$blocks.InspectorControls,
     BlockDescription = _wp$blocks.BlockDescription;
+var BaseControl = InspectorControls.BaseControl;
 var withAPIData = wp.components.withAPIData;
 var Component = wp.element.Component;
 var __ = wp.i18n.__;
+
+var instances = 0;
 
 var RelatedPostsBlock = function (_Component) {
 	_inherits(RelatedPostsBlock, _Component);
@@ -17235,10 +17242,35 @@ var RelatedPostsBlock = function (_Component) {
 	function RelatedPostsBlock() {
 		_classCallCheck(this, RelatedPostsBlock);
 
-		return _possibleConstructorReturn(this, (RelatedPostsBlock.__proto__ || Object.getPrototypeOf(RelatedPostsBlock)).apply(this, arguments));
+		var _this = _possibleConstructorReturn(this, (RelatedPostsBlock.__proto__ || Object.getPrototypeOf(RelatedPostsBlock)).apply(this, arguments));
+
+		_this.handleChange = _this.handleChange.bind(_this);
+		_this.emitChangeDebounced = Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["debounce"])(_this.emitChange, 1000);
+		_this.instanceId = instances++;
+		return _this;
 	}
 
 	_createClass(RelatedPostsBlock, [{
+		key: 'componentWillUnmount',
+		value: function componentWillUnmount() {
+			this.emitChangeDebounced.cancel();
+		}
+	}, {
+		key: 'handleChange',
+		value: function handleChange(e) {
+			// React pools events, so we read the value before debounce.
+			// Alternately we could call `event.persist()` and pass the entire event.
+			// For more info see reactjs.org/docs/events.html#event-pooling
+			this.emitChangeDebounced(e.target.value);
+		}
+	}, {
+		key: 'emitChange',
+		value: function emitChange(value) {
+			var setAttributes = this.props.setAttributes;
+
+			setAttributes({ title: value });
+		}
+	}, {
 		key: 'render',
 		value: function render() {
 			if (!this.props.relatedPostsByTax.data) {
@@ -17252,8 +17284,11 @@ var RelatedPostsBlock = function (_Component) {
 			    attributes = _props.attributes,
 			    focus = _props.focus,
 			    setAttributes = _props.setAttributes;
+			var title = attributes.title,
+			    taxonomies = attributes.taxonomies;
 
 			var relatedPosts = this.props.relatedPostsByTax.data;
+			var textID = 'rpbt-inspector-text-control-' + this.instanceId;
 
 			var inspectorControls = focus && wp.element.createElement(
 				InspectorControls,
@@ -17261,10 +17296,21 @@ var RelatedPostsBlock = function (_Component) {
 				wp.element.createElement(
 					'h3',
 					null,
-					__('Latest Posts Settings')
+					__('Related Posts Settings')
+				),
+				wp.element.createElement(
+					BaseControl,
+					{ label: 'Title', id: textID },
+					wp.element.createElement('input', { className: 'blocks-text-control__input',
+						type: 'text',
+						onChange: this.handleChange,
+						defaultValue: title,
+						id: textID
+					})
 				),
 				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_2__query_panel__["a" /* default */], {
-					taxonomies: attributes.taxonomies,
+
+					taxonomies: taxonomies,
 					onTaxonomiesChange: function onTaxonomiesChange(value) {
 						return setAttributes({ taxonomies: value });
 					}
@@ -17279,10 +17325,13 @@ var RelatedPostsBlock = function (_Component) {
 }(Component);
 
 /* harmony default export */ __webpack_exports__["a"] = (withAPIData(function (props) {
-	var taxonomies = props.attributes.taxonomies;
+	var _props$attributes = props.attributes,
+	    taxonomies = _props$attributes.taxonomies,
+	    title = _props$attributes.title;
 
 	var query = Object(__WEBPACK_IMPORTED_MODULE_0_querystringify__["stringify"])(Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["pickBy"])({
-		taxonomies: taxonomies
+		taxonomies: taxonomies,
+		title: title
 	}, function (value) {
 		return !Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["isUndefined"])(value);
 	}), true);
@@ -17445,7 +17494,6 @@ module.exports = function(module) {
 var __ = wp.i18n.__;
 var InspectorControls = wp.blocks.InspectorControls;
 var SelectControl = InspectorControls.SelectControl;
-
 
 var tax_options = get_taxonomy_options();
 

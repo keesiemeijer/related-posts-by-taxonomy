@@ -17,6 +17,10 @@ registerBlockType('related-posts-by-taxonomy/related-posts-block', {
 		html: false
 	},
 	attributes: {
+			title: {
+				type: 'string',
+				default: 'Related Post',
+			},
 			taxonomies: {
 				type: 'string',
 				default: 'category',

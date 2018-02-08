@@ -10,8 +10,6 @@ const { __ } = wp.i18n;
 
 const { InspectorControls } = wp.blocks;
 const { SelectControl } = InspectorControls;
-
-
 const tax_options = get_taxonomy_options();
 
 export default function QueryPanel( {
