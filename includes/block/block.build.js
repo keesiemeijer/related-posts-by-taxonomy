@@ -17153,7 +17153,7 @@
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(5)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(3)(module)))
 
 /***/ }),
 /* 1 */
@@ -17161,52 +17161,122 @@
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__block__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__block__ = __webpack_require__(4);
+
+
 /**
  * WordPress dependencies
  */
 var __ = wp.i18n.__;
+var registerBlockType = wp.blocks.registerBlockType;
 
 /**
  * Internal dependencies
  */
 
 
-var registerBlockType = wp.blocks.registerBlockType;
 
+var plugin_data = window.km_rpbt_plugin_data || {};
+if (!Object(__WEBPACK_IMPORTED_MODULE_0_lodash__["isEmpty"])(plugin_data)) {
+	registerRelatedPostsBlock();
+}
 
-registerBlockType('related-posts-by-taxonomy/related-posts-block', {
-	title: 'Related Posts by Taxonomy',
-	icon: 'megaphone',
-	category: 'widgets',
-	supports: {
-		html: false
-	},
-	attributes: {
-		title: {
-			type: 'string',
-			default: 'Related Post'
+function registerRelatedPostsBlock() {
+
+	registerBlockType('related-posts-by-taxonomy/related-posts-block', {
+		title: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy'),
+		icon: 'megaphone',
+		category: 'widgets',
+		supports: {
+			html: false
 		},
-		taxonomies: {
-			type: 'string',
-			default: 'category'
+		attributes: {
+			title: {
+				type: 'string',
+				default: __('Related Posts', 'related-posts-by-taxonomy')
+			},
+			taxonomies: {
+				type: 'string',
+				default: plugin_data.all_tax
+			},
+			posts_per_page: {
+				type: 'int',
+				default: 5
+			}
+		},
+
+		edit: __WEBPACK_IMPORTED_MODULE_1__block__["a" /* default */],
+
+		save: function save() {
+			// Rendering in PHP
+			return null;
 		}
-	},
-
-	edit: __WEBPACK_IMPORTED_MODULE_0__block__["a" /* default */],
-
-	save: function save() {
-		// Rendering in PHP
-		return null;
-	}
-});
+	});
+}
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_querystringify__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_querystringify__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_querystringify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_querystringify__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
@@ -17230,7 +17300,10 @@ var _wp$blocks = wp.blocks,
     InspectorControls = _wp$blocks.InspectorControls,
     BlockDescription = _wp$blocks.BlockDescription;
 var BaseControl = InspectorControls.BaseControl;
-var withAPIData = wp.components.withAPIData;
+var _wp$components = wp.components,
+    withAPIData = _wp$components.withAPIData,
+    Spinner = _wp$components.Spinner,
+    Placeholder = _wp$components.Placeholder;
 var Component = wp.element.Component;
 var __ = wp.i18n.__;
 
@@ -17273,21 +17346,15 @@ var RelatedPostsBlock = function (_Component) {
 	}, {
 		key: 'render',
 		value: function render() {
-			if (!this.props.relatedPostsByTax.data) {
-				return "loading !";
-			}
-			if (this.props.relatedPostsByTax.data.length === 0) {
-				return "No posts";
-			}
-
+			var relatedPosts = this.props.relatedPostsByTax.data;
 			var _props = this.props,
 			    attributes = _props.attributes,
 			    focus = _props.focus,
 			    setAttributes = _props.setAttributes;
 			var title = attributes.title,
-			    taxonomies = attributes.taxonomies;
+			    taxonomies = attributes.taxonomies,
+			    posts_per_page = attributes.posts_per_page;
 
-			var relatedPosts = this.props.relatedPostsByTax.data;
 			var textID = 'rpbt-inspector-text-control-' + this.instanceId;
 
 			var inspectorControls = focus && wp.element.createElement(
@@ -17309,13 +17376,38 @@ var RelatedPostsBlock = function (_Component) {
 					})
 				),
 				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_2__query_panel__["a" /* default */], {
-
+					postsPerPage: posts_per_page,
+					onPostsPerPageChange: function onPostsPerPageChange(value) {
+						return setAttributes({ posts_per_page: Number(value) });
+					},
 					taxonomies: taxonomies,
 					onTaxonomiesChange: function onTaxonomiesChange(value) {
 						return setAttributes({ taxonomies: value });
 					}
 				})
 			);
+
+			var loading = '';
+			if (Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["isUndefined"])(relatedPosts)) {
+				loading = __('Loading posts', 'related-posts-by-taxonomy');
+			} else {
+				if (relatedPosts.hasOwnProperty('posts')) {
+					loading = relatedPosts.posts.length ? '' : __('No posts found.', 'related-posts-by-taxonomy');
+				}
+			}
+
+			if (loading) {
+				return [inspectorControls, wp.element.createElement(
+					Placeholder,
+					{
+						key: 'placeholder',
+						icon: 'megaphone',
+						label: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy')
+					},
+					Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["isUndefined"])(relatedPosts) ? wp.element.createElement(Spinner, null) : '',
+					loading
+				)];
+			}
 
 			return [inspectorControls, wp.element.createElement('div', { dangerouslySetInnerHTML: { __html: relatedPosts.rendered } })];
 		}
@@ -17324,14 +17416,17 @@ var RelatedPostsBlock = function (_Component) {
 	return RelatedPostsBlock;
 }(Component);
 
-/* harmony default export */ __webpack_exports__["a"] = (withAPIData(function (props) {
+var applyWithAPIData = withAPIData(function (props) {
 	var _props$attributes = props.attributes,
 	    taxonomies = _props$attributes.taxonomies,
-	    title = _props$attributes.title;
+	    title = _props$attributes.title,
+	    posts_per_page = _props$attributes.posts_per_page;
+
 
 	var query = Object(__WEBPACK_IMPORTED_MODULE_0_querystringify__["stringify"])(Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["pickBy"])({
 		taxonomies: taxonomies,
-		title: title
+		title: title,
+		posts_per_page: posts_per_page
 	}, function (value) {
 		return !Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["isUndefined"])(value);
 	}), true);
@@ -17339,10 +17434,12 @@ var RelatedPostsBlock = function (_Component) {
 	return {
 		relatedPostsByTax: '/related-posts-by-taxonomy/v1/posts/' + _wpGutenbergPost.id + ('' + query)
 	};
-})(RelatedPostsBlock));
+});
+
+/* harmony default export */ __webpack_exports__["a"] = (applyWithAPIData(RelatedPostsBlock));
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17421,61 +17518,6 @@ exports.parse = querystring;
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
 /* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -17493,17 +17535,32 @@ module.exports = function(module) {
  */
 var __ = wp.i18n.__;
 var InspectorControls = wp.blocks.InspectorControls;
-var SelectControl = InspectorControls.SelectControl;
+var SelectControl = InspectorControls.SelectControl,
+    RangeControl = InspectorControls.RangeControl;
 
+/**
+ * Internal dependencies
+ */
+
+var plugin_data = window.km_rpbt_plugin_data || {};
 var tax_options = get_taxonomy_options();
 
 function QueryPanel(_ref) {
 	var taxonomies = _ref.taxonomies,
-	    onTaxonomiesChange = _ref.onTaxonomiesChange;
+	    onTaxonomiesChange = _ref.onTaxonomiesChange,
+	    postsPerPage = _ref.postsPerPage,
+	    onPostsPerPageChange = _ref.onPostsPerPageChange;
 
-	return [onTaxonomiesChange && wp.element.createElement(SelectControl, {
+	return [onPostsPerPageChange && wp.element.createElement(RangeControl, {
+		key: 'query-panel-range-control',
+		label: __('Number of items', 'related-posts-by-taxonomy'),
+		value: postsPerPage,
+		onChange: onPostsPerPageChange,
+		min: 1,
+		max: 100
+	}), onTaxonomiesChange && wp.element.createElement(SelectControl, {
 		key: 'query-panel-select',
-		label: __('Taxonomies'),
+		label: __('Taxonomies', 'related-posts-by-taxonomy'),
 		value: '' + taxonomies,
 		options: tax_options,
 		onChange: function onChange(value) {
@@ -17513,12 +17570,16 @@ function QueryPanel(_ref) {
 }
 
 function get_taxonomy_options() {
+	if (Object(__WEBPACK_IMPORTED_MODULE_0_lodash__["isEmpty"])(plugin_data)) {
+		return [];
+	}
+
 	var options = [{
-		label: __('all taxonomies'),
-		value: km_rpbt_plugin_data.all_tax
+		label: __('all taxonomies', 'related-posts-by-taxonomy'),
+		value: plugin_data.all_tax
 	}];
 
-	var taxonomies = km_rpbt_plugin_data.taxonomies;
+	var taxonomies = plugin_data.taxonomies;
 
 	for (var key in taxonomies) {
 		if (taxonomies.hasOwnProperty(key)) {

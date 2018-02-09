@@ -1,36 +1,50 @@
+import { isEmpty } from 'lodash';
+
 /**
  * WordPress dependencies
  */
 const { __ } = wp.i18n;
+const { registerBlockType } = wp.blocks;
 
 /**
  * Internal dependencies
  */
 import RelatedPostsBlock from './block';
-const { registerBlockType } = wp.blocks;
 
-registerBlockType('related-posts-by-taxonomy/related-posts-block', {
-	title: 'Related Posts by Taxonomy',
-	icon: 'megaphone',
-	category: 'widgets',
-	supports: {
-		html: false
-	},
-	attributes: {
-			title: {
-				type: 'string',
-				default: 'Related Post',
-			},
-			taxonomies: {
-				type: 'string',
-				default: 'category',
-			},
-	},
+const plugin_data = window.km_rpbt_plugin_data || {};
+if( ! isEmpty( plugin_data )  ) {
+	registerRelatedPostsBlock();
+}
 
-	edit: RelatedPostsBlock,
+function registerRelatedPostsBlock() {
 
-	save() {
-		// Rendering in PHP
-		return null;
-	}
-});
+	registerBlockType('related-posts-by-taxonomy/related-posts-block', {
+		title: __( 'Related Posts by Taxonomy', 'related-posts-by-taxonomy' ),
+		icon: 'megaphone',
+		category: 'widgets',
+		supports: {
+			html: false
+		},
+		attributes: {
+				title: {
+					type: 'string',
+					default: __( 'Related Posts', 'related-posts-by-taxonomy' ),
+				},
+				taxonomies: {
+					type: 'string',
+					default: plugin_data.all_tax,
+				},
+				posts_per_page: {
+					type: 'int',
+					default: 5,
+				},
+		},
+
+		edit: RelatedPostsBlock,
+
+		save() {
+			// Rendering in PHP
+			return null;
+		}
+	});
+}

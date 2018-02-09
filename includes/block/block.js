@@ -8,7 +8,7 @@ import { isUndefined, pickBy, debounce } from 'lodash';
 import QueryPanel from './query-panel';
 const { InspectorControls, BlockDescription } = wp.blocks;
 const { BaseControl } = InspectorControls;
-const { withAPIData } = wp.components;
+const { withAPIData, Spinner, Placeholder } = wp.components;
 const { Component } = wp.element;
 const { __ } = wp.i18n;
 let instances = 0;
@@ -39,16 +39,9 @@ class RelatedPostsBlock extends Component {
 	}
 
 	render(){
-		if ( ! this.props.relatedPostsByTax.data ) {
-			return "loading !";
-		}
-		if ( this.props.relatedPostsByTax.data.length === 0 ) {
-			return "No posts";
-		}
-
-		const { attributes, focus, setAttributes } = this.props;
-		const { title, taxonomies } = attributes;
 		const relatedPosts = this.props.relatedPostsByTax.data;
+		const { attributes, focus, setAttributes } = this.props;
+		const { title, taxonomies, posts_per_page } = attributes;
 		const textID = 'rpbt-inspector-text-control-' + this.instanceId;
 		
 		const inspectorControls = focus && (
@@ -63,11 +56,36 @@ class RelatedPostsBlock extends Component {
 					/>
 				</BaseControl>
 				<QueryPanel
+					postsPerPage={posts_per_page}
+					onPostsPerPageChange={ ( value ) => setAttributes( { posts_per_page: Number( value ) } )}
 					taxonomies={ taxonomies }
 					onTaxonomiesChange={ ( value ) => setAttributes( { taxonomies: value } ) }
 				/>
 			</InspectorControls>
 			);
+
+		let loading = '';
+		if( isUndefined( relatedPosts ) ) {
+			loading = __( 'Loading posts', 'related-posts-by-taxonomy');
+		} else {
+			if( relatedPosts.hasOwnProperty('posts') ) {
+				loading = relatedPosts.posts.length ? '' : __( 'No posts found.', 'related-posts-by-taxonomy' );
+			}
+		}
+
+		if ( loading ) {
+			return [
+				inspectorControls,
+				<Placeholder
+					key="placeholder"
+					icon="megaphone"
+					label={ __( 'Related Posts by Taxonomy', 'related-posts-by-taxonomy' ) }
+				>
+					{ isUndefined( relatedPosts ) ? <Spinner /> : '' }
+					{ loading }
+				</Placeholder>,
+			];
+		}
 
 		return [
 				inspectorControls,
@@ -76,14 +94,18 @@ class RelatedPostsBlock extends Component {
 	}
 }
 
-export default withAPIData( ( props ) => {
-	const { taxonomies, title } = props.attributes;
+const applyWithAPIData = withAPIData( ( props ) => {
+	const { taxonomies, title, posts_per_page } = props.attributes;
+
 	const query = stringify( pickBy( {
 		taxonomies,
 		title,
+		posts_per_page,
 	}, value => ! isUndefined( value ) ), true );
 
 	return {
 		relatedPostsByTax: `/related-posts-by-taxonomy/v1/posts/${_wpGutenbergPost.id}` + `${query}`
 	};
-} )( RelatedPostsBlock );
+} );
+
+export default applyWithAPIData( RelatedPostsBlock );
