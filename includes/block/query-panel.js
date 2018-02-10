@@ -15,6 +15,8 @@ const { SelectControl, RangeControl } = InspectorControls;
  */
 const plugin_data = window.km_rpbt_plugin_data || {};
 const tax_options = get_taxonomy_options();
+const format_options = get_options('formats');
+const img_options = get_options('image_sizes');
 
 export default function QueryPanel( {
 	taxonomies,
@@ -31,17 +33,16 @@ export default function QueryPanel( {
 	return [
 		onPostsPerPageChange && (
 			<RangeControl
-				key="query-panel-range-control"
+				key="rpbt-range-posts-per-page"
 				label={ __( 'Number of items', 'related-posts-by-taxonomy' ) }
 				value={ postsPerPage }
 				onChange={ onPostsPerPageChange }
 				min={ 1 }
 				max={ 100 }
-			/>
-		),
+			/> ),
 		onTaxonomiesChange && (
 			<SelectControl
-				key="query-panel-select"
+				key="rpbt-select-taxonomies"
 				label={ __( 'Taxonomies', 'related-posts-by-taxonomy' ) }
 				value={ `${ taxonomies }` }
 				options={  tax_options }
@@ -76,27 +77,34 @@ export default function QueryPanel( {
 }
 
 function get_taxonomy_options() {
-	if( isEmpty( plugin_data )  ) {
+	if( ! plugin_data.hasOwnProperty( 'all_tax' ) ) {
 		return [];
 	}
 
-	let options = [
+	const options = [
 		{
 			label: __( 'all taxonomies', 'related-posts-by-taxonomy' ),
 			value: plugin_data.all_tax,
 		},
 	];
 
-	const taxonomies = plugin_data.taxonomies;
+	return get_options('taxonomies', options);
+}
 
-	for (var key in taxonomies) {
-		if (taxonomies.hasOwnProperty(key)) { 
+function get_options(type, options = []) {
+	if( ! plugin_data.hasOwnProperty( type ) ) {
+		return [];
+	}
+
+	const type_options = plugin_data[ type ];
+	for (var key in type_options) {
+		if (type_options.hasOwnProperty(key)) {
 			options.push({
-				label: taxonomies[key],
+				label: type_options[key],
 				value: key,
 			});
 		}
 	}
-	
+
 	return options;
 }

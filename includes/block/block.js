@@ -10,8 +10,17 @@ const { InspectorControls, BlockDescription } = wp.blocks;
 const { BaseControl } = InspectorControls;
 const { withAPIData, Spinner, Placeholder } = wp.components;
 const { Component } = wp.element;
-const { __ } = wp.i18n;
+const { __, sprintf } = wp.i18n;
 let instances = 0;
+
+var blockStyle = {
+	padding: '20px',
+	textAlign: 'center',
+};
+
+var placeholderStyle = {
+	minHeight: '100px',
+};
 
 class RelatedPostsBlock extends Component {
 	constructor() {

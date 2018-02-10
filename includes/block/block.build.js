@@ -17204,6 +17204,18 @@ function registerRelatedPostsBlock() {
 			posts_per_page: {
 				type: 'int',
 				default: 5
+			},
+			format: {
+				type: 'string',
+				default: 'links'
+			},
+			image_size: {
+				type: 'string',
+				default: 'thumbnail'
+			},
+			columns: {
+				type: 'int',
+				default: 3
 			}
 		},
 
@@ -17305,9 +17317,20 @@ var _wp$components = wp.components,
     Spinner = _wp$components.Spinner,
     Placeholder = _wp$components.Placeholder;
 var Component = wp.element.Component;
-var __ = wp.i18n.__;
+var _wp$i18n = wp.i18n,
+    __ = _wp$i18n.__,
+    sprintf = _wp$i18n.sprintf;
 
 var instances = 0;
+
+var blockStyle = {
+	padding: '20px',
+	textAlign: 'center'
+};
+
+var placeholderStyle = {
+	minHeight: '100px'
+};
 
 var RelatedPostsBlock = function (_Component) {
 	_inherits(RelatedPostsBlock, _Component);
@@ -17353,7 +17376,10 @@ var RelatedPostsBlock = function (_Component) {
 			    setAttributes = _props.setAttributes;
 			var title = attributes.title,
 			    taxonomies = attributes.taxonomies,
-			    posts_per_page = attributes.posts_per_page;
+			    posts_per_page = attributes.posts_per_page,
+			    format = attributes.format,
+			    image_size = attributes.image_size,
+			    columns = attributes.columns;
 
 			var textID = 'rpbt-inspector-text-control-' + this.instanceId;
 
@@ -17383,29 +17409,51 @@ var RelatedPostsBlock = function (_Component) {
 					taxonomies: taxonomies,
 					onTaxonomiesChange: function onTaxonomiesChange(value) {
 						return setAttributes({ taxonomies: value });
+					},
+					format: format,
+					onFormatChange: function onFormatChange(value) {
+						return setAttributes({ format: value });
+					},
+					imageSize: image_size,
+					onImageSizeChange: function onImageSizeChange(value) {
+						return setAttributes({ image_size: value });
+					},
+					columns: columns,
+					onColumnsChange: function onColumnsChange(value) {
+						return setAttributes({ columns: Number(value) });
 					}
 				})
 			);
 
 			var loading = '';
+			var postsFound = 0;
 			if (Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["isUndefined"])(relatedPosts)) {
 				loading = __('Loading posts', 'related-posts-by-taxonomy');
 			} else {
 				if (relatedPosts.hasOwnProperty('posts')) {
-					loading = relatedPosts.posts.length ? '' : __('No posts found.', 'related-posts-by-taxonomy');
+					postsFound = relatedPosts.posts.length ? relatedPosts.posts.length : 0;
+					loading = postsFound ? '' : __('No posts found.', 'related-posts-by-taxonomy');
 				}
 			}
 
-			if (loading) {
-				return [inspectorControls, wp.element.createElement(
+			if (loading || !focus) {
+				var postsFound_msg = __('preview related posts');
+
+				return [inspectorControls, (!focus || !postsFound) && wp.element.createElement(
 					Placeholder,
 					{
+						style: placeholderStyle,
 						key: 'placeholder',
 						icon: 'megaphone',
 						label: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy')
 					},
 					Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["isUndefined"])(relatedPosts) ? wp.element.createElement(Spinner, null) : '',
-					loading
+					loading,
+					postsFound ? wp.element.createElement(
+						'a',
+						{ href: '#' },
+						postsFound_msg
+					) : ''
 				)];
 			}
 
@@ -17420,13 +17468,19 @@ var applyWithAPIData = withAPIData(function (props) {
 	var _props$attributes = props.attributes,
 	    taxonomies = _props$attributes.taxonomies,
 	    title = _props$attributes.title,
-	    posts_per_page = _props$attributes.posts_per_page;
+	    posts_per_page = _props$attributes.posts_per_page,
+	    format = _props$attributes.format,
+	    image_size = _props$attributes.image_size,
+	    columns = _props$attributes.columns;
 
 
 	var query = Object(__WEBPACK_IMPORTED_MODULE_0_querystringify__["stringify"])(Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["pickBy"])({
 		taxonomies: taxonomies,
 		title: title,
-		posts_per_page: posts_per_page
+		posts_per_page: posts_per_page,
+		format: format,
+		image_size: image_size,
+		columns: columns
 	}, function (value) {
 		return !Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["isUndefined"])(value);
 	}), true);
@@ -17544,33 +17598,64 @@ var SelectControl = InspectorControls.SelectControl,
 
 var plugin_data = window.km_rpbt_plugin_data || {};
 var tax_options = get_taxonomy_options();
+var format_options = get_options('formats');
+var img_options = get_options('image_sizes');
 
 function QueryPanel(_ref) {
 	var taxonomies = _ref.taxonomies,
 	    onTaxonomiesChange = _ref.onTaxonomiesChange,
 	    postsPerPage = _ref.postsPerPage,
-	    onPostsPerPageChange = _ref.onPostsPerPageChange;
+	    onPostsPerPageChange = _ref.onPostsPerPageChange,
+	    format = _ref.format,
+	    onFormatChange = _ref.onFormatChange,
+	    imageSize = _ref.imageSize,
+	    onImageSizeChange = _ref.onImageSizeChange,
+	    columns = _ref.columns,
+	    onColumnsChange = _ref.onColumnsChange;
 
 	return [onPostsPerPageChange && wp.element.createElement(RangeControl, {
-		key: 'query-panel-range-control',
+		key: 'rpbt-range-posts-per-page',
 		label: __('Number of items', 'related-posts-by-taxonomy'),
 		value: postsPerPage,
 		onChange: onPostsPerPageChange,
 		min: 1,
 		max: 100
 	}), onTaxonomiesChange && wp.element.createElement(SelectControl, {
-		key: 'query-panel-select',
+		key: 'rpbt-select-taxonomies',
 		label: __('Taxonomies', 'related-posts-by-taxonomy'),
 		value: '' + taxonomies,
 		options: tax_options,
 		onChange: function onChange(value) {
 			onTaxonomiesChange(value);
 		}
+	}), onFormatChange && wp.element.createElement(SelectControl, {
+		key: 'rpbt-select-format',
+		label: __('Format', 'related-posts-by-taxonomy'),
+		value: '' + format,
+		options: format_options,
+		onChange: function onChange(value) {
+			onFormatChange(value);
+		}
+	}), onImageSizeChange && wp.element.createElement(SelectControl, {
+		key: 'rpbt-select-image-size',
+		label: __('Image Size', 'related-posts-by-taxonomy'),
+		value: '' + imageSize,
+		options: img_options,
+		onChange: function onChange(value) {
+			onImageSizeChange(value);
+		}
+	}), onColumnsChange && wp.element.createElement(RangeControl, {
+		key: 'rpbt-range-columns',
+		label: __('Image Columns', 'related-posts-by-taxonomy'),
+		value: columns,
+		onChange: onColumnsChange,
+		min: 1,
+		max: 20
 	})];
 }
 
 function get_taxonomy_options() {
-	if (Object(__WEBPACK_IMPORTED_MODULE_0_lodash__["isEmpty"])(plugin_data)) {
+	if (!plugin_data.hasOwnProperty('all_tax')) {
 		return [];
 	}
 
@@ -17579,12 +17664,21 @@ function get_taxonomy_options() {
 		value: plugin_data.all_tax
 	}];
 
-	var taxonomies = plugin_data.taxonomies;
+	return get_options('taxonomies', options);
+}
 
-	for (var key in taxonomies) {
-		if (taxonomies.hasOwnProperty(key)) {
+function get_options(type) {
+	var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+	if (!plugin_data.hasOwnProperty(type)) {
+		return [];
+	}
+
+	var type_options = plugin_data[type];
+	for (var key in type_options) {
+		if (type_options.hasOwnProperty(key)) {
 			options.push({
-				label: taxonomies[key],
+				label: type_options[key],
 				value: key
 			});
 		}
