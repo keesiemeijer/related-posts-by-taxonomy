@@ -38,6 +38,18 @@ function registerRelatedPostsBlock() {
 					type: 'int',
 					default: 5,
 				},
+				format: {
+					type: 'string',
+					default: 'links',
+				},
+				image_size: {
+					type: 'string',
+					default: 'thumbnail',
+				},
+				columns: {
+					type: 'int',
+					default: 3,
+				},
 		},
 
 		edit: RelatedPostsBlock,

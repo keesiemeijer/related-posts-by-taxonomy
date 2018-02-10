@@ -41,7 +41,7 @@ class RelatedPostsBlock extends Component {
 	render(){
 		const relatedPosts = this.props.relatedPostsByTax.data;
 		const { attributes, focus, setAttributes } = this.props;
-		const { title, taxonomies, posts_per_page } = attributes;
+		const { title, taxonomies, posts_per_page, format, image_size, columns } = attributes;
 		const textID = 'rpbt-inspector-text-control-' + this.instanceId;
 		
 		const inspectorControls = focus && (
@@ -60,47 +60,62 @@ class RelatedPostsBlock extends Component {
 					onPostsPerPageChange={ ( value ) => setAttributes( { posts_per_page: Number( value ) } )}
 					taxonomies={ taxonomies }
 					onTaxonomiesChange={ ( value ) => setAttributes( { taxonomies: value } ) }
+					format={ format }
+					onFormatChange={ ( value ) => setAttributes( { format: value } ) }
+					imageSize={image_size}
+					onImageSizeChange={ ( value ) => setAttributes( { image_size: value } ) }
+					columns={columns}
+					onColumnsChange={ ( value ) => setAttributes( { columns: Number( value ) } )}
 				/>
 			</InspectorControls>
 			);
 
 		let loading = '';
+		let postsFound = 0;
 		if( isUndefined( relatedPosts ) ) {
 			loading = __( 'Loading posts', 'related-posts-by-taxonomy');
 		} else {
 			if( relatedPosts.hasOwnProperty('posts') ) {
-				loading = relatedPosts.posts.length ? '' : __( 'No posts found.', 'related-posts-by-taxonomy' );
+				postsFound = relatedPosts.posts.length ? relatedPosts.posts.length : 0;
+				loading = postsFound ? '' : __( 'No posts found.', 'related-posts-by-taxonomy' );
 			}
 		}
 
-		if ( loading ) {
+		if ( loading || ! focus ) {
+			let postsFound_msg = __('preview related posts');
+
 			return [
 				inspectorControls,
-				<Placeholder
+				(! focus || ! postsFound) && (<Placeholder
+					style={placeholderStyle}
 					key="placeholder"
 					icon="megaphone"
 					label={ __( 'Related Posts by Taxonomy', 'related-posts-by-taxonomy' ) }
 				>
 					{ isUndefined( relatedPosts ) ? <Spinner /> : '' }
 					{ loading }
-				</Placeholder>,
+					{ postsFound ? <a href="#">{ postsFound_msg }</a> : '' }
+				</Placeholder> ),
 			];
 		}
 
 		return [
-				inspectorControls,
-				(<div dangerouslySetInnerHTML={{__html:relatedPosts.rendered}}></div>)
-			];
+			inspectorControls,
+			(<div dangerouslySetInnerHTML={{__html:relatedPosts.rendered}}></div>)
+		];
 	}
 }
 
 const applyWithAPIData = withAPIData( ( props ) => {
-	const { taxonomies, title, posts_per_page } = props.attributes;
+	const { taxonomies, title, posts_per_page, format, image_size, columns } = props.attributes;
 
 	const query = stringify( pickBy( {
 		taxonomies,
 		title,
 		posts_per_page,
+		format,
+		image_size,
+		columns
 	}, value => ! isUndefined( value ) ), true );
 
 	return {

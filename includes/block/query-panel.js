@@ -21,6 +21,12 @@ export default function QueryPanel( {
 	onTaxonomiesChange,
 	postsPerPage,
 	onPostsPerPageChange,
+	format,
+	onFormatChange,
+	imageSize,
+	onImageSizeChange,
+	columns,
+	onColumnsChange,
 } ) {
 	return [
 		onPostsPerPageChange && (
@@ -40,6 +46,31 @@ export default function QueryPanel( {
 				value={ `${ taxonomies }` }
 				options={  tax_options }
 				onChange={ ( value ) => { onTaxonomiesChange( value ); } }
+			/> ),
+		onFormatChange && (
+			<SelectControl
+				key="rpbt-select-format"
+				label={ __( 'Format', 'related-posts-by-taxonomy' ) }
+				value={ `${ format }` }
+				options={  format_options }
+				onChange={ ( value ) => { onFormatChange( value ); } }
+			/> ),
+		onImageSizeChange && (
+			<SelectControl
+				key="rpbt-select-image-size"
+				label={ __( 'Image Size', 'related-posts-by-taxonomy' ) }
+				value={ `${ imageSize }` }
+				options={  img_options }
+				onChange={ ( value ) => { onImageSizeChange( value ); } }
+			/> ),
+		onColumnsChange && (
+			<RangeControl
+				key="rpbt-range-columns"
+				label={ __( 'Image Columns', 'related-posts-by-taxonomy' ) }
+				value={ columns }
+				onChange={ onColumnsChange }
+				min={ 1 }
+				max={ 20 }
 			/> ),
 	];
 }
