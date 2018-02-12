@@ -33,7 +33,7 @@ function km_rpbt_block_editor_assets() {
 	// Scripts.
 	wp_enqueue_script(
 		'rpbt-related-posts-block', // Handle.
-		plugins_url( '/block/block.build.js', dirname( __FILE__ ) ),
+		plugins_url( '/block/block.build.min.js', dirname( __FILE__ ) ),
 		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-utils' )
 	);
 
