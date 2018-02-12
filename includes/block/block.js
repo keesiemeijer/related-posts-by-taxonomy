@@ -4,19 +4,20 @@
 import { stringify } from 'querystringify';
 import { isUndefined, pickBy, debounce } from 'lodash';
 
-
-import QueryPanel from './query-panel';
+/**
+ * WordPress dependencies
+ */
 const { InspectorControls, BlockDescription } = wp.blocks;
 const { BaseControl } = InspectorControls;
 const { withAPIData, Spinner, Placeholder } = wp.components;
 const { Component } = wp.element;
 const { __, sprintf } = wp.i18n;
-let instances = 0;
 
-var blockStyle = {
-	padding: '20px',
-	textAlign: 'center',
-};
+/**
+ * Internal dependencies
+ */
+import QueryPanel from './query-panel';
+let instances = 0;
 
 var placeholderStyle = {
 	minHeight: '100px',

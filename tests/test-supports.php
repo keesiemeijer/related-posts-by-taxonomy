@@ -15,6 +15,7 @@ class KM_RPBT_Plugin_Supports_Tests extends KM_RPBT_UnitTestCase {
 			'cache'                => false,
 			'display_cache_log'    => false,
 			'wp_rest_api'          => false,
+			'editor_block'         => true,
 			'debug'                => false,
 		);
 
@@ -34,6 +35,11 @@ class KM_RPBT_Plugin_Supports_Tests extends KM_RPBT_UnitTestCase {
 	function test_wp_rest_api_support() {
 		$plugin = km_rpbt_plugin();
 		$this->assertFalse( $plugin->plugin_supports( 'wp_rest_api' ) );
+	}
+
+	function test_editor_block_support() {
+		$plugin = km_rpbt_plugin();
+		$this->assertTrue( $plugin->plugin_supports( 'editor_block' ) );
 	}
 
 	function test_debug_support() {

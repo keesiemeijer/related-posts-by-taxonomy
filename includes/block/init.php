@@ -26,7 +26,7 @@ add_action( 'enqueue_block_editor_assets', 'km_rpbt_block_editor_assets' );
  */
 function km_rpbt_block_editor_assets() {
 	$plugin = km_rpbt_plugin();
-	if ( ! ( $plugin && $plugin->plugin_supports( 'wp_rest_api' ) ) ) {
+	if ( ! ( $plugin && $plugin->plugin_supports( 'editor_block' ) ) ) {
 		return;
 	}
 
@@ -56,6 +56,32 @@ function km_rpbt_block_editor_assets() {
 	);
 }
 
+// After the plugin is set up
+add_action( 'wp_loaded', 'rpbt_register_block_type', 15 );
+
+/**
+ * Registers the render callback for the editor block.
+ */
+function rpbt_register_block_type() {
+	if ( ! function_exists( 'register_block_type' ) ) {
+		return;
+	}
+
+	$plugin = km_rpbt_plugin();
+	if ( ! ( $plugin && $plugin->plugin_supports( 'editor_block' ) ) ) {
+		return;
+	}
+
+	register_block_type( 'related-posts-by-taxonomy/related-posts-block', array(
+			'attributes' => array(
+				'taxonomies' => array(
+					'type' => 'string',
+				),
+			),
+			'render_callback' => 'km_rpbt_render_block_related_post',
+		) );
+}
+
 /**
  * Render related posts block on the front end.
  *
@@ -63,23 +89,5 @@ function km_rpbt_block_editor_assets() {
  * @return string Rendered related posts
  */
 function km_rpbt_render_block_related_post( $attributes ) {
-	return '';
-}
 
-if ( function_exists( 'register_block_type' ) ) {
-	$plugin = km_rpbt_plugin();
-	if ( ! ( $plugin && $plugin->plugin_supports( 'wp_rest_api' ) ) ) {
-		return;
-	}
-
-	register_block_type( 'related-posts-by-taxonomy/related-posts-block', array(
-			'attributes'      => array(
-				'taxonomies'      => array(
-					'type' => 'string',
-					'default' => $plugin->all_tax,
-				),
-			),
-
-			'render_callback' => 'rpbt_render_block_related_posts',
-		) );
 }

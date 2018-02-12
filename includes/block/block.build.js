@@ -17164,6 +17164,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__block__ = __webpack_require__(4);
+/**
+ * External dependencies
+ */
 
 
 /**
@@ -17307,7 +17310,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-
+/**
+ * WordPress dependencies
+ */
 var _wp$blocks = wp.blocks,
     InspectorControls = _wp$blocks.InspectorControls,
     BlockDescription = _wp$blocks.BlockDescription;
@@ -17321,12 +17326,12 @@ var _wp$i18n = wp.i18n,
     __ = _wp$i18n.__,
     sprintf = _wp$i18n.sprintf;
 
-var instances = 0;
+/**
+ * Internal dependencies
+ */
 
-var blockStyle = {
-	padding: '20px',
-	textAlign: 'center'
-};
+
+var instances = 0;
 
 var placeholderStyle = {
 	minHeight: '100px'

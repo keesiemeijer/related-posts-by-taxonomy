@@ -145,7 +145,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				return;
 			}
 
-			if ( $this->plugin_supports( 'wp_rest_api' ) ) {
+			if ( is_user_logged_in() || $this->plugin_supports( 'wp_rest_api' ) ) {
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/wp-rest-api.php';
 
 				$rest_api = new Related_Posts_By_Taxonomy_Rest_API();
@@ -169,6 +169,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				'cache'                => false,
 				'display_cache_log'    => false,
 				'wp_rest_api'          => false,
+				'editor_block'         => true,
 				'debug'                => false,
 			);
 

@@ -24,11 +24,6 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @since 2.3.0
 	 */
 	public function register_routes() {
-		$plugin = km_rpbt_plugin();
-
-		if ( ! ( $plugin && $plugin->plugin_supports( 'wp_rest_api' ) ) ) {
-			return;
-		}
 
 		$version = '1';
 		$namespace = 'related-posts-by-taxonomy/v' . $version;
@@ -120,7 +115,16 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @return WP_Error|bool
 	 */
 	public function get_items_permissions_check( $request ) {
-		return apply_filters( 'related_posts_by_taxonomy_wp_rest_api', false );
+
+		$plugin = km_rpbt_plugin();
+		$rest_api = $plugin && $plugin->plugin_supports( 'wp_rest_api' );
+		$user     = is_user_logged_in();
+
+		if ( $user || $rest_api ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

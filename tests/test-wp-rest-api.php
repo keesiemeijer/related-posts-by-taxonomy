@@ -70,6 +70,25 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
+	 * Tests if wp_rest_api filter is set to false (by default).
+	 */
+	function test_wp_rest_Api_not_registered_route() {
+		// Added by setUp().
+		remove_filter( 'related_posts_by_taxonomy_wp_rest_api', '__return_true' );
+
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+
+		$response = rest_do_request( $request );
+		$data     = $response->get_data();
+
+		$this->assertTrue( array_key_exists( 'code', $data ) );
+		$this->assertSame( "rest_no_route", $data['code'] );
+	}
+
+	/**
 	 * Test if the Related_Posts_By_Taxonomy_Rest_API class is loaded
 	 *
 	 * @requires function WP_REST_Controller::register_routes
