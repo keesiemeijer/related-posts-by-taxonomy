@@ -13,9 +13,9 @@ const { registerBlockType } = wp.blocks;
  * Internal dependencies
  */
 import RelatedPostsBlock from './block';
+import { pluginData } from './includes/data';
 
-const plugin_data = window.km_rpbt_plugin_data || {};
-if( ! isEmpty( plugin_data )  ) {
+if( ! isEmpty( pluginData )  ) {
 	registerRelatedPostsBlock();
 }
 
@@ -27,32 +27,6 @@ function registerRelatedPostsBlock() {
 		category: 'widgets',
 		supports: {
 			html: false
-		},
-		attributes: {
-				title: {
-					type: 'string',
-					default: __( 'Related Posts', 'related-posts-by-taxonomy' ),
-				},
-				taxonomies: {
-					type: 'string',
-					default: plugin_data.all_tax,
-				},
-				posts_per_page: {
-					type: 'int',
-					default: 5,
-				},
-				format: {
-					type: 'string',
-					default: 'links',
-				},
-				image_size: {
-					type: 'string',
-					default: 'thumbnail',
-				},
-				columns: {
-					type: 'int',
-					default: 3,
-				},
 		},
 
 		edit: RelatedPostsBlock,

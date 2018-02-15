@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -17153,17 +17153,65 @@
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(3)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(4)(module)))
 
 /***/ }),
 /* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return pluginData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return postTypes; });
+/* unused harmony export getPostTypes */
+/* harmony export (immutable) */ __webpack_exports__["d"] = validatePostType;
+/* harmony export (immutable) */ __webpack_exports__["a"] = getSelectOptions;
+var pluginData = window.km_rpbt_plugin_data || {};
+
+var postTypes = getPostTypes();
+
+function getPostTypes() {
+	if (!pluginData.hasOwnProperty('post_types')) {
+		return [];
+	}
+
+	return pluginData['post_types'];
+}
+
+function validatePostType(postType) {
+	var postTypes = Object.keys(getPostTypes());
+	return !(postTypes.indexOf(postType) === -1);
+}
+
+function getSelectOptions(type) {
+	var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+	if (!pluginData.hasOwnProperty(type)) {
+		return [];
+	}
+
+	var type_options = pluginData[type];
+	for (var key in type_options) {
+		if (type_options.hasOwnProperty(key)) {
+			options.push({
+				label: type_options[key],
+				value: key
+			});
+		}
+	}
+
+	return options;
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__block__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__block__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__includes_data__ = __webpack_require__(1);
 /**
  * External dependencies
  */
@@ -17181,8 +17229,8 @@ var registerBlockType = wp.blocks.registerBlockType;
 
 
 
-var plugin_data = window.km_rpbt_plugin_data || {};
-if (!Object(__WEBPACK_IMPORTED_MODULE_0_lodash__["isEmpty"])(plugin_data)) {
+
+if (!Object(__WEBPACK_IMPORTED_MODULE_0_lodash__["isEmpty"])(__WEBPACK_IMPORTED_MODULE_2__includes_data__["b" /* pluginData */])) {
 	registerRelatedPostsBlock();
 }
 
@@ -17195,32 +17243,6 @@ function registerRelatedPostsBlock() {
 		supports: {
 			html: false
 		},
-		attributes: {
-			title: {
-				type: 'string',
-				default: __('Related Posts', 'related-posts-by-taxonomy')
-			},
-			taxonomies: {
-				type: 'string',
-				default: plugin_data.all_tax
-			},
-			posts_per_page: {
-				type: 'int',
-				default: 5
-			},
-			format: {
-				type: 'string',
-				default: 'links'
-			},
-			image_size: {
-				type: 'string',
-				default: 'thumbnail'
-			},
-			columns: {
-				type: 'int',
-				default: 3
-			}
-		},
 
 		edit: __WEBPACK_IMPORTED_MODULE_1__block__["a" /* default */],
 
@@ -17232,7 +17254,7 @@ function registerRelatedPostsBlock() {
 }
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports) {
 
 var g;
@@ -17259,7 +17281,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -17287,15 +17309,16 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_querystringify__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_querystringify__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_querystringify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_querystringify__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__query_panel__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__includes_query_panel___ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__includes_post_type_control___ = __webpack_require__(8);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17331,6 +17354,7 @@ var _wp$i18n = wp.i18n,
  */
 
 
+
 var instances = 0;
 
 var placeholderStyle = {
@@ -17345,6 +17369,7 @@ var RelatedPostsBlock = function (_Component) {
 
 		var _this = _possibleConstructorReturn(this, (RelatedPostsBlock.__proto__ || Object.getPrototypeOf(RelatedPostsBlock)).apply(this, arguments));
 
+		_this.updatePostTypes = _this.updatePostTypes.bind(_this);
 		_this.handleChange = _this.handleChange.bind(_this);
 		_this.emitChangeDebounced = Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["debounce"])(_this.emitChange, 1000);
 		_this.instanceId = instances++;
@@ -17372,6 +17397,13 @@ var RelatedPostsBlock = function (_Component) {
 			setAttributes({ title: value });
 		}
 	}, {
+		key: 'updatePostTypes',
+		value: function updatePostTypes(post_types) {
+			var setAttributes = this.props.setAttributes;
+
+			setAttributes({ post_types: post_types });
+		}
+	}, {
 		key: 'render',
 		value: function render() {
 			var relatedPosts = this.props.relatedPostsByTax.data;
@@ -17381,6 +17413,7 @@ var RelatedPostsBlock = function (_Component) {
 			    setAttributes = _props.setAttributes;
 			var title = attributes.title,
 			    taxonomies = attributes.taxonomies,
+			    post_types = attributes.post_types,
 			    posts_per_page = attributes.posts_per_page,
 			    format = attributes.format,
 			    image_size = attributes.image_size,
@@ -17406,7 +17439,7 @@ var RelatedPostsBlock = function (_Component) {
 						id: textID
 					})
 				),
-				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_2__query_panel__["a" /* default */], {
+				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_2__includes_query_panel___["a" /* default */], {
 					postsPerPage: posts_per_page,
 					onPostsPerPageChange: function onPostsPerPageChange(value) {
 						return setAttributes({ posts_per_page: Number(value) });
@@ -17427,6 +17460,11 @@ var RelatedPostsBlock = function (_Component) {
 					onColumnsChange: function onColumnsChange(value) {
 						return setAttributes({ columns: Number(value) });
 					}
+				}),
+				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_3__includes_post_type_control___["a" /* default */], {
+					label: __('Post Types'),
+					onChange: this.updatePostTypes,
+					postTypes: post_types
 				})
 			);
 
@@ -17442,7 +17480,7 @@ var RelatedPostsBlock = function (_Component) {
 			}
 
 			if (loading || !focus) {
-				var postsFound_msg = __('preview related posts');
+				var postsFoundText = __('preview related posts');
 
 				return [inspectorControls, (!focus || !postsFound) && wp.element.createElement(
 					Placeholder,
@@ -17457,7 +17495,7 @@ var RelatedPostsBlock = function (_Component) {
 					postsFound ? wp.element.createElement(
 						'a',
 						{ href: '#' },
-						postsFound_msg
+						postsFoundText
 					) : ''
 				)];
 			}
@@ -17472,6 +17510,7 @@ var RelatedPostsBlock = function (_Component) {
 var applyWithAPIData = withAPIData(function (props) {
 	var _props$attributes = props.attributes,
 	    taxonomies = _props$attributes.taxonomies,
+	    post_types = _props$attributes.post_types,
 	    title = _props$attributes.title,
 	    posts_per_page = _props$attributes.posts_per_page,
 	    format = _props$attributes.format,
@@ -17481,6 +17520,7 @@ var applyWithAPIData = withAPIData(function (props) {
 
 	var query = Object(__WEBPACK_IMPORTED_MODULE_0_querystringify__["stringify"])(Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["pickBy"])({
 		taxonomies: taxonomies,
+		post_types: post_types,
 		title: title,
 		posts_per_page: posts_per_page,
 		format: format,
@@ -17498,7 +17538,7 @@ var applyWithAPIData = withAPIData(function (props) {
 /* harmony default export */ __webpack_exports__["a"] = (applyWithAPIData(RelatedPostsBlock));
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17577,13 +17617,14 @@ exports.parse = querystring;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = QueryPanel;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data__ = __webpack_require__(1);
 /**
  * External dependencies
  */
@@ -17601,10 +17642,10 @@ var SelectControl = InspectorControls.SelectControl,
  * Internal dependencies
  */
 
-var plugin_data = window.km_rpbt_plugin_data || {};
+
 var tax_options = get_taxonomy_options();
-var format_options = get_options('formats');
-var img_options = get_options('image_sizes');
+var format_options = Object(__WEBPACK_IMPORTED_MODULE_1__data__["a" /* getSelectOptions */])('formats');
+var img_options = Object(__WEBPACK_IMPORTED_MODULE_1__data__["a" /* getSelectOptions */])('image_sizes');
 
 function QueryPanel(_ref) {
 	var taxonomies = _ref.taxonomies,
@@ -17660,37 +17701,161 @@ function QueryPanel(_ref) {
 }
 
 function get_taxonomy_options() {
-	if (!plugin_data.hasOwnProperty('all_tax')) {
+	if (!__WEBPACK_IMPORTED_MODULE_1__data__["b" /* pluginData */].hasOwnProperty('all_tax')) {
 		return [];
 	}
 
 	var options = [{
 		label: __('all taxonomies', 'related-posts-by-taxonomy'),
-		value: plugin_data.all_tax
+		value: __WEBPACK_IMPORTED_MODULE_1__data__["b" /* pluginData */].all_tax
 	}];
 
-	return get_options('taxonomies', options);
+	return Object(__WEBPACK_IMPORTED_MODULE_1__data__["a" /* getSelectOptions */])('taxonomies', options);
 }
 
-function get_options(type) {
-	var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-	if (!plugin_data.hasOwnProperty(type)) {
-		return [];
-	}
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data__ = __webpack_require__(1);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var type_options = plugin_data[type];
-	for (var key in type_options) {
-		if (type_options.hasOwnProperty(key)) {
-			options.push({
-				label: type_options[key],
-				value: key
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * External dependencies
+ */
+
+
+/**
+ * WordPress dependencies
+ */
+var withInstanceId = wp.components.withInstanceId;
+var InspectorControls = wp.blocks.InspectorControls;
+var BaseControl = InspectorControls.BaseControl;
+var Component = wp.element.Component;
+
+/**
+ * Internal dependencies
+ */
+
+
+
+function getPostTypeObjects() {
+	var postTypeOjects = [];
+
+	for (var key in __WEBPACK_IMPORTED_MODULE_1__data__["c" /* postTypes */]) {
+		if (__WEBPACK_IMPORTED_MODULE_1__data__["c" /* postTypes */].hasOwnProperty(key)) {
+			postTypeOjects.push({
+				post_type: key,
+				label: __WEBPACK_IMPORTED_MODULE_1__data__["c" /* postTypes */][key],
+				checked: false
 			});
 		}
 	}
 
-	return options;
+	return postTypeOjects;
 }
+
+var PostTypeControl = function (_Component) {
+	_inherits(PostTypeControl, _Component);
+
+	function PostTypeControl() {
+		_classCallCheck(this, PostTypeControl);
+
+		var _this = _possibleConstructorReturn(this, (PostTypeControl.__proto__ || Object.getPrototypeOf(PostTypeControl)).apply(this, arguments));
+
+		_this.state = {
+			items: getPostTypeObjects()
+		};
+		return _this;
+	}
+
+	_createClass(PostTypeControl, [{
+		key: 'onChange',
+		value: function onChange(index, e) {
+			var newItems = this.state.items.slice();
+			newItems[index].checked = !newItems[index].checked;
+			this.setState({
+				items: newItems
+			});
+
+			var checked = this.state.items.filter(function (item) {
+				return item.checked;
+			});
+			var postTypes = checked.map(function (obj) {
+				return obj.post_type;
+			});
+
+			if (this.props.onChange) {
+				this.props.onChange(postTypes.join(','));
+			}
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var _this2 = this;
+
+			var _props = this.props,
+			    label = _props.label,
+			    help = _props.help,
+			    instanceId = _props.instanceId,
+			    postTypes = _props.postTypes;
+
+			var id = 'inspector-multi-checkbox-control-' + instanceId;
+
+			var describedBy = void 0;
+			if (help) {
+				describedBy = id + '__help';
+			}
+
+			var postTypesArr = postTypes.split(",");
+			postTypesArr = postTypesArr.filter(function (item) {
+				return Object(__WEBPACK_IMPORTED_MODULE_1__data__["d" /* validatePostType */])(item);
+			});
+
+			return !Object(__WEBPACK_IMPORTED_MODULE_0_lodash__["isEmpty"])(this.state.items) && wp.element.createElement(
+				BaseControl,
+				{ label: label, id: id, help: help, className: 'blocks-radio-control' },
+				this.state.items.map(function (option, index) {
+					return wp.element.createElement(
+						'div',
+						{
+							key: id + '-' + index,
+							className: 'blocks-radio-control__option'
+						},
+						wp.element.createElement('input', {
+							id: id + '-' + index,
+							className: 'blocks-multi-checkbox-control__input',
+							type: 'checkbox',
+							name: id + '-' + index,
+							value: option.post_type,
+							onChange: _this2.onChange.bind(_this2, index),
+							checked: !(postTypesArr.indexOf(option.post_type) === -1),
+							'aria-describedby': !!help ? id + '__help' : undefined
+						}),
+						wp.element.createElement(
+							'label',
+							{ key: option.post_type, htmlFor: id + '-' + index },
+							option.label
+						)
+					);
+				})
+			);
+		}
+	}]);
+
+	return PostTypeControl;
+}(Component);
+
+/* harmony default export */ __webpack_exports__["a"] = (withInstanceId(PostTypeControl));
 
 /***/ })
 /******/ ]);

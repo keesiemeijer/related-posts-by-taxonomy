@@ -77,6 +77,33 @@ function rpbt_register_block_type() {
 				'taxonomies' => array(
 					'type' => 'string',
 				),
+				'post_types' => array(
+					'type' => 'string',
+				),
+				'title' => array(
+					'type' => 'string',
+					'default' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
+				),
+				'taxonomies' => array(
+					'type' => 'string',
+					'default' => 'all',
+				),
+				'posts_per_page' => array(
+					'type' => 'int',
+					'default' => 5,
+				),
+				'format' => array(
+					'type' => 'string',
+					'default' => 'links',
+				),
+				'image_size' => array(
+					'type' => 'string',
+					'default' => 'thumbnail',
+				),
+				'columns' => array(
+					'type' => 'int',
+					'default' => 3,
+				),
 			),
 			'render_callback' => 'km_rpbt_render_block_related_post',
 		) );

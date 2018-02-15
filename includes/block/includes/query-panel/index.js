@@ -13,10 +13,10 @@ const { SelectControl, RangeControl } = InspectorControls;
 /**
  * Internal dependencies
  */
-const plugin_data = window.km_rpbt_plugin_data || {};
+import { pluginData, getSelectOptions } from '../data';
 const tax_options = get_taxonomy_options();
-const format_options = get_options('formats');
-const img_options = get_options('image_sizes');
+const format_options = getSelectOptions('formats');
+const img_options = getSelectOptions('image_sizes');
 
 export default function QueryPanel( {
 	taxonomies,
@@ -77,34 +77,16 @@ export default function QueryPanel( {
 }
 
 function get_taxonomy_options() {
-	if( ! plugin_data.hasOwnProperty( 'all_tax' ) ) {
+	if( ! pluginData.hasOwnProperty( 'all_tax' ) ) {
 		return [];
 	}
 
 	const options = [
 		{
 			label: __( 'all taxonomies', 'related-posts-by-taxonomy' ),
-			value: plugin_data.all_tax,
+			value: pluginData.all_tax,
 		},
 	];
 
-	return get_options('taxonomies', options);
-}
-
-function get_options(type, options = []) {
-	if( ! plugin_data.hasOwnProperty( type ) ) {
-		return [];
-	}
-
-	const type_options = plugin_data[ type ];
-	for (var key in type_options) {
-		if (type_options.hasOwnProperty(key)) {
-			options.push({
-				label: type_options[key],
-				value: key,
-			});
-		}
-	}
-
-	return options;
+	return getSelectOptions('taxonomies', options);
 }

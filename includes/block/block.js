@@ -16,7 +16,8 @@ const { __, sprintf } = wp.i18n;
 /**
  * Internal dependencies
  */
-import QueryPanel from './query-panel';
+import QueryPanel from './includes/query-panel/';
+import PostTypeControl from './includes/post-type-control/';
 let instances = 0;
 
 var placeholderStyle = {
@@ -27,6 +28,7 @@ class RelatedPostsBlock extends Component {
 	constructor() {
 		super( ...arguments );
 
+		this.updatePostTypes = this.updatePostTypes.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.emitChangeDebounced = debounce( this.emitChange, 1000);
 		this.instanceId = instances++;
@@ -48,12 +50,17 @@ class RelatedPostsBlock extends Component {
 		setAttributes( { title: value } );
 	}
 
+	updatePostTypes( post_types ) {
+		const { setAttributes } = this.props;
+		setAttributes( { post_types: post_types } );
+	}
+
 	render(){
 		const relatedPosts = this.props.relatedPostsByTax.data;
 		const { attributes, focus, setAttributes } = this.props;
-		const { title, taxonomies, posts_per_page, format, image_size, columns } = attributes;
+		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
 		const textID = 'rpbt-inspector-text-control-' + this.instanceId;
-		
+
 		const inspectorControls = focus && (
 			<InspectorControls key="inspector">
 				<h3>{ __( 'Related Posts Settings' ) }</h3>
@@ -75,7 +82,12 @@ class RelatedPostsBlock extends Component {
 					imageSize={image_size}
 					onImageSizeChange={ ( value ) => setAttributes( { image_size: value } ) }
 					columns={columns}
-					onColumnsChange={ ( value ) => setAttributes( { columns: Number( value ) } )}
+					onColumnsChange={ ( value ) => setAttributes( { columns: Number( value ) } ) }
+				/>
+				<PostTypeControl
+					label={ __( 'Post Types' ) }
+					onChange={ this.updatePostTypes }
+					postTypes={ post_types }
 				/>
 			</InspectorControls>
 			);
@@ -92,7 +104,7 @@ class RelatedPostsBlock extends Component {
 		}
 
 		if ( loading || ! focus ) {
-			let postsFound_msg = __('preview related posts');
+			let postsFoundText = __('preview related posts');
 
 			return [
 				inspectorControls,
@@ -104,7 +116,7 @@ class RelatedPostsBlock extends Component {
 				>
 					{ isUndefined( relatedPosts ) ? <Spinner /> : '' }
 					{ loading }
-					{ postsFound ? <a href="#">{ postsFound_msg }</a> : '' }
+					{ postsFound ? <a href="#">{ postsFoundText }</a> : '' }
 				</Placeholder> ),
 			];
 		}
@@ -117,10 +129,11 @@ class RelatedPostsBlock extends Component {
 }
 
 const applyWithAPIData = withAPIData( ( props ) => {
-	const { taxonomies, title, posts_per_page, format, image_size, columns } = props.attributes;
+	const { taxonomies, post_types, title, posts_per_page, format, image_size, columns } = props.attributes;
 
 	const query = stringify( pickBy( {
 		taxonomies,
+		post_types,
 		title,
 		posts_per_page,
 		format,
