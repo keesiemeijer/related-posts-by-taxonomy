@@ -41,6 +41,15 @@ class PostTypeControl extends Component {
 		}
 	}
 
+	updatePostTypeState( postTypes ) {
+		let state = this.state.items;
+
+		state = state.map( ( option, index ) => {
+			option['checked'] = ( -1 !== postTypes.indexOf( option['post_type'] ) );
+			return option;
+		} );
+	}
+
 	onChange( index, e ) {
 		let newItems = this.state.items.slice();
 		newItems[index].checked = !newItems[index].checked
@@ -52,7 +61,7 @@ class PostTypeControl extends Component {
 		const postTypes = checked.map( (obj) => obj.post_type );
 
 		if ( this.props.onChange ) {
-			this.props.onChange( postTypes.join(',') );
+			this.props.onChange( postTypes.join(','), e );
 		}
 	}
 
@@ -65,24 +74,26 @@ class PostTypeControl extends Component {
 			describedBy = id + '__help';
 		}
 
-		let postTypesArr = postTypes.split(",");
-		postTypesArr = postTypesArr.filter( item => validatePostType( item ) );
+		let checked = postTypes.split(",");
+		checked = checked.filter( item => validatePostType( item ) );
+
+		this.updatePostTypeState( checked );
 
 		return ! isEmpty( this.state.items ) && (
 			<BaseControl label={ label } id={ id } help={ help } className="blocks-radio-control">
 				{ this.state.items.map( ( option, index ) =>
 					<div
 						key={ ( id + '-' + index ) }
-						className="blocks-radio-control__option"
+						className="blocks-checkbox-control__option"
 					>
 						<input
 							id={ ( id + '-' + index ) }
-							className="blocks-multi-checkbox-control__input"
+							className="blocks-checkbox-control__input"
 							type="checkbox"
 							name={ id + '-' + index}
 							value={ option.post_type }
 							onChange={this.onChange.bind(this, index)}
-							checked={ ! ( postTypesArr.indexOf( option.post_type ) === -1 ) }
+							checked={ ! ( checked.indexOf( option.post_type ) === -1 ) }
 							aria-describedby={ !! help ? id + '__help' : undefined }
 						/>
 						<label key={ option.post_type } htmlFor={ ( id + '-' + index ) }>

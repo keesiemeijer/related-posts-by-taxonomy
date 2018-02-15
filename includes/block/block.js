@@ -16,8 +16,10 @@ const { __, sprintf } = wp.i18n;
 /**
  * Internal dependencies
  */
+import { postTypes, getPostField } from './includes/data';
 import QueryPanel from './includes/query-panel/';
 import PostTypeControl from './includes/post-type-control/';
+
 let instances = 0;
 
 var placeholderStyle = {
@@ -50,16 +52,23 @@ class RelatedPostsBlock extends Component {
 		setAttributes( { title: value } );
 	}
 
-	updatePostTypes( post_types ) {
+	updatePostTypes( post_types, e ) {
 		const { setAttributes } = this.props;
+		e.target.checked = true;
 		setAttributes( { post_types: post_types } );
 	}
 
 	render(){
+		const textID = 'rpbt-inspector-text-control-' + this.instanceId;
 		const relatedPosts = this.props.relatedPostsByTax.data;
 		const { attributes, focus, setAttributes } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
-		const textID = 'rpbt-inspector-text-control-' + this.instanceId;
+
+		let checked_post_types = post_types;
+		if( isUndefined( post_types ) || ! post_types ) {
+			// Use post type from the current post if not set.
+			checked_post_types = getPostField('type');
+		}
 
 		const inspectorControls = focus && (
 			<InspectorControls key="inspector">
@@ -87,7 +96,7 @@ class RelatedPostsBlock extends Component {
 				<PostTypeControl
 					label={ __( 'Post Types' ) }
 					onChange={ this.updatePostTypes }
-					postTypes={ post_types }
+					postTypes={ checked_post_types }
 				/>
 			</InspectorControls>
 			);
@@ -130,8 +139,7 @@ class RelatedPostsBlock extends Component {
 
 const applyWithAPIData = withAPIData( ( props ) => {
 	const { taxonomies, post_types, title, posts_per_page, format, image_size, columns } = props.attributes;
-
-	const query = stringify( pickBy( {
+	const attributes = {
 		taxonomies,
 		post_types,
 		title,
@@ -139,8 +147,18 @@ const applyWithAPIData = withAPIData( ( props ) => {
 		format,
 		image_size,
 		columns
-	}, value => ! isUndefined( value ) ), true );
+	};
 
+	const postID = getPostField('id');
+	const postType = getPostField('type');
+
+	if( attributes['post_types'] && ( attributes['post_types'] === postType ) ) {
+		// Not needed in the query.
+		// The post type defaults to the post type of the current post
+		delete attributes['post_types'];
+	}
+
+	const query = stringify( pickBy( attributes, value => ! isUndefined( value ) ), true );
 	return {
 		relatedPostsByTax: `/related-posts-by-taxonomy/v1/posts/${_wpGutenbergPost.id}` + `${query}`
 	};

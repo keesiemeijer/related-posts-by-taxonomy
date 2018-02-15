@@ -1,3 +1,5 @@
+import { isUndefined } from 'lodash';
+
 export const pluginData = window.km_rpbt_plugin_data || {};
 
 export const postTypes = getPostTypes();
@@ -13,6 +15,14 @@ export function getPostTypes() {
 export function validatePostType( postType ){
 	const postTypes = Object.keys( getPostTypes() );
 	return ! ( postTypes.indexOf( postType ) === -1 );
+}
+
+export function getPostField(field) {
+	if(isUndefined( _wpGutenbergPost[ field ] ) ) {
+		return '';
+	}
+
+	return _wpGutenbergPost[field];
 }
 
 export function getSelectOptions(type, options = []) {
