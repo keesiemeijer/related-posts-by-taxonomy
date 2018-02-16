@@ -35,7 +35,7 @@ function getPostTypeObjects() {
 class PostTypeControl extends Component {
 	constructor() {
 		super( ...arguments );
-		
+
 		// Set the state with default post type objects.
 		this.state = {
 			items: getPostTypeObjects()

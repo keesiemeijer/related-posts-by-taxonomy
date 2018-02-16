@@ -18,7 +18,6 @@ const { __, sprintf } = wp.i18n;
  */
 import { getPostField } from './includes/data';
 import QueryPanel from './includes/query-panel/';
-import PostTypeControl from './includes/post-type-control/';
 
 let instances = 0;
 
@@ -75,7 +74,6 @@ class RelatedPostsBlock extends Component {
 
 		const inspectorControls = focus && (
 			<InspectorControls key="inspector">
-				<h3>{ __( 'Related Posts Settings' ) }</h3>
 				<BaseControl label={ __( 'Title' , 'related-posts-by-taxonomy') } id={ textID }>
 					<input className="blocks-text-control__input"
 						type="text"
@@ -95,11 +93,8 @@ class RelatedPostsBlock extends Component {
 					onImageSizeChange={ ( value ) => setAttributes( { image_size: value } ) }
 					columns={columns}
 					onColumnsChange={ ( value ) => setAttributes( { columns: Number( value ) } ) }
-				/>
-				<PostTypeControl
-					label={ __( 'Post Types' ) }
-					onChange={ this.updatePostTypes }
 					postTypes={ checkedPostTypes }
+					onPostTypesChange={ this.updatePostTypes }
 				/>
 			</InspectorControls>
 			);

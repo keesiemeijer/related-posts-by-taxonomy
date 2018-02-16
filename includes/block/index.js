@@ -25,6 +25,7 @@ function registerRelatedPostsBlock() {
 		title: __( 'Related Posts by Taxonomy', 'related-posts-by-taxonomy' ),
 		icon: 'megaphone',
 		category: 'widgets',
+		description: __( 'This block Displays related posts by taxonomy. The preview of the related posts might not be the same as the display in the front end of your site.', 'related-posts-by-taxonomy' ),
 		supports: {
 			html: false
 		},

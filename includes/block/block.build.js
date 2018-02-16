@@ -17258,6 +17258,7 @@ function registerRelatedPostsBlock() {
 		title: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy'),
 		icon: 'megaphone',
 		category: 'widgets',
+		description: __('This block Displays related posts by taxonomy. The preview of the related posts might not be the same as the display in the front end of your site.', 'related-posts-by-taxonomy'),
 		supports: {
 			html: false
 		},
@@ -17337,7 +17338,6 @@ module.exports = function(module) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__includes_data__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__includes_query_panel___ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__includes_post_type_control___ = __webpack_require__(8);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17371,7 +17371,6 @@ var _wp$i18n = wp.i18n,
 /**
  * Internal dependencies
  */
-
 
 
 
@@ -17456,11 +17455,6 @@ var RelatedPostsBlock = function (_Component) {
 				InspectorControls,
 				{ key: 'inspector' },
 				wp.element.createElement(
-					'h3',
-					null,
-					__('Related Posts Settings')
-				),
-				wp.element.createElement(
 					BaseControl,
 					{ label: __('Title', 'related-posts-by-taxonomy'), id: textID },
 					wp.element.createElement('input', { className: 'blocks-text-control__input',
@@ -17490,12 +17484,9 @@ var RelatedPostsBlock = function (_Component) {
 					columns: columns,
 					onColumnsChange: function onColumnsChange(value) {
 						return setAttributes({ columns: Number(value) });
-					}
-				}),
-				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_4__includes_post_type_control___["a" /* default */], {
-					label: __('Post Types'),
-					onChange: this.updatePostTypes,
-					postTypes: checkedPostTypes
+					},
+					postTypes: checkedPostTypes,
+					onPostTypesChange: this.updatePostTypes
 				})
 			);
 
@@ -17665,6 +17656,7 @@ exports.parse = querystring;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__post_type_control___ = __webpack_require__(8);
 /**
  * External dependencies
  */
@@ -17683,6 +17675,7 @@ var SelectControl = InspectorControls.SelectControl,
  */
 
 
+
 var tax_options = get_taxonomy_options();
 var format_options = Object(__WEBPACK_IMPORTED_MODULE_1__data__["c" /* getSelectOptions */])('formats');
 var img_options = Object(__WEBPACK_IMPORTED_MODULE_1__data__["c" /* getSelectOptions */])('image_sizes');
@@ -17697,7 +17690,9 @@ function QueryPanel(_ref) {
 	    imageSize = _ref.imageSize,
 	    onImageSizeChange = _ref.onImageSizeChange,
 	    columns = _ref.columns,
-	    onColumnsChange = _ref.onColumnsChange;
+	    onColumnsChange = _ref.onColumnsChange,
+	    postTypes = _ref.postTypes,
+	    onPostTypesChange = _ref.onPostTypesChange;
 
 	return [onPostsPerPageChange && wp.element.createElement(RangeControl, {
 		key: 'rpbt-range-posts-per-page',
@@ -17714,6 +17709,10 @@ function QueryPanel(_ref) {
 		onChange: function onChange(value) {
 			onTaxonomiesChange(value);
 		}
+	}), onPostTypesChange && wp.element.createElement(__WEBPACK_IMPORTED_MODULE_2__post_type_control___["a" /* default */], {
+		label: __('Post Types'),
+		onChange: onPostTypesChange,
+		postTypes: postTypes
 	}), onFormatChange && wp.element.createElement(SelectControl, {
 		key: 'rpbt-select-format',
 		label: __('Format', 'related-posts-by-taxonomy'),

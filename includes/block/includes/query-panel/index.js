@@ -13,7 +13,9 @@ const { SelectControl, RangeControl } = InspectorControls;
 /**
  * Internal dependencies
  */
+
 import { pluginData, getSelectOptions } from '../data';
+import PostTypeControl from '../post-type-control/';
 const tax_options = get_taxonomy_options();
 const format_options = getSelectOptions('formats');
 const img_options = getSelectOptions('image_sizes');
@@ -29,6 +31,8 @@ export default function QueryPanel( {
 	onImageSizeChange,
 	columns,
 	onColumnsChange,
+	postTypes,
+	onPostTypesChange,
 } ) {
 	return [
 		onPostsPerPageChange && (
@@ -47,6 +51,12 @@ export default function QueryPanel( {
 				value={ `${ taxonomies }` }
 				options={  tax_options }
 				onChange={ ( value ) => { onTaxonomiesChange( value ); } }
+			/> ),
+		onPostTypesChange && (
+			<PostTypeControl
+				label={ __( 'Post Types' ) }
+				onChange={ onPostTypesChange }
+				postTypes={ postTypes }
 			/> ),
 		onFormatChange && (
 			<SelectControl
