@@ -14,16 +14,16 @@ const { Component } = wp.element;
 /**
  * Internal dependencies
  */
-import { postTypes, validatePostType } from '../data';
+import { _postTypes, validatePostType } from '../data';
 
 function getPostTypeObjects() {
 	let postTypeOjects = [];
 
-	for (var key in postTypes) {
-		if (postTypes.hasOwnProperty(key)) {
+	for (var key in _postTypes) {
+		if (_postTypes.hasOwnProperty(key)) {
 			postTypeOjects.push({
 				post_type: key,
-				label: postTypes[key],
+				label: _postTypes[key],
 				checked: false,
 			});
 		}
@@ -35,7 +35,8 @@ function getPostTypeObjects() {
 class PostTypeControl extends Component {
 	constructor() {
 		super( ...arguments );
-
+		
+		// Set the state with default post type objects.
 		this.state = {
 			items: getPostTypeObjects()
 		}
@@ -44,13 +45,15 @@ class PostTypeControl extends Component {
 	updatePostTypeState( postTypes ) {
 		let state = this.state.items;
 
+		// Todo: find out why this updates this.state?
 		state = state.map( ( option, index ) => {
 			option['checked'] = ( -1 !== postTypes.indexOf( option['post_type'] ) );
 			return option;
 		} );
 	}
 
-	onChange( index, e ) {
+	onChange( index ) {
+		// Update the state.
 		let newItems = this.state.items.slice();
 		newItems[index].checked = !newItems[index].checked
 		this.setState({
@@ -61,7 +64,7 @@ class PostTypeControl extends Component {
 		const postTypes = checked.map( (obj) => obj.post_type );
 
 		if ( this.props.onChange ) {
-			this.props.onChange( postTypes.join(','), e );
+			this.props.onChange( postTypes.join(',') );
 		}
 	}
 

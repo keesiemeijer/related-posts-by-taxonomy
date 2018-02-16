@@ -16,7 +16,7 @@ const { __, sprintf } = wp.i18n;
 /**
  * Internal dependencies
  */
-import { postTypes, getPostField } from './includes/data';
+import { getPostField } from './includes/data';
 import QueryPanel from './includes/query-panel/';
 import PostTypeControl from './includes/post-type-control/';
 
@@ -31,30 +31,33 @@ class RelatedPostsBlock extends Component {
 		super( ...arguments );
 
 		this.updatePostTypes = this.updatePostTypes.bind(this);
-		this.handleChange = this.handleChange.bind(this);
-		this.emitChangeDebounced = debounce( this.emitChange, 1000);
+
+		// The title is updated 1 second after a change.
+		// This allows the user more time to type.
+		this.onTitleChange = this.onTitleChange.bind(this);
+		this.titleDebounced = debounce( this.updateTitle, 1000);
+
 		this.instanceId = instances++;
 	}
 
 	componentWillUnmount() {
-		this.emitChangeDebounced.cancel();
+		this.titleDebounced.cancel();
 	}
 
-	handleChange(e) {
+	onTitleChange(e) {
 		// React pools events, so we read the value before debounce.
 		// Alternately we could call `event.persist()` and pass the entire event.
 		// For more info see reactjs.org/docs/events.html#event-pooling
-		this.emitChangeDebounced(e.target.value);
+		this.titleDebounced(e.target.value);
 	}
 
-	emitChange(value) {
+	updateTitle(value) {
 		const { setAttributes } = this.props;
 		setAttributes( { title: value } );
 	}
 
-	updatePostTypes( post_types, e ) {
+	updatePostTypes( post_types ) {
 		const { setAttributes } = this.props;
-		e.target.checked = true;
 		setAttributes( { post_types: post_types } );
 	}
 
@@ -64,19 +67,19 @@ class RelatedPostsBlock extends Component {
 		const { attributes, focus, setAttributes } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
 
-		let checked_post_types = post_types;
+		let checkedPostTypes = post_types;
 		if( isUndefined( post_types ) || ! post_types ) {
-			// Use post type from the current post if not set.
-			checked_post_types = getPostField('type');
+			// Use the post type from the current post if not set.
+			checkedPostTypes = getPostField('type');
 		}
 
 		const inspectorControls = focus && (
 			<InspectorControls key="inspector">
 				<h3>{ __( 'Related Posts Settings' ) }</h3>
-				<BaseControl label={ 'Title' } id={ textID }>
+				<BaseControl label={ __( 'Title' , 'related-posts-by-taxonomy') } id={ textID }>
 					<input className="blocks-text-control__input"
 						type="text"
-						onChange={this.handleChange}
+						onChange={this.onTitleChange}
 						defaultValue={title}
 						id={textID}
 					/>
@@ -96,7 +99,7 @@ class RelatedPostsBlock extends Component {
 				<PostTypeControl
 					label={ __( 'Post Types' ) }
 					onChange={ this.updatePostTypes }
-					postTypes={ checked_post_types }
+					postTypes={ checkedPostTypes }
 				/>
 			</InspectorControls>
 			);
@@ -153,14 +156,14 @@ const applyWithAPIData = withAPIData( ( props ) => {
 	const postType = getPostField('type');
 
 	if( attributes['post_types'] && ( attributes['post_types'] === postType ) ) {
-		// Not needed in the query.
-		// The post type defaults to the post type of the current post
+		// The post type isn't needed in the query (if not set).
+		// It defaults to the post type of the current post.
 		delete attributes['post_types'];
 	}
 
 	const query = stringify( pickBy( attributes, value => ! isUndefined( value ) ), true );
 	return {
-		relatedPostsByTax: `/related-posts-by-taxonomy/v1/posts/${_wpGutenbergPost.id}` + `${query}`
+		relatedPostsByTax: `/related-posts-by-taxonomy/v1/posts/${postID}` + `${query}`
 	};
 } );
 

@@ -2,7 +2,7 @@ import { isUndefined } from 'lodash';
 
 export const pluginData = window.km_rpbt_plugin_data || {};
 
-export const postTypes = getPostTypes();
+export const _postTypes = getPostTypes();
 
 export function getPostTypes() {
 	if( ! pluginData.hasOwnProperty( 'post_types' ) ) {
@@ -18,7 +18,12 @@ export function validatePostType( postType ){
 }
 
 export function getPostField(field) {
-	if(isUndefined( _wpGutenbergPost[ field ] ) ) {
+	// Todo: Check if there is a native function to return current post fields.
+	if (isUndefined( _wpGutenbergPost ) ) {
+		return '';
+	}
+
+	if (! _wpGutenbergPost.hasOwnProperty(field) ) {
 		return '';
 	}
 

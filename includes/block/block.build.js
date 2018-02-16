@@ -17160,19 +17160,19 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return pluginData; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return postTypes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return pluginData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _postTypes; });
 /* unused harmony export getPostTypes */
 /* harmony export (immutable) */ __webpack_exports__["e"] = validatePostType;
-/* harmony export (immutable) */ __webpack_exports__["a"] = getPostField;
-/* harmony export (immutable) */ __webpack_exports__["b"] = getSelectOptions;
+/* harmony export (immutable) */ __webpack_exports__["b"] = getPostField;
+/* harmony export (immutable) */ __webpack_exports__["c"] = getSelectOptions;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
 
 
 var pluginData = window.km_rpbt_plugin_data || {};
 
-var postTypes = getPostTypes();
+var _postTypes = getPostTypes();
 
 function getPostTypes() {
 	if (!pluginData.hasOwnProperty('post_types')) {
@@ -17188,7 +17188,12 @@ function validatePostType(postType) {
 }
 
 function getPostField(field) {
-	if (Object(__WEBPACK_IMPORTED_MODULE_0_lodash__["isUndefined"])(_wpGutenbergPost[field])) {
+	// Todo: Check if there is a native function to return current post fields.
+	if (Object(__WEBPACK_IMPORTED_MODULE_0_lodash__["isUndefined"])(_wpGutenbergPost)) {
+		return '';
+	}
+
+	if (!_wpGutenbergPost.hasOwnProperty(field)) {
 		return '';
 	}
 
@@ -17243,7 +17248,7 @@ var registerBlockType = wp.blocks.registerBlockType;
 
 
 
-if (!Object(__WEBPACK_IMPORTED_MODULE_0_lodash__["isEmpty"])(__WEBPACK_IMPORTED_MODULE_2__includes_data__["c" /* pluginData */])) {
+if (!Object(__WEBPACK_IMPORTED_MODULE_0_lodash__["isEmpty"])(__WEBPACK_IMPORTED_MODULE_2__includes_data__["d" /* pluginData */])) {
 	registerRelatedPostsBlock();
 }
 
@@ -17386,8 +17391,12 @@ var RelatedPostsBlock = function (_Component) {
 		var _this = _possibleConstructorReturn(this, (RelatedPostsBlock.__proto__ || Object.getPrototypeOf(RelatedPostsBlock)).apply(this, arguments));
 
 		_this.updatePostTypes = _this.updatePostTypes.bind(_this);
-		_this.handleChange = _this.handleChange.bind(_this);
-		_this.emitChangeDebounced = Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["debounce"])(_this.emitChange, 1000);
+
+		// The title is updated 1 second after a change.
+		// This allows the user more time to type.
+		_this.onTitleChange = _this.onTitleChange.bind(_this);
+		_this.titleDebounced = Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["debounce"])(_this.updateTitle, 1000);
+
 		_this.instanceId = instances++;
 		return _this;
 	}
@@ -17395,29 +17404,28 @@ var RelatedPostsBlock = function (_Component) {
 	_createClass(RelatedPostsBlock, [{
 		key: 'componentWillUnmount',
 		value: function componentWillUnmount() {
-			this.emitChangeDebounced.cancel();
+			this.titleDebounced.cancel();
 		}
 	}, {
-		key: 'handleChange',
-		value: function handleChange(e) {
+		key: 'onTitleChange',
+		value: function onTitleChange(e) {
 			// React pools events, so we read the value before debounce.
 			// Alternately we could call `event.persist()` and pass the entire event.
 			// For more info see reactjs.org/docs/events.html#event-pooling
-			this.emitChangeDebounced(e.target.value);
+			this.titleDebounced(e.target.value);
 		}
 	}, {
-		key: 'emitChange',
-		value: function emitChange(value) {
+		key: 'updateTitle',
+		value: function updateTitle(value) {
 			var setAttributes = this.props.setAttributes;
 
 			setAttributes({ title: value });
 		}
 	}, {
 		key: 'updatePostTypes',
-		value: function updatePostTypes(post_types, e) {
+		value: function updatePostTypes(post_types) {
 			var setAttributes = this.props.setAttributes;
 
-			e.target.checked = true;
 			setAttributes({ post_types: post_types });
 		}
 	}, {
@@ -17438,10 +17446,10 @@ var RelatedPostsBlock = function (_Component) {
 			    columns = attributes.columns;
 
 
-			var checked_post_types = post_types;
+			var checkedPostTypes = post_types;
 			if (Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["isUndefined"])(post_types) || !post_types) {
-				// Use post type from the current post if not set.
-				checked_post_types = Object(__WEBPACK_IMPORTED_MODULE_2__includes_data__["a" /* getPostField */])('type');
+				// Use the post type from the current post if not set.
+				checkedPostTypes = Object(__WEBPACK_IMPORTED_MODULE_2__includes_data__["b" /* getPostField */])('type');
 			}
 
 			var inspectorControls = focus && wp.element.createElement(
@@ -17454,10 +17462,10 @@ var RelatedPostsBlock = function (_Component) {
 				),
 				wp.element.createElement(
 					BaseControl,
-					{ label: 'Title', id: textID },
+					{ label: __('Title', 'related-posts-by-taxonomy'), id: textID },
 					wp.element.createElement('input', { className: 'blocks-text-control__input',
 						type: 'text',
-						onChange: this.handleChange,
+						onChange: this.onTitleChange,
 						defaultValue: title,
 						id: textID
 					})
@@ -17487,7 +17495,7 @@ var RelatedPostsBlock = function (_Component) {
 				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_4__includes_post_type_control___["a" /* default */], {
 					label: __('Post Types'),
 					onChange: this.updatePostTypes,
-					postTypes: checked_post_types
+					postTypes: checkedPostTypes
 				})
 			);
 
@@ -17550,12 +17558,12 @@ var applyWithAPIData = withAPIData(function (props) {
 		columns: columns
 	};
 
-	var postID = Object(__WEBPACK_IMPORTED_MODULE_2__includes_data__["a" /* getPostField */])('id');
-	var postType = Object(__WEBPACK_IMPORTED_MODULE_2__includes_data__["a" /* getPostField */])('type');
+	var postID = Object(__WEBPACK_IMPORTED_MODULE_2__includes_data__["b" /* getPostField */])('id');
+	var postType = Object(__WEBPACK_IMPORTED_MODULE_2__includes_data__["b" /* getPostField */])('type');
 
 	if (attributes['post_types'] && attributes['post_types'] === postType) {
-		// Not needed in the query.
-		// The post type defaults to the post type of the current post
+		// The post type isn't needed in the query (if not set).
+		// It defaults to the post type of the current post.
 		delete attributes['post_types'];
 	}
 
@@ -17563,7 +17571,7 @@ var applyWithAPIData = withAPIData(function (props) {
 		return !Object(__WEBPACK_IMPORTED_MODULE_1_lodash__["isUndefined"])(value);
 	}), true);
 	return {
-		relatedPostsByTax: '/related-posts-by-taxonomy/v1/posts/' + _wpGutenbergPost.id + ('' + query)
+		relatedPostsByTax: '/related-posts-by-taxonomy/v1/posts/' + postID + ('' + query)
 	};
 });
 
@@ -17676,8 +17684,8 @@ var SelectControl = InspectorControls.SelectControl,
 
 
 var tax_options = get_taxonomy_options();
-var format_options = Object(__WEBPACK_IMPORTED_MODULE_1__data__["b" /* getSelectOptions */])('formats');
-var img_options = Object(__WEBPACK_IMPORTED_MODULE_1__data__["b" /* getSelectOptions */])('image_sizes');
+var format_options = Object(__WEBPACK_IMPORTED_MODULE_1__data__["c" /* getSelectOptions */])('formats');
+var img_options = Object(__WEBPACK_IMPORTED_MODULE_1__data__["c" /* getSelectOptions */])('image_sizes');
 
 function QueryPanel(_ref) {
 	var taxonomies = _ref.taxonomies,
@@ -17733,16 +17741,16 @@ function QueryPanel(_ref) {
 }
 
 function get_taxonomy_options() {
-	if (!__WEBPACK_IMPORTED_MODULE_1__data__["c" /* pluginData */].hasOwnProperty('all_tax')) {
+	if (!__WEBPACK_IMPORTED_MODULE_1__data__["d" /* pluginData */].hasOwnProperty('all_tax')) {
 		return [];
 	}
 
 	var options = [{
 		label: __('all taxonomies', 'related-posts-by-taxonomy'),
-		value: __WEBPACK_IMPORTED_MODULE_1__data__["c" /* pluginData */].all_tax
+		value: __WEBPACK_IMPORTED_MODULE_1__data__["d" /* pluginData */].all_tax
 	}];
 
-	return Object(__WEBPACK_IMPORTED_MODULE_1__data__["b" /* getSelectOptions */])('taxonomies', options);
+	return Object(__WEBPACK_IMPORTED_MODULE_1__data__["c" /* getSelectOptions */])('taxonomies', options);
 }
 
 /***/ }),
@@ -17783,11 +17791,11 @@ var Component = wp.element.Component;
 function getPostTypeObjects() {
 	var postTypeOjects = [];
 
-	for (var key in __WEBPACK_IMPORTED_MODULE_1__data__["d" /* postTypes */]) {
-		if (__WEBPACK_IMPORTED_MODULE_1__data__["d" /* postTypes */].hasOwnProperty(key)) {
+	for (var key in __WEBPACK_IMPORTED_MODULE_1__data__["a" /* _postTypes */]) {
+		if (__WEBPACK_IMPORTED_MODULE_1__data__["a" /* _postTypes */].hasOwnProperty(key)) {
 			postTypeOjects.push({
 				post_type: key,
-				label: __WEBPACK_IMPORTED_MODULE_1__data__["d" /* postTypes */][key],
+				label: __WEBPACK_IMPORTED_MODULE_1__data__["a" /* _postTypes */][key],
 				checked: false
 			});
 		}
@@ -17802,6 +17810,7 @@ var PostTypeControl = function (_Component) {
 	function PostTypeControl() {
 		_classCallCheck(this, PostTypeControl);
 
+		// Set the state with default post type objects.
 		var _this = _possibleConstructorReturn(this, (PostTypeControl.__proto__ || Object.getPrototypeOf(PostTypeControl)).apply(this, arguments));
 
 		_this.state = {
@@ -17815,6 +17824,7 @@ var PostTypeControl = function (_Component) {
 		value: function updatePostTypeState(postTypes) {
 			var state = this.state.items;
 
+			// Todo: find out why this updates this.state?
 			state = state.map(function (option, index) {
 				option['checked'] = -1 !== postTypes.indexOf(option['post_type']);
 				return option;
@@ -17822,7 +17832,8 @@ var PostTypeControl = function (_Component) {
 		}
 	}, {
 		key: 'onChange',
-		value: function onChange(index, e) {
+		value: function onChange(index) {
+			// Update the state.
 			var newItems = this.state.items.slice();
 			newItems[index].checked = !newItems[index].checked;
 			this.setState({
@@ -17837,7 +17848,7 @@ var PostTypeControl = function (_Component) {
 			});
 
 			if (this.props.onChange) {
-				this.props.onChange(postTypes.join(','), e);
+				this.props.onChange(postTypes.join(','));
 			}
 		}
 	}, {
