@@ -33,7 +33,7 @@ function km_rpbt_block_editor_assets() {
 	// Scripts.
 	wp_enqueue_script(
 		'rpbt-related-posts-block', // Handle.
-		plugins_url( '/block/block.build.min.js', dirname( __FILE__ ) ),
+		plugins_url( '/block/block.build.js', dirname( __FILE__ ) ),
 		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-utils' )
 	);
 
@@ -76,6 +76,7 @@ function rpbt_register_block_type() {
 			'attributes' => array(
 				'taxonomies' => array(
 					'type' => 'string',
+					'default' => 'all',
 				),
 				'post_types' => array(
 					'type' => 'string',
@@ -83,10 +84,6 @@ function rpbt_register_block_type() {
 				'title' => array(
 					'type' => 'string',
 					'default' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
-				),
-				'taxonomies' => array(
-					'type' => 'string',
-					'default' => 'all',
 				),
 				'posts_per_page' => array(
 					'type' => 'int',
@@ -112,9 +109,16 @@ function rpbt_register_block_type() {
 /**
  * Render related posts block on the front end.
  *
- * @param array $attributes Block attributes
+ * @param array $args Block attributes
  * @return string Rendered related posts
  */
-function km_rpbt_render_block_related_post( $attributes ) {
+function km_rpbt_render_block_related_post( $args ) {
+	if ( ! is_array( $args ) ) {
+		return '';
+	}
 
+	// Set the type for filters in the shortcode.
+	$args['type'] = 'related-posts-block';
+
+	return km_rpbt_related_posts_by_taxonomy_shortcode( $args );
 }
