@@ -3,7 +3,7 @@
   "version": "2.4.2-alpha",
   "tested_up_to": "4.9",
   "requires_at_least": "4.1",
-  "main": "Gruntfile.js",
+  "main": "block/index.js",
   "author": "keesiemeijer",
   "repository": {
     "type": "git",
@@ -27,7 +27,13 @@
     "lodash": "^4.17.4",
     "querystringify": "^1.0.0",
     "react": "^16.2.0",
-    "react-autosize-textarea": "^3.0.0",
+    "node-sass": "^4.7.2",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "css-loader": "^0.28.7",
+    "postcss-loader": "^2.0.9",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.1",
     "webpack": "^3.1.0"
   },
   "scripts": {

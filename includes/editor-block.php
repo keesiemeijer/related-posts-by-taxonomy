@@ -4,8 +4,7 @@
  *
  * Enqueue CSS/JS of all the blocks.
  *
- * @since  1.0.0
- * @package CGB
+ * @since  2.4.2
  */
 
 // Exit if accessed directly.
@@ -22,25 +21,29 @@ add_action( 'enqueue_block_editor_assets', 'km_rpbt_block_editor_assets' );
  * `wp-element`: includes the WordPress Element abstraction for describing the structure of your blocks.
  * `wp-i18n`: To internationalize the block's text.
  *
- * @since 1.0.0
+ * @since 2.4.2
  */
 function km_rpbt_block_editor_assets() {
 	$plugin = km_rpbt_plugin();
+
 	if ( ! ( $plugin && $plugin->plugin_supports( 'editor_block' ) ) ) {
 		return;
 	}
 
+	// Use un-minified Javascript when in debug mode.
+	$debug = $plugin->plugin_supports( 'debug' ) ? '' : '.min';
+
 	// Scripts.
 	wp_enqueue_script(
 		'rpbt-related-posts-block', // Handle.
-		plugins_url( '/block/block.build.js', dirname( __FILE__ ) ),
+		RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . "includes/assets/js/editor-block{$debug}.js",
 		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-utils' )
 	);
 
 	// Styles.
 	wp_enqueue_style(
 		'rpbt-related-posts-block-css', // Handle.
-		plugins_url( 'editor.css', dirname( __FILE__ ) ),
+		RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . 'includes/assets/css/editor-block.css',
 		array( 'wp-edit-blocks' )
 	);
 
@@ -61,6 +64,8 @@ add_action( 'wp_loaded', 'rpbt_register_block_type', 15 );
 
 /**
  * Registers the render callback for the editor block.
+ *
+ * @since 2.4.2
  */
 function rpbt_register_block_type() {
 	if ( ! function_exists( 'register_block_type' ) ) {
@@ -109,6 +114,8 @@ function rpbt_register_block_type() {
 /**
  * Render related posts block on the front end.
  *
+ * @since 2.4.2
+ *
  * @param array $args Block attributes
  * @return string Rendered related posts
  */
@@ -118,7 +125,7 @@ function km_rpbt_render_block_related_post( $args ) {
 	}
 
 	// Set the type for filters in the shortcode.
-	$args['type'] = 'related-posts-block';
+	$args['type'] = 'related-posts-editor-block';
 
 	return km_rpbt_related_posts_by_taxonomy_shortcode( $args );
 }

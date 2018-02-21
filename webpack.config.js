@@ -24,29 +24,64 @@
  *        production respectively.
  *     3. To read what these NPM Scripts do, read the `package.json` file.
  *
- * @since 1.0.0
+ * @since 2.4.0
  */
+const path = require( 'path' );
 const webpack = require( 'webpack' );
+const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
+
+const editBlocksCSSPlugin = new ExtractTextPlugin( {
+  filename: './includes/assets/css/editor-block.css',
+} );
+
+// Configuration for the ExtractTextPlugin.
+// Configuration for the ExtractTextPlugin.
+const extractConfig = {
+	use: [{
+			loader: 'raw-loader'
+		},
+		{
+			loader: 'postcss-loader',
+			options: {
+				plugins: [require('autoprefixer')],
+			},
+		},
+		{
+			loader: 'sass-loader',
+			query: {
+				outputStyle: 'production' === process.env.NODE_ENV ? 'compressed' : 'nested',
+			},
+		},
+	],
+};
+
+console.log(process.env.NODE_ENV);
 
 module.exports = {
 	entry: {
-		'./includes/block/block.build': './includes/block/index.js',
-		'./includes/block/block.build.min':'./includes/block/index.js',
+		'./includes/assets/js/editor-block': './block/index.js',
+		'./includes/assets/js/editor-block.min': './block/index.js',
 	},
 	output: {
-		path: __dirname,
+		path: path.resolve(__dirname),
 		filename: '[name].js',
 	},
 	module: {
-		loaders: [
+		rules: [
 			{
 				test: /.js$/,
 				loader: 'babel-loader',
 				exclude: /node_modules/,
 			},
+			{
+				test: /editor\.s?css$/,
+				exclude: /node_modules/,
+				use: editBlocksCSSPlugin.extract(extractConfig),
+			},
 		],
 	},
 	plugins: [
+		 editBlocksCSSPlugin,
 		// Minify the code.
 		new webpack.optimize.UglifyJsPlugin( {
 			include: /\.min\.js$/,

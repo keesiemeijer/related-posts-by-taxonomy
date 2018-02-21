@@ -7,13 +7,11 @@ import { isEmpty } from 'lodash';
  * WordPress dependencies
  */
 const { __ } = wp.i18n;
-const { InspectorControls } = wp.blocks;
-const { SelectControl, RangeControl } = InspectorControls;
+const { SelectControl, RangeControl } = wp.components;
 
 /**
  * Internal dependencies
  */
-
 import { pluginData, getSelectOptions } from '../data';
 import PostTypeControl from '../post-type-control/';
 const tax_options = get_taxonomy_options();
@@ -41,7 +39,7 @@ export default function QueryPanel( {
 				label={ __( 'Number of items', 'related-posts-by-taxonomy' ) }
 				value={ postsPerPage }
 				onChange={ onPostsPerPageChange }
-				min={ 1 }
+				min={ -1 }
 				max={ 100 }
 			/> ),
 		onTaxonomiesChange && (
@@ -80,7 +78,7 @@ export default function QueryPanel( {
 				label={ __( 'Image Columns', 'related-posts-by-taxonomy' ) }
 				value={ columns }
 				onChange={ onColumnsChange }
-				min={ 1 }
+				min={ 0 }
 				max={ 20 }
 			/> ),
 	];

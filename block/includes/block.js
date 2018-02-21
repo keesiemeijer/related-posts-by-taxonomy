@@ -5,19 +5,20 @@ import { stringify } from 'querystringify';
 import { isUndefined, pickBy, debounce } from 'lodash';
 
 /**
- * WordPress dependencies
+ * WordPress dependencie
  */
 const { InspectorControls, BlockDescription } = wp.blocks;
-const { BaseControl } = InspectorControls;
-const { withAPIData, Spinner, Placeholder } = wp.components;
+const { withAPIData, Spinner, Placeholder, BaseControl } = wp.components;
 const { Component } = wp.element;
 const { __, sprintf } = wp.i18n;
+
 
 /**
  * Internal dependencies
  */
-import { getPostField } from './includes/data';
-import QueryPanel from './includes/query-panel/';
+import './editor.scss'
+import { getPostField } from './data';
+import QueryPanel from './query-panel';
 
 let instances = 0;
 
@@ -84,7 +85,12 @@ class RelatedPostsBlock extends Component {
 				</BaseControl>
 				<QueryPanel
 					postsPerPage={posts_per_page}
-					onPostsPerPageChange={ ( value ) => setAttributes( { posts_per_page: Number( value ) } )}
+					onPostsPerPageChange={ ( value ) => {
+							// Don't allow 0 as a value.
+							const newValue = ( 0 === Number( value ) ) ? 1 : value;
+							setAttributes( { posts_per_page: Number( newValue ) } );
+						}
+					}
 					taxonomies={ taxonomies }
 					onTaxonomiesChange={ ( value ) => setAttributes( { taxonomies: value } ) }
 					format={ format }
@@ -130,13 +136,14 @@ class RelatedPostsBlock extends Component {
 
 		return [
 			inspectorControls,
-			(<div dangerouslySetInnerHTML={{__html:relatedPosts.rendered}}></div>)
+			(<div className={this.props.className} dangerouslySetInnerHTML={{__html:relatedPosts.rendered}}></div>)
 		];
 	}
 }
 
 const applyWithAPIData = withAPIData( ( props ) => {
 	const { taxonomies, post_types, title, posts_per_page, format, image_size, columns } = props.attributes;
+	const is_editor_block = true;
 	const attributes = {
 		taxonomies,
 		post_types,
@@ -144,7 +151,8 @@ const applyWithAPIData = withAPIData( ( props ) => {
 		posts_per_page,
 		format,
 		image_size,
-		columns
+		columns,
+		is_editor_block,
 	};
 
 	const postID = getPostField('id');

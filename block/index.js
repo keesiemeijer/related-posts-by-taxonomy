@@ -12,7 +12,7 @@ const { registerBlockType } = wp.blocks;
 /**
  * Internal dependencies
  */
-import RelatedPostsBlock from './block';
+import RelatedPostsBlock from './includes/block';
 import { pluginData } from './includes/data';
 
 if( ! isEmpty( pluginData )  ) {
@@ -27,7 +27,7 @@ function registerRelatedPostsBlock() {
 		category: 'widgets',
 		description: __( 'This block Displays related posts by taxonomy. The preview of the related posts might not be the same as the display in the front end of your site.', 'related-posts-by-taxonomy' ),
 		supports: {
-			html: false
+			html: false,
 		},
 
 		edit: RelatedPostsBlock,
