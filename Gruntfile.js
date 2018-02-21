@@ -63,6 +63,8 @@ module.exports = function( grunt ) {
 					'!bin/**',
 					'!tests/**',
 					'!build/**',
+					'!block/**',
+					'!webpack.config.js',
 					'!.git/**',
 					'!Gruntfile.js',
 					'!package.json',
@@ -80,7 +82,6 @@ module.exports = function( grunt ) {
 					'!**/CHANGELOG.md',
 					'!**/CONTRIBUTING.md',
 					'!**/travis.yml',
-					'!**/block.js',
 					'!**/*~'
 				],
 				dest: 'build/<%= pkg.name %>/'
@@ -132,8 +133,16 @@ module.exports = function( grunt ) {
 					to: "related-posts-by-taxonomy/tree/<%= gitinfo.local.branch.current.name %>#pull-requests"
 				} ]
 			}
+		},
+		run: {
+			build: {
+				cmd: 'npm',
+				args: [
+					'run',
+					'build'
+				]
+	 		}
 		}
-
 	} );
 
 
@@ -142,7 +151,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'travis', [ 'gitinfo', 'replace:replace_branch' ] );
 
 	// Creates build
-	grunt.registerTask( 'build', [ 'clean:main', 'version', 'makepot', 'travis', 'copy:main' ] );
+	grunt.registerTask( 'build', [ 'clean:main', 'version', 'run:build', 'makepot', 'travis', 'copy:main' ] );
 
 	// Removes ALL development files in the root directory
 	// !!! be careful with this
