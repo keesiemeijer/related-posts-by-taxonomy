@@ -12,8 +12,8 @@ const { SelectControl, RangeControl } = wp.components;
 /**
  * Internal dependencies
  */
-import { pluginData, getSelectOptions } from '../data';
-import PostTypeControl from '../post-type-control/';
+import { _pluginData, getSelectOptions } from './data';
+import PostTypeControl from './post-type-control';
 const tax_options = get_taxonomy_options();
 const format_options = getSelectOptions('formats');
 const img_options = getSelectOptions('image_sizes');
@@ -85,14 +85,14 @@ export default function QueryPanel( {
 }
 
 function get_taxonomy_options() {
-	if( ! pluginData.hasOwnProperty( 'all_tax' ) ) {
+	if( ! _pluginData.hasOwnProperty( 'all_tax' ) ) {
 		return [];
 	}
 
 	const options = [
 		{
 			label: __( 'all taxonomies', 'related-posts-by-taxonomy' ),
-			value: pluginData.all_tax,
+			value: _pluginData.all_tax,
 		},
 	];
 

@@ -446,27 +446,27 @@ module.exports = castPath;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return pluginData; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _postTypes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _pluginData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return _postTypes; });
 /* unused harmony export getPostTypes */
 /* harmony export (immutable) */ __webpack_exports__["e"] = validatePostType;
-/* harmony export (immutable) */ __webpack_exports__["b"] = getPostField;
-/* harmony export (immutable) */ __webpack_exports__["c"] = getSelectOptions;
+/* harmony export (immutable) */ __webpack_exports__["c"] = getPostField;
+/* harmony export (immutable) */ __webpack_exports__["d"] = getSelectOptions;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isUndefined__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_isUndefined__);
 
 
 
-var pluginData = window.km_rpbt_plugin_data || {};
+var _pluginData = window.km_rpbt_plugin_data || {};
 
 var _postTypes = getPostTypes();
 
 function getPostTypes() {
-	if (!pluginData.hasOwnProperty('post_types')) {
+	if (!_pluginData.hasOwnProperty('post_types')) {
 		return [];
 	}
 
-	return pluginData['post_types'];
+	return _pluginData['post_types'];
 }
 
 function validatePostType(postType) {
@@ -490,11 +490,11 @@ function getPostField(field) {
 function getSelectOptions(type) {
 	var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
-	if (!pluginData.hasOwnProperty(type)) {
+	if (!_pluginData.hasOwnProperty(type)) {
 		return [];
 	}
 
-	var type_options = pluginData[type];
+	var type_options = _pluginData[type];
 	for (var key in type_options) {
 		if (type_options.hasOwnProperty(key)) {
 			options.push({
@@ -1736,7 +1736,7 @@ var registerBlockType = wp.blocks.registerBlockType;
 
 
 
-if (!__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default()(__WEBPACK_IMPORTED_MODULE_2__includes_data__["d" /* pluginData */])) {
+if (!__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default()(__WEBPACK_IMPORTED_MODULE_2__includes_data__["a" /* _pluginData */])) {
 	registerRelatedPostsBlock();
 }
 
@@ -1746,9 +1746,10 @@ function registerRelatedPostsBlock() {
 		title: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy'),
 		icon: 'megaphone',
 		category: 'widgets',
-		description: __('This block Displays related posts by taxonomy. The preview of the related posts might not be the same as the display in the front end of your site.', 'related-posts-by-taxonomy'),
+		description: __('This block displays related posts by taxonomy.', 'related-posts-by-taxonomy'),
 		supports: {
-			html: false
+			html: false,
+			customClassName: false
 		},
 
 		edit: __WEBPACK_IMPORTED_MODULE_1__includes_block__["a" /* default */],
@@ -2249,8 +2250,11 @@ var _wp$components = wp.components,
     withAPIData = _wp$components.withAPIData,
     Spinner = _wp$components.Spinner,
     Placeholder = _wp$components.Placeholder,
-    BaseControl = _wp$components.BaseControl;
-var Component = wp.element.Component;
+    BaseControl = _wp$components.BaseControl,
+    Notice = _wp$components.Notice;
+var _wp$element = wp.element,
+    Component = _wp$element.Component,
+    RawHTML = _wp$element.RawHTML;
 var _wp$i18n = wp.i18n,
     __ = _wp$i18n.__,
     sprintf = _wp$i18n.sprintf;
@@ -2336,12 +2340,25 @@ var RelatedPostsBlock = function (_Component) {
 			var checkedPostTypes = post_types;
 			if (__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(post_types) || !post_types) {
 				// Use the post type from the current post if not set.
-				checkedPostTypes = Object(__WEBPACK_IMPORTED_MODULE_5__data__["b" /* getPostField */])('type');
+				checkedPostTypes = Object(__WEBPACK_IMPORTED_MODULE_5__data__["c" /* getPostField */])('type');
 			}
 
 			var inspectorControls = focus && wp.element.createElement(
 				InspectorControls,
 				{ key: 'inspector' },
+				wp.element.createElement(
+					'div',
+					null,
+					wp.element.createElement(
+						'p',
+						null,
+						wp.element.createElement(
+							RawHTML,
+							null,
+							__('<strong>Note</strong>: The preview of this block can be different from the display in the front end of your site.', 'related-posts-by-taxonomy')
+						)
+					)
+				),
 				wp.element.createElement(
 					BaseControl,
 					{ label: __('Title', 'related-posts-by-taxonomy'), id: textID },
@@ -2412,7 +2429,15 @@ var RelatedPostsBlock = function (_Component) {
 				)];
 			}
 
-			return [inspectorControls, wp.element.createElement('div', { className: this.props.className, dangerouslySetInnerHTML: { __html: relatedPosts.rendered } })];
+			return [inspectorControls, wp.element.createElement(
+				'div',
+				{ className: this.props.className },
+				wp.element.createElement(
+					RawHTML,
+					null,
+					relatedPosts.rendered
+				)
+			)];
 		}
 	}]);
 
@@ -2441,8 +2466,8 @@ var applyWithAPIData = withAPIData(function (props) {
 		is_editor_block: is_editor_block
 	};
 
-	var postID = Object(__WEBPACK_IMPORTED_MODULE_5__data__["b" /* getPostField */])('id');
-	var postType = Object(__WEBPACK_IMPORTED_MODULE_5__data__["b" /* getPostField */])('type');
+	var postID = Object(__WEBPACK_IMPORTED_MODULE_5__data__["c" /* getPostField */])('id');
+	var postType = Object(__WEBPACK_IMPORTED_MODULE_5__data__["c" /* getPostField */])('type');
 
 	if (attributes['post_types'] && attributes['post_types'] === postType) {
 		// The post type isn't needed in the query (if not set).
@@ -5055,7 +5080,7 @@ exports.parse = querystring;
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = QueryPanel;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__post_type_control___ = __webpack_require__(139);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__post_type_control__ = __webpack_require__(139);
 
 
 /**
@@ -5076,8 +5101,8 @@ var _wp$components = wp.components,
 
 
 var tax_options = get_taxonomy_options();
-var format_options = Object(__WEBPACK_IMPORTED_MODULE_0__data__["c" /* getSelectOptions */])('formats');
-var img_options = Object(__WEBPACK_IMPORTED_MODULE_0__data__["c" /* getSelectOptions */])('image_sizes');
+var format_options = Object(__WEBPACK_IMPORTED_MODULE_0__data__["d" /* getSelectOptions */])('formats');
+var img_options = Object(__WEBPACK_IMPORTED_MODULE_0__data__["d" /* getSelectOptions */])('image_sizes');
 
 function QueryPanel(_ref) {
 	var taxonomies = _ref.taxonomies,
@@ -5108,7 +5133,7 @@ function QueryPanel(_ref) {
 		onChange: function onChange(value) {
 			onTaxonomiesChange(value);
 		}
-	}), onPostTypesChange && wp.element.createElement(__WEBPACK_IMPORTED_MODULE_1__post_type_control___["a" /* default */], {
+	}), onPostTypesChange && wp.element.createElement(__WEBPACK_IMPORTED_MODULE_1__post_type_control__["a" /* default */], {
 		label: __('Post Types'),
 		onChange: onPostTypesChange,
 		postTypes: postTypes
@@ -5139,16 +5164,16 @@ function QueryPanel(_ref) {
 }
 
 function get_taxonomy_options() {
-	if (!__WEBPACK_IMPORTED_MODULE_0__data__["d" /* pluginData */].hasOwnProperty('all_tax')) {
+	if (!__WEBPACK_IMPORTED_MODULE_0__data__["a" /* _pluginData */].hasOwnProperty('all_tax')) {
 		return [];
 	}
 
 	var options = [{
 		label: __('all taxonomies', 'related-posts-by-taxonomy'),
-		value: __WEBPACK_IMPORTED_MODULE_0__data__["d" /* pluginData */].all_tax
+		value: __WEBPACK_IMPORTED_MODULE_0__data__["a" /* _pluginData */].all_tax
 	}];
 
-	return Object(__WEBPACK_IMPORTED_MODULE_0__data__["c" /* getSelectOptions */])('taxonomies', options);
+	return Object(__WEBPACK_IMPORTED_MODULE_0__data__["d" /* getSelectOptions */])('taxonomies', options);
 }
 
 /***/ }),
@@ -5188,11 +5213,11 @@ var Component = wp.element.Component;
 function getPostTypeObjects() {
 	var postTypeOjects = [];
 
-	for (var key in __WEBPACK_IMPORTED_MODULE_1__data__["a" /* _postTypes */]) {
-		if (__WEBPACK_IMPORTED_MODULE_1__data__["a" /* _postTypes */].hasOwnProperty(key)) {
+	for (var key in __WEBPACK_IMPORTED_MODULE_1__data__["b" /* _postTypes */]) {
+		if (__WEBPACK_IMPORTED_MODULE_1__data__["b" /* _postTypes */].hasOwnProperty(key)) {
 			postTypeOjects.push({
 				post_type: key,
-				label: __WEBPACK_IMPORTED_MODULE_1__data__["a" /* _postTypes */][key],
+				label: __WEBPACK_IMPORTED_MODULE_1__data__["b" /* _postTypes */][key],
 				checked: false
 			});
 		}

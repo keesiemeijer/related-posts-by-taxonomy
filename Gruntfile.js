@@ -40,18 +40,7 @@ module.exports = function( grunt ) {
 
 		// Clean up build directory
 		clean: {
-			main: [ 'build/<%= pkg.name %>' ],
-			release: [
-				'**',
-				'.travis.yml',
-				'.gitignore',
-				'.git/**',
-				'!lang/**',
-				'!templates/**',
-				'!includes/**',
-				'!related-posts-by-taxonomy.php',
-				'!readme.txt'
-			]
+			main: [ 'build/<%= pkg.name %>' ]
 		},
 
 		// Copy the theme into the build directory
@@ -63,7 +52,7 @@ module.exports = function( grunt ) {
 					'!bin/**',
 					'!tests/**',
 					'!build/**',
-					'!block/**',
+					'!editor-block/**',
 					'!webpack.config.js',
 					'!.git/**',
 					'!Gruntfile.js',
@@ -153,10 +142,5 @@ module.exports = function( grunt ) {
 	// Creates build
 	grunt.registerTask( 'build', [ 'clean:main', 'version', 'run:build', 'makepot', 'travis', 'copy:main' ] );
 
-	// Removes ALL development files in the root directory
-	// !!! be careful with this
-	grunt.registerTask( 'release', [ 'version', 'clean:release', ] );
-
 	grunt.util.linefeed = '\n';
-
 };

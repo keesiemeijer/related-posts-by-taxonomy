@@ -8,8 +8,8 @@ import { isUndefined, pickBy, debounce } from 'lodash';
  * WordPress dependencie
  */
 const { InspectorControls, BlockDescription } = wp.blocks;
-const { withAPIData, Spinner, Placeholder, BaseControl } = wp.components;
-const { Component } = wp.element;
+const { withAPIData, Spinner, Placeholder, BaseControl, Notice } = wp.components;
+const { Component, RawHTML } = wp.element;
 const { __, sprintf } = wp.i18n;
 
 
@@ -75,6 +75,14 @@ class RelatedPostsBlock extends Component {
 
 		const inspectorControls = focus && (
 			<InspectorControls key="inspector">
+				<div>
+					<p>
+					<RawHTML>
+					{__( '<strong>Note</strong>: The preview of this block can be different from the display in the front end of your site.', 'related-posts-by-taxonomy')}
+					</RawHTML>
+					</p>
+				</div>
+					
 				<BaseControl label={ __( 'Title' , 'related-posts-by-taxonomy') } id={ textID }>
 					<input className="blocks-text-control__input"
 						type="text"
@@ -136,7 +144,7 @@ class RelatedPostsBlock extends Component {
 
 		return [
 			inspectorControls,
-			(<div className={this.props.className} dangerouslySetInnerHTML={{__html:relatedPosts.rendered}}></div>)
+			<div className={this.props.className}><RawHTML>{relatedPosts.rendered}</RawHTML></div>
 		];
 	}
 }

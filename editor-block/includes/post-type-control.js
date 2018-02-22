@@ -12,7 +12,7 @@ const { Component } = wp.element;
 /**
  * Internal dependencies
  */
-import { _postTypes, validatePostType } from '../data';
+import { _postTypes, validatePostType } from './data';
 
 function getPostTypeObjects() {
 	let postTypeOjects = [];

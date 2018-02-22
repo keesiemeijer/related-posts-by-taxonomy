@@ -13,9 +13,9 @@ const { registerBlockType } = wp.blocks;
  * Internal dependencies
  */
 import RelatedPostsBlock from './includes/block';
-import { pluginData } from './includes/data';
+import { _pluginData } from './includes/data';
 
-if( ! isEmpty( pluginData )  ) {
+if( ! isEmpty( _pluginData )  ) {
 	registerRelatedPostsBlock();
 }
 
@@ -25,9 +25,10 @@ function registerRelatedPostsBlock() {
 		title: __( 'Related Posts by Taxonomy', 'related-posts-by-taxonomy' ),
 		icon: 'megaphone',
 		category: 'widgets',
-		description: __( 'This block Displays related posts by taxonomy. The preview of the related posts might not be the same as the display in the front end of your site.', 'related-posts-by-taxonomy' ),
+		description: __( 'This block displays related posts by taxonomy.', 'related-posts-by-taxonomy' ),
 		supports: {
 			html: false,
+			customClassName: false,
 		},
 
 		edit: RelatedPostsBlock,
