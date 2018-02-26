@@ -12,7 +12,7 @@ const { SelectControl, RangeControl } = wp.components;
 /**
  * Internal dependencies
  */
-import { _pluginData, getSelectOptions } from './data';
+import { getPluginData, getSelectOptions } from './data';
 import PostTypeControl from './post-type-control';
 const tax_options = get_taxonomy_options();
 const format_options = getSelectOptions('formats');
@@ -85,14 +85,14 @@ export default function QueryPanel( {
 }
 
 function get_taxonomy_options() {
-	if( ! _pluginData.hasOwnProperty( 'all_tax' ) ) {
+	if( ! getPluginData( 'all_tax' ) ) {
 		return [];
 	}
 
 	const options = [
 		{
 			label: __( 'all taxonomies', 'related-posts-by-taxonomy' ),
-			value: _pluginData.all_tax,
+			value: getPluginData( 'all_tax' ),
 		},
 	];
 

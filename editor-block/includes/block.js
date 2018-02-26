@@ -17,7 +17,7 @@ const { __, sprintf } = wp.i18n;
  * Internal dependencies
  */
 import './editor.scss'
-import { getPostField } from './data';
+import { getPluginData, getPostField } from './data';
 import QueryPanel from './query-panel';
 
 let instances = 0;
@@ -30,6 +30,7 @@ class RelatedPostsBlock extends Component {
 	constructor() {
 		super( ...arguments );
 
+		this.previewExpanded = getPluginData( 'preview' );
 		this.updatePostTypes = this.updatePostTypes.bind(this);
 
 		// The title is updated 1 second after a change.
@@ -124,12 +125,12 @@ class RelatedPostsBlock extends Component {
 			}
 		}
 
-		if ( loading || ! focus ) {
+		if ( ( ! focus && ! this.previewExpanded ) || loading  ) {
 			let postsFoundText = __('preview related posts');
 
 			return [
 				inspectorControls,
-				(! focus || ! postsFound) && (<Placeholder
+				<Placeholder
 					style={placeholderStyle}
 					key="placeholder"
 					icon="megaphone"
@@ -138,7 +139,7 @@ class RelatedPostsBlock extends Component {
 					{ isUndefined( relatedPosts ) ? <Spinner /> : '' }
 					{ loading }
 					{ postsFound ? <a href="#">{ postsFoundText }</a> : '' }
-				</Placeholder> ),
+				</Placeholder>,
 			];
 		}
 

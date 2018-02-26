@@ -162,15 +162,16 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 */
 		public function get_plugin_supports() {
 			$supports = array(
-				'widget'               => true,
-				'shortcode'            => true,
-				'shortcode_hide_empty' => true,
-				'widget_hide_empty'    => true,
-				'cache'                => false,
-				'display_cache_log'    => false,
-				'wp_rest_api'          => false,
-				'editor_block'         => true,
-				'debug'                => false,
+				'widget'                   => true,
+				'shortcode'                => true,
+				'shortcode_hide_empty'     => true,
+				'widget_hide_empty'        => true,
+				'editor_block'             => true,
+				'editor_block_preview'     => true,
+				'cache'                    => false,
+				'display_cache_log'        => false,
+				'wp_rest_api'              => false,
+				'debug'                    => false,
 			);
 
 			/**

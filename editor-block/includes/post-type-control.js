@@ -12,16 +12,17 @@ const { Component } = wp.element;
 /**
  * Internal dependencies
  */
-import { _postTypes, validatePostType } from './data';
+import { getPluginData, validatePostType } from './data';
 
 function getPostTypeObjects() {
-	let postTypeOjects = [];
+	const postTypes = getPluginData( 'post_types' );
 
-	for (var key in _postTypes) {
-		if (_postTypes.hasOwnProperty(key)) {
+	let postTypeOjects = [];
+	for (var key in postTypes) {
+		if (postTypes.hasOwnProperty(key)) {
 			postTypeOjects.push({
 				post_type: key,
-				label: _postTypes[key],
+				label: postTypes[key],
 				checked: false,
 			});
 		}
@@ -81,7 +82,7 @@ class PostTypeControl extends Component {
 		this.updatePostTypeState( checked );
 
 		return ! isEmpty( this.state.items ) && (
-			<BaseControl label={ label } id={ id } help={ help } className="blocks-radio-control">
+			<BaseControl label={ label } id={ id } help={ help } className="blocks-checkbox-control">
 				{ this.state.items.map( ( option, index ) =>
 					<div
 						key={ ( id + '-' + index ) }

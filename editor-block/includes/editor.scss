@@ -12,7 +12,7 @@ $block-class: wp-block-related-posts-by-taxonomy-related-posts-block;
 	.gallery-item {
 		margin: 8px;
 		display: flex;
-		flex-grow: 1;
+		flex-grow: 0;
 		flex-direction: column;
 		justify-content: center;
 		position: relative;

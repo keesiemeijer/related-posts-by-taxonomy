@@ -55,6 +55,7 @@ function km_rpbt_block_editor_assets() {
 			'all_tax'     => $plugin->all_tax,
 			'formats'     => $plugin->formats,
 			'image_sizes' => $plugin->image_sizes,
+			'preview'     => (bool) $plugin->plugin_supports('editor_block_preview'),
 		)
 	);
 }
