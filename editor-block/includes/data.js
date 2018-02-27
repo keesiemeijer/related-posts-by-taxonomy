@@ -1,8 +1,13 @@
+/**
+ * External dependencies
+ */
 import { isUndefined, isObject, isBoolean, isString, has } from 'lodash';
 
+/**
+ * Don't use _pluginData directly, use getPluginData()
+ */
 export const _pluginData = window.km_rpbt_plugin_data || {};
 
-// Defaults
 const _defaults = {
 	post_types: { type: 'object' },
 	taxonomies: { type: 'object' },
@@ -48,8 +53,7 @@ export function getPostField(field) {
 
 export function validatePostType( postType ){
 	const postTypes = getPluginData( 'post_types' );
-	const postTypesNames = Object.keys( postTypes );
-	return ! ( postTypesNames.indexOf( postType ) === -1 );
+	return ! ( Object.keys( postTypes ).indexOf( postType ) === -1 );
 }
 
 export function getSelectOptions(type, options = []) {

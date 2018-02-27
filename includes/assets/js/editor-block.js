@@ -465,12 +465,15 @@ module.exports = castPath;
 
 
 
+ /**
+                                                * External dependencies
+                                                */
 
-
-
+/**
+ * Don't use _pluginData directly, use getPluginData()
+ */
 var _pluginData = window.km_rpbt_plugin_data || {};
 
-// Defaults
 var _defaults = {
 	post_types: { type: 'object' },
 	taxonomies: { type: 'object' },
@@ -516,8 +519,7 @@ function getPostField(field) {
 
 function validatePostType(postType) {
 	var postTypes = getPluginData('post_types');
-	var postTypesNames = Object.keys(postTypes);
-	return !(postTypesNames.indexOf(postType) === -1);
+	return !(Object.keys(postTypes).indexOf(postType) === -1);
 }
 
 function getSelectOptions(type) {
@@ -2356,6 +2358,7 @@ module.exports = nodeUtil;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__editor_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__editor_scss__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__data__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__query_panel__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__placeholder__ = __webpack_require__(144);
 
 
 
@@ -2375,17 +2378,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 /**
- * WordPress dependencie
+ * WordPress dependencies
  */
-var _wp$blocks = wp.blocks,
-    InspectorControls = _wp$blocks.InspectorControls,
-    BlockDescription = _wp$blocks.BlockDescription;
+var InspectorControls = wp.blocks.InspectorControls;
 var _wp$components = wp.components,
     withAPIData = _wp$components.withAPIData,
-    Spinner = _wp$components.Spinner,
-    Placeholder = _wp$components.Placeholder,
-    BaseControl = _wp$components.BaseControl,
-    Notice = _wp$components.Notice;
+    BaseControl = _wp$components.BaseControl;
 var _wp$element = wp.element,
     Component = _wp$element.Component,
     RawHTML = _wp$element.RawHTML;
@@ -2401,11 +2399,8 @@ var _wp$i18n = wp.i18n,
 
 
 
-var instances = 0;
 
-var placeholderStyle = {
-	minHeight: '100px'
-};
+var instances = 0;
 
 var RelatedPostsBlock = function (_Component) {
 	_inherits(RelatedPostsBlock, _Component);
@@ -2457,7 +2452,6 @@ var RelatedPostsBlock = function (_Component) {
 	}, {
 		key: 'render',
 		value: function render() {
-			var textID = 'rpbt-inspector-text-control-' + this.instanceId;
 			var relatedPosts = this.props.relatedPostsByTax.data;
 			var _props = this.props,
 			    attributes = _props.attributes,
@@ -2471,6 +2465,7 @@ var RelatedPostsBlock = function (_Component) {
 			    image_size = attributes.image_size,
 			    columns = attributes.columns;
 
+			var titleID = 'rpbt-inspector-text-control-' + this.instanceId;
 
 			var checkedPostTypes = post_types;
 			if (__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(post_types) || !post_types) {
@@ -2496,12 +2491,12 @@ var RelatedPostsBlock = function (_Component) {
 				),
 				wp.element.createElement(
 					BaseControl,
-					{ label: __('Title', 'related-posts-by-taxonomy'), id: textID },
+					{ label: __('Title', 'related-posts-by-taxonomy'), id: titleID },
 					wp.element.createElement('input', { className: 'blocks-text-control__input',
 						type: 'text',
 						onChange: this.onTitleChange,
 						defaultValue: title,
-						id: textID
+						id: titleID
 					})
 				),
 				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_6__query_panel__["a" /* default */], {
@@ -2532,36 +2527,23 @@ var RelatedPostsBlock = function (_Component) {
 				})
 			);
 
-			var loading = '';
 			var postsFound = 0;
-			if (__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(relatedPosts)) {
-				loading = __('Loading posts', 'related-posts-by-taxonomy');
-			} else {
+			var queryFinished = !__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(relatedPosts);
+
+			if (queryFinished) {
 				if (relatedPosts.hasOwnProperty('posts')) {
 					postsFound = relatedPosts.posts.length ? relatedPosts.posts.length : 0;
-					loading = postsFound ? '' : __('No posts found.', 'related-posts-by-taxonomy');
 				}
 			}
 
-			if (!focus && !this.previewExpanded || loading) {
-				var postsFoundText = __('preview related posts');
-
-				return [inspectorControls, wp.element.createElement(
-					Placeholder,
-					{
-						style: placeholderStyle,
-						key: 'placeholder',
-						icon: 'megaphone',
-						label: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy')
-					},
-					__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(relatedPosts) ? wp.element.createElement(Spinner, null) : '',
-					loading,
-					postsFound ? wp.element.createElement(
-						'a',
-						{ href: '#' },
-						postsFoundText
-					) : ''
-				)];
+			if (!focus && !this.previewExpanded || !postsFound) {
+				return [inspectorControls, wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__placeholder__["a" /* default */], {
+					className: this.props.className,
+					queryFinished: queryFinished,
+					postsFound: postsFound,
+					icon: 'megaphone',
+					label: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy')
+				})];
 			}
 
 			return [inspectorControls, wp.element.createElement(
@@ -5561,6 +5543,70 @@ var PostTypeControl = function (_Component) {
 }(Component);
 
 /* harmony default export */ __webpack_exports__["a"] = (withInstanceId(PostTypeControl));
+
+/***/ }),
+/* 144 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * WordPress dependencies
+ */
+var _wp$components = wp.components,
+    Spinner = _wp$components.Spinner,
+    Placeholder = _wp$components.Placeholder;
+var __ = wp.i18n.__;
+
+
+function LoadingPlaceholder(_ref) {
+	var icon = _ref.icon,
+	    label = _ref.label,
+	    postsFound = _ref.postsFound,
+	    queryFinished = _ref.queryFinished,
+	    className = _ref.className;
+
+
+	var placeholderStyle = {
+		minHeight: '100px'
+	};
+
+	var loading = '';
+	var preview = wp.element.createElement(
+		'a',
+		{ href: '#' },
+		__('preview related posts', 'related-posts-by-taxonomy')
+	);
+	var instructions = wp.element.createElement(
+		'div',
+		{ 'class': 'instructions' },
+		__('Assign (more) terms or change the settings of this block', 'related-posts-by-taxonomy')
+	);
+
+	if (queryFinished) {
+		if (!postsFound) {
+			loading = __('No related posts found!', 'related-posts-by-taxonomy');
+		}
+	} else {
+		loading = __('Loading related posts', 'related-posts-by-taxonomy');
+	}
+
+	return wp.element.createElement(
+		Placeholder,
+		{
+			style: placeholderStyle,
+			className: className,
+			key: 'placeholder',
+			icon: icon,
+			label: label
+		},
+		!queryFinished ? wp.element.createElement(Spinner, null) : '',
+		loading,
+		postsFound ? preview : '',
+		!postsFound && queryFinished ? instructions : ''
+	);
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (LoadingPlaceholder);
 
 /***/ })
 /******/ ]);

@@ -5,10 +5,10 @@ import { stringify } from 'querystringify';
 import { isUndefined, pickBy, debounce } from 'lodash';
 
 /**
- * WordPress dependencie
+ * WordPress dependencies
  */
-const { InspectorControls, BlockDescription } = wp.blocks;
-const { withAPIData, Spinner, Placeholder, BaseControl, Notice } = wp.components;
+const { InspectorControls } = wp.blocks;
+const { withAPIData, BaseControl } = wp.components;
 const { Component, RawHTML } = wp.element;
 const { __, sprintf } = wp.i18n;
 
@@ -19,12 +19,9 @@ const { __, sprintf } = wp.i18n;
 import './editor.scss'
 import { getPluginData, getPostField } from './data';
 import QueryPanel from './query-panel';
+import LoadingPlaceholder from './placeholder';
 
 let instances = 0;
-
-var placeholderStyle = {
-	minHeight: '100px',
-};
 
 class RelatedPostsBlock extends Component {
 	constructor() {
@@ -63,10 +60,10 @@ class RelatedPostsBlock extends Component {
 	}
 
 	render(){
-		const textID = 'rpbt-inspector-text-control-' + this.instanceId;
 		const relatedPosts = this.props.relatedPostsByTax.data;
 		const { attributes, focus, setAttributes } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
+		const titleID = 'rpbt-inspector-text-control-' + this.instanceId;
 
 		let checkedPostTypes = post_types;
 		if( isUndefined( post_types ) || ! post_types ) {
@@ -84,12 +81,12 @@ class RelatedPostsBlock extends Component {
 					</p>
 				</div>
 					
-				<BaseControl label={ __( 'Title' , 'related-posts-by-taxonomy') } id={ textID }>
+				<BaseControl label={ __( 'Title' , 'related-posts-by-taxonomy') } id={titleID}>
 					<input className="blocks-text-control__input"
 						type="text"
 						onChange={this.onTitleChange}
 						defaultValue={title}
-						id={textID}
+						id={titleID}
 					/>
 				</BaseControl>
 				<QueryPanel
@@ -114,32 +111,25 @@ class RelatedPostsBlock extends Component {
 			</InspectorControls>
 			);
 
-		let loading = '';
 		let postsFound = 0;
-		if( isUndefined( relatedPosts ) ) {
-			loading = __( 'Loading posts', 'related-posts-by-taxonomy');
-		} else {
+		const queryFinished = ! isUndefined( relatedPosts );
+
+		if( queryFinished ) {
 			if( relatedPosts.hasOwnProperty('posts') ) {
 				postsFound = relatedPosts.posts.length ? relatedPosts.posts.length : 0;
-				loading = postsFound ? '' : __( 'No posts found.', 'related-posts-by-taxonomy' );
 			}
 		}
 
-		if ( ( ! focus && ! this.previewExpanded ) || loading  ) {
-			let postsFoundText = __('preview related posts');
-
+		if ( ( ! focus && ! this.previewExpanded ) || ! postsFound  ) {
 			return [
 				inspectorControls,
-				<Placeholder
-					style={placeholderStyle}
-					key="placeholder"
+				<LoadingPlaceholder
+					className={this.props.className}
+					queryFinished={queryFinished}
+					postsFound={postsFound}
 					icon="megaphone"
 					label={ __( 'Related Posts by Taxonomy', 'related-posts-by-taxonomy' ) }
-				>
-					{ isUndefined( relatedPosts ) ? <Spinner /> : '' }
-					{ loading }
-					{ postsFound ? <a href="#">{ postsFoundText }</a> : '' }
-				</Placeholder>,
+				/>
 			];
 		}
 
