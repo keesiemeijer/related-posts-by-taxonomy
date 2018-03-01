@@ -8,10 +8,10 @@ import { isUndefined, pickBy, debounce } from 'lodash';
  * WordPress dependencies
  */
 const { InspectorControls } = wp.blocks;
-const { withAPIData, BaseControl } = wp.components;
-const { Component, RawHTML } = wp.element;
+const { withAPIData, BaseControl} = wp.components;
+const { Component, RawHTML, compose } = wp.element;
 const { __, sprintf } = wp.i18n;
-
+const { query } = wp.data;
 
 /**
  * Internal dependencies
@@ -61,9 +61,10 @@ class RelatedPostsBlock extends Component {
 
 	render(){
 		const relatedPosts = this.props.relatedPostsByTax.data;
-		const { attributes, focus, setAttributes } = this.props;
+		const { attributes, focus, setAttributes, terms } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
 		const titleID = 'rpbt-inspector-text-control-' + this.instanceId;
+		console.log(terms);
 
 		let checkedPostTypes = post_types;
 		if( isUndefined( post_types ) || ! post_types ) {
@@ -169,4 +170,34 @@ const applyWithAPIData = withAPIData( ( props ) => {
 	};
 } );
 
-export default applyWithAPIData( RelatedPostsBlock );
+// export default applyWithAPIData( RelatedPostsBlock );
+
+const applyWithQuery = query( ( select ) => {
+		const taxQuery = {};
+		const taxonomies = getPluginData( 'taxonomies' );
+		for (var key in taxonomies ) {
+			if (!taxonomies.hasOwnProperty(key)) {
+				continue;
+			}
+
+			// Rename category and post tag for query.
+			let tax = key;
+			if ( ( 'category' === key ) || ( 'post_tag' === key ) ) {
+				tax = ('category' === key) ? 'categories' : 'tags';
+			}
+
+			const query = select( 'core/editor' ).getEditedPostAttribute( tax );
+
+			if( isUndefined( query ) ) {
+				continue;
+			}
+
+			taxQuery[ key ] = query;
+		}
+		return { terms: taxQuery };
+	} );
+
+export default compose( [
+	applyWithQuery,
+	applyWithAPIData,
+] )( RelatedPostsBlock );

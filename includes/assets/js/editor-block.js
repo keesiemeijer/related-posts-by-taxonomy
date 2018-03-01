@@ -2386,10 +2386,12 @@ var _wp$components = wp.components,
     BaseControl = _wp$components.BaseControl;
 var _wp$element = wp.element,
     Component = _wp$element.Component,
-    RawHTML = _wp$element.RawHTML;
+    RawHTML = _wp$element.RawHTML,
+    compose = _wp$element.compose;
 var _wp$i18n = wp.i18n,
     __ = _wp$i18n.__,
     sprintf = _wp$i18n.sprintf;
+var query = wp.data.query;
 
 /**
  * Internal dependencies
@@ -2456,7 +2458,8 @@ var RelatedPostsBlock = function (_Component) {
 			var _props = this.props,
 			    attributes = _props.attributes,
 			    focus = _props.focus,
-			    setAttributes = _props.setAttributes;
+			    setAttributes = _props.setAttributes,
+			    terms = _props.terms;
 			var title = attributes.title,
 			    taxonomies = attributes.taxonomies,
 			    post_types = attributes.post_types,
@@ -2466,6 +2469,7 @@ var RelatedPostsBlock = function (_Component) {
 			    columns = attributes.columns;
 
 			var titleID = 'rpbt-inspector-text-control-' + this.instanceId;
+			console.log(terms);
 
 			var checkedPostTypes = post_types;
 			if (__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(post_types) || !post_types) {
@@ -2600,7 +2604,34 @@ var applyWithAPIData = withAPIData(function (props) {
 	};
 });
 
-/* harmony default export */ __webpack_exports__["a"] = (applyWithAPIData(RelatedPostsBlock));
+// export default applyWithAPIData( RelatedPostsBlock );
+
+var applyWithQuery = query(function (select) {
+	var taxQuery = {};
+	var taxonomies = Object(__WEBPACK_IMPORTED_MODULE_5__data__["b" /* getPluginData */])('taxonomies');
+	for (var key in taxonomies) {
+		if (!taxonomies.hasOwnProperty(key)) {
+			continue;
+		}
+
+		// Rename category and post tag for query.
+		var tax = key;
+		if ('category' === key || 'post_tag' === key) {
+			tax = 'category' === key ? 'categories' : 'tags';
+		}
+
+		var _query = select('core/editor').getEditedPostAttribute(tax);
+
+		if (__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(_query)) {
+			continue;
+		}
+
+		taxQuery[key] = _query;
+	}
+	return { terms: taxQuery };
+});
+
+/* harmony default export */ __webpack_exports__["a"] = (compose([applyWithQuery, applyWithAPIData])(RelatedPostsBlock));
 
 /***/ }),
 /* 68 */
