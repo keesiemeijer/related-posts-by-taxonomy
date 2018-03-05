@@ -12,7 +12,7 @@ const { Component } = wp.element;
 /**
  * Internal dependencies
  */
-import { getPluginData, validatePostType } from './data';
+import { getPluginData, inPluginData } from './data';
 
 function getPostTypeObjects() {
 	const postTypes = getPluginData( 'post_types' );
@@ -77,7 +77,7 @@ class PostTypeControl extends Component {
 		}
 
 		let checked = postTypes.split(",");
-		checked = checked.filter( item => validatePostType( item ) );
+		checked = checked.filter( item => inPluginData( 'post_types', item ) );
 
 		this.updatePostTypeState( checked );
 

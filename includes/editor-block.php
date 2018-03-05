@@ -49,13 +49,14 @@ function km_rpbt_block_editor_assets() {
 
 	wp_localize_script( 'rpbt-related-posts-block', 'km_rpbt_plugin_data',
 		array(
-			'post_types'  => $plugin->post_types,
-			'taxonomies'  => $plugin->taxonomies,
-			'default_tax' => $plugin->default_tax,
-			'all_tax'     => $plugin->all_tax,
-			'formats'     => $plugin->formats,
-			'image_sizes' => $plugin->image_sizes,
-			'preview'     => (bool) $plugin->plugin_supports('editor_block_preview'),
+			'post_types'       => $plugin->post_types,
+			'taxonomies'       => $plugin->taxonomies,
+			'default_tax'      => $plugin->default_tax,
+			'all_tax'          => $plugin->all_tax,
+			'formats'          => $plugin->formats,
+			'image_sizes'      => $plugin->image_sizes,
+			'preview'          => (bool) $plugin->plugin_supports('editor_block_preview'),
+			'default_category' => absint( get_option('default_category' ) ),
 		)
 	);
 }
@@ -85,6 +86,9 @@ function rpbt_register_block_type() {
 					'default' => 'all',
 				),
 				'post_types' => array(
+					'type' => 'string',
+				),
+				'terms' => array(
 					'type' => 'string',
 				),
 				'title' => array(

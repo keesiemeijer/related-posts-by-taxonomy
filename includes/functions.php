@@ -28,34 +28,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	}
 
 	$args  = km_rpbt_sanitize_args( $args );
-	$terms = array();
-
-	if ( ! $args['related'] && ! empty( $args['include_terms'] ) ) {
-		// Related, use included term ids.
-		$terms = $args['include_terms'];
-	} else {
-
-		// Related and not related terms.
-		$terms = wp_get_object_terms(
-			$post_id, $taxonomies, array(
-				'fields' => 'ids',
-			)
-		);
-
-		if ( is_wp_error( $terms ) || empty( $terms ) ) {
-			return array();
-		}
-
-		// Only use included terms from the post terms.
-		if ( $args['related'] && ! empty( $args['include_terms'] ) ) {
-			$terms = array_values( array_intersect( $args['include_terms'], $terms ) );
-		}
-	}
-
-	// Exclude terms.
-	if ( empty( $args['include_terms'] ) ) {
-		$terms    = array_values( array_diff( $terms , $args['exclude_terms'] ) );
-	}
+	$terms = km_rpbt_get_terms( $post_id, $taxonomies, $args );
 
 	if ( empty( $terms ) ) {
 		return array();
@@ -358,6 +331,43 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	return apply_filters( 'related_posts_by_taxonomy', $results, $post_id, $taxonomies, $args );
 }
 
+function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
+	$terms = array();
+	$args   = km_rpbt_sanitize_args( $args );
+	if($args['terms']) {
+		return $args['terms'];
+	}
+
+	if ( ! $args['related'] && ! empty( $args['include_terms'] ) ) {
+		// Related, use included term ids.
+		$terms = $args['include_terms'];
+	} else {
+
+		// Related and not related terms.
+		$terms = wp_get_object_terms(
+			$post_id, $taxonomies, array(
+				'fields' => 'ids',
+			)
+		);
+
+		if ( is_wp_error( $terms ) || empty( $terms ) ) {
+			return array();
+		}
+
+		// Only use included terms from the post terms.
+		if ( $args['related'] && ! empty( $args['include_terms'] ) ) {
+			$terms = array_values( array_intersect( $args['include_terms'], $terms ) );
+		}
+	}
+
+	// Exclude terms.
+	if ( empty( $args['include_terms'] ) ) {
+		$terms = array_values( array_diff( $terms , $args['exclude_terms'] ) );
+	}
+
+	return $terms;
+}
+
 
 /**
  * Returns default arguments.
@@ -369,21 +379,22 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 function km_rpbt_get_default_args() {
 
 	return array(
-		'post_types' => 'post',
+		'post_types'     => 'post',
 		'posts_per_page' => 5,
-		'order' => 'DESC',
-		'fields' => '',
-		'limit_posts' => -1,
-		'limit_year' => '',
-		'limit_month' => '',
-		'orderby' => 'post_date',
-		'exclude_terms' => '',
-		'include_terms' => '',
-		'exclude_posts' => '',
+		'order'          => 'DESC',
+		'fields'         => '',
+		'limit_posts'    => -1,
+		'limit_year'     => '',
+		'limit_month'    => '',
+		'orderby'        => 'post_date',
+		'terms'          => '',
+		'exclude_terms'  => '',
+		'include_terms'  => '',
+		'exclude_posts'  => '',
 		'post_thumbnail' => false,
-		'related' => true,
-		'public_only' => false,
-		'include_self' => false,
+		'related'        => true,
+		'public_only'    => false,
+		'include_self'   => false,
 	);
 }
 
@@ -508,7 +519,7 @@ function km_rpbt_sanitize_args( $args ) {
 	$args['post_types'] = ! empty( $post_types ) ? $post_types : array( 'post' );
 
 	// Arrays with integers.
-	$ids = array( 'exclude_terms', 'include_terms', 'exclude_posts' );
+	$ids = array( 'exclude_terms', 'include_terms', 'exclude_posts', 'terms' );
 	foreach ( $ids as $id ) {
 		$args[ $id ] = km_rpbt_related_posts_by_taxonomy_validate_ids( $args[ $id ] );
 	}

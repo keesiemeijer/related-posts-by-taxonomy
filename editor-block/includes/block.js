@@ -11,13 +11,13 @@ const { InspectorControls } = wp.blocks;
 const { withAPIData, BaseControl} = wp.components;
 const { Component, RawHTML, compose } = wp.element;
 const { __, sprintf } = wp.i18n;
-const { query } = wp.data;
+const { withSelect, subscribe, select } = wp.data;
 
 /**
  * Internal dependencies
  */
 import './editor.scss'
-import { getPluginData, getPostField } from './data';
+import { getPluginData, getPostField, getTermIDs } from './data';
 import QueryPanel from './query-panel';
 import LoadingPlaceholder from './placeholder';
 
@@ -36,7 +36,7 @@ class RelatedPostsBlock extends Component {
 		this.titleDebounced = debounce( this.updateTitle, 1000);
 
 		this.instanceId = instances++;
-	}
+}
 
 	componentWillUnmount() {
 		this.titleDebounced.cancel();
@@ -61,10 +61,9 @@ class RelatedPostsBlock extends Component {
 
 	render(){
 		const relatedPosts = this.props.relatedPostsByTax.data;
-		const { attributes, focus, setAttributes, terms } = this.props;
+		const { attributes, focus, setAttributes, editorTerms, editorStatus } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
-		const titleID = 'rpbt-inspector-text-control-' + this.instanceId;
-		console.log(terms);
+		const titleID = 'rpbt-inspector-text-control-' + this.instanceId;		
 
 		let checkedPostTypes = post_types;
 		if( isUndefined( post_types ) || ! post_types ) {
@@ -142,11 +141,20 @@ class RelatedPostsBlock extends Component {
 }
 
 const applyWithAPIData = withAPIData( ( props ) => {
+	const { editorTerms, editorTaxonomies } = props
 	const { taxonomies, post_types, title, posts_per_page, format, image_size, columns } = props.attributes;
 	const is_editor_block = true;
+
+	// Get the terms set in the editor.
+	let terms = getTermIDs( editorTerms ).join(',');
+	if( !terms.length && ( -1 !== editorTaxonomies.indexOf('category') ) ) {
+		terms = getPluginData('default_category');
+	}
+
 	const attributes = {
 		taxonomies,
 		post_types,
+		terms,
 		title,
 		posts_per_page,
 		format,
@@ -165,15 +173,20 @@ const applyWithAPIData = withAPIData( ( props ) => {
 	}
 
 	const query = stringify( pickBy( attributes, value => ! isUndefined( value ) ), true );
+
 	return {
 		relatedPostsByTax: `/related-posts-by-taxonomy/v1/posts/${postID}` + `${query}`
 	};
 } );
 
-// export default applyWithAPIData( RelatedPostsBlock );
+let currentStatus = null;
+const unsubscribe = subscribe( () => {
+	currentStatus = select( 'core/editor' ).getEditedPostAttribute( 'status' );
+} );
 
-const applyWithQuery = query( ( select ) => {
+const applyWithQuery = withSelect( () => {
 		const taxQuery = {};
+		const editorTaxonomies = [];
 		const taxonomies = getPluginData( 'taxonomies' );
 		for (var key in taxonomies ) {
 			if (!taxonomies.hasOwnProperty(key)) {
@@ -192,9 +205,15 @@ const applyWithQuery = query( ( select ) => {
 				continue;
 			}
 
-			taxQuery[ key ] = query;
+			taxQuery[ tax ] = query;
+			editorTaxonomies.push( key );
 		}
-		return { terms: taxQuery };
+
+		return { 
+			editorTerms: taxQuery,
+			editorTaxonomies: editorTaxonomies,
+			editorStatus: currentStatus,
+		};
 	} );
 
 export default compose( [

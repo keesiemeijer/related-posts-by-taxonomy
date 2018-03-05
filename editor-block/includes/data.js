@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { isUndefined, isObject, isBoolean, isString, has } from 'lodash';
+import { isUndefined, isObject, isBoolean, isString, has, pickBy, flatten } from 'lodash';
 
 /**
  * Don't use _pluginData directly, use getPluginData()
@@ -19,6 +19,7 @@ const _defaults = {
 		type: 'bool',
 		default: true, /* required for booleans */
 	},
+	default_category: { type: 'string' },
 }
 
 export function getPluginData( setting ) {
@@ -38,6 +39,11 @@ export function getPluginData( setting ) {
 	return data;
 }
 
+export function inPluginData( type, value) {
+	const data = getPluginData( type );
+	return ! ( Object.keys( data ).indexOf( value ) === -1 );
+}
+
 export function getPostField(field) {
 	// Todo: Check if there is a native function to return current post fields.
 	if ( isUndefined( _wpGutenbergPost ) ) {
@@ -51,9 +57,36 @@ export function getPostField(field) {
 	return _wpGutenbergPost[field];
 }
 
-export function validatePostType( postType ){
-	const postTypes = getPluginData( 'post_types' );
-	return ! ( Object.keys( postTypes ).indexOf( postType ) === -1 );
+export function getTermIDs( taxonomies ) {
+	const ids = pickBy( taxonomies, value => value.length );
+	let terms = Object.keys( ids ).map( ( tax ) => ids[ tax ]);
+	
+	return flatten( terms );
+}
+
+function getTaxonomiesFromObject( obj ){
+	const pluginTaxonomies = getPluginData( 'taxonomies' );
+	let taxonomies = {};
+	for (var key in pluginTaxonomies) {
+		let tax = key;
+		if ( ( 'category' === key ) || ( 'post_tag' === key ) ) {
+			tax = ('category' === key) ? 'categories' : 'tags';
+		}
+	
+		if (obj.hasOwnProperty(tax)) {
+			taxonomies[key] = obj[tax];
+		}
+	}
+	return taxonomies;
+}
+
+export function getTermCount( taxonomies ) {
+	taxonomies = getTaxonomiesFromObject( taxonomies )
+	let terms = Object.keys( taxonomies );
+
+	return terms
+		.map( ( tax ) => taxonomies[tax].length )
+		.reduce(function(a, b) { return a + b; }, 0);
 }
 
 export function getSelectOptions(type, options = []) {
@@ -80,6 +113,7 @@ function getDefault( setting ) {
 	const types = {
 		object: {},
 		string: '',
+		int: 0,
 	}
 
 	if( has( _defaults, [setting, 'default']) ) {

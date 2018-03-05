@@ -448,19 +448,27 @@ module.exports = castPath;
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _pluginData; });
 /* harmony export (immutable) */ __webpack_exports__["b"] = getPluginData;
+/* harmony export (immutable) */ __webpack_exports__["f"] = inPluginData;
 /* harmony export (immutable) */ __webpack_exports__["c"] = getPostField;
-/* harmony export (immutable) */ __webpack_exports__["e"] = validatePostType;
+/* harmony export (immutable) */ __webpack_exports__["e"] = getTermIDs;
+/* unused harmony export getTermCount */
 /* harmony export (immutable) */ __webpack_exports__["d"] = getSelectOptions;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_has__ = __webpack_require__(138);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_has__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isString__ = __webpack_require__(140);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isString___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_isString__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean__ = __webpack_require__(141);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isObject__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_isObject__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten__ = __webpack_require__(145);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_flatten__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_has__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_has__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isString__ = __webpack_require__(140);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isString___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_isString__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean__ = __webpack_require__(141);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_isObject__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_isObject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_lodash_isObject__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_lodash_isUndefined__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_lodash_isUndefined__);
+
+
 
 
 
@@ -484,19 +492,20 @@ var _defaults = {
 	preview: {
 		type: 'bool',
 		default: true /* required for booleans */
-	}
+	},
+	default_category: { type: 'string' }
 };
 
 function getPluginData(setting) {
 	var defaultValue = getDefault(setting);
 
-	if (!(__WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default()(_pluginData) && _pluginData.hasOwnProperty(setting))) {
+	if (!(__WEBPACK_IMPORTED_MODULE_5_lodash_isObject___default()(_pluginData) && _pluginData.hasOwnProperty(setting))) {
 		return defaultValue;
 	}
 
 	var data = _pluginData[setting];
 
-	if (__WEBPACK_IMPORTED_MODULE_0_lodash_has___default()(_defaults, [setting, 'type'])) {
+	if (__WEBPACK_IMPORTED_MODULE_2_lodash_has___default()(_defaults, [setting, 'type'])) {
 		var type = _defaults[setting]['type'];
 		return isType(type, data) ? data : defaultValue;
 	}
@@ -504,9 +513,14 @@ function getPluginData(setting) {
 	return data;
 }
 
+function inPluginData(type, value) {
+	var data = getPluginData(type);
+	return !(Object.keys(data).indexOf(value) === -1);
+}
+
 function getPostField(field) {
 	// Todo: Check if there is a native function to return current post fields.
-	if (__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(_wpGutenbergPost)) {
+	if (__WEBPACK_IMPORTED_MODULE_6_lodash_isUndefined___default()(_wpGutenbergPost)) {
 		return '';
 	}
 
@@ -517,9 +531,42 @@ function getPostField(field) {
 	return _wpGutenbergPost[field];
 }
 
-function validatePostType(postType) {
-	var postTypes = getPluginData('post_types');
-	return !(Object.keys(postTypes).indexOf(postType) === -1);
+function getTermIDs(taxonomies) {
+	var ids = __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default()(taxonomies, function (value) {
+		return value.length;
+	});
+	var terms = Object.keys(ids).map(function (tax) {
+		return ids[tax];
+	});
+
+	return __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default()(terms);
+}
+
+function getTaxonomiesFromObject(obj) {
+	var pluginTaxonomies = getPluginData('taxonomies');
+	var taxonomies = {};
+	for (var key in pluginTaxonomies) {
+		var tax = key;
+		if ('category' === key || 'post_tag' === key) {
+			tax = 'category' === key ? 'categories' : 'tags';
+		}
+
+		if (obj.hasOwnProperty(tax)) {
+			taxonomies[key] = obj[tax];
+		}
+	}
+	return taxonomies;
+}
+
+function getTermCount(taxonomies) {
+	taxonomies = getTaxonomiesFromObject(taxonomies);
+	var terms = Object.keys(taxonomies);
+
+	return terms.map(function (tax) {
+		return taxonomies[tax].length;
+	}).reduce(function (a, b) {
+		return a + b;
+	}, 0);
 }
 
 function getSelectOptions(type) {
@@ -547,10 +594,11 @@ function getSelectOptions(type) {
 function getDefault(setting) {
 	var types = {
 		object: {},
-		string: ''
+		string: '',
+		int: 0
 	};
 
-	if (__WEBPACK_IMPORTED_MODULE_0_lodash_has___default()(_defaults, [setting, 'default'])) {
+	if (__WEBPACK_IMPORTED_MODULE_2_lodash_has___default()(_defaults, [setting, 'default'])) {
 		return _defaults[setting]['default'];
 	}
 
@@ -569,13 +617,13 @@ function isType(type, value) {
 	switch (type) {
 		case 'bool':
 			value = getBool(value);
-			is_type = __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean___default()(value);
+			is_type = __WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean___default()(value);
 			break;
 		case 'object':
-			is_type = __WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default()(value);
+			is_type = __WEBPACK_IMPORTED_MODULE_5_lodash_isObject___default()(value);
 			break;
 		case 'string':
-			is_type = __WEBPACK_IMPORTED_MODULE_1_lodash_isString___default()(value);
+			is_type = __WEBPACK_IMPORTED_MODULE_3_lodash_isString___default()(value);
 			break;
 	}
 
@@ -591,7 +639,7 @@ function isType(type, value) {
  * @return {bool} Boolean value if string is '1' or empty.
  */
 function getBool(value) {
-	if (!__WEBPACK_IMPORTED_MODULE_1_lodash_isString___default()(value)) {
+	if (!__WEBPACK_IMPORTED_MODULE_3_lodash_isString___default()(value)) {
 		return value;
 	}
 	var bool = Number(value.trim());
@@ -2391,7 +2439,10 @@ var _wp$element = wp.element,
 var _wp$i18n = wp.i18n,
     __ = _wp$i18n.__,
     sprintf = _wp$i18n.sprintf;
-var query = wp.data.query;
+var _wp$data = wp.data,
+    withSelect = _wp$data.withSelect,
+    subscribe = _wp$data.subscribe,
+    select = _wp$data.select;
 
 /**
  * Internal dependencies
@@ -2459,7 +2510,8 @@ var RelatedPostsBlock = function (_Component) {
 			    attributes = _props.attributes,
 			    focus = _props.focus,
 			    setAttributes = _props.setAttributes,
-			    terms = _props.terms;
+			    editorTerms = _props.editorTerms,
+			    editorStatus = _props.editorStatus;
 			var title = attributes.title,
 			    taxonomies = attributes.taxonomies,
 			    post_types = attributes.post_types,
@@ -2469,7 +2521,6 @@ var RelatedPostsBlock = function (_Component) {
 			    columns = attributes.columns;
 
 			var titleID = 'rpbt-inspector-text-control-' + this.instanceId;
-			console.log(terms);
 
 			var checkedPostTypes = post_types;
 			if (__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(post_types) || !post_types) {
@@ -2566,6 +2617,8 @@ var RelatedPostsBlock = function (_Component) {
 }(Component);
 
 var applyWithAPIData = withAPIData(function (props) {
+	var editorTerms = props.editorTerms,
+	    editorTaxonomies = props.editorTaxonomies;
 	var _props$attributes = props.attributes,
 	    taxonomies = _props$attributes.taxonomies,
 	    post_types = _props$attributes.post_types,
@@ -2576,9 +2629,17 @@ var applyWithAPIData = withAPIData(function (props) {
 	    columns = _props$attributes.columns;
 
 	var is_editor_block = true;
+
+	// Get the terms set in the editor.
+	var terms = Object(__WEBPACK_IMPORTED_MODULE_5__data__["e" /* getTermIDs */])(editorTerms).join(',');
+	if (!terms.length && -1 !== editorTaxonomies.indexOf('category')) {
+		terms = Object(__WEBPACK_IMPORTED_MODULE_5__data__["b" /* getPluginData */])('default_category');
+	}
+
 	var attributes = {
 		taxonomies: taxonomies,
 		post_types: post_types,
+		terms: terms,
 		title: title,
 		posts_per_page: posts_per_page,
 		format: format,
@@ -2599,15 +2660,20 @@ var applyWithAPIData = withAPIData(function (props) {
 	var query = Object(__WEBPACK_IMPORTED_MODULE_3_querystringify__["stringify"])(__WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default()(attributes, function (value) {
 		return !__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(value);
 	}), true);
+
 	return {
 		relatedPostsByTax: '/related-posts-by-taxonomy/v1/posts/' + postID + ('' + query)
 	};
 });
 
-// export default applyWithAPIData( RelatedPostsBlock );
+var currentStatus = null;
+var unsubscribe = subscribe(function () {
+	currentStatus = select('core/editor').getEditedPostAttribute('status');
+});
 
-var applyWithQuery = query(function (select) {
+var applyWithQuery = withSelect(function () {
 	var taxQuery = {};
+	var editorTaxonomies = [];
 	var taxonomies = Object(__WEBPACK_IMPORTED_MODULE_5__data__["b" /* getPluginData */])('taxonomies');
 	for (var key in taxonomies) {
 		if (!taxonomies.hasOwnProperty(key)) {
@@ -2620,15 +2686,21 @@ var applyWithQuery = query(function (select) {
 			tax = 'category' === key ? 'categories' : 'tags';
 		}
 
-		var _query = select('core/editor').getEditedPostAttribute(tax);
+		var query = select('core/editor').getEditedPostAttribute(tax);
 
-		if (__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(_query)) {
+		if (__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(query)) {
 			continue;
 		}
 
-		taxQuery[key] = _query;
+		taxQuery[tax] = query;
+		editorTaxonomies.push(key);
 	}
-	return { terms: taxQuery };
+
+	return {
+		editorTerms: taxQuery,
+		editorTaxonomies: editorTaxonomies,
+		editorStatus: currentStatus
+	};
 });
 
 /* harmony default export */ __webpack_exports__["a"] = (compose([applyWithQuery, applyWithAPIData])(RelatedPostsBlock));
@@ -5534,7 +5606,7 @@ var PostTypeControl = function (_Component) {
 
 			var checked = postTypes.split(",");
 			checked = checked.filter(function (item) {
-				return Object(__WEBPACK_IMPORTED_MODULE_1__data__["e" /* validatePostType */])(item);
+				return Object(__WEBPACK_IMPORTED_MODULE_1__data__["f" /* inPluginData */])('post_types', item);
 			});
 
 			this.updatePostTypeState(checked);
@@ -5638,6 +5710,104 @@ function LoadingPlaceholder(_ref) {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (LoadingPlaceholder);
+
+/***/ }),
+/* 145 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseFlatten = __webpack_require__(146);
+
+/**
+ * Flattens `array` a single level deep.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Array
+ * @param {Array} array The array to flatten.
+ * @returns {Array} Returns the new flattened array.
+ * @example
+ *
+ * _.flatten([1, [2, [3, [4]], 5]]);
+ * // => [1, 2, [3, [4]], 5]
+ */
+function flatten(array) {
+  var length = array == null ? 0 : array.length;
+  return length ? baseFlatten(array, 1) : [];
+}
+
+module.exports = flatten;
+
+
+/***/ }),
+/* 146 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arrayPush = __webpack_require__(40),
+    isFlattenable = __webpack_require__(147);
+
+/**
+ * The base implementation of `_.flatten` with support for restricting flattening.
+ *
+ * @private
+ * @param {Array} array The array to flatten.
+ * @param {number} depth The maximum recursion depth.
+ * @param {boolean} [predicate=isFlattenable] The function invoked per iteration.
+ * @param {boolean} [isStrict] Restrict to values that pass `predicate` checks.
+ * @param {Array} [result=[]] The initial result value.
+ * @returns {Array} Returns the new flattened array.
+ */
+function baseFlatten(array, depth, predicate, isStrict, result) {
+  var index = -1,
+      length = array.length;
+
+  predicate || (predicate = isFlattenable);
+  result || (result = []);
+
+  while (++index < length) {
+    var value = array[index];
+    if (depth > 0 && predicate(value)) {
+      if (depth > 1) {
+        // Recursively flatten arrays (susceptible to call stack limits).
+        baseFlatten(value, depth - 1, predicate, isStrict, result);
+      } else {
+        arrayPush(result, value);
+      }
+    } else if (!isStrict) {
+      result[result.length] = value;
+    }
+  }
+  return result;
+}
+
+module.exports = baseFlatten;
+
+
+/***/ }),
+/* 147 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Symbol = __webpack_require__(7),
+    isArguments = __webpack_require__(17),
+    isArray = __webpack_require__(1);
+
+/** Built-in value references. */
+var spreadableSymbol = Symbol ? Symbol.isConcatSpreadable : undefined;
+
+/**
+ * Checks if `value` is a flattenable `arguments` object or array.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is flattenable, else `false`.
+ */
+function isFlattenable(value) {
+  return isArray(value) || isArguments(value) ||
+    !!(spreadableSymbol && value && value[spreadableSymbol]);
+}
+
+module.exports = isFlattenable;
+
 
 /***/ })
 /******/ ]);

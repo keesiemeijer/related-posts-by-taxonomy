@@ -51,6 +51,7 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 			'related' => true,
 			'public_only' => false,
 			'include_self' => false,
+			'terms' => '',
 		);
 
 		$args = km_rpbt_get_default_args();
@@ -79,6 +80,7 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 			'related' => false,
 			'public_only' => false,
 			'include_self' => false,
+			'terms' => array(),
 		);
 
 		$args = array(
@@ -97,6 +99,7 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 			'related' => 'lalala',
 			'public_only' => array(),
 			'include_self' => 'no',
+			'terms' => '',
 		);
 
 		$this->assertEquals( $expected, km_rpbt_sanitize_args( $args ) );
