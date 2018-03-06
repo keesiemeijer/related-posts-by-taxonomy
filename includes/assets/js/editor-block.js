@@ -2435,8 +2435,9 @@ module.exports = nodeUtil;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__editor_scss__ = __webpack_require__(137);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__editor_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__editor_scss__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__data__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__query_panel__ = __webpack_require__(145);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__placeholder__ = __webpack_require__(147);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__editor_taxonomies__ = __webpack_require__(149);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__query_panel__ = __webpack_require__(145);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__placeholder__ = __webpack_require__(147);
 
 
 
@@ -2469,13 +2470,11 @@ var _wp$element = wp.element,
 var _wp$i18n = wp.i18n,
     __ = _wp$i18n.__,
     sprintf = _wp$i18n.sprintf;
-var _wp$data = wp.data,
-    withSelect = _wp$data.withSelect,
-    select = _wp$data.select;
 
 /**
  * Internal dependencies
  */
+
 
 
 
@@ -2539,8 +2538,8 @@ var RelatedPostsBlock = function (_Component) {
 			    attributes = _props.attributes,
 			    focus = _props.focus,
 			    setAttributes = _props.setAttributes,
-			    editorTerms = _props.editorTerms,
-			    editorTaxonomies = _props.editorTaxonomies;
+			    editorTermIDs = _props.editorTermIDs,
+			    editorTaxonomyNames = _props.editorTaxonomyNames;
 			var title = attributes.title,
 			    taxonomies = attributes.taxonomies,
 			    post_types = attributes.post_types,
@@ -2583,7 +2582,7 @@ var RelatedPostsBlock = function (_Component) {
 						id: titleID
 					})
 				),
-				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_6__query_panel__["a" /* default */], {
+				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__query_panel__["a" /* default */], {
 					postsPerPage: posts_per_page,
 					onPostsPerPageChange: function onPostsPerPageChange(value) {
 						// Don't allow 0 as a value.
@@ -2621,12 +2620,12 @@ var RelatedPostsBlock = function (_Component) {
 			}
 
 			if (!focus && !this.previewExpanded || !postsFound) {
-				return [inspectorControls, wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__placeholder__["a" /* default */], {
+				return [inspectorControls, wp.element.createElement(__WEBPACK_IMPORTED_MODULE_8__placeholder__["a" /* default */], {
 					className: this.props.className,
 					queryFinished: queryFinished,
 					postsFound: postsFound,
-					editorTerms: editorTerms,
-					editorTaxonomies: editorTaxonomies,
+					editorTerms: editorTermIDs,
+					editorTaxonomies: editorTaxonomyNames,
 					icon: 'megaphone',
 					label: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy')
 				})];
@@ -2648,8 +2647,8 @@ var RelatedPostsBlock = function (_Component) {
 }(Component);
 
 var applyWithAPIData = withAPIData(function (props) {
-	var editorTerms = props.editorTerms,
-	    editorTaxonomies = props.editorTaxonomies;
+	var editorTermIDs = props.editorTermIDs,
+	    editorTaxonomyNames = props.editorTaxonomyNames;
 	var _props$attributes = props.attributes,
 	    post_types = _props$attributes.post_types,
 	    title = _props$attributes.title,
@@ -2663,8 +2662,8 @@ var applyWithAPIData = withAPIData(function (props) {
 
 	// Get the terms set in the editor.
 
-	var terms = Object(__WEBPACK_IMPORTED_MODULE_5__data__["f" /* getTermIDs */])(editorTerms).join(',');
-	if (!terms.length && -1 !== editorTaxonomies.indexOf('category')) {
+	var terms = editorTermIDs.join(',');
+	if (!terms.length && -1 !== editorTaxonomyNames.indexOf('category')) {
 		// Use default category if this post supports the 'category' taxonomy.
 		terms = Object(__WEBPACK_IMPORTED_MODULE_5__data__["b" /* getPluginData */])('default_category');
 	}
@@ -2702,33 +2701,7 @@ var applyWithAPIData = withAPIData(function (props) {
 	};
 });
 
-var applyWithQuery = withSelect(function () {
-	var editorTerms = {};
-	var editorTaxonomies = [];
-	var taxonomies = Object(__WEBPACK_IMPORTED_MODULE_5__data__["b" /* getPluginData */])('taxonomies');
-
-	for (var key in taxonomies) {
-		if (!taxonomies.hasOwnProperty(key)) {
-			continue;
-		}
-
-		// Get the correct tax name for post attribute 'categories' and 'tags'. 
-		var taxName = Object(__WEBPACK_IMPORTED_MODULE_5__data__["e" /* getTaxName */])(key);
-		var query = select('core/editor').getEditedPostAttribute(taxName);
-
-		if (!__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(query)) {
-			editorTerms[key] = query;
-			editorTaxonomies.push(key);
-		}
-	}
-
-	return {
-		editorTerms: editorTerms,
-		editorTaxonomies: editorTaxonomies
-	};
-});
-
-/* harmony default export */ __webpack_exports__["a"] = (compose([applyWithQuery, applyWithAPIData])(RelatedPostsBlock));
+/* harmony default export */ __webpack_exports__["a"] = (compose([__WEBPACK_IMPORTED_MODULE_6__editor_taxonomies__["a" /* postEditorTaxonomies */], applyWithAPIData])(RelatedPostsBlock));
 
 /***/ }),
 /* 69 */
@@ -5773,8 +5746,7 @@ function LoadingPlaceholder(_ref) {
 		loading = __('Loading related posts', 'related-posts-by-taxonomy');
 	}
 
-	var terms = Object(__WEBPACK_IMPORTED_MODULE_0__data__["f" /* getTermIDs */])(editorTerms);
-	if (!terms.length) {
+	if (!editorTerms.length) {
 		message = __('There are no taxonomy terms assigned to this post', 'related-posts-by-taxonomy');
 		if (!editorTaxonomies.length) {
 			message = __("This post type doesn't support any taxonomies", 'related-posts-by-taxonomy');
@@ -5829,6 +5801,60 @@ function LoadingPlaceholder(_ref) {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (LoadingPlaceholder);
+
+/***/ }),
+/* 148 */,
+/* 149 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return postEditorTaxonomies; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isUndefined__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_isUndefined__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data__ = __webpack_require__(15);
+ /**
+                                                * External dependencies
+                                                */
+
+/**
+ * WordPress dependencies
+ */
+var _wp$data = wp.data,
+    withSelect = _wp$data.withSelect,
+    select = _wp$data.select;
+
+/**
+ * Internal dependencies
+ */
+
+
+
+var postEditorTaxonomies = withSelect(function () {
+	var taxonomyTerms = {};
+	var taxonomyNames = [];
+	var taxonomies = Object(__WEBPACK_IMPORTED_MODULE_1__data__["b" /* getPluginData */])('taxonomies');
+
+	for (var key in taxonomies) {
+		if (!taxonomies.hasOwnProperty(key)) {
+			continue;
+		}
+
+		// Get the correct tax name for post attribute 'categories' and 'tags'. 
+		var taxName = Object(__WEBPACK_IMPORTED_MODULE_1__data__["e" /* getTaxName */])(key);
+		var query = select('core/editor').getEditedPostAttribute(taxName);
+
+		if (!__WEBPACK_IMPORTED_MODULE_0_lodash_isUndefined___default()(query)) {
+			taxonomyTerms[key] = query;
+			taxonomyNames.push(key);
+		}
+	}
+
+	return {
+		editorTaxonomyTerms: taxonomyTerms,
+		editorTaxonomyNames: taxonomyNames,
+		editorTermIDs: Object(__WEBPACK_IMPORTED_MODULE_1__data__["f" /* getTermIDs */])(taxonomyTerms)
+	};
+});
 
 /***/ })
 /******/ ]);

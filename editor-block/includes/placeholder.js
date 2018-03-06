@@ -31,8 +31,7 @@ function LoadingPlaceholder( {
 		loading = __( 'Loading related posts', 'related-posts-by-taxonomy');
 	}
 
-	const terms = getTermIDs( editorTerms );
-	if ( ! terms.length ) {
+	if ( ! editorTerms.length ) {
 		message = __( 'There are no taxonomy terms assigned to this post', 'related-posts-by-taxonomy' );
 		if( ! editorTaxonomies.length ) {
 			message = __( "This post type doesn't support any taxonomies", 'related-posts-by-taxonomy' );
