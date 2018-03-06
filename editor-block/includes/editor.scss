@@ -80,6 +80,16 @@ $block-class: wp-block-related-posts-by-taxonomy-related-posts-block;
 	}
 }
 
-.#{$block-class} ul {
-	padding-left: 2.5em;
+.#{$block-class} {
+	ul {
+		padding-left: 2.5em;
+	}
+
+	.components-placeholder__fieldset {
+		max-width: none;
+
+		div {
+			width: 100%;
+		}
+	}
 }

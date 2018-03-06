@@ -4,11 +4,15 @@
 const { Spinner, Placeholder } = wp.components;
 const { __ } = wp.i18n;
 
+import { getTermIDs } from './data';
+
 function LoadingPlaceholder( {
 	icon,
 	label,
 	postsFound,
 	queryFinished,
+	editorTerms,
+	editorTaxonomies,
 	className,
 	} ) {
 
@@ -17,15 +21,21 @@ function LoadingPlaceholder( {
 	};
 
 	let loading = '';
-	const preview = (<a href="#">{ __('preview related posts', 'related-posts-by-taxonomy') }</a>)
-	const instructions = (
-		<div class="instructions">
-			{ __( 'Assign (more) terms or change the settings of this block', 'related-posts-by-taxonomy' ) }
-		</div>);
+	let message = '';
+
+	const terms = getTermIDs( editorTerms );
+	if ( ! terms.length ) {
+		message = __( 'There are no taxonomy terms assigned to this post', 'related-posts-by-taxonomy' );
+	} else {
+		message = __( 'Check if the settings for this block are correct', 'related-posts-by-taxonomy' );
+	}
+
+	const preview = (<div><a href="#">{ __( 'preview related posts', 'related-posts-by-taxonomy' ) }</a></div>);
+	const instructions = (<div class="instructions">{message}</div>);
 
 	if( queryFinished ) {
 		if(!postsFound) {
-			loading = __( 'No related posts found!', 'related-posts-by-taxonomy' );
+			loading = (<div>{__( 'No related posts found!', 'related-posts-by-taxonomy' )}</div>);
 		}
 	} else {
 		loading = __( 'Loading related posts', 'related-posts-by-taxonomy');

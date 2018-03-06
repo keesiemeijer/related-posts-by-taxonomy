@@ -11,13 +11,13 @@ const { InspectorControls } = wp.blocks;
 const { withAPIData, BaseControl} = wp.components;
 const { Component, RawHTML, compose } = wp.element;
 const { __, sprintf } = wp.i18n;
-const { withSelect, subscribe, select } = wp.data;
+const { withSelect, select } = wp.data;
 
 /**
  * Internal dependencies
  */
 import './editor.scss'
-import { getPluginData, getPostField, getTermIDs } from './data';
+import { getPluginData, getPostField, getTermIDs, getTaxName } from './data';
 import QueryPanel from './query-panel';
 import LoadingPlaceholder from './placeholder';
 
@@ -36,7 +36,7 @@ class RelatedPostsBlock extends Component {
 		this.titleDebounced = debounce( this.updateTitle, 1000);
 
 		this.instanceId = instances++;
-}
+	}
 
 	componentWillUnmount() {
 		this.titleDebounced.cancel();
@@ -61,9 +61,9 @@ class RelatedPostsBlock extends Component {
 
 	render(){
 		const relatedPosts = this.props.relatedPostsByTax.data;
-		const { attributes, focus, setAttributes, editorTerms, editorStatus } = this.props;
+		const { attributes, focus, setAttributes, editorTerms, editorTaxonomies } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
-		const titleID = 'rpbt-inspector-text-control-' + this.instanceId;		
+		const titleID = 'rpbt-inspector-text-control-' + this.instanceId;
 
 		let checkedPostTypes = post_types;
 		if( isUndefined( post_types ) || ! post_types ) {
@@ -127,6 +127,8 @@ class RelatedPostsBlock extends Component {
 					className={this.props.className}
 					queryFinished={queryFinished}
 					postsFound={postsFound}
+					editorTerms={editorTerms}
+					editorTaxonomies={editorTaxonomies}
 					icon="megaphone"
 					label={ __( 'Related Posts by Taxonomy', 'related-posts-by-taxonomy' ) }
 				/>
@@ -142,14 +144,19 @@ class RelatedPostsBlock extends Component {
 
 const applyWithAPIData = withAPIData( ( props ) => {
 	const { editorTerms, editorTaxonomies } = props
-	const { taxonomies, post_types, title, posts_per_page, format, image_size, columns } = props.attributes;
+	const { post_types, title, posts_per_page, format, image_size, columns } = props.attributes;
 	const is_editor_block = true;
+	let { taxonomies} = props.attributes
 
 	// Get the terms set in the editor.
 	let terms = getTermIDs( editorTerms ).join(',');
-	if( !terms.length && ( -1 !== editorTaxonomies.indexOf('category') ) ) {
+	if( ! terms.length && ( -1 !== editorTaxonomies.indexOf('category') ) ) {
+		// Use default category if this post supports the 'category' taxonomy.
 		terms = getPluginData('default_category');
 	}
+
+	// If no terms are selected return no related posts.
+	taxonomies = terms.length ? taxonomies : '';
 
 	const attributes = {
 		taxonomies,
@@ -179,40 +186,29 @@ const applyWithAPIData = withAPIData( ( props ) => {
 	};
 } );
 
-let currentStatus = null;
-const unsubscribe = subscribe( () => {
-	currentStatus = select( 'core/editor' ).getEditedPostAttribute( 'status' );
-} );
-
 const applyWithQuery = withSelect( () => {
-		const taxQuery = {};
+		const editorTerms = {};
 		const editorTaxonomies = [];
 		const taxonomies = getPluginData( 'taxonomies' );
-		for (var key in taxonomies ) {
-			if (!taxonomies.hasOwnProperty(key)) {
+
+		for ( var key in taxonomies ) {
+			if ( ! taxonomies.hasOwnProperty( key ) ) {
 				continue;
 			}
 
-			// Rename category and post tag for query.
-			let tax = key;
-			if ( ( 'category' === key ) || ( 'post_tag' === key ) ) {
-				tax = ('category' === key) ? 'categories' : 'tags';
+			// Get the correct tax name for post attribute 'categories' and 'tags'. 
+			const taxName = getTaxName( key );
+			const query = select( 'core/editor' ).getEditedPostAttribute( taxName );
+
+			if( ! isUndefined( query ) ) {
+				editorTerms[ key ] = query;
+				editorTaxonomies.push( key );
 			}
-
-			const query = select( 'core/editor' ).getEditedPostAttribute( tax );
-
-			if( isUndefined( query ) ) {
-				continue;
-			}
-
-			taxQuery[ tax ] = query;
-			editorTaxonomies.push( key );
 		}
 
-		return { 
-			editorTerms: taxQuery,
+		return {
+			editorTerms: editorTerms,
 			editorTaxonomies: editorTaxonomies,
-			editorStatus: currentStatus,
 		};
 	} );
 

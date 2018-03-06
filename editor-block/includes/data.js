@@ -15,17 +15,29 @@ const _defaults = {
 	image_sizes: { type: 'object' },
 	default_tax: { type: 'string' },
 	all_tax: { type: 'string' },
+	default_category: { type: 'string' },
 	preview: {
 		type: 'bool',
 		default: true, /* required for booleans */
 	},
-	default_category: { type: 'string' },
+}
+
+export function pluginHasData( setting ) {
+	if( isObject( _pluginData ) && _pluginData.hasOwnProperty( setting ) ) {
+		return true;
+	}
+	return false;
+}
+
+export function inPluginData( type, value) {
+	const data = getPluginData( type );
+	return ! ( Object.keys( data ).indexOf( value ) === -1 );
 }
 
 export function getPluginData( setting ) {
 	const defaultValue = getDefault( setting );
 
-	if( ! ( isObject( _pluginData ) && _pluginData.hasOwnProperty( setting ) ) ) {
+	if( ! pluginHasData( setting ) ) {
 		return defaultValue;
 	}
 
@@ -37,11 +49,6 @@ export function getPluginData( setting ) {
 	}
 
 	return data;
-}
-
-export function inPluginData( type, value) {
-	const data = getPluginData( type );
-	return ! ( Object.keys( data ).indexOf( value ) === -1 );
 }
 
 export function getPostField(field) {
@@ -60,33 +67,15 @@ export function getPostField(field) {
 export function getTermIDs( taxonomies ) {
 	const ids = pickBy( taxonomies, value => value.length );
 	let terms = Object.keys( ids ).map( ( tax ) => ids[ tax ]);
-	
+
 	return flatten( terms );
 }
 
-function getTaxonomiesFromObject( obj ){
-	const pluginTaxonomies = getPluginData( 'taxonomies' );
-	let taxonomies = {};
-	for (var key in pluginTaxonomies) {
-		let tax = key;
-		if ( ( 'category' === key ) || ( 'post_tag' === key ) ) {
-			tax = ('category' === key) ? 'categories' : 'tags';
-		}
-	
-		if (obj.hasOwnProperty(tax)) {
-			taxonomies[key] = obj[tax];
-		}
+export function getTaxName( taxonomy ) {
+	if ( ( 'category' === taxonomy ) || ( 'post_tag' === taxonomy ) ) {
+		taxonomy = ('category' === taxonomy) ? 'categories' : 'tags';
 	}
-	return taxonomies;
-}
-
-export function getTermCount( taxonomies ) {
-	taxonomies = getTaxonomiesFromObject( taxonomies )
-	let terms = Object.keys( taxonomies );
-
-	return terms
-		.map( ( tax ) => taxonomies[tax].length )
-		.reduce(function(a, b) { return a + b; }, 0);
+	return taxonomy;
 }
 
 export function getSelectOptions(type, options = []) {
@@ -113,7 +102,6 @@ function getDefault( setting ) {
 	const types = {
 		object: {},
 		string: '',
-		int: 0,
 	}
 
 	if( has( _defaults, [setting, 'default']) ) {
