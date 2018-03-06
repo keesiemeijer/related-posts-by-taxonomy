@@ -87,8 +87,13 @@ $block-class: wp-block-related-posts-by-taxonomy-related-posts-block;
 
 	.components-placeholder__fieldset {
 		max-width: none;
-
+		ul {
+			text-align: left;
+			display: inline-block;
+			padding-left: 1em;
+		}
 		div {
+			padding-top: 1em;
 			width: 100%;
 		}
 	}

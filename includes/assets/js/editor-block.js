@@ -5761,11 +5761,40 @@ function LoadingPlaceholder(_ref) {
 	var loading = '';
 	var message = '';
 
+	if (queryFinished) {
+		if (!postsFound) {
+			loading = wp.element.createElement(
+				'div',
+				null,
+				__('No related posts found', 'related-posts-by-taxonomy')
+			);
+		}
+	} else {
+		loading = __('Loading related posts', 'related-posts-by-taxonomy');
+	}
+
 	var terms = Object(__WEBPACK_IMPORTED_MODULE_0__data__["f" /* getTermIDs */])(editorTerms);
 	if (!terms.length) {
 		message = __('There are no taxonomy terms assigned to this post', 'related-posts-by-taxonomy');
+		if (!editorTaxonomies.length) {
+			message = __("This post type doesn't support any taxonomies", 'related-posts-by-taxonomy');
+			loading = '';
+		}
 	} else {
-		message = __('Check if the settings for this block are correct', 'related-posts-by-taxonomy');
+		message = wp.element.createElement(
+			'ul',
+			null,
+			wp.element.createElement(
+				'li',
+				null,
+				__('Check if the settings for this block are correct', 'related-posts-by-taxonomy')
+			),
+			wp.element.createElement(
+				'li',
+				null,
+				__('Check if there are other posts with the same taxonomy terms', 'related-posts-by-taxonomy')
+			)
+		);
 	}
 
 	var preview = wp.element.createElement(
@@ -5782,18 +5811,6 @@ function LoadingPlaceholder(_ref) {
 		{ 'class': 'instructions' },
 		message
 	);
-
-	if (queryFinished) {
-		if (!postsFound) {
-			loading = wp.element.createElement(
-				'div',
-				null,
-				__('No related posts found!', 'related-posts-by-taxonomy')
-			);
-		}
-	} else {
-		loading = __('Loading related posts', 'related-posts-by-taxonomy');
-	}
 
 	return wp.element.createElement(
 		Placeholder,

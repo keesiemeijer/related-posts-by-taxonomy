@@ -68,5 +68,10 @@
 
 .wp-block-related-posts-by-taxonomy-related-posts-block .components-placeholder__fieldset {
   max-width: none; }
+  .wp-block-related-posts-by-taxonomy-related-posts-block .components-placeholder__fieldset ul {
+    text-align: left;
+    display: inline-block;
+    padding-left: 1em; }
   .wp-block-related-posts-by-taxonomy-related-posts-block .components-placeholder__fieldset div {
+    padding-top: 1em;
     width: 100%; }
