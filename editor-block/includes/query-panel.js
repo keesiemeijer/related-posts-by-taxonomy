@@ -32,6 +32,7 @@ export default function QueryPanel( {
 	postTypes,
 	onPostTypesChange,
 } ) {
+
 	return [
 		onPostsPerPageChange && (
 			<RangeControl
@@ -64,7 +65,7 @@ export default function QueryPanel( {
 				options={  format_options }
 				onChange={ ( value ) => { onFormatChange( value ); } }
 			/> ),
-		onImageSizeChange && (
+		onImageSizeChange && ('thumbnails' === format) && (
 			<SelectControl
 				key="rpbt-select-image-size"
 				label={ __( 'Image Size', 'related-posts-by-taxonomy' ) }
@@ -72,7 +73,7 @@ export default function QueryPanel( {
 				options={  img_options }
 				onChange={ ( value ) => { onImageSizeChange( value ); } }
 			/> ),
-		onColumnsChange && (
+		onColumnsChange && ('thumbnails' === format) && (
 			<RangeControl
 				key="rpbt-range-columns"
 				label={ __( 'Image Columns', 'related-posts-by-taxonomy' ) }
