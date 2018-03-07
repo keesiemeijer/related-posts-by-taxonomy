@@ -14,18 +14,20 @@ const { Component } = wp.element;
  */
 import { getPluginData, inPluginData } from './data';
 
-function getPostTypeObjects() {
-	const postTypes = getPluginData( 'post_types' );
-
+function getPostTypeObjects( checkedPostTypes = [] ) {
 	let postTypeOjects = [];
+
+	const postTypes = getPluginData( 'post_types' );
 	for (var key in postTypes) {
-		if (postTypes.hasOwnProperty(key)) {
-			postTypeOjects.push({
-				post_type: key,
-				label: postTypes[key],
-				checked: false,
-			});
+		if ( ! postTypes.hasOwnProperty( key ) ) {
+			continue;
 		}
+
+		postTypeOjects.push({
+			post_type: key,
+			label: postTypes[key],
+			checked: ( -1 !== checkedPostTypes.indexOf( key ) ),
+		});
 	}
 
 	return postTypeOjects;
@@ -34,21 +36,12 @@ function getPostTypeObjects() {
 class PostTypeControl extends Component {
 	constructor() {
 		super( ...arguments );
+		const { postTypes } = this.props;
 
-		// Set the state with default post type objects.
+		// Set the state with post type objects.
 		this.state = {
-			items: getPostTypeObjects()
+			items: getPostTypeObjects( postTypes.split(",") ),
 		}
-	}
-
-	updatePostTypeState( postTypes ) {
-		let state = this.state.items;
-
-		// Todo: find out why this updates this.state?
-		state = state.map( ( option, index ) => {
-			option['checked'] = ( -1 !== postTypes.indexOf( option['post_type'] ) );
-			return option;
-		} );
 	}
 
 	onChange( index ) {
@@ -78,8 +71,6 @@ class PostTypeControl extends Component {
 
 		let checked = postTypes.split(",");
 		checked = checked.filter( item => inPluginData( 'post_types', item ) );
-
-		this.updatePostTypeState( checked );
 
 		return ! isEmpty( this.state.items ) && (
 			<BaseControl label={ label } id={ id } help={ help } className="blocks-checkbox-control">
