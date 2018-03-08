@@ -20,6 +20,10 @@ const _defaults = {
 		type: 'bool',
 		default: true, /* required for booleans */
 	},
+	html5_gallery: {
+		type: 'bool',
+		default: false,
+	}
 }
 
 export function pluginHasData( setting ) {

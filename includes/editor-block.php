@@ -55,8 +55,9 @@ function km_rpbt_block_editor_assets() {
 			'all_tax'          => $plugin->all_tax,
 			'formats'          => $plugin->formats,
 			'image_sizes'      => $plugin->image_sizes,
-			'preview'          => (bool) $plugin->plugin_supports('editor_block_preview'),
-			'default_category' => absint( get_option('default_category' ) ),
+			'preview'          => (bool) $plugin->plugin_supports( 'editor_block_preview' ),
+			'html5_gallery'    => (bool) current_theme_supports( 'html5', 'gallery' ),
+			'default_category' => absint( get_option( 'default_category' ) ),
 		)
 	);
 }

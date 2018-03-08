@@ -3,6 +3,7 @@
  */
 import { stringify } from 'querystringify';
 import { isUndefined, pickBy, debounce } from 'lodash';
+import classnames from 'classnames';
 
 /**
  * WordPress dependencies
@@ -28,6 +29,9 @@ class RelatedPostsBlock extends Component {
 		super( ...arguments );
 
 		this.previewExpanded = getPluginData( 'preview' );
+		this.html5Gallery = getPluginData( 'html5_gallery' );
+		this.currentType = getPostField('type');
+
 		this.updatePostTypes = this.updatePostTypes.bind(this);
 
 		// The title is updated 1 second after a change.
@@ -64,11 +68,13 @@ class RelatedPostsBlock extends Component {
 		const { attributes, focus, setAttributes, editorTermIDs, editorTaxonomyNames } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
 		const titleID = 'rpbt-inspector-text-control-' + this.instanceId;
+		const className = classnames( this.props.className, { 'html5-gallery': this.html5Gallery } );
+
 
 		let checkedPostTypes = post_types;
 		if( isUndefined( post_types ) || ! post_types ) {
 			// Use the post type from the current post if not set.
-			checkedPostTypes = getPostField('type');
+			checkedPostTypes = this.currentType;
 		}
 
 		const inspectorControls = focus && (
@@ -76,7 +82,7 @@ class RelatedPostsBlock extends Component {
 				<div>
 					<p>
 					<RawHTML>
-					{__( '<strong>Note</strong>: The preview of this block can be different from the display in the front end of your site.', 'related-posts-by-taxonomy')}
+					{__( '<strong>Note</strong>: The preview of this block is not the actual display as used in the front end of your site.', 'related-posts-by-taxonomy')}
 					</RawHTML>
 					</p>
 				</div>
@@ -124,7 +130,7 @@ class RelatedPostsBlock extends Component {
 			return [
 				inspectorControls,
 				<LoadingPlaceholder
-					className={this.props.className}
+					className={className}
 					queryFinished={queryFinished}
 					postsFound={postsFound}
 					editorTerms={editorTermIDs}
@@ -135,9 +141,15 @@ class RelatedPostsBlock extends Component {
 			];
 		}
 
+		let html = ! isUndefined( relatedPosts.rendered ) ? relatedPosts.rendered : '';
+
+		// Add target blank to all links
+		// Todo: find a better way to do this
+		html = relatedPosts.rendered.replace(/\<a href\=/g, '<a target="_blank" href=');
+
 		return [
 			inspectorControls,
-			<div className={this.props.className}><RawHTML>{relatedPosts.rendered}</RawHTML></div>
+			html && (<div className={className}><RawHTML>{html}</RawHTML></div>)
 		];
 	}
 }

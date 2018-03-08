@@ -1,10 +1,10 @@
-.wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery {
+.wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
   list-style-type: none; }
-  .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery .gallery-item {
+  .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery .gallery-item {
     margin: 8px;
     display: -ms-flexbox;
     display: flex;
@@ -17,33 +17,33 @@
     -ms-flex-align: center;
         align-items: center;
     position: relative; }
-    .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery .gallery-item img {
+    .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery .gallery-item img {
       display: block;
       max-width: 100%;
       height: auto;
       margin: 0 auto; }
-    .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery .gallery-item figcaption {
+    .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery .gallery-item figcaption {
       padding-top: 1em;
       text-align: center;
       font-size: 13px;
       width: 100%; }
-  .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery .gallery-item {
+  .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery .gallery-item {
     width: calc( 100% / 2 - 16px); }
-  .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery.gallery-columns-0 .gallery-item,
-  .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery.gallery-columns-1 .gallery-item {
+  .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery.gallery-columns-0 .gallery-item,
+  .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery.gallery-columns-1 .gallery-item {
     width: calc(100% / 1 - 16px); }
   @media (min-width: 600px) {
-    .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery.gallery-columns-3 .gallery-item {
+    .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery.gallery-columns-3 .gallery-item {
       width: calc(100% / 3 - 16px); }
-    .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery.gallery-columns-4 .gallery-item {
+    .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery.gallery-columns-4 .gallery-item {
       width: calc(100% / 4 - 16px); }
-    .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery.gallery-columns-5 .gallery-item {
+    .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery.gallery-columns-5 .gallery-item {
       width: calc(100% / 5 - 16px); }
-    .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery.gallery-columns-6 .gallery-item {
+    .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery.gallery-columns-6 .gallery-item {
       width: calc(100% / 6 - 16px); }
-    .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery.gallery-columns-7 .gallery-item {
+    .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery.gallery-columns-7 .gallery-item {
       width: calc(100% / 7 - 16px); }
-    .wp-block-related-posts-by-taxonomy-related-posts-block .related-gallery.gallery-columns-8 .gallery-item {
+    .wp-block-related-posts-by-taxonomy-related-posts-block.html5-gallery .related-gallery.gallery-columns-8 .gallery-item {
       width: calc(100% / 8 - 16px); } }
 
 .wp-block-related-posts-by-taxonomy-related-posts-block ul {
@@ -51,10 +51,15 @@
 
 .wp-block-related-posts-by-taxonomy-related-posts-block .components-placeholder__fieldset {
   max-width: none; }
-  .wp-block-related-posts-by-taxonomy-related-posts-block .components-placeholder__fieldset ul {
+  .wp-block-related-posts-by-taxonomy-related-posts-block .components-placeholder__fieldset .instructions ul {
     text-align: left;
-    display: inline-block;
-    padding-left: 1em; }
+    padding: 0; }
   .wp-block-related-posts-by-taxonomy-related-posts-block .components-placeholder__fieldset div {
-    padding-top: 1em;
+    padding: 1em 1.5em 0;
     width: 100%; }
+
+body.rtl .wp-block-related-posts-by-taxonomy-related-posts-block ul {
+  padding-right: 2.5em; }
+
+body.rtl .wp-block-related-posts-by-taxonomy-related-posts-block .components-placeholder__fieldset .instructions ul {
+  text-align: right; }

@@ -252,15 +252,15 @@ module.exports = isObjectLike;
 /* harmony export (immutable) */ __webpack_exports__["f"] = getTermIDs;
 /* harmony export (immutable) */ __webpack_exports__["e"] = getTaxName;
 /* harmony export (immutable) */ __webpack_exports__["d"] = getSelectOptions;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten__ = __webpack_require__(139);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_flatten__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_has__ = __webpack_require__(141);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_has__ = __webpack_require__(142);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_has__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isString__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isString__ = __webpack_require__(144);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isString___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_isString__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean__ = __webpack_require__(144);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean__ = __webpack_require__(145);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_isObject__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_isObject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_lodash_isObject__);
@@ -292,6 +292,10 @@ var _defaults = {
 	preview: {
 		type: 'bool',
 		default: true /* required for booleans */
+	},
+	html5_gallery: {
+		type: 'bool',
+		default: false
 	}
 };
 
@@ -2432,12 +2436,14 @@ module.exports = nodeUtil;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_querystringify__ = __webpack_require__(136);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_querystringify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_querystringify__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__editor_scss__ = __webpack_require__(137);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__editor_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__editor_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__data__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__editor_taxonomies__ = __webpack_require__(145);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__query_panel__ = __webpack_require__(146);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__placeholder__ = __webpack_require__(148);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_classnames__ = __webpack_require__(137);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_classnames__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__editor_scss__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__editor_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__editor_scss__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__data__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__editor_taxonomies__ = __webpack_require__(146);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__query_panel__ = __webpack_require__(147);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__placeholder__ = __webpack_require__(149);
 
 
 
@@ -2453,6 +2459,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * External dependencies
  */
+
 
 
 
@@ -2491,7 +2498,10 @@ var RelatedPostsBlock = function (_Component) {
 
 		var _this = _possibleConstructorReturn(this, (RelatedPostsBlock.__proto__ || Object.getPrototypeOf(RelatedPostsBlock)).apply(this, arguments));
 
-		_this.previewExpanded = Object(__WEBPACK_IMPORTED_MODULE_5__data__["b" /* getPluginData */])('preview');
+		_this.previewExpanded = Object(__WEBPACK_IMPORTED_MODULE_6__data__["b" /* getPluginData */])('preview');
+		_this.html5Gallery = Object(__WEBPACK_IMPORTED_MODULE_6__data__["b" /* getPluginData */])('html5_gallery');
+		_this.currentType = Object(__WEBPACK_IMPORTED_MODULE_6__data__["c" /* getPostField */])('type');
+
 		_this.updatePostTypes = _this.updatePostTypes.bind(_this);
 
 		// The title is updated 1 second after a change.
@@ -2549,11 +2559,12 @@ var RelatedPostsBlock = function (_Component) {
 			    columns = attributes.columns;
 
 			var titleID = 'rpbt-inspector-text-control-' + this.instanceId;
+			var className = __WEBPACK_IMPORTED_MODULE_4_classnames___default()(this.props.className, { 'html5-gallery': this.html5Gallery });
 
 			var checkedPostTypes = post_types;
 			if (__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(post_types) || !post_types) {
 				// Use the post type from the current post if not set.
-				checkedPostTypes = Object(__WEBPACK_IMPORTED_MODULE_5__data__["c" /* getPostField */])('type');
+				checkedPostTypes = this.currentType;
 			}
 
 			var inspectorControls = focus && wp.element.createElement(
@@ -2568,7 +2579,7 @@ var RelatedPostsBlock = function (_Component) {
 						wp.element.createElement(
 							RawHTML,
 							null,
-							__('<strong>Note</strong>: The preview of this block can be different from the display in the front end of your site.', 'related-posts-by-taxonomy')
+							__('<strong>Note</strong>: The preview of this block is not the actual display as used in the front end of your site.', 'related-posts-by-taxonomy')
 						)
 					)
 				),
@@ -2582,7 +2593,7 @@ var RelatedPostsBlock = function (_Component) {
 						id: titleID
 					})
 				),
-				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__query_panel__["a" /* default */], {
+				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_8__query_panel__["a" /* default */], {
 					postsPerPage: posts_per_page,
 					onPostsPerPageChange: function onPostsPerPageChange(value) {
 						// Don't allow 0 as a value.
@@ -2620,8 +2631,8 @@ var RelatedPostsBlock = function (_Component) {
 			}
 
 			if (!focus && !this.previewExpanded || !postsFound) {
-				return [inspectorControls, wp.element.createElement(__WEBPACK_IMPORTED_MODULE_8__placeholder__["a" /* default */], {
-					className: this.props.className,
+				return [inspectorControls, wp.element.createElement(__WEBPACK_IMPORTED_MODULE_9__placeholder__["a" /* default */], {
+					className: className,
 					queryFinished: queryFinished,
 					postsFound: postsFound,
 					editorTerms: editorTermIDs,
@@ -2631,13 +2642,19 @@ var RelatedPostsBlock = function (_Component) {
 				})];
 			}
 
-			return [inspectorControls, wp.element.createElement(
+			var html = !__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(relatedPosts.rendered) ? relatedPosts.rendered : '';
+
+			// Add target blank to all links
+			// Todo: find a better way to do this
+			html = relatedPosts.rendered.replace(/\<a href\=/g, '<a target="_blank" href=');
+
+			return [inspectorControls, html && wp.element.createElement(
 				'div',
-				{ className: this.props.className },
+				{ className: className },
 				wp.element.createElement(
 					RawHTML,
 					null,
-					relatedPosts.rendered
+					html
 				)
 			)];
 		}
@@ -2665,7 +2682,7 @@ var applyWithAPIData = withAPIData(function (props) {
 	var terms = editorTermIDs.join(',');
 	if (!terms.length && -1 !== editorTaxonomyNames.indexOf('category')) {
 		// Use default category if this post supports the 'category' taxonomy.
-		terms = Object(__WEBPACK_IMPORTED_MODULE_5__data__["b" /* getPluginData */])('default_category');
+		terms = Object(__WEBPACK_IMPORTED_MODULE_6__data__["b" /* getPluginData */])('default_category');
 	}
 
 	// If no terms are selected return no related posts.
@@ -2683,8 +2700,8 @@ var applyWithAPIData = withAPIData(function (props) {
 		is_editor_block: is_editor_block
 	};
 
-	var postID = Object(__WEBPACK_IMPORTED_MODULE_5__data__["c" /* getPostField */])('id');
-	var postType = Object(__WEBPACK_IMPORTED_MODULE_5__data__["c" /* getPostField */])('type');
+	var postID = Object(__WEBPACK_IMPORTED_MODULE_6__data__["c" /* getPostField */])('id');
+	var postType = Object(__WEBPACK_IMPORTED_MODULE_6__data__["c" /* getPostField */])('type');
 
 	if (attributes['post_types'] && attributes['post_types'] === postType) {
 		// The post type isn't needed in the query (if not set).
@@ -2701,7 +2718,7 @@ var applyWithAPIData = withAPIData(function (props) {
 	};
 });
 
-/* harmony default export */ __webpack_exports__["a"] = (compose([__WEBPACK_IMPORTED_MODULE_6__editor_taxonomies__["a" /* postEditorTaxonomies */], applyWithAPIData])(RelatedPostsBlock));
+/* harmony default export */ __webpack_exports__["a"] = (compose([__WEBPACK_IMPORTED_MODULE_7__editor_taxonomies__["a" /* postEditorTaxonomies */], applyWithAPIData])(RelatedPostsBlock));
 
 /***/ }),
 /* 69 */
@@ -5199,15 +5216,70 @@ exports.parse = querystring;
 
 /***/ }),
 /* 137 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2016 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg)) {
+				classes.push(classNames.apply(null, arg));
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {
+		window.classNames = classNames;
+	}
+}());
+
+
+/***/ }),
+/* 138 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 138 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseFlatten = __webpack_require__(139);
+var baseFlatten = __webpack_require__(140);
 
 /**
  * Flattens `array` a single level deep.
@@ -5232,11 +5304,11 @@ module.exports = flatten;
 
 
 /***/ }),
-/* 139 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayPush = __webpack_require__(24),
-    isFlattenable = __webpack_require__(140);
+    isFlattenable = __webpack_require__(141);
 
 /**
  * The base implementation of `_.flatten` with support for restricting flattening.
@@ -5276,7 +5348,7 @@ module.exports = baseFlatten;
 
 
 /***/ }),
-/* 140 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(7),
@@ -5302,10 +5374,10 @@ module.exports = isFlattenable;
 
 
 /***/ }),
-/* 141 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseHas = __webpack_require__(142),
+var baseHas = __webpack_require__(143),
     hasPath = __webpack_require__(49);
 
 /**
@@ -5343,7 +5415,7 @@ module.exports = has;
 
 
 /***/ }),
-/* 142 */
+/* 143 */
 /***/ (function(module, exports) {
 
 /** Used for built-in method references. */
@@ -5368,7 +5440,7 @@ module.exports = baseHas;
 
 
 /***/ }),
-/* 143 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(4),
@@ -5404,7 +5476,7 @@ module.exports = isString;
 
 
 /***/ }),
-/* 144 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(4),
@@ -5439,7 +5511,7 @@ module.exports = isBoolean;
 
 
 /***/ }),
-/* 145 */
+/* 146 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5492,13 +5564,13 @@ var postEditorTaxonomies = withSelect(function () {
 });
 
 /***/ }),
-/* 146 */
+/* 147 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = QueryPanel;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__post_type_control__ = __webpack_require__(147);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__post_type_control__ = __webpack_require__(148);
 
 
 /**
@@ -5596,7 +5668,7 @@ function get_taxonomy_options() {
 }
 
 /***/ }),
-/* 147 */
+/* 148 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5749,7 +5821,7 @@ var PostTypeControl = function (_Component) {
 /* harmony default export */ __webpack_exports__["a"] = (withInstanceId(PostTypeControl));
 
 /***/ }),
-/* 148 */
+/* 149 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
