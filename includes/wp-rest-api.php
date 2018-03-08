@@ -74,7 +74,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		$type = isset( $args['type'] ) ? $args['type'] : 'wp_rest_api';
 		$type = ('editor_block' === $type ) ? $type : 'wp_rest_api';
 
-		$defaults = km_rpbt_get_default_settings( 'wp_rest_api' );
+		$defaults = km_rpbt_get_default_settings( $type );
 
 		/**
 		 * Filter default wp_rest_api arguments.
