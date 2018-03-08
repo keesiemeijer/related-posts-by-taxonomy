@@ -22,6 +22,16 @@ function km_rpbt_related_posts_by_taxonomy_template( $format = false, $type = fa
 	$format   = ( $format ) ? (string) $format : '';
 	$type     = ( $type ) ? (string) $type : '';
 
+	$base_dir = RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR;
+
+	if ( ( 'editor_block' === $type ) && ( 'thumbnails' === $format ) ) {
+		// Unfilterable template for the block editor with expected CSS selectors.
+		$file = $base_dir . 'includes/assets/editor-block-templates/thumbnail-gallery.php';
+		if ( file_exists( $file ) ) {
+			return $file;
+		}
+	}
+
 	switch ( $format ) {
 		case 'posts': $template = 'related-posts-posts.php'; break;
 		case 'excerpts': $template = 'related-posts-excerpts.php'; break;
@@ -43,8 +53,8 @@ function km_rpbt_related_posts_by_taxonomy_template( $format = false, $type = fa
 		return $theme_template;
 	} else {
 
-		if ( file_exists( RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'templates/' . $template ) ) {
-			return RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'templates/' . $template;
+		if ( file_exists( $base_dir . 'templates/' . $template ) ) {
+			return $base_dir . 'templates/' . $template;
 		}
 	}
 

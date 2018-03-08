@@ -2674,7 +2674,7 @@ var applyWithAPIData = withAPIData(function (props) {
 	    image_size = _props$attributes.image_size,
 	    columns = _props$attributes.columns;
 
-	var is_editor_block = true;
+	var type = 'editor_block';
 	var taxonomies = props.attributes.taxonomies;
 
 	// Get the terms set in the editor.
@@ -2697,7 +2697,7 @@ var applyWithAPIData = withAPIData(function (props) {
 		format: format,
 		image_size: image_size,
 		columns: columns,
-		is_editor_block: is_editor_block
+		type: type
 	};
 
 	var postID = Object(__WEBPACK_IMPORTED_MODULE_6__data__["c" /* getPostField */])('id');

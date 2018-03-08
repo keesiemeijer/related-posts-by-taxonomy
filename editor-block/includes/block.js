@@ -157,7 +157,7 @@ class RelatedPostsBlock extends Component {
 const applyWithAPIData = withAPIData( ( props ) => {
 	const { editorTermIDs, editorTaxonomyNames } = props
 	const { post_types, title, posts_per_page, format, image_size, columns } = props.attributes;
-	const is_editor_block = true;
+	const type = 'editor_block';
 	let { taxonomies} = props.attributes
 
 	// Get the terms set in the editor.
@@ -179,7 +179,7 @@ const applyWithAPIData = withAPIData( ( props ) => {
 		format,
 		image_size,
 		columns,
-		is_editor_block,
+		type,
 	};
 
 	const postID = getPostField('id');

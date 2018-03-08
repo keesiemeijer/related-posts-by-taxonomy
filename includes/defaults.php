@@ -351,12 +351,14 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				'shortcode',
 				'widget',
 				'wp_rest_api',
+				'editor_block',
 			);
 
-			$_type = $type;
+			$_type         = $type;
+			$rest_api_type = ( ( 'wp_rest_api' === $type ) || ( 'editor_block' === $type ) );
 
 			// wp_rest_api settings are the same as a shortcode.
-			$type  = ( 'wp_rest_api' === $type ) ? 'shortcode' : $type;
+			$type  = $rest_api_type ? 'shortcode' : $type;
 
 			// Common settings for the widget and shortcode.
 			$settings = array(
@@ -399,8 +401,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			}
 
 			// Custom settings for the WP rest API.
-			if ( 'wp_rest_api' === $_type ) {
-				$settings['before_shortcode'] = '<div class="rpbt_wp_rest_api">';
+			if ( $rest_api_type ) {
+				$settings['before_shortcode'] = "<div class=\"rpbt_{$_type}\">";
 				$settings['after_shortcode']  = '</div>';
 			}
 

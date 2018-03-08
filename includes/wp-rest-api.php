@@ -71,6 +71,9 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 			return $error;
 		}
 
+		$type = isset( $args['type'] ) ? $args['type'] : 'wp_rest_api';
+		$type = ('editor_block' === $type ) ? $type : 'wp_rest_api';
+
 		$defaults = km_rpbt_get_default_settings( 'wp_rest_api' );
 
 		/**
@@ -87,7 +90,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 
 		/* Validates args. Sets the post types and post id if not set in filter above */
 		$validated_args         = km_rpbt_validate_shortcode_atts( (array) $args );
-		$validated_args['type'] = 'wp-rest-api';
+		$validated_args['type'] = $type;
 
 		/**
 		 * Filter wp_rest_api arguments.
@@ -98,7 +101,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 */
 		$args = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_args', $validated_args );
 		$args = array_merge( $validated_args, (array) $args );
-		$args['type']  = 'wp-rest-api';
+		$args['type']  = $type;
 
 		$data = $this->prepare_item_for_response( $args, $request );
 		return rest_ensure_response( $data );
