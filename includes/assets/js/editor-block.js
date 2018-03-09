@@ -245,29 +245,20 @@ module.exports = isObjectLike;
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _pluginData; });
-/* unused harmony export pluginHasData */
-/* harmony export (immutable) */ __webpack_exports__["g"] = inPluginData;
+/* unused harmony export hasData */
+/* harmony export (immutable) */ __webpack_exports__["d"] = inPluginData;
 /* harmony export (immutable) */ __webpack_exports__["b"] = getPluginData;
 /* harmony export (immutable) */ __webpack_exports__["c"] = getPostField;
-/* harmony export (immutable) */ __webpack_exports__["f"] = getTermIDs;
-/* harmony export (immutable) */ __webpack_exports__["e"] = getTaxName;
-/* harmony export (immutable) */ __webpack_exports__["d"] = getSelectOptions;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten__ = __webpack_require__(139);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_flatten__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_has__ = __webpack_require__(142);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_has__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isString__ = __webpack_require__(144);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isString___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_isString__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean__ = __webpack_require__(145);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_isObject__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_isObject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_lodash_isObject__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_lodash_isUndefined__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_lodash_isUndefined__);
-
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_get__ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_get___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_get__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isString__ = __webpack_require__(144);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isString___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_isString__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean__ = __webpack_require__(145);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isObject__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_isObject__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined__);
 
 
 
@@ -291,107 +282,95 @@ var _defaults = {
 	default_category: { type: 'string' },
 	preview: {
 		type: 'bool',
-		default: true /* required for booleans */
+		default: true /* default required for booleans */
 	},
 	html5_gallery: {
 		type: 'bool',
 		default: false
 	}
-};
 
-function pluginHasData(setting) {
-	if (__WEBPACK_IMPORTED_MODULE_5_lodash_isObject___default()(_pluginData) && _pluginData.hasOwnProperty(setting)) {
-		return true;
+	/**
+  * Check if a property key exists and has a value.
+  * 
+  * @param  {string} key Property to check.
+  * @return {[type]}     Returns true if it exists
+  */
+};function hasData(object, key) {
+	if (__WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default()(object) && object.hasOwnProperty(key)) {
+		return !__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(object[key]);
 	}
 	return false;
 }
 
-function inPluginData(type, value) {
-	var data = getPluginData(type);
-	return !(Object.keys(data).indexOf(value) === -1);
+/**
+ * Check if a value exists in a plugin data property.
+ * 
+ * @param  {string} key  Plugin data key.
+ * @param  {string} value Value to test.
+ * @return {bool}   True if value exists.
+ */
+function inPluginData(key, value) {
+	return hasData(getPluginData(key), value);
 }
 
-function getPluginData(setting) {
-	var defaultValue = getDefault(setting);
+/**
+ * Get data provided by this plugin.
+ *
+ * Only returns data if it's the correct type.
+ * Else returns empty value of the correct type.
+ * 
+ * @param  {string} key Property key in the plugin data.
+ * @return {[type]}     Plugin data.
+ */
+function getPluginData(key) {
+	var defaultValue = getDefault(key);
 
-	if (!pluginHasData(setting)) {
+	if (!hasData(_pluginData, key) || __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(defaultValue)) {
 		return defaultValue;
 	}
 
-	var data = _pluginData[setting];
+	var data = _pluginData[key];
+	var dataType = __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(_defaults, key + '.type');
 
-	if (__WEBPACK_IMPORTED_MODULE_2_lodash_has___default()(_defaults, [setting, 'type'])) {
-		var type = _defaults[setting]['type'];
-		return isType(type, data) ? data : defaultValue;
-	}
-
-	return data;
+	return isType(dataType, data) ? data : defaultValue;
 }
 
+/**
+ * Get a field from the current post.
+ * 
+ * @param  {string} field Post field.
+ * @return {mixed}       Post field. Empty string if the field doesn't exist
+ */
 function getPostField(field) {
 	// Todo: Check if there is a native function to return current post fields.
-	if (__WEBPACK_IMPORTED_MODULE_6_lodash_isUndefined___default()(_wpGutenbergPost)) {
+	if (__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(_wpGutenbergPost)) {
 		return '';
 	}
 
-	if (!_wpGutenbergPost.hasOwnProperty(field)) {
-		return '';
-	}
-
-	return _wpGutenbergPost[field];
-}
-
-function getTermIDs(taxonomies) {
-	var ids = __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default()(taxonomies, function (value) {
-		return value.length;
-	});
-	var terms = Object.keys(ids).map(function (tax) {
-		return ids[tax];
-	});
-
-	return __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default()(terms);
-}
-
-function getTaxName(taxonomy) {
-	if ('category' === taxonomy || 'post_tag' === taxonomy) {
-		taxonomy = 'category' === taxonomy ? 'categories' : 'tags';
-	}
-	return taxonomy;
-}
-
-function getSelectOptions(type) {
-	var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-
-	var type_options = getPluginData(type);
-	for (var key in type_options) {
-		if (type_options.hasOwnProperty(key)) {
-			options.push({
-				label: type_options[key],
-				value: key
-			});
-		}
-	}
-
-	return options;
+	return __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(_wpGutenbergPost, field, '');
 }
 
 /**
  * Get the default value for a setting.
  *
- * @param  {string} setting Setting name.
+ * Booleans should always provide a default value.
+ * If no default is provided an empty value with 
+ * the correct type is returned.
+ * 
+ * @param  {string} key Plugin data property key.
  * @return {object|string|bool} Default value.
  */
-function getDefault(setting) {
+function getDefault(key) {
+	// Types to check. Booleans should have a default.
 	var types = {
 		object: {},
 		string: ''
 	};
 
-	if (__WEBPACK_IMPORTED_MODULE_2_lodash_has___default()(_defaults, [setting, 'default'])) {
-		return _defaults[setting]['default'];
-	}
+	var keyValue = __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(_defaults, key + '.default');
+	var keyDefault = __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(types, __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(_defaults, key + '.type'));
 
-	return types[_defaults[setting]['type']];
+	return !__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(keyValue) ? keyValue : keyDefault;
 }
 
 /**
@@ -406,13 +385,13 @@ function isType(type, value) {
 	switch (type) {
 		case 'bool':
 			value = getBool(value);
-			is_type = __WEBPACK_IMPORTED_MODULE_4_lodash_isBoolean___default()(value);
+			is_type = __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean___default()(value);
 			break;
 		case 'object':
-			is_type = __WEBPACK_IMPORTED_MODULE_5_lodash_isObject___default()(value);
+			is_type = __WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default()(value);
 			break;
 		case 'string':
-			is_type = __WEBPACK_IMPORTED_MODULE_3_lodash_isString___default()(value);
+			is_type = __WEBPACK_IMPORTED_MODULE_1_lodash_isString___default()(value);
 			break;
 	}
 
@@ -428,7 +407,7 @@ function isType(type, value) {
  * @return {bool} Boolean value if string is '1' or empty.
  */
 function getBool(value) {
-	if (!__WEBPACK_IMPORTED_MODULE_3_lodash_isString___default()(value)) {
+	if (!__WEBPACK_IMPORTED_MODULE_1_lodash_isString___default()(value)) {
 		return value;
 	}
 	var bool = Number(value.trim());
@@ -2496,6 +2475,7 @@ var RelatedPostsBlock = function (_Component) {
 	function RelatedPostsBlock() {
 		_classCallCheck(this, RelatedPostsBlock);
 
+		// Data provided by this plugin.
 		var _this = _possibleConstructorReturn(this, (RelatedPostsBlock.__proto__ || Object.getPrototypeOf(RelatedPostsBlock)).apply(this, arguments));
 
 		_this.previewExpanded = Object(__WEBPACK_IMPORTED_MODULE_6__data__["b" /* getPluginData */])('preview');
@@ -2535,10 +2515,10 @@ var RelatedPostsBlock = function (_Component) {
 		}
 	}, {
 		key: 'updatePostTypes',
-		value: function updatePostTypes(post_types) {
+		value: function updatePostTypes(postTypes) {
 			var setAttributes = this.props.setAttributes;
 
-			setAttributes({ post_types: post_types });
+			setAttributes({ post_types: postTypes });
 		}
 	}, {
 		key: 'render',
@@ -5374,72 +5354,8 @@ module.exports = isFlattenable;
 
 
 /***/ }),
-/* 142 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseHas = __webpack_require__(143),
-    hasPath = __webpack_require__(49);
-
-/**
- * Checks if `path` is a direct property of `object`.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Object
- * @param {Object} object The object to query.
- * @param {Array|string} path The path to check.
- * @returns {boolean} Returns `true` if `path` exists, else `false`.
- * @example
- *
- * var object = { 'a': { 'b': 2 } };
- * var other = _.create({ 'a': _.create({ 'b': 2 }) });
- *
- * _.has(object, 'a');
- * // => true
- *
- * _.has(object, 'a.b');
- * // => true
- *
- * _.has(object, ['a', 'b']);
- * // => true
- *
- * _.has(other, 'a');
- * // => false
- */
-function has(object, path) {
-  return object != null && hasPath(object, path, baseHas);
-}
-
-module.exports = has;
-
-
-/***/ }),
-/* 143 */
-/***/ (function(module, exports) {
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * The base implementation of `_.has` without support for deep paths.
- *
- * @private
- * @param {Object} [object] The object to query.
- * @param {Array|string} key The key to check.
- * @returns {boolean} Returns `true` if `key` exists, else `false`.
- */
-function baseHas(object, key) {
-  return object != null && hasOwnProperty.call(object, key);
-}
-
-module.exports = baseHas;
-
-
-/***/ }),
+/* 142 */,
+/* 143 */,
 /* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5516,9 +5432,17 @@ module.exports = isBoolean;
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return postEditorTaxonomies; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isUndefined__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_isUndefined__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data__ = __webpack_require__(6);
+/* unused harmony export getTermIDs */
+/* unused harmony export getTaxName */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten__ = __webpack_require__(139);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_flatten__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__data__ = __webpack_require__(6);
+
+
  /**
                                                 * External dependencies
                                                 */
@@ -5539,7 +5463,7 @@ var _wp$data = wp.data,
 var postEditorTaxonomies = withSelect(function () {
 	var taxonomyTerms = {};
 	var taxonomyNames = [];
-	var taxonomies = Object(__WEBPACK_IMPORTED_MODULE_1__data__["b" /* getPluginData */])('taxonomies');
+	var taxonomies = Object(__WEBPACK_IMPORTED_MODULE_3__data__["b" /* getPluginData */])('taxonomies');
 
 	for (var key in taxonomies) {
 		if (!taxonomies.hasOwnProperty(key)) {
@@ -5547,10 +5471,10 @@ var postEditorTaxonomies = withSelect(function () {
 		}
 
 		// Get the correct tax name for post attribute 'categories' and 'tags'. 
-		var taxName = Object(__WEBPACK_IMPORTED_MODULE_1__data__["e" /* getTaxName */])(key);
+		var taxName = getTaxName(key);
 		var query = select('core/editor').getEditedPostAttribute(taxName);
 
-		if (!__WEBPACK_IMPORTED_MODULE_0_lodash_isUndefined___default()(query)) {
+		if (!__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(query)) {
 			taxonomyTerms[key] = query;
 			taxonomyNames.push(key);
 		}
@@ -5559,9 +5483,27 @@ var postEditorTaxonomies = withSelect(function () {
 	return {
 		editorTaxonomyTerms: taxonomyTerms,
 		editorTaxonomyNames: taxonomyNames,
-		editorTermIDs: Object(__WEBPACK_IMPORTED_MODULE_1__data__["f" /* getTermIDs */])(taxonomyTerms)
+		editorTermIDs: getTermIDs(taxonomyTerms)
 	};
 });
+
+function getTermIDs(taxonomies) {
+	var ids = __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default()(taxonomies, function (value) {
+		return value.length;
+	});
+	var terms = Object.keys(ids).map(function (tax) {
+		return ids[tax];
+	});
+
+	return __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default()(terms);
+}
+
+function getTaxName(taxonomy) {
+	if ('category' === taxonomy || 'post_tag' === taxonomy) {
+		taxonomy = 'category' === taxonomy ? 'categories' : 'tags';
+	}
+	return taxonomy;
+}
 
 /***/ }),
 /* 147 */
@@ -5571,15 +5513,10 @@ var postEditorTaxonomies = withSelect(function () {
 /* harmony export (immutable) */ __webpack_exports__["a"] = QueryPanel;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__post_type_control__ = __webpack_require__(148);
-
-
 /**
  * WordPress dependencies
  */
-var __ = wp.i18n.__; /**
-                      * External dependencies
-                      */
-
+var __ = wp.i18n.__;
 var _wp$components = wp.components,
     SelectControl = _wp$components.SelectControl,
     RangeControl = _wp$components.RangeControl;
@@ -5590,9 +5527,11 @@ var _wp$components = wp.components,
 
 
 
-var tax_options = get_taxonomy_options();
-var format_options = Object(__WEBPACK_IMPORTED_MODULE_0__data__["d" /* getSelectOptions */])('formats');
-var img_options = Object(__WEBPACK_IMPORTED_MODULE_0__data__["d" /* getSelectOptions */])('image_sizes');
+
+// Select input options
+var taxonomyOptions = getTaxonomyOptions();
+var formatOptions = getOptions('formats');
+var imageOptions = getOptions('image_sizes');
 
 function QueryPanel(_ref) {
 	var taxonomies = _ref.taxonomies,
@@ -5620,19 +5559,19 @@ function QueryPanel(_ref) {
 		key: 'rpbt-select-taxonomies',
 		label: __('Taxonomies', 'related-posts-by-taxonomy'),
 		value: '' + taxonomies,
-		options: tax_options,
+		options: taxonomyOptions,
 		onChange: function onChange(value) {
 			onTaxonomiesChange(value);
 		}
 	}), onPostTypesChange && wp.element.createElement(__WEBPACK_IMPORTED_MODULE_1__post_type_control__["a" /* default */], {
-		label: __('Post Types'),
+		label: __('Post Types', 'related-posts-by-taxonomy'),
 		onChange: onPostTypesChange,
 		postTypes: postTypes
 	}), onFormatChange && wp.element.createElement(SelectControl, {
 		key: 'rpbt-select-format',
 		label: __('Format', 'related-posts-by-taxonomy'),
 		value: '' + format,
-		options: format_options,
+		options: formatOptions,
 		onChange: function onChange(value) {
 			onFormatChange(value);
 		}
@@ -5640,7 +5579,7 @@ function QueryPanel(_ref) {
 		key: 'rpbt-select-image-size',
 		label: __('Image Size', 'related-posts-by-taxonomy'),
 		value: '' + imageSize,
-		options: img_options,
+		options: imageOptions,
 		onChange: function onChange(value) {
 			onImageSizeChange(value);
 		}
@@ -5654,7 +5593,7 @@ function QueryPanel(_ref) {
 	})];
 }
 
-function get_taxonomy_options() {
+function getTaxonomyOptions() {
 	if (!Object(__WEBPACK_IMPORTED_MODULE_0__data__["b" /* getPluginData */])('all_tax')) {
 		return [];
 	}
@@ -5664,7 +5603,23 @@ function get_taxonomy_options() {
 		value: Object(__WEBPACK_IMPORTED_MODULE_0__data__["b" /* getPluginData */])('all_tax')
 	}];
 
-	return Object(__WEBPACK_IMPORTED_MODULE_0__data__["d" /* getSelectOptions */])('taxonomies', options);
+	return getOptions('taxonomies', options);
+}
+
+function getOptions(type) {
+	var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+	var typeOptions = Object(__WEBPACK_IMPORTED_MODULE_0__data__["b" /* getPluginData */])(type);
+	for (var key in typeOptions) {
+		if (typeOptions.hasOwnProperty(key)) {
+			options.push({
+				label: typeOptions[key],
+				value: key
+			});
+		}
+	}
+
+	return options;
 }
 
 /***/ }),
@@ -5781,7 +5736,7 @@ var PostTypeControl = function (_Component) {
 
 			var checked = postTypes.split(",");
 			checked = checked.filter(function (item) {
-				return Object(__WEBPACK_IMPORTED_MODULE_1__data__["g" /* inPluginData */])('post_types', item);
+				return Object(__WEBPACK_IMPORTED_MODULE_1__data__["d" /* inPluginData */])('post_types', item);
 			});
 
 			return !__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default()(this.state.items) && wp.element.createElement(
@@ -5825,7 +5780,6 @@ var PostTypeControl = function (_Component) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data__ = __webpack_require__(6);
 /**
  * WordPress dependencies
  */
@@ -5833,8 +5787,6 @@ var _wp$components = wp.components,
     Spinner = _wp$components.Spinner,
     Placeholder = _wp$components.Placeholder;
 var __ = wp.i18n.__;
-
-
 
 
 function LoadingPlaceholder(_ref) {

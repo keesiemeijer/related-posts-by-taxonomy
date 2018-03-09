@@ -4,8 +4,6 @@
 const { Spinner, Placeholder } = wp.components;
 const { __ } = wp.i18n;
 
-import { getTermIDs } from './data';
-
 function LoadingPlaceholder( {
 	icon,
 	label,

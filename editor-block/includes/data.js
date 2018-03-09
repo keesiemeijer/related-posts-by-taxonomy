@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { isUndefined, isObject, isBoolean, isString, has, pickBy, flatten } from 'lodash';
+import { isUndefined, isObject, isBoolean, isString, get } from 'lodash';
 
 /**
  * Don't use _pluginData directly, use getPluginData()
@@ -18,7 +18,7 @@ const _defaults = {
 	default_category: { type: 'string' },
 	preview: {
 		type: 'bool',
-		default: true, /* required for booleans */
+		default: true, /* default required for booleans */
 	},
 	html5_gallery: {
 		type: 'bool',
@@ -26,93 +26,88 @@ const _defaults = {
 	}
 }
 
-export function pluginHasData( setting ) {
-	if( isObject( _pluginData ) && _pluginData.hasOwnProperty( setting ) ) {
-		return true;
+/**
+ * Check if a property key exists and has a value.
+ * 
+ * @param  {string} key Property to check.
+ * @return {[type]}     Returns true if it exists
+ */
+export function hasData( object, key ) {
+	if( isObject( object ) && object.hasOwnProperty( key ) ) {
+		return ! isUndefined( object[ key ]);
 	}
 	return false;
 }
 
-export function inPluginData( type, value) {
-	const data = getPluginData( type );
-	return ! ( Object.keys( data ).indexOf( value ) === -1 );
+/**
+ * Check if a value exists in a plugin data property.
+ * 
+ * @param  {string} key  Plugin data key.
+ * @param  {string} value Value to test.
+ * @return {bool}   True if value exists.
+ */
+export function inPluginData( key, value ) {
+	return hasData( getPluginData( key ), value );
 }
 
-export function getPluginData( setting ) {
-	const defaultValue = getDefault( setting );
+/**
+ * Get data provided by this plugin.
+ *
+ * Only returns data if it's the correct type.
+ * Else returns empty value of the correct type.
+ * 
+ * @param  {string} key Property key in the plugin data.
+ * @return {[type]}     Plugin data.
+ */
+export function getPluginData( key ) {
+	const defaultValue = getDefault( key );
 
-	if( ! pluginHasData( setting ) ) {
+	if( ! hasData( _pluginData, key ) || isUndefined( defaultValue ) ) {
 		return defaultValue;
 	}
 
-	let data = _pluginData[ setting ];
+	const data = _pluginData[ key ];
+	const dataType = get( _defaults, key + '.type' );
 
-	if( has( _defaults, [setting, 'type']) ) {
-		const type = _defaults[ setting ]['type'];
-		return isType( type , data ) ? data : defaultValue;
-	}
-
-	return data;
+	return isType( dataType , data ) ? data : defaultValue;
 }
 
-export function getPostField(field) {
+/**
+ * Get a field from the current post.
+ * 
+ * @param  {string} field Post field.
+ * @return {mixed}       Post field. Empty string if the field doesn't exist
+ */
+export function getPostField( field ) {
 	// Todo: Check if there is a native function to return current post fields.
 	if ( isUndefined( _wpGutenbergPost ) ) {
 		return '';
 	}
 
-	if ( ! _wpGutenbergPost.hasOwnProperty(field) ) {
-		return '';
-	}
-
-	return _wpGutenbergPost[field];
-}
-
-export function getTermIDs( taxonomies ) {
-	const ids = pickBy( taxonomies, value => value.length );
-	let terms = Object.keys( ids ).map( ( tax ) => ids[ tax ]);
-
-	return flatten( terms );
-}
-
-export function getTaxName( taxonomy ) {
-	if ( ( 'category' === taxonomy ) || ( 'post_tag' === taxonomy ) ) {
-		taxonomy = ('category' === taxonomy) ? 'categories' : 'tags';
-	}
-	return taxonomy;
-}
-
-export function getSelectOptions(type, options = []) {
-	const type_options = getPluginData( type );
-	for (var key in type_options) {
-		if (type_options.hasOwnProperty(key)) {
-			options.push({
-				label: type_options[key],
-				value: key,
-			});
-		}
-	}
-
-	return options;
+	return get( _wpGutenbergPost, field, '');
 }
 
 /**
  * Get the default value for a setting.
  *
- * @param  {string} setting Setting name.
+ * Booleans should always provide a default value.
+ * If no default is provided an empty value with 
+ * the correct type is returned.
+ * 
+ * @param  {string} key Plugin data property key.
  * @return {object|string|bool} Default value.
  */
-function getDefault( setting ) {
+function getDefault( key ) {
+	// Types to check. Booleans should have a default.
 	const types = {
 		object: {},
-		string: '',
+		string: '', 
 	}
 
-	if( has( _defaults, [setting, 'default']) ) {
-		return _defaults[setting]['default'];
-	}
+	const keyValue = get( _defaults, key + '.default' );
+	const keyDefault = get( types, get( _defaults, key + '.type' ) );
 
-	return types[ _defaults[ setting ]['type'] ];
+	return ! isUndefined( keyValue ) ? keyValue : keyDefault;
 }
 
 /**
@@ -124,7 +119,7 @@ function getDefault( setting ) {
  */
 function isType( type, value ) {
 	let is_type = false;
-	switch (type) {
+	switch ( type ) {
 		case 'bool':
 			value = getBool( value );
 			is_type = isBoolean( value );

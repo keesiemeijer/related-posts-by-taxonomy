@@ -28,6 +28,7 @@ class RelatedPostsBlock extends Component {
 	constructor() {
 		super( ...arguments );
 
+		// Data provided by this plugin.
 		this.previewExpanded = getPluginData( 'preview' );
 		this.html5Gallery = getPluginData( 'html5_gallery' );
 		this.currentType = getPostField('type');
@@ -58,9 +59,9 @@ class RelatedPostsBlock extends Component {
 		setAttributes( { title: value } );
 	}
 
-	updatePostTypes( post_types ) {
+	updatePostTypes( postTypes ) {
 		const { setAttributes } = this.props;
-		setAttributes( { post_types: post_types } );
+		setAttributes( { post_types: postTypes } );
 	}
 
 	render(){
@@ -69,7 +70,6 @@ class RelatedPostsBlock extends Component {
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
 		const titleID = 'rpbt-inspector-text-control-' + this.instanceId;
 		const className = classnames( this.props.className, { 'html5-gallery': this.html5Gallery } );
-
 
 		let checkedPostTypes = post_types;
 		if( isUndefined( post_types ) || ! post_types ) {

@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { isEmpty } from 'lodash';
-
-/**
  * WordPress dependencies
  */
 const { __ } = wp.i18n;
@@ -12,11 +7,13 @@ const { SelectControl, RangeControl } = wp.components;
 /**
  * Internal dependencies
  */
-import { getPluginData, getSelectOptions } from './data';
+import { getPluginData } from './data';
 import PostTypeControl from './post-type-control';
-const tax_options = get_taxonomy_options();
-const format_options = getSelectOptions('formats');
-const img_options = getSelectOptions('image_sizes');
+
+// Select input options
+const taxonomyOptions = getTaxonomyOptions();
+const formatOptions = getOptions('formats');
+const imageOptions = getOptions('image_sizes');
 
 export default function QueryPanel( {
 	taxonomies,
@@ -48,12 +45,12 @@ export default function QueryPanel( {
 				key="rpbt-select-taxonomies"
 				label={ __( 'Taxonomies', 'related-posts-by-taxonomy' ) }
 				value={ `${ taxonomies }` }
-				options={  tax_options }
+				options={ taxonomyOptions }
 				onChange={ ( value ) => { onTaxonomiesChange( value ); } }
 			/> ),
 		onPostTypesChange && (
 			<PostTypeControl
-				label={ __( 'Post Types' ) }
+				label={ __( 'Post Types', 'related-posts-by-taxonomy' ) }
 				onChange={ onPostTypesChange }
 				postTypes={ postTypes }
 			/> ),
@@ -62,7 +59,7 @@ export default function QueryPanel( {
 				key="rpbt-select-format"
 				label={ __( 'Format', 'related-posts-by-taxonomy' ) }
 				value={ `${ format }` }
-				options={  format_options }
+				options={  formatOptions }
 				onChange={ ( value ) => { onFormatChange( value ); } }
 			/> ),
 		onImageSizeChange && ('thumbnails' === format) && (
@@ -70,7 +67,7 @@ export default function QueryPanel( {
 				key="rpbt-select-image-size"
 				label={ __( 'Image Size', 'related-posts-by-taxonomy' ) }
 				value={ `${ imageSize }` }
-				options={  img_options }
+				options={  imageOptions }
 				onChange={ ( value ) => { onImageSizeChange( value ); } }
 			/> ),
 		onColumnsChange && ('thumbnails' === format) && (
@@ -85,7 +82,7 @@ export default function QueryPanel( {
 	];
 }
 
-function get_taxonomy_options() {
+function getTaxonomyOptions() {
 	if( ! getPluginData( 'all_tax' ) ) {
 		return [];
 	}
@@ -97,5 +94,19 @@ function get_taxonomy_options() {
 		},
 	];
 
-	return getSelectOptions('taxonomies', options);
+	return getOptions( 'taxonomies', options );
+}
+
+function getOptions(type, options = []) {
+	const typeOptions = getPluginData( type );
+	for ( var key in typeOptions ) {
+		if ( typeOptions.hasOwnProperty( key ) ) {
+			options.push({
+				label: typeOptions[ key ],
+				value: key,
+			});
+		}
+	}
+
+	return options;
 }

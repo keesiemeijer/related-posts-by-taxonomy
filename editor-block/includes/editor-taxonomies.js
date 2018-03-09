@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { isUndefined } from 'lodash';
+import { isUndefined, pickBy, flatten } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -11,7 +11,7 @@ const { withSelect, select } = wp.data;
 /**
  * Internal dependencies
  */
-import { getPluginData, getTaxName, getTermIDs } from './data';
+import { getPluginData } from './data';
 
 export const postEditorTaxonomies = withSelect( () => {
 	const taxonomyTerms = {};
@@ -39,3 +39,17 @@ export const postEditorTaxonomies = withSelect( () => {
 		editorTermIDs: getTermIDs( taxonomyTerms ),
 	};
 } );
+
+export function getTermIDs( taxonomies ) {
+	const ids = pickBy( taxonomies, value => value.length );
+	let terms = Object.keys( ids ).map( ( tax ) => ids[ tax ]);
+
+	return flatten( terms );
+}
+
+export function getTaxName( taxonomy ) {
+	if ( ( 'category' === taxonomy ) || ( 'post_tag' === taxonomy ) ) {
+		taxonomy = ('category' === taxonomy) ? 'categories' : 'tags';
+	}
+	return taxonomy;
+}
