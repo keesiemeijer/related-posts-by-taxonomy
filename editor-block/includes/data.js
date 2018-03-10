@@ -73,21 +73,6 @@ export function getPluginData( key ) {
 }
 
 /**
- * Get a field from the current post.
- * 
- * @param  {string} field Post field.
- * @return {mixed}       Post field. Empty string if the field doesn't exist
- */
-export function getPostField( field ) {
-	// Todo: Check if there is a native function to return current post fields.
-	if ( isUndefined( _wpGutenbergPost ) ) {
-		return '';
-	}
-
-	return get( _wpGutenbergPost, field, '');
-}
-
-/**
  * Get the default value for a setting.
  *
  * Booleans should always provide a default value.

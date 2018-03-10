@@ -1,8 +1,7 @@
 /**
  * External dependencies
  */
-import { stringify } from 'querystringify';
-import { isUndefined, pickBy, debounce } from 'lodash';
+import { isUndefined, debounce } from 'lodash';
 import classnames from 'classnames';
 
 /**
@@ -17,8 +16,8 @@ const { __, sprintf } = wp.i18n;
  * Internal dependencies
  */
 import './editor.scss'
-import { getPluginData, getPostField } from './data';
-import { postEditorTaxonomies } from './editor-taxonomies';
+import { getPluginData } from './data';
+import { postEditorTaxonomies, postEditorAttributes, relatedPosts } from './query';
 import QueryPanel from './query-panel';
 import LoadingPlaceholder from './placeholder';
 
@@ -31,7 +30,6 @@ class RelatedPostsBlock extends Component {
 		// Data provided by this plugin.
 		this.previewExpanded = getPluginData( 'preview' );
 		this.html5Gallery = getPluginData( 'html5_gallery' );
-		this.currentType = getPostField('type');
 
 		this.updatePostTypes = this.updatePostTypes.bind(this);
 
@@ -65,8 +63,8 @@ class RelatedPostsBlock extends Component {
 	}
 
 	render(){
-		const relatedPosts = this.props.relatedPostsByTax.data;
-		const { attributes, focus, setAttributes, editorTermIDs, editorTaxonomyNames } = this.props;
+		const relatedPosts = this.props.relatedPosts.data;
+		const { attributes, focus, setAttributes, editorTermIDs, editorTaxonomyNames, editorPostType } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
 		const titleID = 'rpbt-inspector-text-control-' + this.instanceId;
 		const className = classnames( this.props.className, { 'html5-gallery': this.html5Gallery } );
@@ -74,7 +72,7 @@ class RelatedPostsBlock extends Component {
 		let checkedPostTypes = post_types;
 		if( isUndefined( post_types ) || ! post_types ) {
 			// Use the post type from the current post if not set.
-			checkedPostTypes = this.currentType;
+			checkedPostTypes = editorPostType;
 		}
 
 		const inspectorControls = focus && (
@@ -154,51 +152,8 @@ class RelatedPostsBlock extends Component {
 	}
 }
 
-const applyWithAPIData = withAPIData( ( props ) => {
-	const { editorTermIDs, editorTaxonomyNames } = props
-	const { post_types, title, posts_per_page, format, image_size, columns } = props.attributes;
-	const type = 'editor_block';
-	let { taxonomies} = props.attributes
-
-	// Get the terms set in the editor.
-	let terms = editorTermIDs.join(',');
-	if( ! terms.length && ( -1 !== editorTaxonomyNames.indexOf('category') ) ) {
-		// Use default category if this post supports the 'category' taxonomy.
-		terms = getPluginData('default_category');
-	}
-
-	// If no terms are selected return no related posts.
-	taxonomies = terms.length ? taxonomies : '';
-
-	const attributes = {
-		taxonomies,
-		post_types,
-		terms,
-		title,
-		posts_per_page,
-		format,
-		image_size,
-		columns,
-		type,
-	};
-
-	const postID = getPostField('id');
-	const postType = getPostField('type');
-
-	if( attributes['post_types'] && ( attributes['post_types'] === postType ) ) {
-		// The post type isn't needed in the query (if not set).
-		// It defaults to the post type of the current post.
-		delete attributes['post_types'];
-	}
-
-	const query = stringify( pickBy( attributes, value => ! isUndefined( value ) ), true );
-
-	return {
-		relatedPostsByTax: `/related-posts-by-taxonomy/v1/posts/${postID}` + `${query}`
-	};
-} );
-
 export default compose( [
 	postEditorTaxonomies,
-	applyWithAPIData,
+	postEditorAttributes,
+	relatedPosts,
 ] )( RelatedPostsBlock );

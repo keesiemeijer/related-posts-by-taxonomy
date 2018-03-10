@@ -174,7 +174,7 @@ module.exports = getNative;
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(7),
+var Symbol = __webpack_require__(6),
     getRawTag = __webpack_require__(55),
     objectToString = __webpack_require__(56);
 
@@ -241,19 +241,57 @@ module.exports = isObjectLike;
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var root = __webpack_require__(1);
+
+/** Built-in value references. */
+var Symbol = root.Symbol;
+
+module.exports = Symbol;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isSymbol = __webpack_require__(10);
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = toKey;
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _pluginData; });
 /* unused harmony export hasData */
-/* harmony export (immutable) */ __webpack_exports__["d"] = inPluginData;
+/* harmony export (immutable) */ __webpack_exports__["c"] = inPluginData;
 /* harmony export (immutable) */ __webpack_exports__["b"] = getPluginData;
-/* harmony export (immutable) */ __webpack_exports__["c"] = getPostField;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_get__ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_get__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_get___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_get__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isString__ = __webpack_require__(144);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isString__ = __webpack_require__(139);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isString___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_isString__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean__ = __webpack_require__(145);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean__ = __webpack_require__(140);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isObject__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_isObject__);
@@ -336,21 +374,6 @@ function getPluginData(key) {
 }
 
 /**
- * Get a field from the current post.
- * 
- * @param  {string} field Post field.
- * @return {mixed}       Post field. Empty string if the field doesn't exist
- */
-function getPostField(field) {
-	// Todo: Check if there is a native function to return current post fields.
-	if (__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(_wpGutenbergPost)) {
-		return '';
-	}
-
-	return __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(_wpGutenbergPost, field, '');
-}
-
-/**
  * Get the default value for a setting.
  *
  * Booleans should always provide a default value.
@@ -413,45 +436,6 @@ function getBool(value) {
 	var bool = Number(value.trim());
 	return 1 === bool || 0 === bool ? 1 === bool : value;
 }
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var root = __webpack_require__(1);
-
-/** Built-in value references. */
-var Symbol = root.Symbol;
-
-module.exports = Symbol;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isSymbol = __webpack_require__(10);
-
-/** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0;
-
-/**
- * Converts `value` to a string key if it's not a string or symbol.
- *
- * @private
- * @param {*} value The value to inspect.
- * @returns {string|symbol} Returns the key.
- */
-function toKey(value) {
-  if (typeof value == 'string' || isSymbol(value)) {
-    return value;
-  }
-  var result = (value + '');
-  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-}
-
-module.exports = toKey;
-
 
 /***/ }),
 /* 9 */
@@ -637,8 +621,8 @@ module.exports = getMapData;
 
 var isArray = __webpack_require__(0),
     isKey = __webpack_require__(27),
-    stringToPath = __webpack_require__(114),
-    toString = __webpack_require__(117);
+    stringToPath = __webpack_require__(113),
+    toString = __webpack_require__(116);
 
 /**
  * Casts `value` to a path array if it's not one.
@@ -993,7 +977,7 @@ module.exports = isIndex;
 /***/ (function(module, exports, __webpack_require__) {
 
 var castPath = __webpack_require__(15),
-    toKey = __webpack_require__(8);
+    toKey = __webpack_require__(7);
 
 /**
  * The base implementation of `_.get` without support for default values.
@@ -1865,45 +1849,39 @@ module.exports = matchesStrictComparable;
 /* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var castPath = __webpack_require__(15),
-    isArguments = __webpack_require__(9),
-    isArray = __webpack_require__(0),
-    isIndex = __webpack_require__(25),
-    isLength = __webpack_require__(19),
-    toKey = __webpack_require__(8);
+var baseGet = __webpack_require__(26);
 
 /**
- * Checks if `path` exists on `object`.
+ * Gets the value at `path` of `object`. If the resolved value is
+ * `undefined`, the `defaultValue` is returned in its place.
  *
- * @private
+ * @static
+ * @memberOf _
+ * @since 3.7.0
+ * @category Object
  * @param {Object} object The object to query.
- * @param {Array|string} path The path to check.
- * @param {Function} hasFunc The function to check properties.
- * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ * @param {Array|string} path The path of the property to get.
+ * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+ * @returns {*} Returns the resolved value.
+ * @example
+ *
+ * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+ *
+ * _.get(object, 'a[0].b.c');
+ * // => 3
+ *
+ * _.get(object, ['a', '0', 'b', 'c']);
+ * // => 3
+ *
+ * _.get(object, 'a.b.c', 'default');
+ * // => 'default'
  */
-function hasPath(object, path, hasFunc) {
-  path = castPath(path, object);
-
-  var index = -1,
-      length = path.length,
-      result = false;
-
-  while (++index < length) {
-    var key = toKey(path[index]);
-    if (!(result = object != null && hasFunc(object, key))) {
-      break;
-    }
-    object = object[key];
-  }
-  if (result || ++index != length) {
-    return result;
-  }
-  length = object == null ? 0 : object.length;
-  return !!length && isLength(length) && isIndex(key, length) &&
-    (isArray(object) || isArguments(object));
+function get(object, path, defaultValue) {
+  var result = object == null ? undefined : baseGet(object, path);
+  return result === undefined ? defaultValue : result;
 }
 
-module.exports = hasPath;
+module.exports = get;
 
 
 /***/ }),
@@ -1915,7 +1893,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__includes_block__ = __webpack_require__(68);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__includes_data__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__includes_data__ = __webpack_require__(8);
  /**
                                         * External dependencies
                                         */
@@ -2067,7 +2045,7 @@ module.exports = g;
 /* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(7);
+var Symbol = __webpack_require__(6);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -2409,23 +2387,20 @@ module.exports = nodeUtil;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_debounce__ = __webpack_require__(69);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_debounce___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_debounce__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_querystringify__ = __webpack_require__(136);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_querystringify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_querystringify__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_classnames__ = __webpack_require__(137);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_classnames__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__editor_scss__ = __webpack_require__(138);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__editor_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__editor_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__data__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__editor_taxonomies__ = __webpack_require__(146);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__query_panel__ = __webpack_require__(147);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__placeholder__ = __webpack_require__(149);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames__ = __webpack_require__(137);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_classnames__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__editor_scss__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__editor_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__editor_scss__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__data__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__query__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__query_panel__ = __webpack_require__(145);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__placeholder__ = __webpack_require__(147);
 
-
-
+ /**
+                                                * External dependencies
+                                                */
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -2434,11 +2409,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/**
- * External dependencies
- */
-
 
 
 
@@ -2478,9 +2448,8 @@ var RelatedPostsBlock = function (_Component) {
 		// Data provided by this plugin.
 		var _this = _possibleConstructorReturn(this, (RelatedPostsBlock.__proto__ || Object.getPrototypeOf(RelatedPostsBlock)).apply(this, arguments));
 
-		_this.previewExpanded = Object(__WEBPACK_IMPORTED_MODULE_6__data__["b" /* getPluginData */])('preview');
-		_this.html5Gallery = Object(__WEBPACK_IMPORTED_MODULE_6__data__["b" /* getPluginData */])('html5_gallery');
-		_this.currentType = Object(__WEBPACK_IMPORTED_MODULE_6__data__["c" /* getPostField */])('type');
+		_this.previewExpanded = Object(__WEBPACK_IMPORTED_MODULE_4__data__["b" /* getPluginData */])('preview');
+		_this.html5Gallery = Object(__WEBPACK_IMPORTED_MODULE_4__data__["b" /* getPluginData */])('html5_gallery');
 
 		_this.updatePostTypes = _this.updatePostTypes.bind(_this);
 
@@ -2523,13 +2492,14 @@ var RelatedPostsBlock = function (_Component) {
 	}, {
 		key: 'render',
 		value: function render() {
-			var relatedPosts = this.props.relatedPostsByTax.data;
+			var relatedPosts = this.props.relatedPosts.data;
 			var _props = this.props,
 			    attributes = _props.attributes,
 			    focus = _props.focus,
 			    setAttributes = _props.setAttributes,
 			    editorTermIDs = _props.editorTermIDs,
-			    editorTaxonomyNames = _props.editorTaxonomyNames;
+			    editorTaxonomyNames = _props.editorTaxonomyNames,
+			    editorPostType = _props.editorPostType;
 			var title = attributes.title,
 			    taxonomies = attributes.taxonomies,
 			    post_types = attributes.post_types,
@@ -2539,12 +2509,12 @@ var RelatedPostsBlock = function (_Component) {
 			    columns = attributes.columns;
 
 			var titleID = 'rpbt-inspector-text-control-' + this.instanceId;
-			var className = __WEBPACK_IMPORTED_MODULE_4_classnames___default()(this.props.className, { 'html5-gallery': this.html5Gallery });
+			var className = __WEBPACK_IMPORTED_MODULE_2_classnames___default()(this.props.className, { 'html5-gallery': this.html5Gallery });
 
 			var checkedPostTypes = post_types;
-			if (__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(post_types) || !post_types) {
+			if (__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default()(post_types) || !post_types) {
 				// Use the post type from the current post if not set.
-				checkedPostTypes = this.currentType;
+				checkedPostTypes = editorPostType;
 			}
 
 			var inspectorControls = focus && wp.element.createElement(
@@ -2573,7 +2543,7 @@ var RelatedPostsBlock = function (_Component) {
 						id: titleID
 					})
 				),
-				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_8__query_panel__["a" /* default */], {
+				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_6__query_panel__["a" /* default */], {
 					postsPerPage: posts_per_page,
 					onPostsPerPageChange: function onPostsPerPageChange(value) {
 						// Don't allow 0 as a value.
@@ -2602,7 +2572,7 @@ var RelatedPostsBlock = function (_Component) {
 			);
 
 			var postsFound = 0;
-			var queryFinished = !__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(relatedPosts);
+			var queryFinished = !__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default()(relatedPosts);
 
 			if (queryFinished) {
 				if (relatedPosts.hasOwnProperty('posts')) {
@@ -2611,7 +2581,7 @@ var RelatedPostsBlock = function (_Component) {
 			}
 
 			if (!focus && !this.previewExpanded || !postsFound) {
-				return [inspectorControls, wp.element.createElement(__WEBPACK_IMPORTED_MODULE_9__placeholder__["a" /* default */], {
+				return [inspectorControls, wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__placeholder__["a" /* default */], {
 					className: className,
 					queryFinished: queryFinished,
 					postsFound: postsFound,
@@ -2622,7 +2592,7 @@ var RelatedPostsBlock = function (_Component) {
 				})];
 			}
 
-			var html = !__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(relatedPosts.rendered) ? relatedPosts.rendered : '';
+			var html = !__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default()(relatedPosts.rendered) ? relatedPosts.rendered : '';
 
 			// Add target blank to all links
 			// Todo: find a better way to do this
@@ -2643,62 +2613,7 @@ var RelatedPostsBlock = function (_Component) {
 	return RelatedPostsBlock;
 }(Component);
 
-var applyWithAPIData = withAPIData(function (props) {
-	var editorTermIDs = props.editorTermIDs,
-	    editorTaxonomyNames = props.editorTaxonomyNames;
-	var _props$attributes = props.attributes,
-	    post_types = _props$attributes.post_types,
-	    title = _props$attributes.title,
-	    posts_per_page = _props$attributes.posts_per_page,
-	    format = _props$attributes.format,
-	    image_size = _props$attributes.image_size,
-	    columns = _props$attributes.columns;
-
-	var type = 'editor_block';
-	var taxonomies = props.attributes.taxonomies;
-
-	// Get the terms set in the editor.
-
-	var terms = editorTermIDs.join(',');
-	if (!terms.length && -1 !== editorTaxonomyNames.indexOf('category')) {
-		// Use default category if this post supports the 'category' taxonomy.
-		terms = Object(__WEBPACK_IMPORTED_MODULE_6__data__["b" /* getPluginData */])('default_category');
-	}
-
-	// If no terms are selected return no related posts.
-	taxonomies = terms.length ? taxonomies : '';
-
-	var attributes = {
-		taxonomies: taxonomies,
-		post_types: post_types,
-		terms: terms,
-		title: title,
-		posts_per_page: posts_per_page,
-		format: format,
-		image_size: image_size,
-		columns: columns,
-		type: type
-	};
-
-	var postID = Object(__WEBPACK_IMPORTED_MODULE_6__data__["c" /* getPostField */])('id');
-	var postType = Object(__WEBPACK_IMPORTED_MODULE_6__data__["c" /* getPostField */])('type');
-
-	if (attributes['post_types'] && attributes['post_types'] === postType) {
-		// The post type isn't needed in the query (if not set).
-		// It defaults to the post type of the current post.
-		delete attributes['post_types'];
-	}
-
-	var query = Object(__WEBPACK_IMPORTED_MODULE_3_querystringify__["stringify"])(__WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default()(attributes, function (value) {
-		return !__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(value);
-	}), true);
-
-	return {
-		relatedPostsByTax: '/related-posts-by-taxonomy/v1/posts/' + postID + ('' + query)
-	};
-});
-
-/* harmony default export */ __webpack_exports__["a"] = (compose([__WEBPACK_IMPORTED_MODULE_7__editor_taxonomies__["a" /* postEditorTaxonomies */], applyWithAPIData])(RelatedPostsBlock));
+/* harmony default export */ __webpack_exports__["a"] = (compose([__WEBPACK_IMPORTED_MODULE_5__query__["b" /* postEditorTaxonomies */], __WEBPACK_IMPORTED_MODULE_5__query__["a" /* postEditorAttributes */], __WEBPACK_IMPORTED_MODULE_5__query__["c" /* relatedPosts */]])(RelatedPostsBlock));
 
 /***/ }),
 /* 69 */
@@ -3931,7 +3846,7 @@ module.exports = cacheHas;
 /* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(7),
+var Symbol = __webpack_require__(6),
     Uint8Array = __webpack_require__(104),
     eq = __webpack_require__(22),
     equalArrays = __webpack_require__(41),
@@ -4314,12 +4229,12 @@ module.exports = getMatchData;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseIsEqual = __webpack_require__(40),
-    get = __webpack_require__(113),
-    hasIn = __webpack_require__(119),
+    get = __webpack_require__(49),
+    hasIn = __webpack_require__(118),
     isKey = __webpack_require__(27),
     isStrictComparable = __webpack_require__(47),
     matchesStrictComparable = __webpack_require__(48),
-    toKey = __webpack_require__(8);
+    toKey = __webpack_require__(7);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -4352,46 +4267,7 @@ module.exports = baseMatchesProperty;
 /* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGet = __webpack_require__(26);
-
-/**
- * Gets the value at `path` of `object`. If the resolved value is
- * `undefined`, the `defaultValue` is returned in its place.
- *
- * @static
- * @memberOf _
- * @since 3.7.0
- * @category Object
- * @param {Object} object The object to query.
- * @param {Array|string} path The path of the property to get.
- * @param {*} [defaultValue] The value returned for `undefined` resolved values.
- * @returns {*} Returns the resolved value.
- * @example
- *
- * var object = { 'a': [{ 'b': { 'c': 3 } }] };
- *
- * _.get(object, 'a[0].b.c');
- * // => 3
- *
- * _.get(object, ['a', '0', 'b', 'c']);
- * // => 3
- *
- * _.get(object, 'a.b.c', 'default');
- * // => 'default'
- */
-function get(object, path, defaultValue) {
-  var result = object == null ? undefined : baseGet(object, path);
-  return result === undefined ? defaultValue : result;
-}
-
-module.exports = get;
-
-
-/***/ }),
-/* 114 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var memoizeCapped = __webpack_require__(115);
+var memoizeCapped = __webpack_require__(114);
 
 /** Used to match property names within property paths. */
 var reLeadingDot = /^\./,
@@ -4422,10 +4298,10 @@ module.exports = stringToPath;
 
 
 /***/ }),
-/* 115 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var memoize = __webpack_require__(116);
+var memoize = __webpack_require__(115);
 
 /** Used as the maximum memoize cache size. */
 var MAX_MEMOIZE_SIZE = 500;
@@ -4454,7 +4330,7 @@ module.exports = memoizeCapped;
 
 
 /***/ }),
-/* 116 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var MapCache = __webpack_require__(23);
@@ -4533,10 +4409,10 @@ module.exports = memoize;
 
 
 /***/ }),
-/* 117 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseToString = __webpack_require__(118);
+var baseToString = __webpack_require__(117);
 
 /**
  * Converts `value` to a string. An empty string is returned for `null`
@@ -4567,10 +4443,10 @@ module.exports = toString;
 
 
 /***/ }),
-/* 118 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(7),
+var Symbol = __webpack_require__(6),
     arrayMap = __webpack_require__(38),
     isArray = __webpack_require__(0),
     isSymbol = __webpack_require__(10);
@@ -4610,11 +4486,11 @@ module.exports = baseToString;
 
 
 /***/ }),
-/* 119 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseHasIn = __webpack_require__(120),
-    hasPath = __webpack_require__(49);
+var baseHasIn = __webpack_require__(119),
+    hasPath = __webpack_require__(120);
 
 /**
  * Checks if `path` is a direct or inherited property of `object`.
@@ -4650,7 +4526,7 @@ module.exports = hasIn;
 
 
 /***/ }),
-/* 120 */
+/* 119 */
 /***/ (function(module, exports) {
 
 /**
@@ -4666,6 +4542,51 @@ function baseHasIn(object, key) {
 }
 
 module.exports = baseHasIn;
+
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var castPath = __webpack_require__(15),
+    isArguments = __webpack_require__(9),
+    isArray = __webpack_require__(0),
+    isIndex = __webpack_require__(25),
+    isLength = __webpack_require__(19),
+    toKey = __webpack_require__(7);
+
+/**
+ * Checks if `path` exists on `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @param {Function} hasFunc The function to check properties.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ */
+function hasPath(object, path, hasFunc) {
+  path = castPath(path, object);
+
+  var index = -1,
+      length = path.length,
+      result = false;
+
+  while (++index < length) {
+    var key = toKey(path[index]);
+    if (!(result = object != null && hasFunc(object, key))) {
+      break;
+    }
+    object = object[key];
+  }
+  if (result || ++index != length) {
+    return result;
+  }
+  length = object == null ? 0 : object.length;
+  return !!length && isLength(length) && isIndex(key, length) &&
+    (isArray(object) || isArguments(object));
+}
+
+module.exports = hasPath;
 
 
 /***/ }),
@@ -4702,7 +4623,7 @@ module.exports = identity;
 var baseProperty = __webpack_require__(123),
     basePropertyDeep = __webpack_require__(124),
     isKey = __webpack_require__(27),
-    toKey = __webpack_require__(8);
+    toKey = __webpack_require__(7);
 
 /**
  * Creates a function that returns the value at `path` of a given object.
@@ -4819,7 +4740,7 @@ var assignValue = __webpack_require__(127),
     castPath = __webpack_require__(15),
     isIndex = __webpack_require__(25),
     isObject = __webpack_require__(2),
-    toKey = __webpack_require__(8);
+    toKey = __webpack_require__(7);
 
 /**
  * The base implementation of `_.set`.
@@ -5259,7 +5180,79 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 /* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseFlatten = __webpack_require__(140);
+var baseGetTag = __webpack_require__(4),
+    isArray = __webpack_require__(0),
+    isObjectLike = __webpack_require__(5);
+
+/** `Object#toString` result references. */
+var stringTag = '[object String]';
+
+/**
+ * Checks if `value` is classified as a `String` primitive or object.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a string, else `false`.
+ * @example
+ *
+ * _.isString('abc');
+ * // => true
+ *
+ * _.isString(1);
+ * // => false
+ */
+function isString(value) {
+  return typeof value == 'string' ||
+    (!isArray(value) && isObjectLike(value) && baseGetTag(value) == stringTag);
+}
+
+module.exports = isString;
+
+
+/***/ }),
+/* 140 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGetTag = __webpack_require__(4),
+    isObjectLike = __webpack_require__(5);
+
+/** `Object#toString` result references. */
+var boolTag = '[object Boolean]';
+
+/**
+ * Checks if `value` is classified as a boolean primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a boolean, else `false`.
+ * @example
+ *
+ * _.isBoolean(false);
+ * // => true
+ *
+ * _.isBoolean(null);
+ * // => false
+ */
+function isBoolean(value) {
+  return value === true || value === false ||
+    (isObjectLike(value) && baseGetTag(value) == boolTag);
+}
+
+module.exports = isBoolean;
+
+
+/***/ }),
+/* 141 */,
+/* 142 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseFlatten = __webpack_require__(143);
 
 /**
  * Flattens `array` a single level deep.
@@ -5284,11 +5277,11 @@ module.exports = flatten;
 
 
 /***/ }),
-/* 140 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayPush = __webpack_require__(24),
-    isFlattenable = __webpack_require__(141);
+    isFlattenable = __webpack_require__(144);
 
 /**
  * The base implementation of `_.flatten` with support for restricting flattening.
@@ -5328,10 +5321,10 @@ module.exports = baseFlatten;
 
 
 /***/ }),
-/* 141 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Symbol = __webpack_require__(7),
+var Symbol = __webpack_require__(6),
     isArguments = __webpack_require__(9),
     isArray = __webpack_require__(0);
 
@@ -5354,165 +5347,13 @@ module.exports = isFlattenable;
 
 
 /***/ }),
-/* 142 */,
-/* 143 */,
-/* 144 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseGetTag = __webpack_require__(4),
-    isArray = __webpack_require__(0),
-    isObjectLike = __webpack_require__(5);
-
-/** `Object#toString` result references. */
-var stringTag = '[object String]';
-
-/**
- * Checks if `value` is classified as a `String` primitive or object.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a string, else `false`.
- * @example
- *
- * _.isString('abc');
- * // => true
- *
- * _.isString(1);
- * // => false
- */
-function isString(value) {
-  return typeof value == 'string' ||
-    (!isArray(value) && isObjectLike(value) && baseGetTag(value) == stringTag);
-}
-
-module.exports = isString;
-
-
-/***/ }),
 /* 145 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseGetTag = __webpack_require__(4),
-    isObjectLike = __webpack_require__(5);
-
-/** `Object#toString` result references. */
-var boolTag = '[object Boolean]';
-
-/**
- * Checks if `value` is classified as a boolean primitive or object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a boolean, else `false`.
- * @example
- *
- * _.isBoolean(false);
- * // => true
- *
- * _.isBoolean(null);
- * // => false
- */
-function isBoolean(value) {
-  return value === true || value === false ||
-    (isObjectLike(value) && baseGetTag(value) == boolTag);
-}
-
-module.exports = isBoolean;
-
-
-/***/ }),
-/* 146 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return postEditorTaxonomies; });
-/* unused harmony export getTermIDs */
-/* unused harmony export getTaxName */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten__ = __webpack_require__(139);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_flatten__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_pickBy__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__data__ = __webpack_require__(6);
-
-
- /**
-                                                * External dependencies
-                                                */
-
-/**
- * WordPress dependencies
- */
-var _wp$data = wp.data,
-    withSelect = _wp$data.withSelect,
-    select = _wp$data.select;
-
-/**
- * Internal dependencies
- */
-
-
-
-var postEditorTaxonomies = withSelect(function () {
-	var taxonomyTerms = {};
-	var taxonomyNames = [];
-	var taxonomies = Object(__WEBPACK_IMPORTED_MODULE_3__data__["b" /* getPluginData */])('taxonomies');
-
-	for (var key in taxonomies) {
-		if (!taxonomies.hasOwnProperty(key)) {
-			continue;
-		}
-
-		// Get the correct tax name for post attribute 'categories' and 'tags'. 
-		var taxName = getTaxName(key);
-		var query = select('core/editor').getEditedPostAttribute(taxName);
-
-		if (!__WEBPACK_IMPORTED_MODULE_2_lodash_isUndefined___default()(query)) {
-			taxonomyTerms[key] = query;
-			taxonomyNames.push(key);
-		}
-	}
-
-	return {
-		editorTaxonomyTerms: taxonomyTerms,
-		editorTaxonomyNames: taxonomyNames,
-		editorTermIDs: getTermIDs(taxonomyTerms)
-	};
-});
-
-function getTermIDs(taxonomies) {
-	var ids = __WEBPACK_IMPORTED_MODULE_1_lodash_pickBy___default()(taxonomies, function (value) {
-		return value.length;
-	});
-	var terms = Object.keys(ids).map(function (tax) {
-		return ids[tax];
-	});
-
-	return __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default()(terms);
-}
-
-function getTaxName(taxonomy) {
-	if ('category' === taxonomy || 'post_tag' === taxonomy) {
-		taxonomy = 'category' === taxonomy ? 'categories' : 'tags';
-	}
-	return taxonomy;
-}
-
-/***/ }),
-/* 147 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = QueryPanel;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__post_type_control__ = __webpack_require__(148);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__post_type_control__ = __webpack_require__(146);
 /**
  * WordPress dependencies
  */
@@ -5623,13 +5464,13 @@ function getOptions(type) {
 }
 
 /***/ }),
-/* 148 */
+/* 146 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data__ = __webpack_require__(8);
  /**
                                         * External dependencies
                                         */
@@ -5736,7 +5577,7 @@ var PostTypeControl = function (_Component) {
 
 			var checked = postTypes.split(",");
 			checked = checked.filter(function (item) {
-				return Object(__WEBPACK_IMPORTED_MODULE_1__data__["d" /* inPluginData */])('post_types', item);
+				return Object(__WEBPACK_IMPORTED_MODULE_1__data__["c" /* inPluginData */])('post_types', item);
 			});
 
 			return !__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default()(this.state.items) && wp.element.createElement(
@@ -5776,7 +5617,7 @@ var PostTypeControl = function (_Component) {
 /* harmony default export */ __webpack_exports__["a"] = (withInstanceId(PostTypeControl));
 
 /***/ }),
-/* 149 */
+/* 147 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5873,6 +5714,675 @@ function LoadingPlaceholder(_ref) {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (LoadingPlaceholder);
+
+/***/ }),
+/* 148 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIndexOf = __webpack_require__(149),
+    isArrayLike = __webpack_require__(18),
+    isString = __webpack_require__(139),
+    toInteger = __webpack_require__(153),
+    values = __webpack_require__(155);
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max;
+
+/**
+ * Checks if `value` is in `collection`. If `collection` is a string, it's
+ * checked for a substring of `value`, otherwise
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * is used for equality comparisons. If `fromIndex` is negative, it's used as
+ * the offset from the end of `collection`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Collection
+ * @param {Array|Object|string} collection The collection to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} [fromIndex=0] The index to search from.
+ * @param- {Object} [guard] Enables use as an iteratee for methods like `_.reduce`.
+ * @returns {boolean} Returns `true` if `value` is found, else `false`.
+ * @example
+ *
+ * _.includes([1, 2, 3], 1);
+ * // => true
+ *
+ * _.includes([1, 2, 3], 1, 2);
+ * // => false
+ *
+ * _.includes({ 'a': 1, 'b': 2 }, 1);
+ * // => true
+ *
+ * _.includes('abcd', 'bc');
+ * // => true
+ */
+function includes(collection, value, fromIndex, guard) {
+  collection = isArrayLike(collection) ? collection : values(collection);
+  fromIndex = (fromIndex && !guard) ? toInteger(fromIndex) : 0;
+
+  var length = collection.length;
+  if (fromIndex < 0) {
+    fromIndex = nativeMax(length + fromIndex, 0);
+  }
+  return isString(collection)
+    ? (fromIndex <= length && collection.indexOf(value, fromIndex) > -1)
+    : (!!length && baseIndexOf(collection, value, fromIndex) > -1);
+}
+
+module.exports = includes;
+
+
+/***/ }),
+/* 149 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseFindIndex = __webpack_require__(150),
+    baseIsNaN = __webpack_require__(151),
+    strictIndexOf = __webpack_require__(152);
+
+/**
+ * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} fromIndex The index to search from.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseIndexOf(array, value, fromIndex) {
+  return value === value
+    ? strictIndexOf(array, value, fromIndex)
+    : baseFindIndex(array, baseIsNaN, fromIndex);
+}
+
+module.exports = baseIndexOf;
+
+
+/***/ }),
+/* 150 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.findIndex` and `_.findLastIndex` without
+ * support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {Function} predicate The function invoked per iteration.
+ * @param {number} fromIndex The index to search from.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function baseFindIndex(array, predicate, fromIndex, fromRight) {
+  var length = array.length,
+      index = fromIndex + (fromRight ? 1 : -1);
+
+  while ((fromRight ? index-- : ++index < length)) {
+    if (predicate(array[index], index, array)) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+module.exports = baseFindIndex;
+
+
+/***/ }),
+/* 151 */
+/***/ (function(module, exports) {
+
+/**
+ * The base implementation of `_.isNaN` without support for number objects.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is `NaN`, else `false`.
+ */
+function baseIsNaN(value) {
+  return value !== value;
+}
+
+module.exports = baseIsNaN;
+
+
+/***/ }),
+/* 152 */
+/***/ (function(module, exports) {
+
+/**
+ * A specialized version of `_.indexOf` which performs strict equality
+ * comparisons of values, i.e. `===`.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} value The value to search for.
+ * @param {number} fromIndex The index to search from.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function strictIndexOf(array, value, fromIndex) {
+  var index = fromIndex - 1,
+      length = array.length;
+
+  while (++index < length) {
+    if (array[index] === value) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+module.exports = strictIndexOf;
+
+
+/***/ }),
+/* 153 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var toFinite = __webpack_require__(154);
+
+/**
+ * Converts `value` to an integer.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToInteger`](http://www.ecma-international.org/ecma-262/7.0/#sec-tointeger).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {number} Returns the converted integer.
+ * @example
+ *
+ * _.toInteger(3.2);
+ * // => 3
+ *
+ * _.toInteger(Number.MIN_VALUE);
+ * // => 0
+ *
+ * _.toInteger(Infinity);
+ * // => 1.7976931348623157e+308
+ *
+ * _.toInteger('3.2');
+ * // => 3
+ */
+function toInteger(value) {
+  var result = toFinite(value),
+      remainder = result % 1;
+
+  return result === result ? (remainder ? result - remainder : result) : 0;
+}
+
+module.exports = toInteger;
+
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var toNumber = __webpack_require__(71);
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0,
+    MAX_INTEGER = 1.7976931348623157e+308;
+
+/**
+ * Converts `value` to a finite number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.12.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {number} Returns the converted number.
+ * @example
+ *
+ * _.toFinite(3.2);
+ * // => 3.2
+ *
+ * _.toFinite(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toFinite(Infinity);
+ * // => 1.7976931348623157e+308
+ *
+ * _.toFinite('3.2');
+ * // => 3.2
+ */
+function toFinite(value) {
+  if (!value) {
+    return value === 0 ? value : 0;
+  }
+  value = toNumber(value);
+  if (value === INFINITY || value === -INFINITY) {
+    var sign = (value < 0 ? -1 : 1);
+    return sign * MAX_INTEGER;
+  }
+  return value === value ? value : 0;
+}
+
+module.exports = toFinite;
+
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseValues = __webpack_require__(156),
+    keys = __webpack_require__(45);
+
+/**
+ * Creates an array of the own enumerable string keyed property values of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property values.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.values(new Foo);
+ * // => [1, 2] (iteration order is not guaranteed)
+ *
+ * _.values('hi');
+ * // => ['h', 'i']
+ */
+function values(object) {
+  return object == null ? [] : baseValues(object, keys(object));
+}
+
+module.exports = values;
+
+
+/***/ }),
+/* 156 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arrayMap = __webpack_require__(38);
+
+/**
+ * The base implementation of `_.values` and `_.valuesIn` which creates an
+ * array of `object` property values corresponding to the property names
+ * of `props`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array} props The property names to get values for.
+ * @returns {Object} Returns the array of property values.
+ */
+function baseValues(object, props) {
+  return arrayMap(props, function(key) {
+    return object[key];
+  });
+}
+
+module.exports = baseValues;
+
+
+/***/ }),
+/* 157 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arrayFilter = __webpack_require__(109),
+    baseFilter = __webpack_require__(158),
+    baseIteratee = __webpack_require__(72),
+    isArray = __webpack_require__(0);
+
+/**
+ * Iterates over elements of `collection`, returning an array of all elements
+ * `predicate` returns truthy for. The predicate is invoked with three
+ * arguments: (value, index|key, collection).
+ *
+ * **Note:** Unlike `_.remove`, this method returns a new array.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Collection
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} [predicate=_.identity] The function invoked per iteration.
+ * @returns {Array} Returns the new filtered array.
+ * @see _.reject
+ * @example
+ *
+ * var users = [
+ *   { 'user': 'barney', 'age': 36, 'active': true },
+ *   { 'user': 'fred',   'age': 40, 'active': false }
+ * ];
+ *
+ * _.filter(users, function(o) { return !o.active; });
+ * // => objects for ['fred']
+ *
+ * // The `_.matches` iteratee shorthand.
+ * _.filter(users, { 'age': 36, 'active': true });
+ * // => objects for ['barney']
+ *
+ * // The `_.matchesProperty` iteratee shorthand.
+ * _.filter(users, ['active', false]);
+ * // => objects for ['fred']
+ *
+ * // The `_.property` iteratee shorthand.
+ * _.filter(users, 'active');
+ * // => objects for ['barney']
+ */
+function filter(collection, predicate) {
+  var func = isArray(collection) ? arrayFilter : baseFilter;
+  return func(collection, baseIteratee(predicate, 3));
+}
+
+module.exports = filter;
+
+
+/***/ }),
+/* 158 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseEach = __webpack_require__(159);
+
+/**
+ * The base implementation of `_.filter` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {Array} Returns the new filtered array.
+ */
+function baseFilter(collection, predicate) {
+  var result = [];
+  baseEach(collection, function(value, index, collection) {
+    if (predicate(value, index, collection)) {
+      result.push(value);
+    }
+  });
+  return result;
+}
+
+module.exports = baseFilter;
+
+
+/***/ }),
+/* 159 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseForOwn = __webpack_require__(160),
+    createBaseEach = __webpack_require__(163);
+
+/**
+ * The base implementation of `_.forEach` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ */
+var baseEach = createBaseEach(baseForOwn);
+
+module.exports = baseEach;
+
+
+/***/ }),
+/* 160 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseFor = __webpack_require__(161),
+    keys = __webpack_require__(45);
+
+/**
+ * The base implementation of `_.forOwn` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Object} object The object to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Object} Returns `object`.
+ */
+function baseForOwn(object, iteratee) {
+  return object && baseFor(object, iteratee, keys);
+}
+
+module.exports = baseForOwn;
+
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var createBaseFor = __webpack_require__(162);
+
+/**
+ * The base implementation of `baseForOwn` which iterates over `object`
+ * properties returned by `keysFunc` and invokes `iteratee` for each property.
+ * Iteratee functions may exit iteration early by explicitly returning `false`.
+ *
+ * @private
+ * @param {Object} object The object to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @returns {Object} Returns `object`.
+ */
+var baseFor = createBaseFor();
+
+module.exports = baseFor;
+
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports) {
+
+/**
+ * Creates a base function for methods like `_.forIn` and `_.forOwn`.
+ *
+ * @private
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {Function} Returns the new base function.
+ */
+function createBaseFor(fromRight) {
+  return function(object, iteratee, keysFunc) {
+    var index = -1,
+        iterable = Object(object),
+        props = keysFunc(object),
+        length = props.length;
+
+    while (length--) {
+      var key = props[fromRight ? length : ++index];
+      if (iteratee(iterable[key], key, iterable) === false) {
+        break;
+      }
+    }
+    return object;
+  };
+}
+
+module.exports = createBaseFor;
+
+
+/***/ }),
+/* 163 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isArrayLike = __webpack_require__(18);
+
+/**
+ * Creates a `baseEach` or `baseEachRight` function.
+ *
+ * @private
+ * @param {Function} eachFunc The function to iterate over a collection.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {Function} Returns the new base function.
+ */
+function createBaseEach(eachFunc, fromRight) {
+  return function(collection, iteratee) {
+    if (collection == null) {
+      return collection;
+    }
+    if (!isArrayLike(collection)) {
+      return eachFunc(collection, iteratee);
+    }
+    var length = collection.length,
+        index = fromRight ? length : -1,
+        iterable = Object(collection);
+
+    while ((fromRight ? index-- : ++index < length)) {
+      if (iteratee(iterable[index], index, iterable) === false) {
+        break;
+      }
+    }
+    return collection;
+  };
+}
+
+module.exports = createBaseEach;
+
+
+/***/ }),
+/* 164 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return postEditorTaxonomies; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return postEditorAttributes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return relatedPosts; });
+/* unused harmony export getTermIDs */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_includes__ = __webpack_require__(148);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_includes___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_includes__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_filter__ = __webpack_require__(157);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_filter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_filter__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_flatten__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_flatten___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_flatten__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_pickBy__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_pickBy___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_pickBy__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_querystringify__ = __webpack_require__(136);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_querystringify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_querystringify__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__data__ = __webpack_require__(8);
+
+
+
+
+ /**
+                                                * External dependencies
+                                                */
+
+
+
+/**
+ * WordPress dependencies
+ */
+var withSelect = wp.data.withSelect;
+var withAPIData = wp.components.withAPIData;
+
+/**
+ * Internal dependencies
+ */
+
+
+
+var postEditorTaxonomies = withAPIData(function () {
+	return {
+		editorTaxonomies: '/wp/v2/taxonomies?context=edit'
+	};
+});
+
+var postEditorAttributes = withSelect(function (select, props) {
+	var taxonomyTerms = {};
+	var taxonomyNames = [];
+
+	var postType = select('core/editor').getEditedPostAttribute('type');
+	var availableTaxonomies = __WEBPACK_IMPORTED_MODULE_1_lodash_filter___default()(props.editorTaxonomies.data, function (taxonomy) {
+		return __WEBPACK_IMPORTED_MODULE_0_lodash_includes___default()(taxonomy.types, postType);
+	});
+
+	availableTaxonomies.map(function (taxonomy) {
+		taxonomyTerms[taxonomy.slug] = select('core/editor').getEditedPostAttribute(taxonomy.rest_base);
+		taxonomyNames.push(taxonomy.slug);
+	});
+
+	return {
+		editorTaxonomyTerms: taxonomyTerms,
+		editorTaxonomyNames: taxonomyNames,
+		editorTermIDs: getTermIDs(taxonomyTerms),
+		editorPostType: select('core/editor').getEditedPostAttribute('type'),
+		editorPostID: select('core/editor').getEditedPostAttribute('id')
+	};
+});
+
+var relatedPosts = withAPIData(function (props) {
+	var editorTermIDs = props.editorTermIDs,
+	    editorTaxonomyNames = props.editorTaxonomyNames,
+	    editorPostID = props.editorPostID,
+	    editorPostType = props.editorPostType;
+	var _props$attributes = props.attributes,
+	    post_types = _props$attributes.post_types,
+	    title = _props$attributes.title,
+	    posts_per_page = _props$attributes.posts_per_page,
+	    format = _props$attributes.format,
+	    image_size = _props$attributes.image_size,
+	    columns = _props$attributes.columns;
+
+	var type = 'editor_block';
+	var taxonomies = props.attributes.taxonomies;
+
+	// Get the terms set in the editor.
+
+	var terms = editorTermIDs.join(',');
+	if (!terms.length && -1 !== editorTaxonomyNames.indexOf('category')) {
+		// Use default category if this post supports the 'category' taxonomy.
+		terms = Object(__WEBPACK_IMPORTED_MODULE_6__data__["b" /* getPluginData */])('default_category');
+	}
+
+	// If no terms are selected return no related posts.
+	taxonomies = terms.length ? taxonomies : '';
+
+	var attributes = {
+		taxonomies: taxonomies,
+		post_types: post_types,
+		terms: terms,
+		title: title,
+		posts_per_page: posts_per_page,
+		format: format,
+		image_size: image_size,
+		columns: columns,
+		type: type
+	};
+
+	if (attributes['post_types'] && attributes['post_types'] === editorPostType) {
+		// The post type isn't needed in the query (if not set).
+		// It defaults to the post type of the current post.
+		delete attributes['post_types'];
+	}
+
+	var query = Object(__WEBPACK_IMPORTED_MODULE_5_querystringify__["stringify"])(__WEBPACK_IMPORTED_MODULE_3_lodash_pickBy___default()(attributes, function (value) {
+		return !__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(value);
+	}), true);
+
+	return {
+		relatedPosts: '/related-posts-by-taxonomy/v1/posts/' + editorPostID + ('' + query)
+	};
+});
+
+function getTermIDs(taxonomies) {
+	var ids = __WEBPACK_IMPORTED_MODULE_3_lodash_pickBy___default()(taxonomies, function (value) {
+		return value.length;
+	});
+	var terms = Object.keys(ids).map(function (tax) {
+		return ids[tax];
+	});
+
+	return __WEBPACK_IMPORTED_MODULE_2_lodash_flatten___default()(terms);
+}
 
 /***/ })
 /******/ ]);
