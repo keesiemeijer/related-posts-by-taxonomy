@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { isUndefined, pickBy, flatten, filter, includes } from 'lodash';
+import { pickBy, flatten, filter, includes } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -9,11 +9,6 @@ import { isUndefined, pickBy, flatten, filter, includes } from 'lodash';
 const { withSelect} = wp.data;
 const { withAPIData } = wp.components;
 const { compose } = wp.element;
-
-/**
- * Internal dependencies
- */
-import getPluginData from './plugin';
 
 function getTermIDs( taxonomies ) {
 	const ids = pickBy( taxonomies, value => value.length );

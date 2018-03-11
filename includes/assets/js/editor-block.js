@@ -5522,9 +5522,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * WordPress dependencies
  */
 var InspectorControls = wp.blocks.InspectorControls;
-var _wp$components = wp.components,
-    withAPIData = _wp$components.withAPIData,
-    BaseControl = _wp$components.BaseControl;
+var BaseControl = wp.components.BaseControl;
 var _wp$element = wp.element,
     Component = _wp$element.Component,
     RawHTML = _wp$element.RawHTML,
@@ -6352,7 +6350,6 @@ var relatedPosts = compose(__WEBPACK_IMPORTED_MODULE_4__editor__["a" /* editorDa
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_flatten___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_flatten__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_pickBy__ = __webpack_require__(148);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_pickBy___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_pickBy__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__plugin__ = __webpack_require__(169);
 
 
 
@@ -6366,11 +6363,6 @@ var relatedPosts = compose(__WEBPACK_IMPORTED_MODULE_4__editor__["a" /* editorDa
 var withSelect = wp.data.withSelect;
 var withAPIData = wp.components.withAPIData;
 var compose = wp.element.compose;
-
-/**
- * Internal dependencies
- */
-
 
 
 function getTermIDs(taxonomies) {
