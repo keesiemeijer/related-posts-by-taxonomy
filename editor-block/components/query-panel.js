@@ -7,8 +7,8 @@ const { SelectControl, RangeControl } = wp.components;
 /**
  * Internal dependencies
  */
-import { getPluginData } from './data';
-import PostTypeControl from './post-type-control';
+import { getPluginData } from '../data/plugin';
+import PostTypeControl from '../components/post-type-control';
 
 // Select input options
 const taxonomyOptions = getTaxonomyOptions();

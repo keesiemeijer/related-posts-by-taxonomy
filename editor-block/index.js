@@ -12,8 +12,8 @@ const { registerBlockType } = wp.blocks;
 /**
  * Internal dependencies
  */
-import RelatedPostsBlock from './includes/block';
-import { _pluginData } from './includes/data';
+import RelatedPostsBlock from './block';
+import { _pluginData } from './data/plugin';
 
 if( ! isEmpty( _pluginData )  ) {
 	registerRelatedPostsBlock();

@@ -16,10 +16,10 @@ const { __, sprintf } = wp.i18n;
  * Internal dependencies
  */
 import './editor.scss'
-import { getPluginData } from './data';
-import { postEditorTaxonomies, postEditorAttributes, relatedPosts } from './query';
-import QueryPanel from './query-panel';
-import LoadingPlaceholder from './placeholder';
+import { getPluginData } from './data/plugin';
+import { relatedPosts } from './data/related-posts';
+import QueryPanel from './components/query-panel';
+import LoadingPlaceholder from './components/placeholder';
 
 let instances = 0;
 
@@ -64,7 +64,7 @@ class RelatedPostsBlock extends Component {
 
 	render(){
 		const relatedPosts = this.props.relatedPosts.data;
-		const { attributes, focus, setAttributes, editorTermIDs, editorTaxonomyNames, editorPostType } = this.props;
+		const { attributes, focus, setAttributes, editorData } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
 		const titleID = 'rpbt-inspector-text-control-' + this.instanceId;
 		const className = classnames( this.props.className, { 'html5-gallery': this.html5Gallery } );
@@ -72,7 +72,7 @@ class RelatedPostsBlock extends Component {
 		let checkedPostTypes = post_types;
 		if( isUndefined( post_types ) || ! post_types ) {
 			// Use the post type from the current post if not set.
-			checkedPostTypes = editorPostType;
+			checkedPostTypes = editorData.postType;
 		}
 
 		const inspectorControls = focus && (
@@ -131,8 +131,8 @@ class RelatedPostsBlock extends Component {
 					className={className}
 					queryFinished={queryFinished}
 					postsFound={postsFound}
-					editorTerms={editorTermIDs}
-					editorTaxonomies={editorTaxonomyNames}
+					editorTerms={editorData.termIDs}
+					editorTaxonomies={editorData.taxonomyNames}
 					icon="megaphone"
 					label={ __( 'Related Posts by Taxonomy', 'related-posts-by-taxonomy' ) }
 				/>
@@ -153,7 +153,5 @@ class RelatedPostsBlock extends Component {
 }
 
 export default compose( [
-	postEditorTaxonomies,
-	postEditorAttributes,
 	relatedPosts,
 ] )( RelatedPostsBlock );

@@ -12,7 +12,7 @@ const { Component } = wp.element;
 /**
  * Internal dependencies
  */
-import { getPluginData, inPluginData } from './data';
+import { getPluginData, inPluginData } from '../data/plugin';
 
 function getPostTypeObjects( checkedPostTypes = [] ) {
 	let postTypeOjects = [];
