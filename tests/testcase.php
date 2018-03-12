@@ -3,6 +3,7 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 
 	public $boolean;
 	//public $gallery = 0;
+	public $arg;
 
 	function setUp() {
 		parent::setUp();
@@ -123,6 +124,11 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 
 	function return_bool( $bool ) {
 		return $this->boolean = $bool;
+	}
+
+	function return_argument( $arg ) {
+		$this->arg = $arg;
+		return  $arg;
 	}
 
 	function get_cache_meta_key() {

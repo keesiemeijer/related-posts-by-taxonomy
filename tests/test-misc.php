@@ -98,6 +98,9 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$classes3     = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );
 		$classes4     = km_rpbt_post_class();
 		$link         = km_rpbt_get_related_post_title_link( $_posts[0], true );
+		$assets       = km_rpbt_block_editor_assets();
+		$register     = km_rpbt_register_block_type();
+		$render       = km_rpbt_render_block_related_post( array() );
 
 		$out = ob_get_clean();
 
@@ -118,29 +121,5 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$ids = '1,string,2,0,###,2,3';
 		$validated_ids = km_rpbt_related_posts_by_taxonomy_validate_ids( $ids );
 		$this->assertEquals( array( 1, 2, 3 ), $validated_ids );
-	}
-
-
-	/**
-	 * Test if correct template was found.
-	 */
-	function test_km_rpbt_related_posts_by_taxonomy_template() {
-
-		$path = pathinfo( dirname(  __FILE__  ) );
-
-		// get the excerpts template
-		$template = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
-		$path1 = $path['dirname'] . '/templates/related-posts-excerpts.php';
-		$this->assertEquals( $path1 , $template );
-
-		// If no template is provided it should default to the links template.
-		$template = km_rpbt_related_posts_by_taxonomy_template();
-		$path2 = $path['dirname'] . '/templates/related-posts-links.php';
-		$this->assertEquals( $path2 , $template );
-
-		// Wrong templates should default to links template.
-		$template = km_rpbt_related_posts_by_taxonomy_template( 'not-a-template' );
-		$path3 = $path['dirname'] . '/templates/related-posts-links.php';
-		$this->assertEquals( $path3 , $template );
 	}
 }

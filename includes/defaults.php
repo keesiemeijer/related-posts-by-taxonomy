@@ -378,7 +378,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			// No default setting for post types.
 			$settings['post_types'] = '';
 
-			if ( ! in_array( $type, $types ) ) {
+			if ( ! in_array( $_type, $types ) ) {
 				return $settings;
 			}
 

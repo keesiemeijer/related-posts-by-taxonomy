@@ -369,6 +369,23 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( $this->posts[3], $this->posts[4] ), $rel_post0 );
 	}
 
+	/**
+	 * Test terms argument.
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 */
+	function test_related_posts_by_terms() {
+		$this->setup_posts();
+		$args = array(
+			'terms' => array( $this->tax_2_terms[3] ),
+			'related'       => false,
+			'fields'        => 'ids',
+		);
+
+		$rel_post0  = km_rpbt_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
+
 
 	/**
 	 * Test related === false without include_terms.
