@@ -16,8 +16,9 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 	function tearDown() {
 		remove_filter( 'related_posts_by_taxonomy_wp_rest_api', '__return_true' );
-		remove_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_bool' ) );
-		remove_filter( 'related_posts_by_taxonomy_wp_rest_api_args', array( $this, 'return_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_query_args' ), 10, 4 );
+		remove_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_first_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy_wp_rest_api_args', array( $this, 'return_first_argument' ) );
 	}
 
 	/**
@@ -156,7 +157,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 		$this->setup_posts();
 		$posts = $this->posts;
-		add_filter( 'related_posts_by_taxonomy_wp_rest_api_args', array( $this, 'return_argument' ) );
+		add_filter( 'related_posts_by_taxonomy_wp_rest_api_args', array( $this, 'return_first_argument' ) );
 		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
 		$request->set_param( 'fields', 'ids' );
 		$response = rest_do_request( $request );
@@ -176,6 +177,27 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$response = rest_do_request( $request );
 		$this->assertEquals( 'wp_rest_api', $this->arg['type'] );
 		$this->arg = null;
+	}
+
+	/**
+	 * Test type of request.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_editor_block_request_restrict_fields_argument() {
+
+		$this->setup_posts();
+		$posts = $this->posts;
+		
+		add_filter( 'related_posts_by_taxonomy', array( $this, 'return_query_args' ), 10, 4 );
+		
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+		$request->set_param( 'fields', 'ids' );
+		$request->set_param( 'type', 'editor_block' );
+		$response = rest_do_request( $request );
+
+		$this->assertSame( '', $this->query_args['fields'] );
+		$this->query_args = null;
 	}
 
 	/**

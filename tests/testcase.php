@@ -1,12 +1,13 @@
 <?php
 class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 
-	public $boolean;
-	//public $gallery = 0;
 	public $arg;
+	public $query_args;
 
 	function setUp() {
 		parent::setUp();
+		$this->arg = null;
+		$this->query_args = null;
 	}
 
 	function tearDown() {
@@ -122,13 +123,14 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return $tax_terms;
 	}
 
-	function return_bool( $bool ) {
-		return $this->boolean = $bool;
-	}
-
-	function return_argument( $arg ) {
+	function return_first_argument( $arg ) {
 		$this->arg = $arg;
 		return  $arg;
+	}
+
+	function return_query_args( $results, $post_id, $taxonomies, $args ) {
+		$this->query_args = $args;
+		return  $results;
 	}
 
 	function get_cache_meta_key() {

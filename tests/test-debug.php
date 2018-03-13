@@ -11,11 +11,11 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
 	 */
 	function test_debug_filter() {
-		add_filter( 'related_posts_by_taxonomy_debug', array( $this, 'return_bool' ) );
+		add_filter( 'related_posts_by_taxonomy_debug', array( $this, 'return_first_argument' ) );
 
 		$plugin = km_rpbt_plugin();
 		$plugin->_setup();
-		$this->assertFalse( $this->boolean  );
-		$this->boolean = null;
+		$this->assertFalse( $this->arg  );
+		$this->arg = null;
 	}
 }

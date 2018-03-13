@@ -4,16 +4,10 @@
  */
 class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
-	/**
-	 * Widget settings.
-	 *
-	 * @var array
-	 */
-	private $settings;
-
 	function tearDown() {
 		// use tearDown for WP < 4.0
-		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_bool' ) );
+		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_first_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', '__return_false' );
 		remove_filter( 'related_posts_by_taxonomy_widget', '__return_false' );
 		remove_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'override_related_posts' ), 10, 2 );
@@ -57,7 +51,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_bool' ) );
+		add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_first_argument' ) );
 		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 
 		// run the widget
@@ -73,8 +67,8 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
 
-		$this->assertTrue( $this->boolean  );
-		$this->boolean = null;
+		$this->assertTrue( $this->arg  );
+		$this->arg = null;
 	}
 
 	/**
@@ -84,7 +78,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		//add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_bool' ) );
+		//add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_first_argument' ) );
 		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 		$args   = array(
 			'before_widget' => '<section>',
@@ -176,7 +170,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 	function test_widget_filter_settings() {
 		$create_posts = $this->create_posts_with_terms();
 
-		add_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_settings' ) );
+		add_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_first_argument' ) );
 		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 
 		// run the widget
@@ -195,7 +189,8 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$expected['post_types'] = array( 'post' ); // set in the widget as default
 		$expected['post_id']    = false; // not in the loop
 
-		$this->assertEquals( $expected, $this->settings );
+		$this->assertEquals( $expected, $this->arg );
+		$this->arg = null;
 	}
 
 
@@ -260,10 +255,6 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $output ) );
-	}
-
-	function return_settings( $settings ) {
-		return $this->settings = $settings;
 	}
 
 	function override_related_posts( $related_posts, $args ) {
