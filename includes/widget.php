@@ -13,8 +13,7 @@ add_action( 'widgets_init', 'km_rpbt_related_posts_by_taxonomy_widget' );
  * @since 0.1
  */
 function km_rpbt_related_posts_by_taxonomy_widget() {
-	$plugin = km_rpbt_plugin();
-	if ( $plugin && $plugin->plugin_supports( 'widget' ) ) {
+	if ( km_rpbt_plugin_supports( 'widget' ) ) {
 		register_widget( 'Related_Posts_By_Taxonomy' );
 	}
 }
@@ -129,8 +128,9 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		/* Not filterable */
 		$i['type'] = 'widget';
+		$i['fields'] = '';
 
-		$related_posts = $this->get_related_posts( $i );
+		$related_posts = km_rpbt_get_related_posts( $i );
 
 		/*
 		 * Whether to hide the widget if no related posts are found.
@@ -155,35 +155,14 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * Get the related posts used by the widget.
 	 *
 	 * @since 2.3.2
+	 * @since 2.4.2 Deprecated.
+	 *
 	 * @param array $rpbt_args Widget arguments.
 	 * @return array Array with related post objects.
 	 */
 	function get_related_posts( $rpbt_args ) {
-
-		/** This filter is documented in includes/shortcode.php */
-		$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $rpbt_args );
-
-		if ( is_array( $related_posts ) ) {
-			return $related_posts;
-		}
-
-		$function_args = $rpbt_args;
-
-		/* restricted arguments */
-		unset( $function_args['fields'], $function_args['post_id'], $function_args['taxonomies'] );
-
-		$cache = $this->plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
-
-		if ( $cache && ( isset( $rpbt_args['cache'] ) && $rpbt_args['cache'] ) ) {
-			$related_posts = $this->plugin->cache->get_related_posts( $rpbt_args );
-		} else {
-			/* get related posts */
-			$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
-		}
-
-		$related_posts = km_rpbt_add_post_classes( $related_posts, $rpbt_args );
-
-		return $related_posts;
+		_deprecated_function( __FUNCTION__, '2.4.0', 'km_rpbt_get_related_posts()' );
+		return km_rpbt_get_related_posts( $rpbt_args );
 	}
 
 	/**

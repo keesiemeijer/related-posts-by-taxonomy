@@ -29,9 +29,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		return '';
 	}
 
-	$plugin = km_rpbt_plugin();
-
-	if ( ! ( $plugin && $plugin->plugin_supports( 'shortcode' ) ) ) {
+	if ( ! km_rpbt_plugin_supports( 'shortcode' ) ) {
 		$recursing = false;
 		return '';
 	}
@@ -61,17 +59,19 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	$rpbt_args = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $validated_args );
 	$rpbt_args = array_merge( $validated_args, (array) $rpbt_args );
 
-	/* Not filterable */
+	/* Un-filterable arguments */
 	$rpbt_args['type'] = 'shortcode';
+	$rpbt_args['fields'] = '';
 
-	$related_posts = km_rpbt_shortcode_get_related_posts( $rpbt_args, $plugin->cache );
+	// Get the related posts from database or cache.
+	$related_posts = km_rpbt_get_related_posts( $rpbt_args );
 
 	/*
 	 * Whether to hide the shortcode if no related posts are found.
 	 * Set by the related_posts_by_taxonomy_shortcode_hide_empty filter.
 	 * Default true.
 	 */
-	$hide_empty = (bool) $plugin->plugin_supports( 'shortcode_hide_empty' );
+	$hide_empty = (bool) km_rpbt_plugin_supports( 'shortcode_hide_empty' );
 
 	$shortcode = '';
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
@@ -89,50 +89,6 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 
 	return $shortcode;
 } // end km_rpbt_related_posts_by_taxonomy_shortcode()
-
-/**
- * Get the related posts used by the shortcode.
- *
- * @since 2.3.2
- * @param array  $rpbt_args Widget arguments.
- * @param object $cache_obj This plugins cache object. Default null.
- * @return array Array with related post objects.
- */
-function km_rpbt_shortcode_get_related_posts( $rpbt_args, $cache_obj = null ) {
-	$function_args = $rpbt_args;
-
-	/**
-	 * Filter whether to use your own related posts.
-	 *
-	 * @since  2.3.2
-	 *
-	 * @param boolean|array $related_posts Array with (related) post objects.
-	 *                                     Default false (Don't use your own related posts).
-	 *                                     Use empty array to not retrieve related posts from the database.
-	 *
-	 * @param array         Array with widget or shortcode arguments.
-	 */
-	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $rpbt_args );
-
-	if ( is_array( $related_posts ) ) {
-		return $related_posts;
-	}
-
-	/* restricted arguments */
-	unset( $function_args['post_id'], $function_args['taxonomies'], $function_args['fields'] );
-
-	$cache = $cache_obj instanceof Related_Posts_By_Taxonomy_Cache;
-	if ( $cache && ( isset( $rpbt_args['cache'] ) && $rpbt_args['cache'] ) ) {
-		$related_posts = $cache_obj->get_related_posts( $rpbt_args );
-	} else {
-		/* get related posts */
-		$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
-	}
-
-	$related_posts = km_rpbt_add_post_classes( $related_posts, $rpbt_args );
-
-	return $related_posts;
-}
 
 /**
  * Returns shortcode output.

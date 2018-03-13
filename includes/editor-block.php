@@ -12,6 +12,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Check if there is support for the block editor.
+ *
+ * It also checks if the Block editor function `register_block_type` exists.
+ *
+ * @since 2.4.2
+ *
+ * @return True if there is support for the block editor.
+ */
+function km_rpbt_has_editor_block_support() {
+	$plugin_support = km_rpbt_plugin_supports( 'editor_block' );
+	$block_exists   = function_exists( 'register_block_type' );
+
+	if ( $block_exists && $plugin_support ) {
+		return true;
+	}
+
+	return false;
+}
+
 add_action( 'enqueue_block_editor_assets', 'km_rpbt_block_editor_assets' );
 
 /**
@@ -24,14 +44,15 @@ add_action( 'enqueue_block_editor_assets', 'km_rpbt_block_editor_assets' );
  * @since 2.4.2
  */
 function km_rpbt_block_editor_assets() {
-	$plugin = km_rpbt_plugin();
 
-	if ( ! ( $plugin && $plugin->plugin_supports( 'editor_block' ) ) ) {
+	if ( ! km_rpbt_has_editor_block_support() ) {
 		return;
 	}
 
+	$plugin = km_rpbt_plugin();
+
 	// Use un-minified Javascript when in debug mode.
-	$debug = $plugin->plugin_supports( 'debug' ) ? '' : '.min';
+	$debug = $plugin && $plugin->plugin_supports( 'debug' ) ? '' : '.min';
 
 	// Scripts.
 	wp_enqueue_script(
@@ -71,12 +92,7 @@ add_action( 'wp_loaded', 'km_rpbt_register_block_type', 15 );
  * @since 2.4.2
  */
 function km_rpbt_register_block_type() {
-	if ( ! function_exists( 'register_block_type' ) ) {
-		return;
-	}
-
-	$plugin = km_rpbt_plugin();
-	if ( ! ( $plugin && $plugin->plugin_supports( 'editor_block' ) ) ) {
+	if ( ! km_rpbt_has_editor_block_support() ) {
 		return;
 	}
 
@@ -130,8 +146,8 @@ function km_rpbt_render_block_related_post( $args ) {
 		return '';
 	}
 
-	// Set the type for filters in the shortcode.
-	$args['type'] = 'related-posts-editor-block';
+	// Set the type for the argument filters in the shortcode.
+	$args['type'] = 'related_posts_editor_block';
 
 	return km_rpbt_related_posts_by_taxonomy_shortcode( $args );
 }

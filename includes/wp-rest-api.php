@@ -281,22 +281,15 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @return array            Related Posts.
 	 */
 	public function get_related_posts( $post_id, $taxonomies, $args ) {
-		$function_args = $args;
-		$plugin = km_rpbt_plugin();
-
-		unset( $function_args['post_id'], $function_args['taxonomies'], $args['id'] );
-
-		$cache = $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
-
 		add_filter( 'related_posts_by_taxonomy', array( $this, 'get_filter_args' ), 10, 4 );
+		$args['post_id'] = $post_id;
+		$args['taxonomies'] = $taxonomies;
 
-		if ( $cache && ( isset( $args['cache'] ) && $args['cache'] ) ) {
-			$related_posts = $plugin->cache->get_related_posts( $args );
-		} else {
-			/* get related posts */
-			$related_posts = km_rpbt_related_posts_by_taxonomy( $post_id, $taxonomies, $function_args );
+		if ( isset( $args['id'] ) ) {
+			unset( $args['id'] );
 		}
 
+		$related_posts = km_rpbt_get_related_posts( $args );
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'get_filter_args' ), 10, 4 );
 
 		return $related_posts;
