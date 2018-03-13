@@ -22,6 +22,7 @@ export const relatedPosts = compose(
 		const { editorData } = props;
 		const { post_types, title, posts_per_page, format, image_size, columns } = props.attributes;
 		const type = 'editor_block';
+		const fields='';
 		let { taxonomies} = props.attributes
 		
 		// Get the terms set in the editor.
@@ -44,6 +45,7 @@ export const relatedPosts = compose(
 			image_size,
 			columns,
 			type,
+			fields,
 		};
 
 		if( attributes['post_types'] && ( attributes['post_types'] === editorData.postType ) ) {

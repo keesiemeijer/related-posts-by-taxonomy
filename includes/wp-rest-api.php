@@ -155,16 +155,14 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 */
 	public function prepare_item_for_response( $args, $request ) {
 
-		$post_id       = $args['post_id'];
-		$taxonomies    = $args['taxonomies'];
-		$related_posts = $this->get_related_posts( $post_id, $taxonomies, $args );
+		$related_posts = $this->get_related_posts( $args );
 
 		$data = array(
 			'posts'         => $related_posts,
 			'termcount'     => isset( $this->filter_args['termcount'] ) ? $this->filter_args['termcount'] : array(),
-			'post_id'       => $post_id,
+			'post_id'       => $args['post_id'],
 			'post_types'    => $args['post_types'],
-			'taxonomies'    => km_rpbt_get_taxonomies( $taxonomies ),
+			'taxonomies'    => km_rpbt_get_taxonomies( $args['taxonomies'] ),
 			'related_terms' => isset( $this->filter_args['related_terms'] ) ? $this->filter_args['related_terms'] : array(),
 			'rendered'      => km_rpbt_shortcode_output( $related_posts, $args ),
 		);
@@ -280,10 +278,8 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @param array $args       Function arguments used to get the related posts.
 	 * @return array            Related Posts.
 	 */
-	public function get_related_posts( $post_id, $taxonomies, $args ) {
+	public function get_related_posts( $args ) {
 		add_filter( 'related_posts_by_taxonomy', array( $this, 'get_filter_args' ), 10, 4 );
-		$args['post_id'] = $post_id;
-		$args['taxonomies'] = $taxonomies;
 
 		if ( isset( $args['id'] ) ) {
 			unset( $args['id'] );
