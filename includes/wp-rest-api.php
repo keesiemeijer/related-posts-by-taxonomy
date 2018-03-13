@@ -71,6 +71,12 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 			return $error;
 		}
 
+		/*
+		 * There are two types of request.
+		 *
+		 * 1 regular wp rest api request
+		 * 2 editor block request
+		 */
 		$type = isset( $args['type'] ) ? $args['type'] : 'wp_rest_api';
 		$type = ( 'editor_block' === $type ) ? $type : 'wp_rest_api';
 
@@ -101,7 +107,10 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 */
 		$args = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_args', $validated_args );
 		$args = array_merge( $validated_args, (array) $args );
+
+		// Un-filterable arguments (depending on request type).
 		$args['type']  = $type;
+		$args['fields'] = ( 'editor_block' === $type ) ? '' : $args['fields'];
 
 		$data = $this->prepare_item_for_response( $args, $request );
 		return rest_ensure_response( $data );
