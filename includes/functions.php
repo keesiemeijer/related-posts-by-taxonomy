@@ -41,6 +41,8 @@ function km_rpbt_get_default_settings( $type = '' ) {
 /**
  * Check if the plugin supports a feature.
  *
+ * @since  2.4.2
+ *
  * @param string $support Feature
  * @return bool True if the feature is supported.
  */
@@ -83,14 +85,21 @@ function km_rpbt_get_default_args() {
  *
  * @since  2.4.2
  *
- * @param  array $args Array of arguments.
+ * @param array $post_id The post id to get related posts for.
+ * @param array|string $args Array of arguments.
  * @return array Array with related post objects.
  */
-function km_rpbt_get_related_posts( $args ) {
-	$args   = km_rpbt_sanitize_args( $args );
+function km_rpbt_get_related_posts( $post_id, $args = array() ) {
+	// Returns an array with arguments
+	$args = km_rpbt_sanitize_args( $args );
+
+	$plugin = km_rpbt_plugin();
+	if ( ! isset( $args['taxonomies'] ) ) {
+		$all_tax            = isset( $plugin->all_tax ) ? $plugin->all_tax : 'category';
+		$args['taxonomies'] = km_rpbt_get_taxonomies( $all_tax );
+	}
 
 	$function_args = $args;
-	$plugin        = km_rpbt_plugin();
 
 	/**
 	 * Filter whether to use your own related posts.
@@ -117,7 +126,7 @@ function km_rpbt_get_related_posts( $args ) {
 		$related_posts = $plugin->cache->get_related_posts( $args );
 	} else {
 		/* get related posts */
-		$related_posts = km_rpbt_related_posts_by_taxonomy( $args['post_id'], $args['taxonomies'], $function_args );
+		$related_posts = km_rpbt_related_posts_by_taxonomy( $post_id, $args['taxonomies'], $function_args );
 	}
 
 	$related_posts = km_rpbt_add_post_classes( $related_posts, $args );
@@ -125,6 +134,16 @@ function km_rpbt_get_related_posts( $args ) {
 	return $related_posts;
 }
 
+/**
+ * Get the terms from the post or from included terms
+ *
+ * @since  2.4.2
+ *
+ * @param int          $post_id    The post id to get terms for.
+ * @param array|string $taxonomies The taxonomies to retrieve terms from.
+ * @param array|string $args       Optional. Change what is returned.
+ * @return array Array with term ids.
+ */
 function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	$terms = array();
 	$args   = km_rpbt_sanitize_args( $args );

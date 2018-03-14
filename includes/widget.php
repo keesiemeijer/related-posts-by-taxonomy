@@ -79,40 +79,39 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * Displays the related posts on the front end.
 	 *
 	 * @since 0.1
-	 * @param array $rpbt_widget_args Display arguments including 'before_title', 'after_title',
+	 * @param array $widget_args Display arguments including 'before_title', 'after_title',
 	 *                                'before_widget', and 'after_widget'.
-	 * @param array $rpbt_args        The settings for the particular instance of the widget.
+	 * @param array $args        The settings for the particular instance of the widget.
 	 */
-	function widget( $rpbt_widget_args, $rpbt_args ) {
+	function widget( $widget_args, $args ) {
 
 		if ( ! $this->plugin ) {
 			return '';
 		}
 
-		$i = $rpbt_args;
-		$i = $this->get_instance_settings( $i );
+		$args = $this->get_instance_settings( $args );
 
 		/* don't show widget on pages other than single if singular_template is set */
-		if ( $i['singular_template'] && ! is_singular() ) {
+		if ( $args['singular_template'] && ! is_singular() ) {
 			return;
 		}
 
-		if ( empty( $i['post_id'] ) ) {
-			$i['post_id'] = $this->get_the_ID();
+		if ( empty( $args['post_id'] ) ) {
+			$args['post_id'] = $this->get_the_ID();
 		}
 
-		if ( ! empty( $i['post_types'] ) ) {
-			$i['post_types'] = array_keys( $i['post_types'] );
+		if ( ! empty( $args['post_types'] ) ) {
+			$args['post_types'] = array_keys( $args['post_types'] );
 		}
 
 		/* added in 2.0 */
-		if ( $i['random'] ) {
-			unset( $i['random'] );
-			$i['order'] = 'RAND';
+		if ( $args['random'] ) {
+			unset( $args['random'] );
+			$args['order'] = 'RAND';
 		}
 
-		if ( 'thumbnails' === $i['format'] ) {
-			$i['post_thumbnail'] = true;
+		if ( 'thumbnails' === $args['format'] ) {
+			$args['post_thumbnail'] = true;
 		}
 
 		/**
@@ -120,17 +119,17 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		 *
 		 * @since 0.1
 		 *
-		 * @param string $i                Widget instance.
-		 * @param string $rpbt_widget_args Widget arguments.
+		 * @param string $args                Widget instance.
+		 * @param string $widget_args Widget arguments.
 		 */
-		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $i, $rpbt_widget_args );
-		$i = array_merge( $i, (array) $filter );
+		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $args, $widget_args );
+		$args = array_merge( $args, (array) $filter );
 
 		/* Not filterable */
-		$i['type'] = 'widget';
-		$i['fields'] = '';
+		$args['type'] = 'widget';
+		$args['fields'] = '';
 
-		$related_posts = km_rpbt_get_related_posts( $i );
+		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
 
 		/*
 		 * Whether to hide the widget if no related posts are found.
@@ -140,7 +139,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$hide_empty = (bool) $this->plugin->plugin_supports( 'widget_hide_empty' );
 
 		if ( ! $hide_empty || ! empty( $related_posts ) ) {
-			$this->widget_output( $related_posts, $i, $rpbt_widget_args );
+			$this->widget_output( $related_posts, $args, $widget_args );
 		}
 
 		/**
@@ -157,12 +156,12 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * @since 2.3.2
 	 * @since 2.4.2 Deprecated.
 	 *
-	 * @param array $rpbt_args Widget arguments.
+	 * @param array $args Widget arguments.
 	 * @return array Array with related post objects.
 	 */
-	function get_related_posts( $rpbt_args ) {
+	function get_related_posts( $args ) {
 		_deprecated_function( __FUNCTION__, '2.4.0', 'km_rpbt_get_related_posts()' );
-		return km_rpbt_get_related_posts( $rpbt_args );
+		return km_rpbt_get_related_posts( $args );
 	}
 
 	/**

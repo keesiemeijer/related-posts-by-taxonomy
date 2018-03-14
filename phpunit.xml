@@ -12,6 +12,7 @@
 			<file>tests/test-supports.php</file>
 			<file>tests/test-template-loader.php</file>
 			<file>tests/test-functions.php</file>
+			<file>tests/test-query.php</file>
 			<file>tests/test-wp-rest-api.php</file>
 			<file>tests/test-shortcode.php</file>
 			<file>tests/test-widget.php</file>

@@ -63,44 +63,48 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Tests for functions that should not output anything.
 	 *
-	 * @depends test_create_posts_with_terms
 	 * @expectedDeprecated km_rpbt_get_shortcode_atts
+	 * @expectedDeprecated km_rpbt_shortcode_get_related_posts
 	 */
 	function test_empty_output() {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
+		$_posts       = get_posts();
 		$args         =  array( 'fields' => 'ids' );
 		$taxonomies   = array( 'category', 'post_tag' );
 
 		ob_start();
 
 		// these functions should not output anything.
-		$_plugin      = km_rpbt_plugin();
-		$_posts       = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
-		$_cache_posts = km_rpbt_cache_related_posts( $posts[0], $taxonomies, $args );
-		$_args        = km_rpbt_get_default_args();
+		$plugin              = km_rpbt_plugin();
+		$capability          = km_rpbt_plugin_supports( 'widget' );
+		$rel_posts           = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$rel_posts2			 = km_rpbt_shortcode_get_related_posts( $posts[0], $taxonomies, $args );
+		$rel_posts3          = km_rpbt_get_related_posts( $_posts[0]->ID);
+		$cache_posts         = km_rpbt_cache_related_posts( $posts[0], $taxonomies, $args );
+		$_args               = km_rpbt_get_default_args();
 		$_args['taxonomies'] = $taxonomies;
-		$_sanitize    = km_rpbt_sanitize_args( $_args );
-		$_shortcode   = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
-		$_sc_args     = km_rpbt_get_shortcode_atts();
-		$_sc_args['post_id'] = $posts[0];
-		$_sc_validate = km_rpbt_validate_shortcode_atts( $_sc_args );
-		$_settings    = km_rpbt_get_default_settings();
-		$_posts       = get_posts();
-		$_sc_output   = km_rpbt_shortcode_output( $_posts, $_sc_validate );
-		$_post_types  = km_rpbt_get_post_types( 'post,page' );
-		$_taxonomies  = km_rpbt_get_taxonomies( $taxonomies );
-		$_value       = km_rpbt_get_comma_separated_values( 'hello,world' );
-		$_template    = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
-		$_ids         = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
-		$classes1     = km_rpbt_get_post_classes( $_posts[0], 'add-this-class' );
-		$classes2     = km_rpbt_sanitize_classes( $classes1 );
-		$classes3     = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );
-		$classes4     = km_rpbt_post_class();
-		$link         = km_rpbt_get_related_post_title_link( $_posts[0], true );
-		$assets       = km_rpbt_block_editor_assets();
-		$register     = km_rpbt_register_block_type();
-		$render       = km_rpbt_render_block_related_post( array() );
+		$sanitize            = km_rpbt_sanitize_args( $_args );
+		$shortcode           = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
+		$sc_args             = km_rpbt_get_shortcode_atts();
+		$settings            = km_rpbt_get_default_settings('shortcode');
+		$settings['post_id'] = $posts[0];
+		$sc_validate         = km_rpbt_validate_shortcode_atts( $settings );
+		$sc_output           = km_rpbt_shortcode_output( $_posts, $sc_validate );
+		$post_types          = km_rpbt_get_post_types( 'post,page' );
+		$taxonomies          = km_rpbt_get_taxonomies( $taxonomies );
+		$terms               = km_rpbt_get_terms( $_posts[0]->ID, $taxonomies );
+		$value               = km_rpbt_get_comma_separated_values( 'hello,world' );
+		$template            = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
+		$ids                 = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
+		$classes1            = km_rpbt_get_post_classes( $_posts[0], 'add-this-class' );
+		$classes2            = km_rpbt_sanitize_classes( $classes1 );
+		$classes3            = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );
+		$classes4            = km_rpbt_post_class();
+		$link                = km_rpbt_get_related_post_title_link( $_posts[0], true );
+		$assets              = km_rpbt_block_editor_assets();
+		$register            = km_rpbt_register_block_type();
+		$render              = km_rpbt_render_block_related_post( array() );
 
 		$out = ob_get_clean();
 

@@ -188,9 +188,9 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 		$this->setup_posts();
 		$posts = $this->posts;
-		
+
 		add_filter( 'related_posts_by_taxonomy', array( $this, 'return_query_args' ), 10, 4 );
-		
+
 		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
 		$request->set_param( 'fields', 'ids' );
 		$request->set_param( 'type', 'editor_block' );

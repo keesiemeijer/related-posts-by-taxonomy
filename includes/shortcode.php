@@ -15,10 +15,10 @@ add_shortcode( 'related_posts_by_tax', 'km_rpbt_related_posts_by_taxonomy_shortc
  * @uses km_rpbt_related_posts_by_taxonomy()
  * @uses km_rpbt_related_posts_by_taxonomy_template()
  *
- * @param string $rpbt_args Attributes used by the shortcode.
+ * @param string $atts Attributes used by the shortcode.
  * @return string Related posts html or empty string.
  */
-function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
+function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 
 	/* for filter recursion (infinite loop) */
 	static $recursing = false;
@@ -46,25 +46,25 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	$defaults = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
 
 	/* Can also be filtered in WordPress > 3.5 (hook: shortcode_atts_related_posts_by_tax) */
-	$rpbt_args = shortcode_atts( (array) $defaults, $rpbt_args, 'related_posts_by_tax' );
+	$atts = shortcode_atts( (array) $defaults, $atts, 'related_posts_by_tax' );
 
 	/* Validates atts. Sets the post type and post id if not set in filters above */
-	$validated_args = km_rpbt_validate_shortcode_atts( (array) $rpbt_args );
+	$validated_args = km_rpbt_validate_shortcode_atts( (array) $atts );
 
 	/**
 	 * Filter attributes.
 	 *
-	 * @param array $rpbt_args See $defaults above
+	 * @param array $atts See $defaults above
 	 */
-	$rpbt_args = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $validated_args );
-	$rpbt_args = array_merge( $validated_args, (array) $rpbt_args );
+	$atts = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $validated_args );
+	$atts = array_merge( $validated_args, (array) $atts );
 
 	/* Un-filterable arguments */
-	$rpbt_args['type'] = 'shortcode';
-	$rpbt_args['fields'] = '';
+	$atts['type'] = 'shortcode';
+	$atts['fields'] = '';
 
 	// Get the related posts from database or cache.
-	$related_posts = km_rpbt_get_related_posts( $rpbt_args );
+	$related_posts = km_rpbt_get_related_posts( $atts['post_id'], $atts );
 
 	/*
 	 * Whether to hide the shortcode if no related posts are found.
@@ -75,7 +75,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 
 	$shortcode = '';
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
-		$shortcode = km_rpbt_shortcode_output( $related_posts, $rpbt_args );
+		$shortcode = km_rpbt_shortcode_output( $related_posts, $atts );
 	}
 
 	/**

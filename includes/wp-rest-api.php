@@ -294,7 +294,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 			unset( $args['id'] );
 		}
 
-		$related_posts = km_rpbt_get_related_posts( $args );
+		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'get_filter_args' ), 10, 4 );
 
 		return $related_posts;
