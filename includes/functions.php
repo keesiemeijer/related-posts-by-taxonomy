@@ -95,6 +95,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 
 	$plugin = km_rpbt_plugin();
 	if ( ! isset( $args['taxonomies'] ) ) {
+		// Default to all taxonomies or catecories.
 		$all_tax            = isset( $plugin->all_tax ) ? $plugin->all_tax : 'category';
 		$args['taxonomies'] = km_rpbt_get_taxonomies( $all_tax );
 	}
@@ -148,15 +149,16 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	$terms = array();
 	$args   = km_rpbt_sanitize_args( $args );
 	if ( $args['terms'] ) {
+		// Return sanitized terms.
 		return $args['terms'];
 	}
 
 	if ( ! $args['related'] && ! empty( $args['include_terms'] ) ) {
-		// Related, use included term ids.
+		// Not related, use included term ids as is.
 		$terms = $args['include_terms'];
 	} else {
 
-		// Related and not related terms.
+		// Post terms.
 		$terms = wp_get_object_terms(
 			$post_id, $taxonomies, array(
 				'fields' => 'ids',

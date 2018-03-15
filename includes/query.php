@@ -131,12 +131,17 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	$order_by_sql = '';
 	$group_by_sql = "$wpdb->posts.ID";
 
+	// Order included post at the top.
+	if ( true === $args['include_self'] ) {
+		$order_by_sql .= "CASE WHEN $wpdb->posts.ID = $post_id THEN 1 ELSE 2 END, ";
+	}
+
 	if ( ! $order_by_rand ) {
 		if ( $args['related'] ) {
 			// Related terms count sql.
 			$select_sql .= ' , count(distinct tt.term_taxonomy_id) as termcount';
 		}
-		$order_by_sql = "$wpdb->posts.$orderby";
+		$order_by_sql .= "$wpdb->posts.$orderby";
 	}
 
 	// Post thumbnail sql.
@@ -277,23 +282,6 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		}
 
 		$results = array_values( $results );
-		$order_self = ( true === $args['include_self'] );
-
-		/* Move include_self post to the top of the stack */
-		if ( $order_self && ! in_array( $post_id, $args['exclude_posts'] ) ) {
-			$search = wp_list_pluck( $results, 'ID' );
-
-			if ( in_array( $post_id, $search ) ) {
-				if ( $post_id !== $search[0] ) {
-					// Inclusive post is not at the top of the results.
-					$inclusive_key = array_search( $post_id, $search );
-					$inclusive_post = $results[ $inclusive_key ];
-					unset( $results[ $inclusive_key ] );
-					array_unshift( $results , $inclusive_post );
-					$results = array_values( $results );
-				}
-			}
-		}
 
 		/* Get the number of related posts */
 		if ( -1 !== (int) $args['posts_per_page'] ) {

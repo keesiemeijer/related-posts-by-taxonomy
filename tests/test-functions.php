@@ -67,7 +67,6 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test sanitizing arguments.
-	 * @group fail
 	 */
 	function test_km_rpbt_sanitize_args_array() {
 		$expected = $this->get_default_sanitized_args();
@@ -105,8 +104,6 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test sanitizing arguments.
-	 *
-	 * @group fail
 	 */
 	function test_km_rpbt_sanitize_args_string() {
 		$expected = $this->get_default_sanitized_args();

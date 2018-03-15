@@ -9,6 +9,11 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 	private $tax_2_terms;
 	private $taxonomies = array( 'category', 'post_tag' );
 
+	function tearDown() {
+		parent::tearDown();
+		remove_filter( 'related_posts_by_taxonomy_posts_orderby', array( $this, 'return_first_argument' ), 10, 4 );
+	}
+
 	/**
 	 * Helper function to create 5 posts with 5 terms from two taxonomies.
 	 */
@@ -605,6 +610,36 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		// test post with post date prior then inclusive post
 		$rel_post1 = km_rpbt_related_posts_by_taxonomy( $posts[1], $taxonomies, $args );
 		$this->assertEquals( array( $posts[1], $posts[0], $posts[2], $posts[3] ), $rel_post1 );
+	}
+
+	/**
+	 * test related posts for post type post
+	 *
+	 * @group fail
+	 */
+	function test_include_self_orderby_rand() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		add_filter( 'related_posts_by_taxonomy_posts_orderby', array( $this, 'return_first_argument' ), 10, 4 );
+
+		// Test with a single taxonomy.
+		$taxonomies = array( 'post_tag' );
+		$args       = array(
+			'fields' => 'ids',
+			'include_self' => true,
+			'order' => 'RAND',
+		);
+
+		// test post 0
+		$rel_post0 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+
+		$this->assertCount( 4, $rel_post0 );
+		$this->assertSame( (int) $posts[0], (int) $rel_post0[0] );
+
+		//Check if the query contains 'RAND()'
+		$this->assertContains( 'RAND()', $this->arg );
+		$this->arg = null;
 	}
 
 	/**
