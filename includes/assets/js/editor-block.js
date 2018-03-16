@@ -2094,10 +2094,10 @@ if (!__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default()(__WEBPACK_IMPORTED_M
 function registerRelatedPostsBlock() {
 
 	registerBlockType('related-posts-by-taxonomy/related-posts-block', {
-		title: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy'),
+		title: __('Related Posts by Taxonomy'),
 		icon: 'megaphone',
 		category: 'widgets',
-		description: __('This block displays related posts by taxonomy.', 'related-posts-by-taxonomy'),
+		description: __('This block displays related posts by taxonomy.'),
 		supports: {
 			html: false,
 			customClassName: false
@@ -2701,13 +2701,13 @@ var RelatedPostsBlock = function (_Component) {
 						wp.element.createElement(
 							RawHTML,
 							null,
-							__('<strong>Note</strong>: The preview of this block is not the actual display as used in the front end of your site.', 'related-posts-by-taxonomy')
+							__('<strong>Note</strong>: The preview of this block is not the actual display as used in the front end of your site.')
 						)
 					)
 				),
 				wp.element.createElement(
 					BaseControl,
-					{ label: __('Title', 'related-posts-by-taxonomy'), id: titleID },
+					{ label: __('Title'), id: titleID },
 					wp.element.createElement('input', { className: 'blocks-text-control__input',
 						type: 'text',
 						onChange: this.onTitleChange,
@@ -2760,7 +2760,7 @@ var RelatedPostsBlock = function (_Component) {
 					editorTerms: editorData.termIDs,
 					editorTaxonomies: editorData.taxonomyNames,
 					icon: 'megaphone',
-					label: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy')
+					label: __('Related Posts by Taxonomy')
 				})];
 			}
 
@@ -6078,26 +6078,26 @@ function QueryPanel(_ref) {
 
 	return [onPostsPerPageChange && wp.element.createElement(RangeControl, {
 		key: 'rpbt-range-posts-per-page',
-		label: __('Number of items', 'related-posts-by-taxonomy'),
+		label: __('Number of items'),
 		value: postsPerPage,
 		onChange: onPostsPerPageChange,
 		min: -1,
 		max: 100
 	}), onTaxonomiesChange && wp.element.createElement(SelectControl, {
 		key: 'rpbt-select-taxonomies',
-		label: __('Taxonomies', 'related-posts-by-taxonomy'),
+		label: __('Taxonomies'),
 		value: '' + taxonomies,
 		options: taxonomyOptions,
 		onChange: function onChange(value) {
 			onTaxonomiesChange(value);
 		}
 	}), onPostTypesChange && wp.element.createElement(__WEBPACK_IMPORTED_MODULE_1__components_post_type_control__["a" /* default */], {
-		label: __('Post Types', 'related-posts-by-taxonomy'),
+		label: __('Post Types'),
 		onChange: onPostTypesChange,
 		postTypes: postTypes
 	}), onFormatChange && wp.element.createElement(SelectControl, {
 		key: 'rpbt-select-format',
-		label: __('Format', 'related-posts-by-taxonomy'),
+		label: __('Format'),
 		value: '' + format,
 		options: formatOptions,
 		onChange: function onChange(value) {
@@ -6105,7 +6105,7 @@ function QueryPanel(_ref) {
 		}
 	}), onImageSizeChange && 'thumbnails' === format && wp.element.createElement(SelectControl, {
 		key: 'rpbt-select-image-size',
-		label: __('Image Size', 'related-posts-by-taxonomy'),
+		label: __('Image Size'),
 		value: '' + imageSize,
 		options: imageOptions,
 		onChange: function onChange(value) {
@@ -6113,7 +6113,7 @@ function QueryPanel(_ref) {
 		}
 	}), onColumnsChange && 'thumbnails' === format && wp.element.createElement(RangeControl, {
 		key: 'rpbt-range-columns',
-		label: __('Image Columns', 'related-posts-by-taxonomy'),
+		label: __('Image Columns'),
 		value: columns,
 		onChange: onColumnsChange,
 		min: 0,
@@ -6127,7 +6127,7 @@ function getTaxonomyOptions() {
 	}
 
 	var options = [{
-		label: __('all taxonomies', 'related-posts-by-taxonomy'),
+		label: __('all taxonomies'),
 		value: Object(__WEBPACK_IMPORTED_MODULE_0__data_plugin__["b" /* getPluginData */])('all_tax')
 	}];
 
@@ -6339,17 +6339,17 @@ function LoadingPlaceholder(_ref) {
 			loading = wp.element.createElement(
 				'div',
 				null,
-				__('No related posts found', 'related-posts-by-taxonomy')
+				__('No related posts found')
 			);
 		}
 	} else {
-		loading = __('Loading related posts', 'related-posts-by-taxonomy');
+		loading = __('Loading related posts');
 	}
 
 	if (!editorTerms.length) {
-		message = __('There are no taxonomy terms assigned to this post', 'related-posts-by-taxonomy');
+		message = __('There are no taxonomy terms assigned to this post');
 		if (!editorTaxonomies.length) {
-			message = __("This post type doesn't support any taxonomies", 'related-posts-by-taxonomy');
+			message = __("This post type doesn't support any taxonomies");
 			loading = '';
 		}
 	} else {
@@ -6359,12 +6359,12 @@ function LoadingPlaceholder(_ref) {
 			wp.element.createElement(
 				'li',
 				null,
-				__('Check if the settings for this block are correct', 'related-posts-by-taxonomy')
+				__('Check if the settings for this block are correct')
 			),
 			wp.element.createElement(
 				'li',
 				null,
-				__('Check if there are other posts with the same taxonomy terms', 'related-posts-by-taxonomy')
+				__('Check if there are other posts with the same taxonomy terms')
 			)
 		);
 	}
@@ -6375,7 +6375,7 @@ function LoadingPlaceholder(_ref) {
 		wp.element.createElement(
 			'a',
 			{ href: '#' },
-			__('preview related posts', 'related-posts-by-taxonomy')
+			__('preview related posts')
 		)
 	);
 	var instructions = wp.element.createElement(

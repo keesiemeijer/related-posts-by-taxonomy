@@ -23,27 +23,27 @@ function LoadingPlaceholder( {
 
 	if( queryFinished ) {
 		if(!postsFound) {
-			loading = (<div>{__( 'No related posts found', 'related-posts-by-taxonomy' )}</div>);
+			loading = (<div>{__( 'No related posts found' )}</div>);
 		}
 	} else {
-		loading = __( 'Loading related posts', 'related-posts-by-taxonomy');
+		loading = __( 'Loading related posts' );
 	}
 
 	if ( ! editorTerms.length ) {
-		message = __( 'There are no taxonomy terms assigned to this post', 'related-posts-by-taxonomy' );
+		message = __( 'There are no taxonomy terms assigned to this post' );
 		if( ! editorTaxonomies.length ) {
-			message = __( "This post type doesn't support any taxonomies", 'related-posts-by-taxonomy' );
+			message = __( "This post type doesn't support any taxonomies" );
 			loading = '';
 		}
 	} else {
 		message = (
 			<ul>
-				<li>{__( 'Check if the settings for this block are correct', 'related-posts-by-taxonomy' )}</li>
-				<li>{__( 'Check if there are other posts with the same taxonomy terms', 'related-posts-by-taxonomy' )}</li>
+				<li>{__( 'Check if the settings for this block are correct' )}</li>
+				<li>{__( 'Check if there are other posts with the same taxonomy terms' )}</li>
 			</ul> );
 	}
 
-	const preview = (<div><a href="#">{ __( 'preview related posts', 'related-posts-by-taxonomy' ) }</a></div>);
+	const preview = (<div><a href="#">{ __( 'preview related posts' ) }</a></div>);
 	const instructions = (<div class="instructions">{message}</div>);
 
 	return (
