@@ -271,7 +271,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 		/* Order the related posts */
 		if ( ! $order_by_rand && $args['related'] ) {
 
-			/* Add the (termcount) score and key to results */
+			/* Add the (termcount) score and key to results for ordering*/
 			for ( $i = 0; $i < count( $results ); $i++ ) {
 				$results[ $i ]->score = array( $results[ $i ]->termcount, $i );
 			}

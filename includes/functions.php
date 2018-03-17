@@ -90,7 +90,7 @@ function km_rpbt_get_default_args() {
  * @return array Array with related post objects.
  */
 function km_rpbt_get_related_posts( $post_id, $args = array() ) {
-	// Returns an array with arguments
+	// Returns an array with arguments.
 	$args = km_rpbt_sanitize_args( $args );
 
 	$plugin = km_rpbt_plugin();
@@ -100,7 +100,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 		$args['taxonomies'] = km_rpbt_get_taxonomies( $all_tax );
 	}
 
-	$function_args = $args;
+	$query_args = $args;
 
 	/**
 	 * Filter whether to use your own related posts.
@@ -120,14 +120,14 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	}
 
 	/* restricted arguments */
-	unset( $function_args['post_id'], $function_args['taxonomies'] );
+	unset( $query_args['post_id'], $query_args['taxonomies'] );
 
 	$cache = isset( $plugin->cache ) && $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
 	if ( $cache && ( isset( $args['cache'] ) && $args['cache'] ) ) {
 		$related_posts = $plugin->cache->get_related_posts( $args );
 	} else {
 		/* get related posts */
-		$related_posts = km_rpbt_related_posts_by_taxonomy( $post_id, $args['taxonomies'], $function_args );
+		$related_posts = km_rpbt_related_posts_by_taxonomy( $post_id, $args['taxonomies'], $query_args );
 	}
 
 	$related_posts = km_rpbt_add_post_classes( $related_posts, $args );
