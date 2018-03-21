@@ -1,9 +1,15 @@
 <?php
 /**
- * Editor thumbnail gallery block.
+ * Format thumbnail gallery in the editor block.
  *
  * @package Related Posts by Taxonomy
- * @since 0.3
+ * @since 2.4.2
+ *
+ * The same template as /templates/related-posts-thumbnails.php.
+ * In this template we set the item, icon, and figcaption tags instead of using the defaults.
+ * The 'gallery' class selector is also removed.
+ *
+ * The reason for using this template for the editor is that you cannot filter this template in your theme.
  *
  * The following variables are available:
  *
@@ -29,11 +35,8 @@
 
 		/**
 		 * Arguments for km_rpbt_related_posts_by_taxonomy_gallery() function.
-		 *
-		 * Here we use the defaults for 'itemtag', 'icontag', 'captiontag'
 		 */
 		$args = array(
-
 			'itemtag'       => $html5 ? 'figure' : 'dl',
 			'icontag'       => $html5 ? 'div' : 'dt',
 			'captiontag'    => $html5 ? 'figcaption' : 'dd',

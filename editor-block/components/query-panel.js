@@ -7,7 +7,7 @@ const { SelectControl, RangeControl } = wp.components;
 /**
  * Internal dependencies
  */
-import { getPluginData } from '../data/plugin';
+import { getPluginData } from '../data/data';
 import PostTypeControl from '../components/post-type-control';
 
 // Select input options
@@ -34,7 +34,7 @@ export default function QueryPanel( {
 		onPostsPerPageChange && (
 			<RangeControl
 				key="rpbt-range-posts-per-page"
-				label={ __( 'Number of items', 'related-posts-by-taxonomy' ) }
+				label={ __( 'Number of items' ) }
 				value={ postsPerPage }
 				onChange={ onPostsPerPageChange }
 				min={ -1 }
@@ -43,37 +43,37 @@ export default function QueryPanel( {
 		onTaxonomiesChange && (
 			<SelectControl
 				key="rpbt-select-taxonomies"
-				label={ __( 'Taxonomies', 'related-posts-by-taxonomy' ) }
+				label={ __( 'Taxonomies' ) }
 				value={ `${ taxonomies }` }
 				options={ taxonomyOptions }
 				onChange={ ( value ) => { onTaxonomiesChange( value ); } }
 			/> ),
 		onPostTypesChange && (
 			<PostTypeControl
-				label={ __( 'Post Types', 'related-posts-by-taxonomy' ) }
+				label={ __( 'Post Types' ) }
 				onChange={ onPostTypesChange }
 				postTypes={ postTypes }
 			/> ),
 		onFormatChange && (
 			<SelectControl
 				key="rpbt-select-format"
-				label={ __( 'Format', 'related-posts-by-taxonomy' ) }
+				label={ __( 'Format' ) }
 				value={ `${ format }` }
 				options={  formatOptions }
 				onChange={ ( value ) => { onFormatChange( value ); } }
 			/> ),
-		onImageSizeChange && ('thumbnails' === format) && (
+		onImageSizeChange && (
 			<SelectControl
 				key="rpbt-select-image-size"
-				label={ __( 'Image Size', 'related-posts-by-taxonomy' ) }
+				label={ __( 'Image Size' ) }
 				value={ `${ imageSize }` }
 				options={  imageOptions }
 				onChange={ ( value ) => { onImageSizeChange( value ); } }
 			/> ),
-		onColumnsChange && ('thumbnails' === format) && (
+		onColumnsChange && (
 			<RangeControl
 				key="rpbt-range-columns"
-				label={ __( 'Image Columns', 'related-posts-by-taxonomy' ) }
+				label={ __( 'Image Columns' ) }
 				value={ columns }
 				onChange={ onColumnsChange }
 				min={ 0 }
@@ -89,7 +89,7 @@ function getTaxonomyOptions() {
 
 	const options = [
 		{
-			label: __( 'all taxonomies', 'related-posts-by-taxonomy' ),
+			label: __( 'all taxonomies' ),
 			value: getPluginData( 'all_tax' ),
 		},
 	];

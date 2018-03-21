@@ -10,6 +10,8 @@ const { withSelect} = wp.data;
 const { withAPIData } = wp.components;
 const { compose } = wp.element;
 
+const postFields = {};
+
 function getTermIDs( taxonomies ) {
 	const ids = pickBy( taxonomies, value => value.length );
 	let terms = Object.keys( ids ).map( ( tax ) => ids[ tax ]);
@@ -25,9 +27,13 @@ const postEditorAttributes = withSelect( ( select, props ) => {
 	const taxonomyTerms = {};
 	const taxonomyNames = [];
 
-	const postType = select( 'core/editor' ).getEditedPostAttribute( 'type' );
+	if( ! postFields.length ) {
+		postFields['id'] = select( 'core/editor' ).getEditedPostAttribute('id');
+		postFields['type'] = select( 'core/editor' ).getEditedPostAttribute('type');
+	}
+
 	const taxonomies = props.registeredTaxonomies.data;
-	const postTaxonomies = filter( taxonomies, ( taxonomy ) => includes( taxonomy.types, postType ) );
+	const postTaxonomies = filter( taxonomies, ( taxonomy ) => includes( taxonomy.types, postFields['type'] ) );
 
 	postTaxonomies.map( ( taxonomy ) => { 
 		taxonomyTerms[ taxonomy.slug ] = select( 'core/editor' ).getEditedPostAttribute( taxonomy.rest_base );
@@ -39,8 +45,8 @@ const postEditorAttributes = withSelect( ( select, props ) => {
 			taxonomyTerms: taxonomyTerms,
 			taxonomyNames: taxonomyNames,
 			termIDs: getTermIDs( taxonomyTerms ),
-			postType: select( 'core/editor' ).getEditedPostAttribute( 'type' ),
-			postID: select( 'core/editor' ).getEditedPostAttribute( 'id' ),
+			postType: postFields['type'],
+			postID: postFields['id'],
 		}
 	};
 } );

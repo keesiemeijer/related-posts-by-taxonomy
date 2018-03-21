@@ -16,8 +16,8 @@ const { __, sprintf } = wp.i18n;
  * Internal dependencies
  */
 import './editor.scss'
-import { getPluginData } from './data/plugin';
-import { relatedPosts } from './data/related-posts';
+import { getPluginData } from './data/data';
+import { relatedPosts } from './data/posts';
 import QueryPanel from './components/query-panel';
 import LoadingPlaceholder from './components/placeholder';
 
@@ -80,12 +80,12 @@ class RelatedPostsBlock extends Component {
 				<div>
 					<p>
 					<RawHTML>
-					{__( '<strong>Note</strong>: The preview of this block is not the actual display as used in the front end of your site.', 'related-posts-by-taxonomy')}
+					{__( '<strong>Note</strong>: The preview of this block is not the actual display as used in the front end of your site.' )}
 					</RawHTML>
 					</p>
 				</div>
 					
-				<BaseControl label={ __( 'Title' , 'related-posts-by-taxonomy') } id={titleID}>
+				<BaseControl label={ __( 'Title'  ) } id={titleID}>
 					<input className="blocks-text-control__input"
 						type="text"
 						onChange={this.onTitleChange}
@@ -134,7 +134,7 @@ class RelatedPostsBlock extends Component {
 					editorTerms={editorData.termIDs}
 					editorTaxonomies={editorData.taxonomyNames}
 					icon="megaphone"
-					label={ __( 'Related Posts by Taxonomy', 'related-posts-by-taxonomy' ) }
+					label={ __( 'Related Posts by Taxonomy' ) }
 				/>
 			];
 		}

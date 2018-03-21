@@ -291,165 +291,7 @@ module.exports = isArrayLike;
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _pluginData; });
-/* unused harmony export hasData */
-/* harmony export (immutable) */ __webpack_exports__["c"] = inPluginData;
-/* harmony export (immutable) */ __webpack_exports__["b"] = getPluginData;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_get__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_get___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_get__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isString__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isString___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_isString__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean__ = __webpack_require__(99);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isObject__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_isObject__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined__);
-
-
-
-
- /**
-                                                * External dependencies
-                                                */
-
-/**
- * Don't use _pluginData directly, use getPluginData()
- */
-var _pluginData = window.km_rpbt_plugin_data || {};
-
-var _defaults = {
-	post_types: { type: 'object' },
-	taxonomies: { type: 'object' },
-	formats: { type: 'object' },
-	image_sizes: { type: 'object' },
-	default_tax: { type: 'string' },
-	all_tax: { type: 'string' },
-	default_category: { type: 'string' },
-	preview: {
-		type: 'bool',
-		default: true /* default required for booleans */
-	},
-	html5_gallery: {
-		type: 'bool',
-		default: false
-	}
-
-	/**
-  * Check if a property key exists and has a value.
-  * 
-  * @param  {string} key Property to check.
-  * @return {[type]}     Returns true if it exists
-  */
-};function hasData(object, key) {
-	if (__WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default()(object) && object.hasOwnProperty(key)) {
-		return !__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(object[key]);
-	}
-	return false;
-}
-
-/**
- * Check if a value exists in a plugin data property.
- * 
- * @param  {string} key  Plugin data key.
- * @param  {string} value Value to test.
- * @return {bool}   True if value exists.
- */
-function inPluginData(key, value) {
-	return hasData(getPluginData(key), value);
-}
-
-/**
- * Get data provided by this plugin.
- *
- * Only returns data if it's the correct type.
- * Else returns empty value of the correct type.
- * 
- * @param  {string} key Property key in the plugin data.
- * @return {[type]}     Plugin data.
- */
-function getPluginData(key) {
-	var defaultValue = getDefault(key);
-
-	if (!hasData(_pluginData, key) || __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(defaultValue)) {
-		return defaultValue;
-	}
-
-	var data = _pluginData[key];
-	var dataType = __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(_defaults, key + '.type');
-
-	return isType(dataType, data) ? data : defaultValue;
-}
-
-/**
- * Get the default value for a setting.
- *
- * Booleans should always provide a default value.
- * If no default is provided an empty value with 
- * the correct type is returned.
- * 
- * @param  {string} key Plugin data property key.
- * @return {object|string|bool} Default value.
- */
-function getDefault(key) {
-	// Types to check. Booleans should have a default.
-	var types = {
-		object: {},
-		string: ''
-	};
-
-	var keyValue = __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(_defaults, key + '.default');
-	var keyDefault = __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(types, __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(_defaults, key + '.type'));
-
-	return !__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(keyValue) ? keyValue : keyDefault;
-}
-
-/**
- * Check if a value has the correct type.
- *
- * @param  {string}             type  Type of value. Accepts 'bool', 'object' and 'string'.
- * @param  {bool|object|string} value Value.
- * @return {Boolean} True if the value is of the correct type.
- */
-function isType(type, value) {
-	var is_type = false;
-	switch (type) {
-		case 'bool':
-			value = getBool(value);
-			is_type = __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean___default()(value);
-			break;
-		case 'object':
-			is_type = __WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default()(value);
-			break;
-		case 'string':
-			is_type = __WEBPACK_IMPORTED_MODULE_1_lodash_isString___default()(value);
-			break;
-	}
-
-	return is_type;
-}
-
-/**
- * Get a boolean value from a string.
- *
- * wp_localize_script converts booleans to a string ('1' or '').
- *
- * @param  {string} value String with boolean value.
- * @return {bool} Boolean value if string is '1' or empty.
- */
-function getBool(value) {
-	if (!__WEBPACK_IMPORTED_MODULE_1_lodash_isString___default()(value)) {
-		return value;
-	}
-	var bool = Number(value.trim());
-	return 1 === bool || 0 === bool ? 1 === bool : value;
-}
-
-/***/ }),
+/* 8 */,
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2069,7 +1911,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__block__ = __webpack_require__(72);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__data_plugin__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__data_data__ = __webpack_require__(165);
  /**
                                         * External dependencies
                                         */
@@ -2087,17 +1929,17 @@ var registerBlockType = wp.blocks.registerBlockType;
 
 
 
-if (!__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default()(__WEBPACK_IMPORTED_MODULE_2__data_plugin__["a" /* _pluginData */])) {
+if (!__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default()(__WEBPACK_IMPORTED_MODULE_2__data_data__["a" /* _pluginData */])) {
 	registerRelatedPostsBlock();
 }
 
 function registerRelatedPostsBlock() {
 
 	registerBlockType('related-posts-by-taxonomy/related-posts-block', {
-		title: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy'),
+		title: __('Related Posts by Taxonomy'),
 		icon: 'megaphone',
 		category: 'widgets',
-		description: __('This block displays related posts by taxonomy.', 'related-posts-by-taxonomy'),
+		description: __('This block displays related posts by taxonomy.'),
 		supports: {
 			html: false,
 			customClassName: false
@@ -2569,8 +2411,8 @@ module.exports = nodeUtil;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_classnames___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_classnames__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__editor_scss__ = __webpack_require__(76);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__editor_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__editor_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__data_plugin__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__data_related_posts__ = __webpack_require__(100);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__data_data__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__data_posts__ = __webpack_require__(166);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_query_panel__ = __webpack_require__(162);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_placeholder__ = __webpack_require__(164);
 
@@ -2622,8 +2464,8 @@ var RelatedPostsBlock = function (_Component) {
 		// Data provided by this plugin.
 		var _this = _possibleConstructorReturn(this, (RelatedPostsBlock.__proto__ || Object.getPrototypeOf(RelatedPostsBlock)).apply(this, arguments));
 
-		_this.previewExpanded = Object(__WEBPACK_IMPORTED_MODULE_4__data_plugin__["b" /* getPluginData */])('preview');
-		_this.html5Gallery = Object(__WEBPACK_IMPORTED_MODULE_4__data_plugin__["b" /* getPluginData */])('html5_gallery');
+		_this.previewExpanded = Object(__WEBPACK_IMPORTED_MODULE_4__data_data__["b" /* getPluginData */])('preview');
+		_this.html5Gallery = Object(__WEBPACK_IMPORTED_MODULE_4__data_data__["b" /* getPluginData */])('html5_gallery');
 
 		_this.updatePostTypes = _this.updatePostTypes.bind(_this);
 
@@ -2701,13 +2543,13 @@ var RelatedPostsBlock = function (_Component) {
 						wp.element.createElement(
 							RawHTML,
 							null,
-							__('<strong>Note</strong>: The preview of this block is not the actual display as used in the front end of your site.', 'related-posts-by-taxonomy')
+							__('<strong>Note</strong>: The preview of this block is not the actual display as used in the front end of your site.')
 						)
 					)
 				),
 				wp.element.createElement(
 					BaseControl,
-					{ label: __('Title', 'related-posts-by-taxonomy'), id: titleID },
+					{ label: __('Title'), id: titleID },
 					wp.element.createElement('input', { className: 'blocks-text-control__input',
 						type: 'text',
 						onChange: this.onTitleChange,
@@ -2760,7 +2602,7 @@ var RelatedPostsBlock = function (_Component) {
 					editorTerms: editorData.termIDs,
 					editorTaxonomies: editorData.taxonomyNames,
 					icon: 'megaphone',
-					label: __('Related Posts by Taxonomy', 'related-posts-by-taxonomy')
+					label: __('Related Posts by Taxonomy')
 				})];
 			}
 
@@ -2785,7 +2627,7 @@ var RelatedPostsBlock = function (_Component) {
 	return RelatedPostsBlock;
 }(Component);
 
-/* harmony default export */ __webpack_exports__["a"] = (compose([__WEBPACK_IMPORTED_MODULE_5__data_related_posts__["a" /* relatedPosts */]])(RelatedPostsBlock));
+/* harmony default export */ __webpack_exports__["a"] = (compose([__WEBPACK_IMPORTED_MODULE_5__data_posts__["a" /* relatedPosts */]])(RelatedPostsBlock));
 
 /***/ }),
 /* 73 */
@@ -3788,93 +3630,7 @@ module.exports = isBoolean;
 
 
 /***/ }),
-/* 100 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return relatedPosts; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_pickBy__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_pickBy___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_pickBy__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_querystringify__ = __webpack_require__(141);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_querystringify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_querystringify__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__plugin__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__editor__ = __webpack_require__(142);
-
- /**
-                                                * External dependencies
-                                                */
-
-
-
-/**
- * WordPress dependencies
- */
-var withAPIData = wp.components.withAPIData;
-var compose = wp.element.compose;
-
-/**
- * Internal dependencies
- */
-
-
-
-
-var relatedPosts = compose(__WEBPACK_IMPORTED_MODULE_4__editor__["a" /* editorData */], withAPIData(function (props) {
-	var editorData = props.editorData;
-	var _props$attributes = props.attributes,
-	    post_types = _props$attributes.post_types,
-	    title = _props$attributes.title,
-	    posts_per_page = _props$attributes.posts_per_page,
-	    format = _props$attributes.format,
-	    image_size = _props$attributes.image_size,
-	    columns = _props$attributes.columns;
-
-	var type = 'editor_block';
-	var fields = '';
-	var taxonomies = props.attributes.taxonomies;
-
-	// Get the terms set in the editor.
-
-	var terms = editorData.termIDs.join(',');
-	if (!terms.length && -1 !== editorData.taxonomyNames.indexOf('category')) {
-		// Use default category if this post supports the 'category' taxonomy.
-		terms = Object(__WEBPACK_IMPORTED_MODULE_3__plugin__["b" /* getPluginData */])('default_category');
-	}
-
-	// If no terms are selected return no related posts.
-	taxonomies = terms.length ? taxonomies : '';
-
-	var attributes = {
-		taxonomies: taxonomies,
-		post_types: post_types,
-		terms: terms,
-		title: title,
-		posts_per_page: posts_per_page,
-		format: format,
-		image_size: image_size,
-		columns: columns,
-		type: type,
-		fields: fields
-	};
-
-	if (attributes['post_types'] && attributes['post_types'] === editorData.postType) {
-		// The post type isn't needed in the query (if not set).
-		// It defaults to the post type of the current post.
-		delete attributes['post_types'];
-	}
-
-	var query = Object(__WEBPACK_IMPORTED_MODULE_2_querystringify__["stringify"])(__WEBPACK_IMPORTED_MODULE_0_lodash_pickBy___default()(attributes, function (value) {
-		return !__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default()(value);
-	}), true);
-
-	return {
-		relatedPosts: '/related-posts-by-taxonomy/v1/posts/' + editorData.postID + ('' + query)
-	};
-}));
-
-/***/ }),
+/* 100 */,
 /* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5359,6 +5115,8 @@ var withAPIData = wp.components.withAPIData;
 var compose = wp.element.compose;
 
 
+var postFields = {};
+
 function getTermIDs(taxonomies) {
 	var ids = __WEBPACK_IMPORTED_MODULE_3_lodash_pickBy___default()(taxonomies, function (value) {
 		return value.length;
@@ -5380,10 +5138,14 @@ var postEditorAttributes = withSelect(function (select, props) {
 	var taxonomyTerms = {};
 	var taxonomyNames = [];
 
-	var postType = select('core/editor').getEditedPostAttribute('type');
+	if (!postFields.length) {
+		postFields['id'] = select('core/editor').getEditedPostAttribute('id');
+		postFields['type'] = select('core/editor').getEditedPostAttribute('type');
+	}
+
 	var taxonomies = props.registeredTaxonomies.data;
 	var postTaxonomies = __WEBPACK_IMPORTED_MODULE_1_lodash_filter___default()(taxonomies, function (taxonomy) {
-		return __WEBPACK_IMPORTED_MODULE_0_lodash_includes___default()(taxonomy.types, postType);
+		return __WEBPACK_IMPORTED_MODULE_0_lodash_includes___default()(taxonomy.types, postFields['type']);
 	});
 
 	postTaxonomies.map(function (taxonomy) {
@@ -5396,8 +5158,8 @@ var postEditorAttributes = withSelect(function (select, props) {
 			taxonomyTerms: taxonomyTerms,
 			taxonomyNames: taxonomyNames,
 			termIDs: getTermIDs(taxonomyTerms),
-			postType: select('core/editor').getEditedPostAttribute('type'),
-			postID: select('core/editor').getEditedPostAttribute('id')
+			postType: postFields['type'],
+			postID: postFields['id']
 		}
 	};
 });
@@ -6039,7 +5801,7 @@ module.exports = isFlattenable;
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = QueryPanel;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_plugin__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_data__ = __webpack_require__(165);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_post_type_control__ = __webpack_require__(163);
 /**
  * WordPress dependencies
@@ -6078,42 +5840,42 @@ function QueryPanel(_ref) {
 
 	return [onPostsPerPageChange && wp.element.createElement(RangeControl, {
 		key: 'rpbt-range-posts-per-page',
-		label: __('Number of items', 'related-posts-by-taxonomy'),
+		label: __('Number of items'),
 		value: postsPerPage,
 		onChange: onPostsPerPageChange,
 		min: -1,
 		max: 100
 	}), onTaxonomiesChange && wp.element.createElement(SelectControl, {
 		key: 'rpbt-select-taxonomies',
-		label: __('Taxonomies', 'related-posts-by-taxonomy'),
+		label: __('Taxonomies'),
 		value: '' + taxonomies,
 		options: taxonomyOptions,
 		onChange: function onChange(value) {
 			onTaxonomiesChange(value);
 		}
 	}), onPostTypesChange && wp.element.createElement(__WEBPACK_IMPORTED_MODULE_1__components_post_type_control__["a" /* default */], {
-		label: __('Post Types', 'related-posts-by-taxonomy'),
+		label: __('Post Types'),
 		onChange: onPostTypesChange,
 		postTypes: postTypes
 	}), onFormatChange && wp.element.createElement(SelectControl, {
 		key: 'rpbt-select-format',
-		label: __('Format', 'related-posts-by-taxonomy'),
+		label: __('Format'),
 		value: '' + format,
 		options: formatOptions,
 		onChange: function onChange(value) {
 			onFormatChange(value);
 		}
-	}), onImageSizeChange && 'thumbnails' === format && wp.element.createElement(SelectControl, {
+	}), onImageSizeChange && wp.element.createElement(SelectControl, {
 		key: 'rpbt-select-image-size',
-		label: __('Image Size', 'related-posts-by-taxonomy'),
+		label: __('Image Size'),
 		value: '' + imageSize,
 		options: imageOptions,
 		onChange: function onChange(value) {
 			onImageSizeChange(value);
 		}
-	}), onColumnsChange && 'thumbnails' === format && wp.element.createElement(RangeControl, {
+	}), onColumnsChange && wp.element.createElement(RangeControl, {
 		key: 'rpbt-range-columns',
-		label: __('Image Columns', 'related-posts-by-taxonomy'),
+		label: __('Image Columns'),
 		value: columns,
 		onChange: onColumnsChange,
 		min: 0,
@@ -6122,13 +5884,13 @@ function QueryPanel(_ref) {
 }
 
 function getTaxonomyOptions() {
-	if (!Object(__WEBPACK_IMPORTED_MODULE_0__data_plugin__["b" /* getPluginData */])('all_tax')) {
+	if (!Object(__WEBPACK_IMPORTED_MODULE_0__data_data__["b" /* getPluginData */])('all_tax')) {
 		return [];
 	}
 
 	var options = [{
-		label: __('all taxonomies', 'related-posts-by-taxonomy'),
-		value: Object(__WEBPACK_IMPORTED_MODULE_0__data_plugin__["b" /* getPluginData */])('all_tax')
+		label: __('all taxonomies'),
+		value: Object(__WEBPACK_IMPORTED_MODULE_0__data_data__["b" /* getPluginData */])('all_tax')
 	}];
 
 	return getOptions('taxonomies', options);
@@ -6137,7 +5899,7 @@ function getTaxonomyOptions() {
 function getOptions(type) {
 	var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
-	var typeOptions = Object(__WEBPACK_IMPORTED_MODULE_0__data_plugin__["b" /* getPluginData */])(type);
+	var typeOptions = Object(__WEBPACK_IMPORTED_MODULE_0__data_data__["b" /* getPluginData */])(type);
 	for (var key in typeOptions) {
 		if (typeOptions.hasOwnProperty(key)) {
 			options.push({
@@ -6157,7 +5919,7 @@ function getOptions(type) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data_plugin__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data_data__ = __webpack_require__(165);
  /**
                                         * External dependencies
                                         */
@@ -6189,7 +5951,7 @@ function getPostTypeObjects() {
 
 	var postTypeOjects = [];
 
-	var postTypes = Object(__WEBPACK_IMPORTED_MODULE_1__data_plugin__["b" /* getPluginData */])('post_types');
+	var postTypes = Object(__WEBPACK_IMPORTED_MODULE_1__data_data__["b" /* getPluginData */])('post_types');
 	for (var key in postTypes) {
 		if (!postTypes.hasOwnProperty(key)) {
 			continue;
@@ -6264,7 +6026,7 @@ var PostTypeControl = function (_Component) {
 
 			var checked = postTypes.split(",");
 			checked = checked.filter(function (item) {
-				return Object(__WEBPACK_IMPORTED_MODULE_1__data_plugin__["c" /* inPluginData */])('post_types', item);
+				return Object(__WEBPACK_IMPORTED_MODULE_1__data_data__["c" /* inPluginData */])('post_types', item);
 			});
 
 			return !__WEBPACK_IMPORTED_MODULE_0_lodash_isEmpty___default()(this.state.items) && wp.element.createElement(
@@ -6339,17 +6101,17 @@ function LoadingPlaceholder(_ref) {
 			loading = wp.element.createElement(
 				'div',
 				null,
-				__('No related posts found', 'related-posts-by-taxonomy')
+				__('No related posts found')
 			);
 		}
 	} else {
-		loading = __('Loading related posts', 'related-posts-by-taxonomy');
+		loading = __('Loading related posts');
 	}
 
 	if (!editorTerms.length) {
-		message = __('There are no taxonomy terms assigned to this post', 'related-posts-by-taxonomy');
+		message = __('There are no taxonomy terms assigned to this post');
 		if (!editorTaxonomies.length) {
-			message = __("This post type doesn't support any taxonomies", 'related-posts-by-taxonomy');
+			message = __("This post type doesn't support any taxonomies");
 			loading = '';
 		}
 	} else {
@@ -6359,12 +6121,12 @@ function LoadingPlaceholder(_ref) {
 			wp.element.createElement(
 				'li',
 				null,
-				__('Check if the settings for this block are correct', 'related-posts-by-taxonomy')
+				__('Check if the settings for this block are correct')
 			),
 			wp.element.createElement(
 				'li',
 				null,
-				__('Check if there are other posts with the same taxonomy terms', 'related-posts-by-taxonomy')
+				__('Check if there are other posts with the same taxonomy terms')
 			)
 		);
 	}
@@ -6375,7 +6137,7 @@ function LoadingPlaceholder(_ref) {
 		wp.element.createElement(
 			'a',
 			{ href: '#' },
-			__('preview related posts', 'related-posts-by-taxonomy')
+			__('preview related posts')
 		)
 	);
 	var instructions = wp.element.createElement(
@@ -6401,6 +6163,261 @@ function LoadingPlaceholder(_ref) {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (LoadingPlaceholder);
+
+/***/ }),
+/* 165 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _pluginData; });
+/* unused harmony export hasData */
+/* harmony export (immutable) */ __webpack_exports__["c"] = inPluginData;
+/* harmony export (immutable) */ __webpack_exports__["b"] = getPluginData;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_get__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_get___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_get__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isString__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isString___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_isString__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean__ = __webpack_require__(99);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isObject__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_isObject__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined__);
+
+
+
+
+ /**
+                                                * External dependencies
+                                                */
+
+/**
+ * Don't use _pluginData directly, use getPluginData()
+ */
+var _pluginData = window.km_rpbt_plugin_data || {};
+
+var _defaults = {
+	post_types: { type: 'object' },
+	taxonomies: { type: 'object' },
+	formats: { type: 'object' },
+	image_sizes: { type: 'object' },
+	default_tax: { type: 'string' },
+	all_tax: { type: 'string' },
+	default_category: { type: 'string' },
+	preview: {
+		type: 'bool',
+		default: true /* default required for booleans */
+	},
+	html5_gallery: {
+		type: 'bool',
+		default: false
+	}
+
+	/**
+  * Check if a property key exists and has a value.
+  * 
+  * @param  {string} key Property to check.
+  * @return {[type]}     Returns true if it exists
+  */
+};function hasData(object, key) {
+	if (__WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default()(object) && object.hasOwnProperty(key)) {
+		return !__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(object[key]);
+	}
+	return false;
+}
+
+/**
+ * Check if a value exists in a plugin data property.
+ * 
+ * @param  {string} key  Plugin data key.
+ * @param  {string} value Value to test.
+ * @return {bool}   True if value exists.
+ */
+function inPluginData(key, value) {
+	return hasData(getPluginData(key), value);
+}
+
+/**
+ * Get data provided by this plugin.
+ *
+ * Only returns data if it's the correct type.
+ * Else returns empty value of the correct type.
+ * 
+ * @param  {string} key Property key in the plugin data.
+ * @return {[type]}     Plugin data.
+ */
+function getPluginData(key) {
+	var defaultValue = getDefault(key);
+
+	if (!hasData(_pluginData, key) || __WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(defaultValue)) {
+		return defaultValue;
+	}
+
+	var data = _pluginData[key];
+	var dataType = __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(_defaults, key + '.type');
+
+	return isType(dataType, data) ? data : defaultValue;
+}
+
+/**
+ * Get the default value for a setting.
+ *
+ * Booleans should always provide a default value.
+ * If no default is provided an empty value with 
+ * the correct type is returned.
+ * 
+ * @param  {string} key Plugin data property key.
+ * @return {object|string|bool} Default value.
+ */
+function getDefault(key) {
+	// Types to check. Booleans should have a default.
+	var types = {
+		object: {},
+		string: ''
+	};
+
+	var keyValue = __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(_defaults, key + '.default');
+	var keyDefault = __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(types, __WEBPACK_IMPORTED_MODULE_0_lodash_get___default()(_defaults, key + '.type'));
+
+	return !__WEBPACK_IMPORTED_MODULE_4_lodash_isUndefined___default()(keyValue) ? keyValue : keyDefault;
+}
+
+/**
+ * Check if a value has the correct type.
+ *
+ * @param  {string}             type  Type of value. Accepts 'bool', 'object' and 'string'.
+ * @param  {bool|object|string} value Value.
+ * @return {Boolean} True if the value is of the correct type.
+ */
+function isType(type, value) {
+	var is_type = false;
+	switch (type) {
+		case 'bool':
+			value = getBool(value);
+			is_type = __WEBPACK_IMPORTED_MODULE_2_lodash_isBoolean___default()(value);
+			break;
+		case 'object':
+			is_type = __WEBPACK_IMPORTED_MODULE_3_lodash_isObject___default()(value);
+			break;
+		case 'string':
+			is_type = __WEBPACK_IMPORTED_MODULE_1_lodash_isString___default()(value);
+			break;
+	}
+
+	return is_type;
+}
+
+/**
+ * Get a boolean value from a string.
+ *
+ * wp_localize_script converts booleans to a string ('1' or '').
+ *
+ * @param  {string} value String with boolean value.
+ * @return {bool} Boolean value if string is '1' or empty.
+ */
+function getBool(value) {
+	if (!__WEBPACK_IMPORTED_MODULE_1_lodash_isString___default()(value)) {
+		return value;
+	}
+	var bool = Number(value.trim());
+	return 1 === bool || 0 === bool ? 1 === bool : value;
+}
+
+/***/ }),
+/* 166 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return relatedPosts; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_pickBy__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_pickBy___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_pickBy__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_querystringify__ = __webpack_require__(141);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_querystringify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_querystringify__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__data__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__editor__ = __webpack_require__(142);
+
+ /**
+                                                * External dependencies
+                                                */
+
+
+
+/**
+ * WordPress dependencies
+ */
+var withAPIData = wp.components.withAPIData;
+var compose = wp.element.compose;
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+var previewExpanded = Object(__WEBPACK_IMPORTED_MODULE_3__data__["b" /* getPluginData */])('preview');
+var defaultCategory = Object(__WEBPACK_IMPORTED_MODULE_3__data__["b" /* getPluginData */])('default_category');
+
+var relatedPosts = compose(__WEBPACK_IMPORTED_MODULE_4__editor__["a" /* editorData */], withAPIData(function (props) {
+	var editorData = props.editorData,
+	    focus = props.focus;
+	var _props$attributes = props.attributes,
+	    post_types = _props$attributes.post_types,
+	    title = _props$attributes.title,
+	    posts_per_page = _props$attributes.posts_per_page,
+	    format = _props$attributes.format,
+	    image_size = _props$attributes.image_size,
+	    columns = _props$attributes.columns;
+
+	var type = 'editor_block';
+	var taxonomies = props.attributes.taxonomies;
+
+	var fields = '';
+
+	if (!focus && !previewExpanded) {
+		// Us a less expensive query if preview is not expanded by default
+		fields = 'ids';
+	}
+
+	// Get the terms set in the editor.
+	var terms = editorData.termIDs.join(',');
+	if (!terms.length && -1 !== editorData.taxonomyNames.indexOf('category')) {
+		// Use default category if this post supports the 'category' taxonomy.
+		terms = defaultCategory;
+	}
+
+	// If no terms are selected return no related posts.
+	taxonomies = terms.length ? taxonomies : '';
+
+	var attributes = {
+		taxonomies: taxonomies,
+		post_types: post_types,
+		terms: terms,
+		title: title,
+		posts_per_page: posts_per_page,
+		format: format,
+		image_size: image_size,
+		columns: columns,
+		type: type,
+		fields: fields
+	};
+
+	if (attributes['post_types'] && attributes['post_types'] === editorData.postType) {
+		// The post type isn't needed in the query (if not set).
+		// It defaults to the post type of the current post.
+		delete attributes['post_types'];
+	}
+
+	var query = Object(__WEBPACK_IMPORTED_MODULE_2_querystringify__["stringify"])(__WEBPACK_IMPORTED_MODULE_0_lodash_pickBy___default()(attributes, function (value) {
+		return !__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default()(value);
+	}), true);
+
+	return {
+		relatedPosts: '/related-posts-by-taxonomy/v1/posts/' + editorData.postID + ('' + query)
+	};
+}));
 
 /***/ })
 /******/ ]);

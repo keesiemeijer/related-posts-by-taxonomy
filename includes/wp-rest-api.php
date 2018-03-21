@@ -165,6 +165,13 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	public function prepare_item_for_response( $args, $request ) {
 
 		$related_posts = $this->get_related_posts( $args );
+		$fields        = strtolower( $args['fields'] );
+
+		$rendered = '';
+		if ( ! in_array( $fields, array( 'ids', 'names', 'slugs' ) ) ) {
+			// Render posts if the query was for post objects.
+			$rendered = km_rpbt_shortcode_output( $related_posts, $args );
+		}
 
 		$data = array(
 			'posts'         => $related_posts,
@@ -173,7 +180,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 			'post_types'    => $args['post_types'],
 			'taxonomies'    => km_rpbt_get_taxonomies( $args['taxonomies'] ),
 			'related_terms' => isset( $this->filter_args['related_terms'] ) ? $this->filter_args['related_terms'] : array(),
-			'rendered'      => km_rpbt_shortcode_output( $related_posts, $args ),
+			'rendered'      => $rendered,
 		);
 
 		// Reset filter_args.
