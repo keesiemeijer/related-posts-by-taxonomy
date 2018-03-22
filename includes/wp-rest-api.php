@@ -108,9 +108,8 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		$args = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_args', $validated_args );
 		$args = array_merge( $validated_args, (array) $args );
 
-		// Un-filterable arguments (depending on request type).
+		// Un-filterable argument.
 		$args['type']  = $type;
-		$args['fields'] = ( 'editor_block' === $type ) ? '' : $args['fields'];
 
 		$data = $this->prepare_item_for_response( $args, $request );
 		return rest_ensure_response( $data );

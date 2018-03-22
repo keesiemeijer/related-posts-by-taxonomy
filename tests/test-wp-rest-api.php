@@ -180,27 +180,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
-	 * Test type of request.
-	 *
-	 * @requires function WP_REST_Controller::register_routes
-	 */
-	function test_editor_block_request_restrict_fields_argument() {
-
-		$this->setup_posts();
-		$posts = $this->posts;
-
-		add_filter( 'related_posts_by_taxonomy', array( $this, 'return_query_args' ), 10, 4 );
-
-		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
-		$request->set_param( 'fields', 'ids' );
-		$request->set_param( 'type', 'editor_block' );
-		$response = rest_do_request( $request );
-
-		$this->assertSame( '', $this->query_args['fields'] );
-		$this->query_args = null;
-	}
-
-	/**
 	 * Test related posts for post type post.
 	 *
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms

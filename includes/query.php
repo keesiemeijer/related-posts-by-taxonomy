@@ -35,6 +35,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	}
 
 	$args['related_terms'] = $terms;
+	$args['termcount']     = array();
 
 	// Term ids sql.
 	if ( count( $terms ) > 1 ) {
@@ -278,7 +279,6 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 			/* Order the related posts */
 			uasort( $results, 'km_rpbt_related_posts_by_taxonomy_cmp' );
-			$args['termcount'] = array();
 		}
 
 		$results = array_values( $results );
@@ -290,17 +290,19 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 			$results = array_slice( $results, 0, $posts_per_page );
 		}
 
+		// Add default values.
+		for ( $i = 0; $i < count( $results ); $i++ ) {
+			if ( isset( $results[ $i ]->termcount ) ) {
+				$args['termcount'][] = $results[ $i ]->termcount;
+			}
+
+			$results[ $i ]->rpbt_current    = $post_id;
+			$results[ $i ]->rpbt_post_class = '';
+		}
+
 		if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {
 			/* Get the field used in the query */
 			$results = wp_list_pluck( $results, $allowed_fields[ $fields ] );
-		} else {
-			for ( $i = 0; $i < count( $results ); $i++ ) {
-				$results[ $i ]->rpbt_current    = $post_id;
-				$results[ $i ]->rpbt_post_class = '';
-				if ( isset( $results[ $i ]->termcount ) ) {
-					$args['termcount'][] = $results[ $i ]->termcount;
-				}
-			}
 		}
 	} else {
 		$results = array();
