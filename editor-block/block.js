@@ -66,8 +66,8 @@ class RelatedPostsBlock extends Component {
 		const relatedPosts = this.props.relatedPosts.data;
 		const { attributes, focus, setAttributes, editorData } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
-		const titleID = 'rpbt-inspector-text-control-' + this.instanceId;
-		const className = classnames( this.props.className, { 'html5-gallery': this.html5Gallery } );
+		const titleID = 'inspector-text-control-' + this.instanceId;
+		const className = classnames( this.props.className, { 'rpbt-html5-gallery': ( 'thumbnails' === format ) && this.html5Gallery } );
 
 		let checkedPostTypes = post_types;
 		if( isUndefined( post_types ) || ! post_types ) {
@@ -77,41 +77,40 @@ class RelatedPostsBlock extends Component {
 
 		const inspectorControls = focus && (
 			<InspectorControls key="inspector">
-				<div>
-					<p>
-					<RawHTML>
-					{__( '<strong>Note</strong>: The preview of this block is not the actual display as used in the front end of your site.' )}
-					</RawHTML>
-					</p>
-				</div>
-					
-				<BaseControl label={ __( 'Title'  ) } id={titleID}>
-					<input className="blocks-text-control__input"
-						type="text"
-						onChange={this.onTitleChange}
-						defaultValue={title}
-						id={titleID}
-					/>
-				</BaseControl>
-				<QueryPanel
-					postsPerPage={posts_per_page}
-					onPostsPerPageChange={ ( value ) => {
-							// Don't allow 0 as a value.
-							const newValue = ( 0 === Number( value ) ) ? 1 : value;
-							setAttributes( { posts_per_page: Number( newValue ) } );
+				<div className={this.props.className + '-inspector-controls'}>
+					<div>
+						<p>
+						{ __( 'Note: The preview style is not the actual style used in the front end of your site.' ) }
+						</p>
+					</div>
+					<BaseControl label={ __( 'Title'  ) } id={titleID}>
+						<input className="components-text-control__input"
+							type="text"
+							onChange={this.onTitleChange}
+							defaultValue={title}
+							id={titleID}
+						/>
+					</BaseControl>
+					<QueryPanel
+						postsPerPage={posts_per_page}
+						onPostsPerPageChange={ ( value ) => {
+								// Don't allow 0 as a value.
+								const newValue = ( 0 === Number( value ) ) ? 1 : value;
+								setAttributes( { posts_per_page: Number( newValue ) } );
+							}
 						}
-					}
-					taxonomies={ taxonomies }
-					onTaxonomiesChange={ ( value ) => setAttributes( { taxonomies: value } ) }
-					format={ format }
-					onFormatChange={ ( value ) => setAttributes( { format: value } ) }
-					imageSize={image_size}
-					onImageSizeChange={ ( value ) => setAttributes( { image_size: value } ) }
-					columns={columns}
-					onColumnsChange={ ( value ) => setAttributes( { columns: Number( value ) } ) }
-					postTypes={ checkedPostTypes }
-					onPostTypesChange={ this.updatePostTypes }
-				/>
+						taxonomies={ taxonomies }
+						onTaxonomiesChange={ ( value ) => setAttributes( { taxonomies: value } ) }
+						format={ format }
+						onFormatChange={ ( value ) => setAttributes( { format: value } ) }
+						imageSize={image_size}
+						onImageSizeChange={ ( value ) => setAttributes( { image_size: value } ) }
+						columns={columns}
+						onColumnsChange={ ( value ) => setAttributes( { columns: Number( value ) } ) }
+						postTypes={ checkedPostTypes }
+						onPostTypesChange={ this.updatePostTypes }
+					/>
+				</div>
 			</InspectorControls>
 			);
 

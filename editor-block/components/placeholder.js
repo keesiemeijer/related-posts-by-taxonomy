@@ -14,19 +14,11 @@ function LoadingPlaceholder( {
 	className,
 	} ) {
 
-	var placeholderStyle = {
-		minHeight: '100px',
-	};
-
-	let loading = '';
 	let message = '';
+	let loading = ! queryFinished ? __( 'Loading related posts' ) : '';
 
-	if( queryFinished ) {
-		if(!postsFound) {
-			loading = (<div>{__( 'No related posts found' )}</div>);
-		}
-	} else {
-		loading = __( 'Loading related posts' );
+	if( queryFinished && ! postsFound ) {
+		loading = (<div>{__( 'No related posts found' )}</div>);
 	}
 
 	if ( ! editorTerms.length ) {
@@ -48,7 +40,6 @@ function LoadingPlaceholder( {
 
 	return (
 		<Placeholder
-			style={placeholderStyle}
 			className={className}
 			key="placeholder"
 			icon={icon}

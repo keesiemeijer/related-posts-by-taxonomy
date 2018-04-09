@@ -2680,8 +2680,8 @@ var RelatedPostsBlock = function (_Component) {
 			    image_size = attributes.image_size,
 			    columns = attributes.columns;
 
-			var titleID = 'rpbt-inspector-text-control-' + this.instanceId;
-			var className = __WEBPACK_IMPORTED_MODULE_2_classnames___default()(this.props.className, { 'html5-gallery': this.html5Gallery });
+			var titleID = 'inspector-text-control-' + this.instanceId;
+			var className = __WEBPACK_IMPORTED_MODULE_2_classnames___default()(this.props.className, { 'rpbt-html5-gallery': 'thumbnails' === format && this.html5Gallery });
 
 			var checkedPostTypes = post_types;
 			if (__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default()(post_types) || !post_types) {
@@ -2694,53 +2694,53 @@ var RelatedPostsBlock = function (_Component) {
 				{ key: 'inspector' },
 				wp.element.createElement(
 					'div',
-					null,
+					{ className: this.props.className + '-inspector-controls' },
 					wp.element.createElement(
-						'p',
+						'div',
 						null,
 						wp.element.createElement(
-							RawHTML,
+							'p',
 							null,
-							__('<strong>Note</strong>: The preview of this block is not the actual display as used in the front end of your site.')
+							__('Note: The preview style is not the actual style used in the front end of your site.')
 						)
-					)
-				),
-				wp.element.createElement(
-					BaseControl,
-					{ label: __('Title'), id: titleID },
-					wp.element.createElement('input', { className: 'blocks-text-control__input',
-						type: 'text',
-						onChange: this.onTitleChange,
-						defaultValue: title,
-						id: titleID
+					),
+					wp.element.createElement(
+						BaseControl,
+						{ label: __('Title'), id: titleID },
+						wp.element.createElement('input', { className: 'components-text-control__input',
+							type: 'text',
+							onChange: this.onTitleChange,
+							defaultValue: title,
+							id: titleID
+						})
+					),
+					wp.element.createElement(__WEBPACK_IMPORTED_MODULE_6__components_query_panel__["a" /* default */], {
+						postsPerPage: posts_per_page,
+						onPostsPerPageChange: function onPostsPerPageChange(value) {
+							// Don't allow 0 as a value.
+							var newValue = 0 === Number(value) ? 1 : value;
+							setAttributes({ posts_per_page: Number(newValue) });
+						},
+						taxonomies: taxonomies,
+						onTaxonomiesChange: function onTaxonomiesChange(value) {
+							return setAttributes({ taxonomies: value });
+						},
+						format: format,
+						onFormatChange: function onFormatChange(value) {
+							return setAttributes({ format: value });
+						},
+						imageSize: image_size,
+						onImageSizeChange: function onImageSizeChange(value) {
+							return setAttributes({ image_size: value });
+						},
+						columns: columns,
+						onColumnsChange: function onColumnsChange(value) {
+							return setAttributes({ columns: Number(value) });
+						},
+						postTypes: checkedPostTypes,
+						onPostTypesChange: this.updatePostTypes
 					})
-				),
-				wp.element.createElement(__WEBPACK_IMPORTED_MODULE_6__components_query_panel__["a" /* default */], {
-					postsPerPage: posts_per_page,
-					onPostsPerPageChange: function onPostsPerPageChange(value) {
-						// Don't allow 0 as a value.
-						var newValue = 0 === Number(value) ? 1 : value;
-						setAttributes({ posts_per_page: Number(newValue) });
-					},
-					taxonomies: taxonomies,
-					onTaxonomiesChange: function onTaxonomiesChange(value) {
-						return setAttributes({ taxonomies: value });
-					},
-					format: format,
-					onFormatChange: function onFormatChange(value) {
-						return setAttributes({ format: value });
-					},
-					imageSize: image_size,
-					onImageSizeChange: function onImageSizeChange(value) {
-						return setAttributes({ image_size: value });
-					},
-					columns: columns,
-					onColumnsChange: function onColumnsChange(value) {
-						return setAttributes({ columns: Number(value) });
-					},
-					postTypes: checkedPostTypes,
-					onPostTypesChange: this.updatePostTypes
-				})
+				)
 			);
 
 			var postsFound = 0;
@@ -6342,23 +6342,15 @@ function LoadingPlaceholder(_ref) {
 	    className = _ref.className;
 
 
-	var placeholderStyle = {
-		minHeight: '100px'
-	};
-
-	var loading = '';
 	var message = '';
+	var loading = !queryFinished ? __('Loading related posts') : '';
 
-	if (queryFinished) {
-		if (!postsFound) {
-			loading = wp.element.createElement(
-				'div',
-				null,
-				__('No related posts found')
-			);
-		}
-	} else {
-		loading = __('Loading related posts');
+	if (queryFinished && !postsFound) {
+		loading = wp.element.createElement(
+			'div',
+			null,
+			__('No related posts found')
+		);
 	}
 
 	if (!editorTerms.length) {
@@ -6402,7 +6394,6 @@ function LoadingPlaceholder(_ref) {
 	return wp.element.createElement(
 		Placeholder,
 		{
-			style: placeholderStyle,
 			className: className,
 			key: 'placeholder',
 			icon: icon,
