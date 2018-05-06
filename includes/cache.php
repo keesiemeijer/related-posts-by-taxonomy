@@ -63,7 +63,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 */
 		private function setup() {
 
-			$this->default_args = km_rpbt_get_default_args();
+			$this->default_args = km_rpbt_get_query_vars();
 			$this->cache        = $this->get_cache_options();
 
 			// Enable cache for the shortcode and widget.
@@ -214,7 +214,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			add_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
 
 			// Get related posts.
-			$posts = km_rpbt_related_posts_by_taxonomy( $args['post_id'], $args['taxonomies'], $function_args );
+			$posts = km_rpbt_query_related_posts( $args['post_id'], $args['taxonomies'], $function_args );
 
 			// Remove the filter.
 			remove_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
@@ -336,7 +336,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 		/**
 		 * Sanitizes widget or shortcode arguments.
-		 * Removes arguments not needed for the km_rpbt_related_posts_by_taxonomy() function.
+		 * Removes arguments not needed for the km_rpbt_query_related_posts() function.
 		 * Arguments are stored as the cache meta key.
 		 *
 		 * @since 2.1

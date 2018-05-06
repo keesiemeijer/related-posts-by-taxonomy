@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the km_rpbt_related_posts_by_taxonomy() function in functions.php.
+ * Tests for the km_rpbt_query_related_posts() function in functions.php.
  */
 class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 
@@ -105,16 +105,16 @@ EOF;
 	 * Test getting the link for a related post title
 	 * used in the templates
 	 */
-	function test_km_rpbt_get_related_post_title_link() {
+	function test_km_rpbt_get_post_link() {
 		$posts = $this->create_posts();
 		$posts = get_posts();
 
-		$link = km_rpbt_get_related_post_title_link( $posts[0] );
+		$link = km_rpbt_get_post_link( $posts[0] );
 		$permalink = get_permalink( $posts[0] );
 		$expected = '<a href="' . $permalink . '">' . $posts[0]->post_title . '</a>';
 		$this->assertSame( $expected, $link );
 
-		$link = km_rpbt_get_related_post_title_link( $posts[0], true );
+		$link = km_rpbt_get_post_link( $posts[0], true );
 		$expected = '<a href="' . $permalink . '" title="' . $posts[0]->post_title . '">' . $posts[0]->post_title . '</a>';
 		$this->assertSame( $expected, $link );
 	}

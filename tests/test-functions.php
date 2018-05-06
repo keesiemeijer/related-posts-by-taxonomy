@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the km_rpbt_related_posts_by_taxonomy() function in functions.php.
+ * Tests for the km_rpbt_query_related_posts() function in functions.php.
  */
 class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 
@@ -28,7 +28,7 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test if km_rpbt_plugin() returns an object.
 	 *
-	 * Used in the km_rpbt_related_posts_by_taxonomy() function to replace 'post_type = 'post' with 'post_type IN ( ... )
+	 * Used in the km_rpbt_query_related_posts() function to replace 'post_type = 'post' with 'post_type IN ( ... )
 	 */
 	function test_km_rpbt_plugin() {
 		$plugin = km_rpbt_plugin();
@@ -39,7 +39,7 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test if args are not changed due to debugging.
 	 */
-	function test_km_rpbt_get_default_args() {
+	function test_km_rpbt_get_query_vars() {
 		$expected = array(
 			'post_types' => 'post',
 			'posts_per_page' => 5,
@@ -59,7 +59,7 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 			'terms' => '',
 		);
 
-		$args = km_rpbt_get_default_args();
+		$args = km_rpbt_get_query_vars();
 
 		$this->assertEquals( $expected, $args );
 	}

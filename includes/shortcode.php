@@ -12,8 +12,8 @@ add_shortcode( 'related_posts_by_tax', 'km_rpbt_related_posts_by_taxonomy_shortc
  *
  * @since 0.1
  *
- * @uses km_rpbt_related_posts_by_taxonomy()
- * @uses km_rpbt_related_posts_by_taxonomy_template()
+ * @uses km_rpbt_query_related_posts()
+ * @uses km_rpbt_get_template()
  *
  * @param string $atts Attributes used by the shortcode.
  * @return string Related posts html or empty string.
@@ -104,7 +104,7 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 	$rpbt_args = array_merge( km_rpbt_get_default_settings( $rpbt_args['type'] ), $rpbt_args );
 
 	/* get the template depending on the format  */
-	$template = km_rpbt_related_posts_by_taxonomy_template( $rpbt_args['format'], $rpbt_args['type'] );
+	$template = km_rpbt_get_template( $rpbt_args['format'], $rpbt_args['type'] );
 
 	if ( ! $template ) {
 		return '';

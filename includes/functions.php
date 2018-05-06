@@ -58,7 +58,7 @@ function km_rpbt_plugin_supports( $support ) {
  *
  * @return array Array with default arguments.
  */
-function km_rpbt_get_default_args() {
+function km_rpbt_get_query_vars() {
 
 	return array(
 		'post_types'     => 'post',
@@ -127,7 +127,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 		$related_posts = $plugin->cache->get_related_posts( $args );
 	} else {
 		/* get related posts */
-		$related_posts = km_rpbt_related_posts_by_taxonomy( $post_id, $args['taxonomies'], $query_args );
+		$related_posts = km_rpbt_query_related_posts( $post_id, $args['taxonomies'], $query_args );
 	}
 
 	$related_posts = km_rpbt_add_post_classes( $related_posts, $args );
@@ -225,11 +225,11 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
  * Validates ids.
  * Checks if ids is a comma separated string or an array with ids.
  *
- * @since 0.2
+ * @since 2.4.2
  * @param string|array $ids Comma separated list or array with ids.
  * @return array Array with postive integers
  */
-function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
+function km_rpbt_validate_ids( $ids ) {
 
 	if ( ! is_array( $ids ) ) {
 		/* allow positive integers, 0 and commas only */
@@ -270,7 +270,7 @@ function km_rpbt_get_comma_separated_values( $value ) {
  */
 function km_rpbt_sanitize_args( $args ) {
 
-	$defaults = km_rpbt_get_default_args();
+	$defaults = km_rpbt_get_query_vars();
 	$args     = wp_parse_args( $args, $defaults );
 
 	// Arrays with strings.
@@ -284,7 +284,7 @@ function km_rpbt_sanitize_args( $args ) {
 	// Arrays with integers.
 	$ids = array( 'exclude_terms', 'include_terms', 'exclude_posts', 'terms' );
 	foreach ( $ids as $id ) {
-		$args[ $id ] = km_rpbt_related_posts_by_taxonomy_validate_ids( $args[ $id ] );
+		$args[ $id ] = km_rpbt_validate_ids( $args[ $id ] );
 	}
 
 	// Strings.
@@ -317,7 +317,7 @@ function km_rpbt_sanitize_args( $args ) {
 
 /**
  * Public function to cache related posts.
- * Uses the same arguments as the km_rpbt_related_posts_by_taxonomy() function.
+ * Uses the same arguments as the km_rpbt_query_related_posts() function.
  *
  * @since 2.1
  * @param int          $post_id    The post id to cache related posts for.

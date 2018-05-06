@@ -110,7 +110,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Get related post ids with function.
 		$args = array( 'fields' => 'ids' );
 		$taxonomies = array_keys( $this->plugin->taxonomies );
-		$related = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$related = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
 
 		$this->assertEquals( $cache_ids, $related );
 	}
@@ -145,7 +145,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 		$this->assertEquals( array( $posts[0], $posts[2], $posts[3] ), $cache_ids );
 
-		$related = km_rpbt_related_posts_by_taxonomy( $posts[1], $taxonomies, $args );
+		$related = km_rpbt_query_related_posts( $posts[1], $taxonomies, $args );
 		$this->assertEquals( $cache_ids, $related );
 	}
 

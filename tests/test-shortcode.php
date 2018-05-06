@@ -49,8 +49,8 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 			'type'             => 'shortcode',
 		);
 
-		// km_rpbt_get_default_args() is also tested in test-functions.php
-		$expected = array_merge( km_rpbt_get_default_args(), $expected );
+		// km_rpbt_get_query_vars() is also tested in test-functions.php
+		$expected = array_merge( km_rpbt_get_query_vars(), $expected );
 		$expected['post_types'] = '';
 
 		$atts = km_rpbt_get_default_settings( 'shortcode' );

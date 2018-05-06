@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param array|string $args       Optional. Change what is returned.
  * @return array                   Empty array if no related posts found. Array with post objects.
  */
-function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'category', $args = '' ) {
+function km_rpbt_query_related_posts( $post_id = 0, $taxonomies = 'category', $args = '' ) {
 	global $wpdb;
 
 	// Get valid taxonomies.
