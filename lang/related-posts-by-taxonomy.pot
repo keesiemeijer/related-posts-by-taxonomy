@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Related Posts By Taxonomy 2.4.2-alpha\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2018-02-01 10:48:25+00:00\n"
+"POT-Creation-Date: 2018-05-06 13:25:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -53,7 +53,7 @@ msgstr ""
 msgid "Post thumbnails"
 msgstr ""
 
-#: includes/defaults.php:363
+#: includes/defaults.php:364
 msgid "Related Posts"
 msgstr ""
 
@@ -61,115 +61,115 @@ msgstr ""
 msgid "Related Posts By Taxonomy"
 msgstr ""
 
-#: includes/widget.php:44
+#: includes/widget.php:43
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/widget.php:288
+#: includes/widget.php:266
 msgid "Oops, something went wrong"
 msgstr ""
 
-#: includes/widget.php:302
+#: includes/widget.php:280
 msgid "Title"
 msgstr ""
 
-#: includes/widget.php:308
+#: includes/widget.php:286
 msgid "Number of related posts to show"
 msgstr ""
 
-#: includes/widget.php:311
+#: includes/widget.php:289
 msgid "Use -1 to show all related posts."
 msgstr ""
 
-#: includes/widget.php:318
+#: includes/widget.php:296
 msgid "Randomize related posts."
 msgstr ""
 
-#: includes/widget.php:321
+#: includes/widget.php:299
 msgid "Taxonomies"
 msgstr ""
 
-#: includes/widget.php:323
+#: includes/widget.php:301
 msgid "Taxonomy"
 msgstr ""
 
-#: includes/widget.php:326
+#: includes/widget.php:304
 msgid "All Taxonomies"
 msgstr ""
 
-#: includes/widget.php:333
+#: includes/widget.php:311
 msgid "Post Types"
 msgstr ""
 
-#: includes/widget.php:345
+#: includes/widget.php:323
 msgid "Display"
 msgstr ""
 
-#: includes/widget.php:349
+#: includes/widget.php:327
 msgid "Format"
 msgstr ""
 
-#: includes/widget.php:356
+#: includes/widget.php:334
 msgid "Image Display"
 msgstr ""
 
-#: includes/widget.php:360
+#: includes/widget.php:338
 msgid "Image Size"
 msgstr ""
 
-#: includes/widget.php:369
+#: includes/widget.php:347
 msgid "Number of image columns"
 msgstr ""
 
-#: includes/widget.php:379
+#: includes/widget.php:357
 msgid "Link image captions to posts"
 msgstr ""
 
-#: includes/widget.php:382
+#: includes/widget.php:360
 msgid "Widget Display"
 msgstr ""
 
-#: includes/widget.php:389
+#: includes/widget.php:367
 msgid "Display this widget on single post pages only"
 msgstr ""
 
-#: includes/widget.php:393
+#: includes/widget.php:371
 msgid "Display related posts for post ID (optional)"
 msgstr ""
 
-#: includes/wp-rest-api.php:40
+#: includes/wp-rest-api.php:35
 msgid "Unique identifier for the object."
 msgstr ""
 
-#: includes/wp-rest-api.php:68
+#: includes/wp-rest-api.php:63
 msgid "Invalid post ID."
 msgstr ""
 
-#: includes/wp-rest-api.php:193
+#: includes/wp-rest-api.php:205
 msgid "The related posts."
 msgstr ""
 
-#: includes/wp-rest-api.php:201
+#: includes/wp-rest-api.php:213
 msgid "Number of related terms in common with the post."
 msgstr ""
 
-#: includes/wp-rest-api.php:209
+#: includes/wp-rest-api.php:221
 msgid "The Post ID to get related posts for."
 msgstr ""
 
-#: includes/wp-rest-api.php:214
+#: includes/wp-rest-api.php:226
 msgid "Post types used in query for related posts."
 msgstr ""
 
-#: includes/wp-rest-api.php:222
+#: includes/wp-rest-api.php:234
 msgid "Taxonomies used in query for related posts."
 msgstr ""
 
-#: includes/wp-rest-api.php:230
+#: includes/wp-rest-api.php:242
 msgid "Related term ids used in query for related posts."
 msgstr ""
 
-#: includes/wp-rest-api.php:238
+#: includes/wp-rest-api.php:250
 msgid "Rendered related posts HTML"
 msgstr ""
 
