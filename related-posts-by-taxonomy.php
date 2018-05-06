@@ -37,6 +37,11 @@ if ( ! defined( 'RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR' ) ) {
 	define( 'RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 }
 
+// Plugin Folder URL
+if ( ! defined( 'RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL' ) ) {
+	define( 'RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
+
 /* loads plugin files, adds the shortcode and sets the text domain */
 if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 
