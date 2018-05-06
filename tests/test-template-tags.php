@@ -23,7 +23,7 @@ class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 		$_posts     = get_posts(
 			array(
 				'posts__in' => $posts,
-				'order' => 'post__in',
+				'order'     => 'post__in',
 			)
 		);
 		$ids        = wp_list_pluck( $_posts, 'ID' );
@@ -109,12 +109,12 @@ EOF;
 		$posts = $this->create_posts();
 		$posts = get_posts();
 
-		$link = km_rpbt_get_post_link( $posts[0] );
+		$link      = km_rpbt_get_post_link( $posts[0] );
 		$permalink = get_permalink( $posts[0] );
-		$expected = '<a href="' . $permalink . '">' . $posts[0]->post_title . '</a>';
+		$expected  = '<a href="' . $permalink . '">' . $posts[0]->post_title . '</a>';
 		$this->assertSame( $expected, $link );
 
-		$link = km_rpbt_get_post_link( $posts[0], true );
+		$link     = km_rpbt_get_post_link( $posts[0], true );
 		$expected = '<a href="' . $permalink . '" title="' . $posts[0]->post_title . '">' . $posts[0]->post_title . '</a>';
 		$this->assertSame( $expected, $link );
 	}

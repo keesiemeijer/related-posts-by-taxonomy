@@ -49,7 +49,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		}
 
 		$response = rest_do_request( $request );
-		$data = $response->get_data();
+		$data     = $response->get_data();
 
 		if ( isset( $data['code'] ) ) {
 			return $data['code'];
