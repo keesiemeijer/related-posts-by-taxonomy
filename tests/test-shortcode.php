@@ -6,20 +6,13 @@
  */
 class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 
-	/**
-	 * Returned args from filter
-	 *
-	 * @var array
-	 */
-	private $args;
-
 	function tearDown() {
 		// use tearDown for WP < 4.0
-		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'return_bool' ) );
+		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', '__return_true' );
-		remove_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_args' ) );
+		remove_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_shortcode', '__return_false' );
-		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_args' ) );
+		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'override_related_posts' ), 10, 2 );
 
 		parent::tearDown();
@@ -86,11 +79,11 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_shortcode_hide_empty_filter_bool() {
 		// shortcode
-		add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'return_bool' ) );
+		add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'return_first_argument' ) );
 		$id = $this->factory->post->create();
 		do_shortcode( '[related_posts_by_tax post_id="' . $id . '"]' );
-		$this->assertTrue( $this->boolean );
-		$this->boolean = null;
+		$this->assertTrue( $this->arg );
+		$this->arg = null;
 	}
 
 
@@ -128,12 +121,12 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$post_id      = ' post_id="' . $posts[0] . '"';
 		$taxonomies   = ' taxonomies="category,post_tag"';
 
-		add_filter( 'related_posts_by_taxonomy', array( $this, 'return_args' ) );
+		add_filter( 'related_posts_by_taxonomy', array( $this, 'return_first_argument' ) );
 		$shortcode = do_shortcode( "[related_posts_by_tax{$post_id}{$taxonomies}]" );
 
-		$post_ids = wp_list_pluck( $this->args, 'ID' );
+		$post_ids = wp_list_pluck( $this->arg, 'ID' );
 		$this->assertEquals( array( $posts[1], $posts[2], $posts[3] ), $post_ids );
-		$this->args = null;
+		$this->arg = null;
 
 
 		// Create custom post type posts.
@@ -192,7 +185,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		);
 
 		// use filter to get arguments used for the related posts
-		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_args' ) );
+		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
 
 		// Go to a single post page
 		$this->go_to( '?post_type=cpt&p=' . $posts[0] );
@@ -203,8 +196,8 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		the_content();
 		$content = ob_get_clean();
 
-		$this->assertEquals( array( 'cpt' ), $this->args['post_types'] );
-		$this->args = null;
+		$this->assertEquals( array( 'cpt' ), $this->arg['post_types'] );
+		$this->arg = null;
 	}
 
 
@@ -218,7 +211,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$posts        = $create_posts['posts'];
 
 		// use filter to get arguments used for the related posts
-		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_args' ) );
+		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
 
 		do_shortcode( '[related_posts_by_tax]' );
 		$expected = km_rpbt_get_default_settings( 'shortcode' );
@@ -228,8 +221,8 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		// array after validation
 		$expected['post_types'] = array( 'post' );
 
-		$this->assertEquals( $expected, $this->args );
-		$this->args = null;
+		$this->assertEquals( $expected, $this->arg );
+		$this->arg = null;
 	}
 
 
@@ -302,52 +295,52 @@ EOF;
 		$posts        = $create_posts['posts'];
 
 		// use filter to get arguments used for the related posts
-		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_args' ) );
+		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
 
 		// Default value is true if not used
 		do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '"]' );
-		$this->assertTrue( $this->args['related'] );
-		$this->args = null;
+		$this->assertTrue( $this->arg['related'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax related="" post_id="' . $posts[0] . '"]' );
-		$this->assertTrue( $this->args['related'] );
-		$this->args = null;
+		$this->assertTrue( $this->arg['related'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax related="true" post_id="' . $posts[0] . '"]' );
-		$this->assertTrue( $this->args['related'] );
-		$this->args = null;
+		$this->assertTrue( $this->arg['related'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax related="gobbledygook" post_id="' . $posts[0] . '"]' );
-		$this->assertFalse( $this->args['related'] );
-		$this->args = null;
+		$this->assertFalse( $this->arg['related'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax related="false" post_id="' . $posts[0] . '"]' );
-		$this->assertFalse( $this->args['related'] );
-		$this->args = null;
+		$this->assertFalse( $this->arg['related'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax public_only="true" post_id="' . $posts[0] . '"]' );
-		$this->assertTrue( $this->args['public_only'] );
-		$this->args = null;
+		$this->assertTrue( $this->arg['public_only'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax include_self="true" post_id="' . $posts[0] . '"]' );
-		$this->assertTrue( $this->args['include_self'] );
-		$this->args = null;
+		$this->assertTrue( $this->arg['include_self'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax public_only="hohoho" post_id="' . $posts[0] . '"]' );
-		$this->assertFalse( $this->args['public_only'] );
-		$this->args = null;
+		$this->assertFalse( $this->arg['public_only'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax include_self="hohoho" post_id="' . $posts[0] . '"]' );
-		$this->assertFalse( $this->args['include_self'] );
-		$this->args = null;
+		$this->assertFalse( $this->arg['include_self'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '"]' );
-		$this->assertFalse( $this->args['public_only'] );
-		$this->args = null;
+		$this->assertFalse( $this->arg['public_only'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '"]' );
-		$this->assertFalse( $this->args['include_self'] );
-		$this->args = null;
+		$this->assertFalse( $this->arg['include_self'] );
+		$this->arg = null;
 	}
 
 
@@ -362,34 +355,28 @@ EOF;
 		$posts        = $create_posts['posts'];
 
 		// use filter to get arguments used for the related posts
-		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_args' ) );
+		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
 
 		// Default value is false if not used.
 		do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '"]' );
-		$this->assertFalse( $this->args['link_caption'] );
-		$this->args = null;
+		$this->assertFalse( $this->arg['link_caption'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax link_caption="" post_id="' . $posts[0] . '"]' );
-		$this->assertFalse( $this->args['link_caption'] );
-		$this->args = null;
+		$this->assertFalse( $this->arg['link_caption'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax link_caption="true" post_id="' . $posts[0] . '"]' );
-		$this->assertTrue( $this->args['link_caption'] );
-		$this->args = null;
+		$this->assertTrue( $this->arg['link_caption'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax link_caption="gobbledygook" post_id="' . $posts[0] . '"]' );
-		$this->assertFalse( $this->args['link_caption'] );
-		$this->args = null;
+		$this->assertFalse( $this->arg['link_caption'] );
+		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax link_caption="false" post_id="' . $posts[0] . '"]' );
-		$this->assertFalse( $this->args['link_caption'] );
-		$this->args = null;
-	}
-
-
-	function return_args( $args ) {
-		$this->args = $args;
-		return $args;
+		$this->assertFalse( $this->arg['link_caption'] );
+		$this->arg = null;
 	}
 
 	function override_related_posts( $related_posts, $args ) {

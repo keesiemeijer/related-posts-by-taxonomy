@@ -16,7 +16,9 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 	function tearDown() {
 		remove_filter( 'related_posts_by_taxonomy_wp_rest_api', '__return_true' );
-		remove_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_bool' ) );
+		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_query_args' ), 10, 4 );
+		remove_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_first_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy_wp_rest_api_args', array( $this, 'return_first_argument' ) );
 	}
 
 	/**
@@ -67,6 +69,25 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 		$plugin = km_rpbt_plugin();
 		$this->assertFalse( $plugin->plugin_supports( 'wp_rest_api' ) );
+	}
+
+	/**
+	 * Tests if wp_rest_api filter is set to false (by default).
+	 */
+	function test_wp_rest_Api_not_registered_route() {
+		// Added by setUp().
+		remove_filter( 'related_posts_by_taxonomy_wp_rest_api', '__return_true' );
+
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+
+		$response = rest_do_request( $request );
+		$data     = $response->get_data();
+
+		$this->assertTrue( array_key_exists( 'code', $data ) );
+		$this->assertSame( "rest_no_route", $data['code'] );
 	}
 
 	/**
@@ -125,6 +146,31 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		);
 
 		$this->assertEquals( $expected, array_keys( $data ) );
+	}
+
+	/**
+	 * Test type of request.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_wp_rest_api_default_type_request() {
+
+		$this->setup_posts();
+		$posts = $this->posts;
+		add_filter( 'related_posts_by_taxonomy_wp_rest_api_args', array( $this, 'return_first_argument' ) );
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+		$request->set_param( 'fields', 'ids' );
+		$response = rest_do_request( $request );
+
+		// Default response without a type.
+		$this->assertEquals( 'wp_rest_api', $this->arg['type'] );
+		$this->arg = null;
+
+		// Invalid type.
+		$request->set_param( 'type', 'lala' );
+		$response = rest_do_request( $request );
+		$this->assertEquals( 'wp_rest_api', $this->arg['type'] );
+		$this->arg = null;
 	}
 
 	/**
@@ -320,6 +366,24 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[3], $this->posts[4] ), $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument.
+	 *
+	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_related_posts_by_terms() {
+		$this->setup_posts();
+		$args = array(
+			'terms' => array( $this->tax_2_terms[3] ),
+			'related'       => false,
+			'fields'        => 'ids',
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
 
 
@@ -525,6 +589,128 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 		// Test post 0.
 		$this->assertEquals( array( $posts[2], $posts[1],  $posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 *
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_post_status() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		$user_id = $this->factory->user->create(
+			array(
+				'role' => 'author',
+			)
+		);
+
+		$private = array(
+			'ID' => $this->posts[2],
+			'post_status' => 'private',
+		);
+
+		wp_update_post( $private );
+		$taxonomies = array( 'category', 'post_tag' );
+
+		$args       = array(
+			'fields' => 'ids',
+		);
+
+		// User is not set, private post is not included.
+		$rel_post3 = $this->rest_related_posts_by_taxonomy( $posts[3], $taxonomies, $args );
+		$this->assertEquals( array( $posts[1], $posts[0] ), $rel_post3 );
+
+		$private = array(
+			'ID' => $this->posts[2],
+			'post_status' => 'private',
+			'post_author' => $user_id,
+		);
+
+		wp_update_post( $private );
+
+		// Set user to private post author, post is included.
+		wp_set_current_user( $user_id );
+
+		$rel_post3 = $this->rest_related_posts_by_taxonomy( $posts[3], $taxonomies, $args );
+		$this->assertEquals( array( $posts[1], $posts[0], $posts[2] ), $rel_post3 );
+	}
+
+	/**
+	 * test related posts for post type post
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_include_self() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		// Test with a single taxonomy.
+		$taxonomies = array( 'post_tag' );
+		$args       = array(
+			'fields' => 'ids',
+			'include_self' => true,
+		);
+
+		// test post 0
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $posts[0], $posts[2], $posts[1], $posts[3] ), $rel_post0 );
+
+		// test post with post date prior then inclusive post
+		$rel_post1 = $this->rest_related_posts_by_taxonomy( $posts[1], $taxonomies, $args );
+		$this->assertEquals( array( $posts[1], $posts[0], $posts[2], $posts[3] ), $rel_post1 );
+	}
+
+	/**
+	 * test related posts for post type post
+	 *
+	 * @group fail
+	 */
+	function test_include_self_orderby_rand() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		add_filter( 'related_posts_by_taxonomy_posts_orderby', array( $this, 'return_first_argument' ), 10, 4 );
+
+		// Test with a single taxonomy.
+		$taxonomies = array( 'post_tag' );
+		$args       = array(
+			'fields' => 'ids',
+			'include_self' => true,
+			'order' => 'RAND',
+		);
+
+		// test post 0
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+
+		$this->assertCount( 4, $rel_post0 );
+		$this->assertSame( (int) $posts[0], (int) $rel_post0[0] );
+
+		//Check if the query contains 'RAND()'
+		$this->assertContains( 'RAND()', $this->arg );
+		$this->arg = null;
+	}
+
+	/**
+	 * test include self argument regular order.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_include_self_regular_order() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		// Test with a single taxonomy.
+		$taxonomies = array( 'post_tag' );
+		$args       = array(
+			'fields' => 'ids',
+			'include_self' => 'regular_order',
+		);
+
+		// test post with post date prior then inclusive post
+		$rel_post1 = $this->rest_related_posts_by_taxonomy( $posts[1], $taxonomies, $args );
+		$this->assertEquals( array( $posts[0], $posts[1], $posts[2], $posts[3] ), $rel_post1 );
 	}
 
 }
