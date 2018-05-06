@@ -13,8 +13,7 @@ add_action( 'widgets_init', 'km_rpbt_related_posts_by_taxonomy_widget' );
  * @since 0.1
  */
 function km_rpbt_related_posts_by_taxonomy_widget() {
-	$plugin = km_rpbt_plugin();
-	if ( $plugin && $plugin->plugin_supports( 'widget' ) ) {
+	if ( km_rpbt_plugin_supports( 'widget' ) ) {
 		register_widget( 'Related_Posts_By_Taxonomy' );
 	}
 }
@@ -80,40 +79,39 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * Displays the related posts on the front end.
 	 *
 	 * @since 0.1
-	 * @param array $rpbt_widget_args Display arguments including 'before_title', 'after_title',
+	 * @param array $widget_args Display arguments including 'before_title', 'after_title',
 	 *                                'before_widget', and 'after_widget'.
-	 * @param array $rpbt_args        The settings for the particular instance of the widget.
+	 * @param array $args        The settings for the particular instance of the widget.
 	 */
-	function widget( $rpbt_widget_args, $rpbt_args ) {
+	function widget( $widget_args, $args ) {
 
 		if ( ! $this->plugin ) {
 			return '';
 		}
 
-		$i = $rpbt_args;
-		$i = $this->get_instance_settings( $i );
+		$args = $this->get_instance_settings( $args );
 
 		/* don't show widget on pages other than single if singular_template is set */
-		if ( $i['singular_template'] && ! is_singular() ) {
+		if ( $args['singular_template'] && ! is_singular() ) {
 			return;
 		}
 
-		if ( empty( $i['post_id'] ) ) {
-			$i['post_id'] = $this->get_the_ID();
+		if ( empty( $args['post_id'] ) ) {
+			$args['post_id'] = $this->get_the_ID();
 		}
 
-		if ( ! empty( $i['post_types'] ) ) {
-			$i['post_types'] = array_keys( $i['post_types'] );
+		if ( ! empty( $args['post_types'] ) ) {
+			$args['post_types'] = array_keys( $args['post_types'] );
 		}
 
 		/* added in 2.0 */
-		if ( $i['random'] ) {
-			unset( $i['random'] );
-			$i['order'] = 'RAND';
+		if ( $args['random'] ) {
+			unset( $args['random'] );
+			$args['order'] = 'RAND';
 		}
 
-		if ( 'thumbnails' === $i['format'] ) {
-			$i['post_thumbnail'] = true;
+		if ( 'thumbnails' === $args['format'] ) {
+			$args['post_thumbnail'] = true;
 		}
 
 		/**
@@ -121,16 +119,17 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		 *
 		 * @since 0.1
 		 *
-		 * @param string $i                Widget instance.
-		 * @param string $rpbt_widget_args Widget arguments.
+		 * @param string $args                Widget instance.
+		 * @param string $widget_args Widget arguments.
 		 */
-		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $i, $rpbt_widget_args );
-		$i = array_merge( $i, (array) $filter );
+		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $args, $widget_args );
+		$args = array_merge( $args, (array) $filter );
 
 		/* Not filterable */
-		$i['type'] = 'widget';
+		$args['type'] = 'widget';
+		$args['fields'] = '';
 
-		$related_posts = $this->get_related_posts( $i );
+		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
 
 		/*
 		 * Whether to hide the widget if no related posts are found.
@@ -140,7 +139,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$hide_empty = (bool) $this->plugin->plugin_supports( 'widget_hide_empty' );
 
 		if ( ! $hide_empty || ! empty( $related_posts ) ) {
-			$this->widget_output( $related_posts, $i, $rpbt_widget_args );
+			$this->widget_output( $related_posts, $args, $widget_args );
 		}
 
 		/**
@@ -155,35 +154,14 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * Get the related posts used by the widget.
 	 *
 	 * @since 2.3.2
-	 * @param array $rpbt_args Widget arguments.
+	 * @since 2.4.2 Deprecated.
+	 *
+	 * @param array $args Widget arguments.
 	 * @return array Array with related post objects.
 	 */
-	function get_related_posts( $rpbt_args ) {
-
-		/** This filter is documented in includes/shortcode.php */
-		$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $rpbt_args );
-
-		if ( is_array( $related_posts ) ) {
-			return $related_posts;
-		}
-
-		$function_args = $rpbt_args;
-
-		/* restricted arguments */
-		unset( $function_args['fields'], $function_args['post_id'], $function_args['taxonomies'] );
-
-		$cache = $this->plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
-
-		if ( $cache && ( isset( $rpbt_args['cache'] ) && $rpbt_args['cache'] ) ) {
-			$related_posts = $this->plugin->cache->get_related_posts( $rpbt_args );
-		} else {
-			/* get related posts */
-			$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
-		}
-
-		$related_posts = km_rpbt_add_post_classes( $related_posts, $rpbt_args );
-
-		return $related_posts;
+	function get_related_posts( $args ) {
+		_deprecated_function( __FUNCTION__, '2.4.0', 'km_rpbt_get_related_posts()' );
+		return km_rpbt_get_related_posts( $args );
 	}
 
 	/**

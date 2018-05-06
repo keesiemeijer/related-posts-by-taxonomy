@@ -24,11 +24,6 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @since 2.3.0
 	 */
 	public function register_routes() {
-		$plugin = km_rpbt_plugin();
-
-		if ( ! ( $plugin && $plugin->plugin_supports( 'wp_rest_api' ) ) ) {
-			return;
-		}
 
 		$version = '1';
 		$namespace = 'related-posts-by-taxonomy/v' . $version;
@@ -76,7 +71,8 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 			return $error;
 		}
 
-		$defaults = km_rpbt_get_default_settings( 'wp_rest_api' );
+		$type     = 'wp_rest_api';
+		$defaults = km_rpbt_get_default_settings( $type );
 
 		/**
 		 * Filter default wp_rest_api arguments.
@@ -92,7 +88,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 
 		/* Validates args. Sets the post types and post id if not set in filter above */
 		$validated_args         = km_rpbt_validate_shortcode_atts( (array) $args );
-		$validated_args['type'] = 'wp-rest-api';
+		$validated_args['type'] = $type;
 
 		/**
 		 * Filter wp_rest_api arguments.
@@ -103,7 +99,9 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 */
 		$args = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_args', $validated_args );
 		$args = array_merge( $validated_args, (array) $args );
-		$args['type']  = 'wp-rest-api';
+
+		// Un-filterable argument.
+		$args['type']  = $type;
 
 		$data = $this->prepare_item_for_response( $args, $request );
 		return rest_ensure_response( $data );
@@ -120,7 +118,16 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @return WP_Error|bool
 	 */
 	public function get_items_permissions_check( $request ) {
-		return apply_filters( 'related_posts_by_taxonomy_wp_rest_api', false );
+
+		$plugin = km_rpbt_plugin();
+		$rest_api = $plugin && $plugin->plugin_supports( 'wp_rest_api' );
+		$user     = is_user_logged_in();
+
+		if ( $user || $rest_api ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -148,18 +155,23 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 */
 	public function prepare_item_for_response( $args, $request ) {
 
-		$post_id       = $args['post_id'];
-		$taxonomies    = $args['taxonomies'];
-		$related_posts = $this->get_related_posts( $post_id, $taxonomies, $args );
+		$related_posts = $this->get_related_posts( $args );
+		$fields        = strtolower( $args['fields'] );
+
+		$rendered = '';
+		if ( ! in_array( $fields, array( 'ids', 'names', 'slugs' ) ) ) {
+			// Render posts if the query was for post objects.
+			$rendered = km_rpbt_shortcode_output( $related_posts, $args );
+		}
 
 		$data = array(
 			'posts'         => $related_posts,
 			'termcount'     => isset( $this->filter_args['termcount'] ) ? $this->filter_args['termcount'] : array(),
-			'post_id'       => $post_id,
+			'post_id'       => $args['post_id'],
 			'post_types'    => $args['post_types'],
-			'taxonomies'    => km_rpbt_get_taxonomies( $taxonomies ),
+			'taxonomies'    => km_rpbt_get_taxonomies( $args['taxonomies'] ),
 			'related_terms' => isset( $this->filter_args['related_terms'] ) ? $this->filter_args['related_terms'] : array(),
-			'rendered'      => km_rpbt_shortcode_output( $related_posts, $args ),
+			'rendered'      => $rendered,
 		);
 
 		// Reset filter_args.
@@ -273,23 +285,14 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @param array $args       Function arguments used to get the related posts.
 	 * @return array            Related Posts.
 	 */
-	public function get_related_posts( $post_id, $taxonomies, $args ) {
-		$function_args = $args;
-		$plugin = km_rpbt_plugin();
-
-		unset( $function_args['post_id'], $function_args['taxonomies'], $args['id'] );
-
-		$cache = $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
-
+	public function get_related_posts( $args ) {
 		add_filter( 'related_posts_by_taxonomy', array( $this, 'get_filter_args' ), 10, 4 );
 
-		if ( $cache && ( isset( $args['cache'] ) && $args['cache'] ) ) {
-			$related_posts = $plugin->cache->get_related_posts( $args );
-		} else {
-			/* get related posts */
-			$related_posts = km_rpbt_related_posts_by_taxonomy( $post_id, $taxonomies, $function_args );
+		if ( isset( $args['id'] ) ) {
+			unset( $args['id'] );
 		}
 
+		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'get_filter_args' ), 10, 4 );
 
 		return $related_posts;
