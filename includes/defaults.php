@@ -345,8 +345,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 */
 		public function get_default_settings( $type = '' ) {
 
-			// Settings for the km_rpbt_related_posts_by_taxonomy() function.
-			$defaults = km_rpbt_get_default_args();
+			// Settings for the query.
+			$defaults = km_rpbt_get_query_vars();
 			$types    = array(
 				'shortcode',
 				'widget',

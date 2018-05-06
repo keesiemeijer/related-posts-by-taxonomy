@@ -119,8 +119,8 @@ function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
  * @param object $post       Post object.
  * @param bool   $title_attr Whether to use a title attribute in the link. Default false.
  */
-function km_rpbt_post_title_link( $post, $title_attr = false ) {
-	echo km_rpbt_get_related_post_title_link( $post, $title_attr );
+function km_rpbt_post_link( $post, $title_attr = false ) {
+	echo km_rpbt_get_post_link( $post, $title_attr );
 }
 
 /**
@@ -132,7 +132,7 @@ function km_rpbt_post_title_link( $post, $title_attr = false ) {
  * @param bool   $title_attr Whether to use a title attribute in the link. Default false.
  * @return string Related post link HTML.
  */
-function km_rpbt_get_related_post_title_link( $post, $title_attr = false ) {
+function km_rpbt_get_post_link( $post, $title_attr = false ) {
 	$link = '';
 	$title = get_the_title( $post );
 

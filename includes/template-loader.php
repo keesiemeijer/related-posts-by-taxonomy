@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Gets the template used for display of related posts
  *
- * @since 0.1
+ * @since 2.4.2
  *
  * Used by widget and shortcode
  *
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param string $type   Supplied by widget or shortcode.
  * @return mixed False on failure, template file path on success.
  */
-function km_rpbt_related_posts_by_taxonomy_template( $format = false, $type = false ) {
+function km_rpbt_get_template( $format = false, $type = false ) {
 
 	$template = 'related-posts-links.php'; // Default template.
 	$format   = ( $format ) ? (string) $format : '';

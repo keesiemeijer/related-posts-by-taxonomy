@@ -52,7 +52,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test output from WordPress function get_posts_by_author_sql().
 	 *
-	 * Used in the km_rpbt_related_posts_by_taxonomy() function to replace 'post_type = 'post' with 'post_type IN ( ... )
+	 * Used in the km_rpbt_query_related_posts() function to replace 'post_type = 'post' with 'post_type IN ( ... )
 	 */
 	function test_get_posts_by_author_sql() {
 		$where  = get_posts_by_author_sql( 'post' );
@@ -63,8 +63,13 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Tests for functions that should not output anything.
 	 *
-	 * @expectedDeprecated km_rpbt_get_shortcode_atts
+	 * @expectedDeprecated km_rpbt_related_posts_by_taxonomy
+	 * @expectedDeprecated km_rpbt_related_posts_by_taxonomy_validate_ids
+	 * @expectedDeprecated km_rpbt_related_posts_by_taxonomy_template
 	 * @expectedDeprecated km_rpbt_shortcode_get_related_posts
+	 * @expectedDeprecated km_rpbt_get_related_post_title_link
+	 * @expectedDeprecated km_rpbt_get_shortcode_atts
+	 * @expectedDeprecated km_rpbt_get_default_args
 	 */
 	function test_empty_output() {
 		$create_posts = $this->create_posts_with_terms();
@@ -78,15 +83,13 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		// these functions should not output anything.
 		$plugin              = km_rpbt_plugin();
 		$capability          = km_rpbt_plugin_supports( 'widget' );
-		$rel_posts           = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
-		$rel_posts2			 = km_rpbt_shortcode_get_related_posts( $posts[0], $taxonomies, $args );
+		$rel_posts           = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
 		$rel_posts3          = km_rpbt_get_related_posts( $_posts[0]->ID);
 		$cache_posts         = km_rpbt_cache_related_posts( $posts[0], $taxonomies, $args );
-		$_args               = km_rpbt_get_default_args();
+		$_args               = km_rpbt_get_query_vars();
 		$_args['taxonomies'] = $taxonomies;
 		$sanitize            = km_rpbt_sanitize_args( $_args );
 		$shortcode           = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
-		$sc_args             = km_rpbt_get_shortcode_atts();
 		$settings            = km_rpbt_get_default_settings('shortcode');
 		$settings['post_id'] = $posts[0];
 		$sc_validate         = km_rpbt_validate_shortcode_atts( $settings );
@@ -95,35 +98,28 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$taxonomies          = km_rpbt_get_taxonomies( $taxonomies );
 		$terms               = km_rpbt_get_terms( $_posts[0]->ID, $taxonomies );
 		$value               = km_rpbt_get_comma_separated_values( 'hello,world' );
-		$template            = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
-		$ids                 = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
+		$template            = km_rpbt_get_template( 'excerpts' );
+		$ids                 = km_rpbt_validate_ids( '1,2,1,string' );
 		$classes1            = km_rpbt_get_post_classes( $_posts[0], 'add-this-class' );
 		$classes2            = km_rpbt_sanitize_classes( $classes1 );
 		$classes3            = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );
 		$classes4            = km_rpbt_post_class();
-		$link                = km_rpbt_get_related_post_title_link( $_posts[0], true );
 		$assets              = km_rpbt_block_editor_assets();
 		$register            = km_rpbt_register_block_type();
 		$render              = km_rpbt_render_block_related_post( array() );
+		$link                = km_rpbt_get_post_link( $_posts[0], true );
+
+		// Deprecated functions
+		$rel_posts4 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$id2        = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
+		$template   = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
+		$rel_posts2 = km_rpbt_shortcode_get_related_posts( $posts[0], $taxonomies, $args );
+		$link       = km_rpbt_get_related_post_title_link( $_posts[0], true );
+		$sc_args    = km_rpbt_get_shortcode_atts();
+		$_args      = km_rpbt_get_default_args();
 
 		$out = ob_get_clean();
 
 		$this->assertEmpty( $out );
-	}
-
-
-	/**
-	 * Test if array with validated ids are returned.
-	 */
-	function test_km_rpbt_related_posts_by_taxonomy_validate_ids() {
-
-		$ids = array( 1, false, 'string', 2, 0, 1, 3 );
-
-		$validated_ids = km_rpbt_related_posts_by_taxonomy_validate_ids( $ids );
-		$this->assertEquals( array( 1, 2, 3 ), $validated_ids );
-
-		$ids = '1,string,2,0,###,2,3';
-		$validated_ids = km_rpbt_related_posts_by_taxonomy_validate_ids( $ids );
-		$this->assertEquals( array( 1, 2, 3 ), $validated_ids );
 	}
 }

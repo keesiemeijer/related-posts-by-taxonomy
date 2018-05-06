@@ -6,18 +6,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Gets related posts by taxonomy.
+ * Queries for related posts by taxonomy.
  *
- * @since 0.1
+ * @since 2.4.2
  *
  * @global object       $wpdb
  *
  * @param int          $post_id    The post id to get related posts for.
  * @param array|string $taxonomies The taxonomies to retrieve related posts from.
  * @param array|string $args       Optional. Change what is returned.
- * @return array                   Empty array if no related posts found. Array with post objects.
+ * @return array Array with post objects. Empty array if no related posts found.
  */
-function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'category', $args = '' ) {
+function km_rpbt_query_related_posts( $post_id = 0, $taxonomies = 'category', $args = '' ) {
 	global $wpdb;
 
 	// Get valid taxonomies.
@@ -298,6 +298,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 
 			$results[ $i ]->rpbt_current    = $post_id;
 			$results[ $i ]->rpbt_post_class = '';
+			$results[ $i ]->rpbt_type       = isset( $args['type'] ) ? $args['type'] : '';
 		}
 
 		if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {

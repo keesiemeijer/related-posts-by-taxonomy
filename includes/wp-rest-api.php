@@ -126,12 +126,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @return WP_Error|bool
 	 */
 	public function get_items_permissions_check( $request ) {
-
-		$plugin = km_rpbt_plugin();
-		$rest_api = $plugin && $plugin->plugin_supports( 'wp_rest_api' );
-		$user     = is_user_logged_in();
-
-		if ( $user || $rest_api ) {
+		if ( km_rpbt_plugin_supports( 'wp_rest_api' ) || is_user_logged_in() ) {
 			return true;
 		}
 

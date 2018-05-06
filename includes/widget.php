@@ -175,7 +175,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	function widget_output( $related_posts, $rpbt_args, $rpbt_widget_args ) {
 
 		/* get the template depending on the format  */
-		$template = km_rpbt_related_posts_by_taxonomy_template( (string) $rpbt_args['format'], $rpbt_args['type'] );
+		$template = km_rpbt_get_template( (string) $rpbt_args['format'], $rpbt_args['type'] );
 
 		if ( ! $template ) {
 			return;

@@ -141,7 +141,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				$post_ids                         = array_keys( (array) $cache['ids'] );
 				$this->debug['cache']             = 'current post cached';
 				$this->debug['cached post ids']   = ! empty( $post_ids ) ? implode( ', ', $post_ids ) : '';
-				$defaults                         = km_rpbt_get_default_args();
+				$defaults                         = km_rpbt_get_query_vars();
 				$this->debug['function args']     = array_intersect_key( $args , $defaults );
 				$taxonomies                       = km_rpbt_get_taxonomies( $cache_args['taxonomies'] );
 				$this->debug['cached taxonomies'] = implode( ', ', $taxonomies );
@@ -229,7 +229,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		}
 
 		/**
-		 * Gets query and function args from km_rpbt_related_posts_by_taxonomy().
+		 * Gets query and function args from km_rpbt_query_related_posts().
 		 * adds filter to related_posts_by_taxonomy.
 		 *
 		 * @since 2.0.0
@@ -258,7 +258,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			unset( $args['related_terms'] );
 
-			$defaults = km_rpbt_get_default_args();
+			$defaults = km_rpbt_get_query_vars();
 			$this->debug['function args'] = array_intersect_key( $args , $defaults );
 			$this->debug['related posts query'] = $query;
 
