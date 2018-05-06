@@ -101,7 +101,7 @@ function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
  */
 function km_rpbt_related_posts_by_taxonomy_template( $format = false, $type = false ) {
 	_deprecated_function( __FUNCTION__, '2.4.2', 'km_rpbt_get_template()' );
-	
+
 	return km_rpbt_get_template( $format, $type );
 }
 
@@ -135,4 +135,3 @@ function km_rpbt_get_related_post_title_link( $post, $title_attr = false ) {
 
 	return km_rpbt_get_post_link( $post, $title_attr );
 }
-
