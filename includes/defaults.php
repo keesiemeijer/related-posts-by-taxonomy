@@ -145,7 +145,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				return;
 			}
 
-			if ( $this->plugin_supports( 'wp_rest_api' ) ) {
+			if ( is_user_logged_in() || $this->plugin_supports( 'wp_rest_api' ) ) {
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/wp-rest-api.php';
 
 				$rest_api = new Related_Posts_By_Taxonomy_Rest_API();
@@ -162,14 +162,14 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 */
 		public function get_plugin_supports() {
 			$supports = array(
-				'widget'               => true,
-				'shortcode'            => true,
-				'shortcode_hide_empty' => true,
-				'widget_hide_empty'    => true,
-				'cache'                => false,
-				'display_cache_log'    => false,
-				'wp_rest_api'          => false,
-				'debug'                => false,
+				'widget'                   => true,
+				'shortcode'                => true,
+				'shortcode_hide_empty'     => true,
+				'widget_hide_empty'        => true,
+				'cache'                    => false,
+				'display_cache_log'        => false,
+				'wp_rest_api'              => false,
+				'debug'                    => false,
 			);
 
 			/**
@@ -351,10 +351,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				'wp_rest_api',
 			);
 
-			$_type = $type;
+			$_type         = $type;
+			$rest_api_type = ( 'wp_rest_api' === $type );
 
 			// wp_rest_api settings are the same as a shortcode.
-			$type  = ( 'wp_rest_api' === $type ) ? 'shortcode' : $type;
+			$type  = $rest_api_type ? 'shortcode' : $type;
 
 			// Common settings for the widget and shortcode.
 			$settings = array(
@@ -374,7 +375,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			// No default setting for post types.
 			$settings['post_types'] = '';
 
-			if ( ! in_array( $type, $types ) ) {
+			if ( ! in_array( $_type, $types ) ) {
 				return $settings;
 			}
 
@@ -397,8 +398,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			}
 
 			// Custom settings for the WP rest API.
-			if ( 'wp_rest_api' === $_type ) {
-				$settings['before_shortcode'] = '<div class="rpbt_wp_rest_api">';
+			if ( $rest_api_type ) {
+				$settings['before_shortcode'] = "<div class=\"rpbt_{$_type}\">";
 				$settings['after_shortcode']  = '</div>';
 			}
 
