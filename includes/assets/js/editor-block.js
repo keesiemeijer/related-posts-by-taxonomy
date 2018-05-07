@@ -2592,9 +2592,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * WordPress dependencies
  */
 var InspectorControls = wp.blocks.InspectorControls;
-var BaseControl = wp.components.BaseControl;
+var _wp$components = wp.components,
+    BaseControl = _wp$components.BaseControl,
+    PanelBody = _wp$components.PanelBody;
 var _wp$element = wp.element,
     Component = _wp$element.Component,
+    Fragment = _wp$element.Fragment,
     RawHTML = _wp$element.RawHTML,
     compose = _wp$element.compose;
 var _wp$i18n = wp.i18n,
@@ -2670,6 +2673,7 @@ var RelatedPostsBlock = function (_Component) {
 			var _props = this.props,
 			    attributes = _props.attributes,
 			    focus = _props.focus,
+			    isSelected = _props.isSelected,
 			    setAttributes = _props.setAttributes,
 			    editorData = _props.editorData;
 			var title = attributes.title,
@@ -2689,96 +2693,120 @@ var RelatedPostsBlock = function (_Component) {
 				checkedPostTypes = editorData.postType;
 			}
 
-			var inspectorControls = focus && wp.element.createElement(
+			var inspectorControls = wp.element.createElement(
 				InspectorControls,
-				{ key: 'inspector' },
+				null,
 				wp.element.createElement(
-					'div',
-					{ className: this.props.className + '-inspector-controls' },
+					PanelBody,
+					{ title: __('Related Posts Settings') },
 					wp.element.createElement(
 						'div',
-						null,
+						{ className: this.props.className + '-inspector-controls' },
 						wp.element.createElement(
-							'p',
+							'div',
 							null,
-							__('Note: The preview style is not the actual style used in the front end of your site.')
-						)
-					),
-					wp.element.createElement(
-						BaseControl,
-						{ label: __('Title'), id: titleID },
-						wp.element.createElement('input', { className: 'components-text-control__input',
-							type: 'text',
-							onChange: this.onTitleChange,
-							defaultValue: title,
-							id: titleID
+							wp.element.createElement(
+								'p',
+								null,
+								__('Note: The preview style is not the actual style used in the front end of your site.')
+							)
+						),
+						wp.element.createElement(
+							BaseControl,
+							{ label: __('Title'), id: titleID },
+							wp.element.createElement('input', { className: 'components-text-control__input',
+								type: 'text',
+								onChange: this.onTitleChange,
+								defaultValue: title,
+								id: titleID
+							})
+						),
+						wp.element.createElement(__WEBPACK_IMPORTED_MODULE_6__components_query_panel__["a" /* default */], {
+							postsPerPage: posts_per_page,
+							onPostsPerPageChange: function onPostsPerPageChange(value) {
+								// Don't allow 0 as a value.
+								var newValue = 0 === Number(value) ? 1 : value;
+								setAttributes({ posts_per_page: Number(newValue) });
+							},
+							taxonomies: taxonomies,
+							onTaxonomiesChange: function onTaxonomiesChange(value) {
+								return setAttributes({ taxonomies: value });
+							},
+							format: format,
+							onFormatChange: function onFormatChange(value) {
+								return setAttributes({ format: value });
+							},
+							imageSize: image_size,
+							onImageSizeChange: function onImageSizeChange(value) {
+								return setAttributes({ image_size: value });
+							},
+							columns: columns,
+							onColumnsChange: function onColumnsChange(value) {
+								return setAttributes({ columns: Number(value) });
+							},
+							postTypes: checkedPostTypes,
+							onPostTypesChange: this.updatePostTypes
 						})
-					),
-					wp.element.createElement(__WEBPACK_IMPORTED_MODULE_6__components_query_panel__["a" /* default */], {
-						postsPerPage: posts_per_page,
-						onPostsPerPageChange: function onPostsPerPageChange(value) {
-							// Don't allow 0 as a value.
-							var newValue = 0 === Number(value) ? 1 : value;
-							setAttributes({ posts_per_page: Number(newValue) });
-						},
-						taxonomies: taxonomies,
-						onTaxonomiesChange: function onTaxonomiesChange(value) {
-							return setAttributes({ taxonomies: value });
-						},
-						format: format,
-						onFormatChange: function onFormatChange(value) {
-							return setAttributes({ format: value });
-						},
-						imageSize: image_size,
-						onImageSizeChange: function onImageSizeChange(value) {
-							return setAttributes({ image_size: value });
-						},
-						columns: columns,
-						onColumnsChange: function onColumnsChange(value) {
-							return setAttributes({ columns: Number(value) });
-						},
-						postTypes: checkedPostTypes,
-						onPostTypesChange: this.updatePostTypes
-					})
+					)
 				)
 			);
 
-			var postsFound = 0;
-			var queryFinished = !__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default()(relatedPosts);
+			var showPosts = this.previewExpanded;
+			if (!showPosts) {
+				// Show posts when block is selected
+				showPosts = isSelected;
+			}
 
+			var html = '';
+			var postsFound = 0;
+
+			var queryFinished = !__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default()(relatedPosts);
 			if (queryFinished) {
 				if (relatedPosts.hasOwnProperty('posts')) {
 					postsFound = relatedPosts.posts.length ? relatedPosts.posts.length : 0;
 				}
+				if (relatedPosts.hasOwnProperty('rendered')) {
+					html = relatedPosts.rendered.length ? relatedPosts.rendered : '';
+				}
 			}
 
-			if (!focus && !this.previewExpanded || !postsFound) {
-				return [inspectorControls, wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__components_placeholder__["a" /* default */], {
-					className: className,
-					queryFinished: queryFinished,
-					postsFound: postsFound,
-					editorTerms: editorData.termIDs,
-					editorTaxonomies: editorData.taxonomyNames,
-					icon: 'megaphone',
-					label: __('Related Posts by Taxonomy')
-				})];
+			if (!showPosts || !html.length || !postsFound) {
+				return wp.element.createElement(
+					Fragment,
+					null,
+					inspectorControls,
+					wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__components_placeholder__["a" /* default */], {
+						className: className,
+						queryFinished: queryFinished,
+						postsFound: postsFound,
+						showPosts: showPosts,
+						html: html.length,
+						editorTerms: editorData.termIDs,
+						editorTaxonomies: editorData.taxonomyNames,
+						icon: 'megaphone',
+						label: __('Related Posts by Taxonomy')
+					})
+				);
 			}
-
-			var html = !__WEBPACK_IMPORTED_MODULE_1_lodash_isUndefined___default()(relatedPosts.rendered) ? relatedPosts.rendered : '';
 
 			// Add target blank to all links
 			// Todo: find a better way to do this
 			html = relatedPosts.rendered.replace(/\<a href\=/g, '<a target="_blank" href=');
 
-			return [inspectorControls, html && wp.element.createElement(
-				'div',
-				{ className: className },
+			return wp.element.createElement(
+				Fragment,
+				null,
+				inspectorControls,
 				wp.element.createElement(
-					RawHTML,
-					null,
-					html
+					'div',
+					{ className: className },
+					wp.element.createElement(
+						RawHTML,
+						null,
+						html
+					)
 				)
-			)];
+			);
 		}
 	}]);
 
@@ -3826,7 +3854,7 @@ var defaultCategory = Object(__WEBPACK_IMPORTED_MODULE_3__data__["b" /* getPlugi
 
 var relatedPosts = compose(__WEBPACK_IMPORTED_MODULE_4__editor__["a" /* editorData */], withAPIData(function (props) {
 	var editorData = props.editorData,
-	    focus = props.focus;
+	    isSelected = props.isSelected;
 	var _props$attributes = props.attributes,
 	    post_types = _props$attributes.post_types,
 	    title = _props$attributes.title,
@@ -3840,7 +3868,7 @@ var relatedPosts = compose(__WEBPACK_IMPORTED_MODULE_4__editor__["a" /* editorDa
 
 	var fields = '';
 
-	if (!focus && !previewExpanded) {
+	if (!isSelected && !previewExpanded) {
 		// Us a less expensive query if preview is not expanded by default
 		fields = 'ids';
 	}
@@ -6336,6 +6364,8 @@ function LoadingPlaceholder(_ref) {
 	var icon = _ref.icon,
 	    label = _ref.label,
 	    postsFound = _ref.postsFound,
+	    showPosts = _ref.showPosts,
+	    html = _ref.html,
 	    queryFinished = _ref.queryFinished,
 	    editorTerms = _ref.editorTerms,
 	    editorTaxonomies = _ref.editorTaxonomies,
@@ -6350,6 +6380,14 @@ function LoadingPlaceholder(_ref) {
 			'div',
 			null,
 			__('No related posts found')
+		);
+	}
+
+	if (queryFinished && postsFound && !html && showPosts) {
+		loading = wp.element.createElement(
+			'div',
+			null,
+			__('Something went wrong getting the related posts')
 		);
 	}
 

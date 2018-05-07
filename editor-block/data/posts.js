@@ -22,13 +22,13 @@ const defaultCategory = getPluginData('default_category');
 export const relatedPosts = compose(
 	editorData,
 	withAPIData( ( props ) => {
-		const { editorData, focus } = props;
+		const { editorData, isSelected } = props;
 		const { post_types, title, posts_per_page, format, image_size, columns } = props.attributes;
 		const type = 'editor_block';
 		let { taxonomies} = props.attributes;
 		let fields = '';
 
-		if ( ! focus && ! previewExpanded ) {
+		if ( ! isSelected && ! previewExpanded ) {
 			// Us a less expensive query if preview is not expanded by default
 			fields = 'ids';
 		}

@@ -8,8 +8,8 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 const { InspectorControls } = wp.blocks;
-const { BaseControl} = wp.components;
-const { Component, RawHTML, compose } = wp.element;
+const { BaseControl, PanelBody } = wp.components;
+const { Component, Fragment, RawHTML, compose } = wp.element;
 const { __, sprintf } = wp.i18n;
 
 /**
@@ -64,7 +64,7 @@ class RelatedPostsBlock extends Component {
 
 	render(){
 		const relatedPosts = this.props.relatedPosts.data;
-		const { attributes, focus, setAttributes, editorData } = this.props;
+		const { attributes, focus, isSelected, setAttributes, editorData } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
 		const titleID = 'inspector-text-control-' + this.instanceId;
 		const className = classnames( this.props.className, { 'rpbt-html5-gallery': ( 'thumbnails' === format ) && this.html5Gallery } );
@@ -75,79 +75,98 @@ class RelatedPostsBlock extends Component {
 			checkedPostTypes = editorData.postType;
 		}
 
-		const inspectorControls = focus && (
-			<InspectorControls key="inspector">
-				<div className={this.props.className + '-inspector-controls'}>
-					<div>
-						<p>
-						{ __( 'Note: The preview style is not the actual style used in the front end of your site.' ) }
-						</p>
-					</div>
-					<BaseControl label={ __( 'Title'  ) } id={titleID}>
-						<input className="components-text-control__input"
-							type="text"
-							onChange={this.onTitleChange}
-							defaultValue={title}
-							id={titleID}
-						/>
-					</BaseControl>
-					<QueryPanel
-						postsPerPage={posts_per_page}
-						onPostsPerPageChange={ ( value ) => {
-								// Don't allow 0 as a value.
-								const newValue = ( 0 === Number( value ) ) ? 1 : value;
-								setAttributes( { posts_per_page: Number( newValue ) } );
+		const inspectorControls = (
+			<InspectorControls>
+				<PanelBody title={ __( 'Related Posts Settings' ) }>
+					<div className={this.props.className + '-inspector-controls'}>
+						<div>
+							<p>
+							{ __( 'Note: The preview style is not the actual style used in the front end of your site.' ) }
+							</p>
+						</div>
+						<BaseControl label={ __( 'Title'  ) } id={titleID}>
+							<input className="components-text-control__input"
+								type="text"
+								onChange={this.onTitleChange}
+								defaultValue={title}
+								id={titleID}
+							/>
+						</BaseControl>
+						<QueryPanel
+							postsPerPage={posts_per_page}
+							onPostsPerPageChange={ ( value ) => {
+									// Don't allow 0 as a value.
+									const newValue = ( 0 === Number( value ) ) ? 1 : value;
+									setAttributes( { posts_per_page: Number( newValue ) } );
+								}
 							}
-						}
-						taxonomies={ taxonomies }
-						onTaxonomiesChange={ ( value ) => setAttributes( { taxonomies: value } ) }
-						format={ format }
-						onFormatChange={ ( value ) => setAttributes( { format: value } ) }
-						imageSize={image_size}
-						onImageSizeChange={ ( value ) => setAttributes( { image_size: value } ) }
-						columns={columns}
-						onColumnsChange={ ( value ) => setAttributes( { columns: Number( value ) } ) }
-						postTypes={ checkedPostTypes }
-						onPostTypesChange={ this.updatePostTypes }
-					/>
-				</div>
+							taxonomies={ taxonomies }
+							onTaxonomiesChange={ ( value ) => setAttributes( { taxonomies: value } ) }
+							format={ format }
+							onFormatChange={ ( value ) => setAttributes( { format: value } ) }
+							imageSize={image_size}
+							onImageSizeChange={ ( value ) => setAttributes( { image_size: value } ) }
+							columns={columns}
+							onColumnsChange={ ( value ) => setAttributes( { columns: Number( value ) } ) }
+							postTypes={ checkedPostTypes }
+							onPostTypesChange={ this.updatePostTypes }
+						/>
+					</div>
+				</PanelBody>
 			</InspectorControls>
 			);
 
-		let postsFound = 0;
-		const queryFinished = ! isUndefined( relatedPosts );
 
+		let showPosts = this.previewExpanded;
+		if( ! showPosts ) {
+			// Show posts when block is selected
+			showPosts = isSelected;
+		}
+
+		let html       = '';
+		let postsFound = 0;
+
+		const queryFinished = ! isUndefined( relatedPosts );
 		if( queryFinished ) {
 			if( relatedPosts.hasOwnProperty('posts') ) {
 				postsFound = relatedPosts.posts.length ? relatedPosts.posts.length : 0;
 			}
+			if( relatedPosts.hasOwnProperty('rendered') ) {
+				html = relatedPosts.rendered.length ? relatedPosts.rendered : '';
+			}
 		}
 
-		if ( ( ! focus && ! this.previewExpanded ) || ! postsFound  ) {
-			return [
-				inspectorControls,
-				<LoadingPlaceholder
-					className={className}
-					queryFinished={queryFinished}
-					postsFound={postsFound}
-					editorTerms={editorData.termIDs}
-					editorTaxonomies={editorData.taxonomyNames}
-					icon="megaphone"
-					label={ __( 'Related Posts by Taxonomy' ) }
-				/>
-			];
+		if ( ! showPosts || ! html.length || ! postsFound  ) {
+			return (
+				<Fragment>
+					{ inspectorControls }
+					<LoadingPlaceholder
+						className={className}
+						queryFinished={queryFinished}
+						postsFound={postsFound}
+						showPosts={showPosts}
+						html={html.length}
+						editorTerms={editorData.termIDs}
+						editorTaxonomies={editorData.taxonomyNames}
+						icon="megaphone"
+						label={ __( 'Related Posts by Taxonomy' ) }
+					/>
+				</Fragment>
+			);
 		}
-
-		let html = ! isUndefined( relatedPosts.rendered ) ? relatedPosts.rendered : '';
 
 		// Add target blank to all links
 		// Todo: find a better way to do this
 		html = relatedPosts.rendered.replace(/\<a href\=/g, '<a target="_blank" href=');
 
-		return [
-			inspectorControls,
-			html && (<div className={className}><RawHTML>{html}</RawHTML></div>)
-		];
+		return (
+				<Fragment>
+					{ inspectorControls }
+					<div className={className}>
+						<RawHTML>{html}</RawHTML>
+					</div>
+				</Fragment>
+		);
 	}
 }
 

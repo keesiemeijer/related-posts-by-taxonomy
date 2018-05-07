@@ -8,6 +8,8 @@ function LoadingPlaceholder( {
 	icon,
 	label,
 	postsFound,
+	showPosts,
+	html,
 	queryFinished,
 	editorTerms,
 	editorTaxonomies,
@@ -19,6 +21,10 @@ function LoadingPlaceholder( {
 
 	if( queryFinished && ! postsFound ) {
 		loading = (<div>{__( 'No related posts found' )}</div>);
+	}
+
+	if( queryFinished && postsFound && ( ! html && showPosts ) ) {
+		loading = (<div>{__( 'Something went wrong getting the related posts' )}</div>);
 	}
 
 	if ( ! editorTerms.length ) {
