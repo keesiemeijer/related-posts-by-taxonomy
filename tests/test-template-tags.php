@@ -105,7 +105,30 @@ EOF;
 	 * Test getting the link for a related post title
 	 * used in the templates
 	 */
-	function test_km_rpbt_get_post_link() {
+	function test_rpbt_get_post_link_global_post() {
+		$link2 = km_rpbt_get_post_link();
+		if ( $GLOBALS['post'] ) {
+			$this->assertNotEmpty( $link2 );
+		} else {
+			$this->assertEmpty( $link2 );
+		}
+	}
+
+	/**
+	 * Test getting the link for a related post title
+	 * used in the templates
+	 */
+	function test_rpbt_get_post_link_invalid_argument() {
+		// get_post() returns null if a post is not found
+		$link = km_rpbt_get_post_link( 'lala' );
+		$this->assertEmpty( $link );
+	}
+
+	/**
+	 * Test getting the link for a related post title
+	 * used in the templates
+	 */
+	function test_km_rpbt_get_post_link_output() {
 		$posts = $this->create_posts();
 		$posts = get_posts();
 

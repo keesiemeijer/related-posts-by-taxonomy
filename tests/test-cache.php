@@ -32,9 +32,11 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_cache_setup() {
 		$this->setup_cache();
-		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Cache' )  );
-		$this->assertTrue( isset( $this->plugin->cache ) );
-		$this->assertTrue( $this->plugin->cache instanceof Related_Posts_By_Taxonomy_Cache );
+		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Cache' ), "Class doesn't exist"  );
+		$this->assertTrue( km_rpbt_is_cache_loaded( $this->plugin ), 'Cache not loaded' );
+		$this->assertTrue( km_rpbt_plugin_supports( 'cache' ), 'Cache not supported' );
+		$transient = get_transient( 'rpbt_related_posts_flush_cache' );
+		$this->assertSame( 1, $transient, "Cache transient wasn't set" );
 	}
 
 
@@ -147,6 +149,42 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( $cache_ids, $related );
 	}
 
+	/**
+	 * Test if the default properties exist for cached posts
+	 */
+	function test_default_post_properties() {
+		$this->setup_cache();
+
+		// Cache should be loaded after setup
+		$this->assertTrue( km_rpbt_is_cache_loaded(), 'cache is not loaded' );
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// Cache posts
+		$cached_posts = km_rpbt_cache_related_posts( $posts[1] );
+
+		// Get posts from cache
+		$from_cache   = km_rpbt_get_related_posts( $posts[1] );
+
+		$this->assertSame( $cached_posts[0]->ID, $from_cache[0]->ID );
+		$this->assertTrue( isset( $from_cache[0]->termcount ) && $from_cache[0]->termcount , 'termcount failed' );
+		$this->assertTrue( isset( $from_cache[0]->rpbt_current ) && $from_cache[0]->rpbt_current, 'rpbt_current failed' );
+		$this->assertTrue( isset( $from_cache[0]->rpbt_post_class ), 'rpbt_post_class failed' );
+		$this->assertTrue( isset( $from_cache[0]->rpbt_type ), 'rpbt_type failed' );
+	}
+
+	/**
+	 * Test if cache posts manually returns false if the cache is not supported.
+	 */
+	function test_cache_manually_without_cache(){
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// Cache posts
+		$cached_posts = km_rpbt_cache_related_posts( $posts[1] );
+		$this->assertFalse( $cached_posts );
+	}
 
 	/**
 	 * test cache for custom post type and custom taxonomy.
