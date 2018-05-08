@@ -118,8 +118,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test manually setting the cache for a post id.
-	 *
-	 * @depends test_cache_setup
 	 */
 	function test_manually_cache_related_posts() {
 		global $wpdb;

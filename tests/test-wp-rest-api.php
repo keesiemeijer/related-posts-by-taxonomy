@@ -664,8 +664,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * test related posts for post type post
-	 *
-	 * @group fail
 	 */
 	function test_include_self_orderby_rand() {
 		$this->setup_posts();
