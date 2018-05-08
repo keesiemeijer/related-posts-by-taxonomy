@@ -278,7 +278,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			if ( ! empty( $results ) ) {
 				if ( isset( $results[0]->ID ) ) {
-					$this->debug['related post ids found'] = wp_list_pluck( $results, 'ID' );
+					$post_ids = wp_list_pluck( $results, 'ID' );
+					$this->debug['related post ids found'] = ! empty( $post_ids ) ? implode( ', ', $post_ids ) : '';
 				} else {
 					$this->debug['related post ids found']['error'] = 'results found but could not get post IDs';
 					$this->debug['related post ids found']['results'] = $results;
