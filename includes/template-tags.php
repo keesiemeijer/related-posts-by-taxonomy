@@ -116,10 +116,10 @@ function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
  *
  * @since 2.4.0
  *
- * @param object $post       Post object.
- * @param bool   $title_attr Whether to use a title attribute in the link. Default false.
+ * @param int|WP_Post|null $post       Optional. Post ID or post object. Default is global $post.
+ * @param bool             $title_attr Whether to use a title attribute in the link. Default false.
  */
-function km_rpbt_post_link( $post, $title_attr = false ) {
+function km_rpbt_post_link( $post = null, $title_attr = false ) {
 	echo km_rpbt_get_post_link( $post, $title_attr );
 }
 
@@ -128,11 +128,18 @@ function km_rpbt_post_link( $post, $title_attr = false ) {
  *
  * @since 2.4.0
  *
- * @param object $post       Post object.
- * @param bool   $title_attr Whether to use a title attribute in the link. Default false.
+ * @param int|WP_Post|null $post       Optional. Post ID or post object. Default is global $post.
+ * @param bool             $title_attr Whether to use a title attribute in the link. Default false.
  * @return string Related post link HTML.
  */
-function km_rpbt_get_post_link( $post, $title_attr = false ) {
+function km_rpbt_get_post_link( $post = null, $title_attr = false ) {
+
+	// get_the_title() and get_permalink() functions use the global $post object
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return '';
+	}
+
 	$link = '';
 	$title = get_the_title( $post );
 
