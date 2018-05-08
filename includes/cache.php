@@ -67,8 +67,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			$this->cache        = $this->get_cache_options();
 
 			// Enable cache for the shortcode and widget.
-			add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'add_cache' ) );
-			add_filter( 'related_posts_by_taxonomy_widget_args',    array( $this, 'add_cache' ) );
+			add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'add_cache' ), 9 );
+			add_filter( 'related_posts_by_taxonomy_widget_args',    array( $this, 'add_cache' ), 9 );
 
 			if ( $this->cache['display_cache_log'] ) {
 				add_action( 'admin_bar_menu', array( $this, 'display_cache_log' ), 999 );
