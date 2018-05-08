@@ -178,15 +178,15 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 		return $related_posts;
 	}
 
-	/* restricted arguments */
-	unset( $query_args['post_id'], $query_args['taxonomies'] );
-
-	$cache = isset( $plugin->cache ) && $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
-	if ( $cache && ( isset( $args['cache'] ) && $args['cache'] ) ) {
+	if ( km_rpbt_plugin_supports( 'cache' ) && km_rpbt_is_cache_loaded( $plugin ) ) {
+		// Get related posts from cache.
 		$related_posts = $plugin->cache->get_related_posts( $args );
 	} else {
+		/* restricted arguments */
+		unset( $query_args['post_id'], $query_args['taxonomies'] );
+
 		/* get related posts */
-		$related_posts = km_rpbt_query_related_posts( $post_id, $args['taxonomies'], $query_args );
+		$related_posts = km_rpbt_query_related_posts( $args['post_id'], $args['taxonomies'], $query_args );
 	}
 
 	$related_posts = km_rpbt_add_post_classes( $related_posts, $args );
@@ -375,6 +375,20 @@ function km_rpbt_sanitize_args( $args ) {
 }
 
 /**
+ * Checks if the cache class is loaded
+ *
+ * @param object $plugin Related_Posts_By_Taxonomy_Cache object. Default null.
+ * @return bool True if the cache class is loaded.
+ */
+function km_rpbt_is_cache_loaded( $plugin = null ) {
+	if ( ! $plugin ) {
+		$plugin = km_rpbt_plugin();
+	}
+
+	return isset( $plugin->cache ) && $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
+}
+
+/**
  * Public function to cache related posts.
  * Uses the same arguments as the km_rpbt_query_related_posts() function.
  *
@@ -384,12 +398,9 @@ function km_rpbt_sanitize_args( $args ) {
  * @param array|string $args       Optional. Cache arguments.
  * @return array Array with cached related posts objects or false if no posts where cached.
  */
-function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $args = '' ) {
-
-	$plugin = km_rpbt_plugin();
-
-	// Check if the Cache class is instantiated.
-	if ( $plugin && ! ( $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache ) ) {
+function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $args = array() ) {
+	// Check if cache is loaded.
+	if ( ! ( km_rpbt_plugin_supports( 'cache' ) && km_rpbt_is_cache_loaded() ) ) {
 		return false;
 	}
 
@@ -397,12 +408,14 @@ function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $a
 	$args['post_id']    = $post_id;
 	$args['taxonomies'] = $taxonomies;
 
-	// Cache related posts if not in cache.
-	return $plugin->cache->get_related_posts( $args );
+	// Caches related posts if not in cache.
+	return km_rpbt_get_related_posts( $post_id, $args );
 }
 
 /**
  * Public function to flush the persistent cache.
+ *
+ * Note: This function doesn't check if the plugin supports the cache.
  *
  * @since 2.1
  * @return int|bool Returns number of deleted rows or false on failure.
@@ -411,8 +424,8 @@ function km_rpbt_flush_cache() {
 
 	$plugin = km_rpbt_plugin();
 
-	// Check if the cache class is instantiated.
-	if ( $plugin && ( $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache ) ) {
+	// Check if the cache class is loaded and instantiated.
+	if ( km_rpbt_is_cache_loaded( $plugin ) ) {
 		return $plugin->cache->flush_cache();
 	}
 
