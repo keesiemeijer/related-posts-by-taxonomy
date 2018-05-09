@@ -57,18 +57,20 @@ function km_rpbt_plugin_supports( $type ) {
  * @return array Array with related post objects.
  */
 function km_rpbt_get_related_posts( $post_id, $args = array() ) {
+	$plugin = km_rpbt_plugin();
 
-	// Returns an array with arguments.
+	// Check if taxonomies are set.
+	if ( ! ( isset( $args['taxonomies'] ) && $args['taxonomies'] ) ) {
+
+		// Default to all taxonomies.
+		$args['taxonomies'] = km_rpbt_get_all_taxonomies();
+	}
+
+	// Returns an array with sanitized arguments.
 	$args = km_rpbt_sanitize_args( $args );
 
+	// Set post_id the same as used for the $post_id parameter
 	$args['post_id'] = absint( $post_id );
-
-	$plugin = km_rpbt_plugin();
-	if ( ! isset( $args['taxonomies'] ) ) {
-		// Default to all taxonomies or catecories.
-		$all_tax            = isset( $plugin->all_tax ) ? $plugin->all_tax : 'category';
-		$args['taxonomies'] = km_rpbt_get_taxonomies( $all_tax );
-	}
 
 	$query_args = $args;
 
@@ -189,6 +191,18 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
 	$taxonomies = km_rpbt_get_comma_separated_values( $taxonomies );
 
 	return array_values( array_filter( $taxonomies, 'taxonomy_exists' ) );
+}
+
+/**
+ * Get all public taxonomies found by this plugin.
+ *
+ * @since 2.4.2
+ *
+ * @return array Array with all public taxonomies.
+ */
+function km_rpbt_get_all_taxonomies() {
+	$plugin = km_rpbt_plugin();
+	return isset( $plugin->all_tax ) ? km_rpbt_get_taxonomies( $plugin->all_tax ) : array();
 }
 
 /**
