@@ -149,7 +149,6 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @return mixed
 	 */
 	public function prepare_item_for_response( $args, $request ) {
-
 		$related_posts = $this->get_related_posts( $args );
 		$fields        = strtolower( $args['fields'] );
 

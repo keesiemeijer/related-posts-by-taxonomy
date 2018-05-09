@@ -404,7 +404,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * called by filter hook 'query_vars'
 	 *
 	 * @since 0.2.1
-	 * @param unknown $query_vars Query var.
+	 * @param array $query_vars Array with query vars.
 	 */
 	function add_related_post_id( $query_vars ) {
 		$query_vars[] = 'km_rpbt_related_post_id';

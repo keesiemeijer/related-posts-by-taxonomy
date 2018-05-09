@@ -50,6 +50,11 @@ function km_rpbt_plugin_supports( $type ) {
 /**
  * Get related posts from database or cache.
  *
+ * Used by the widget, shortcode and rest api.
+ *
+ * If taxonomies are not set in the arguments it gets the
+ * related posts from all public taxonomies.
+ *
  * @since  2.4.2
  *
  * @param array        $post_id The post id to get related posts for.
@@ -181,7 +186,6 @@ function km_rpbt_get_post_types( $post_types = '' ) {
  * @return array        Array with taxonomy names.
  */
 function km_rpbt_get_taxonomies( $taxonomies ) {
-
 	$plugin  = km_rpbt_plugin();
 
 	if ( $plugin && ( $taxonomies === $plugin->all_tax ) ) {
