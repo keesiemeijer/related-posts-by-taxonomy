@@ -61,7 +61,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_cache_filter_display_cache_log() {
 		$this->setup_cache();
-		$this->assertFalse( $this->plugin->cache->cache['display_cache_log']  );
+		$this->assertFalse( $this->plugin->cache->cache['display_log']  );
 	}
 
 

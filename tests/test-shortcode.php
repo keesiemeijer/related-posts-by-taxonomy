@@ -34,7 +34,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 
 		$expected = array(
 			'post_id'          => '',
-			'taxonomies'       => 'all',
+			'taxonomies'       => '',
 			'before_shortcode' => '<div class="rpbt_shortcode">',
 			'after_shortcode'  => '</div>',
 			'before_title'     => '<h3>',
@@ -54,6 +54,10 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$expected['post_types'] = '';
 
 		$atts = km_rpbt_get_default_settings( 'shortcode' );
+
+		ksort( $expected );
+		ksort( $atts );
+
 		$this->assertEquals( $expected, $atts );
 	}
 

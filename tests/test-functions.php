@@ -60,6 +60,9 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 
 		$args = km_rpbt_get_query_vars();
 
+		ksort( $expected );
+		ksort( $args );
+
 		$this->assertEquals( $expected, $args );
 	}
 
@@ -97,7 +100,12 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 			'terms'          => 'term-a,term-b,',
 		);
 
-		$this->assertEquals( $expected, km_rpbt_sanitize_args( $args ) );
+		$sanitized_args = km_rpbt_sanitize_args( $args );
+
+		ksort( $expected );
+		ksort( $sanitized_args );
+
+		$this->assertEquals( $expected, $sanitized_args );
 	}
 
 	/**
@@ -114,7 +122,12 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 		$expected = array_merge( $expected, $sanitized );
 
 		$args = 'posts_per_page=3&fields=ids&public_only=true&terms=1,2,2,false,3';
-		$this->assertEquals( $expected, km_rpbt_sanitize_args( $args ) );
+		$sanitized_args = km_rpbt_sanitize_args( $args );
+
+		ksort( $expected );
+		ksort( $sanitized_args );
+
+		$this->assertEquals( $expected, $sanitized_args );
 	}
 
 	/**
