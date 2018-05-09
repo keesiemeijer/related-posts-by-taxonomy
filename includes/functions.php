@@ -246,60 +246,6 @@ function km_rpbt_get_comma_separated_values( $value ) {
 }
 
 /**
- * Returns sanitized arguments.
- *
- * @since 2.1
- * @param array $args Arguments to be sanitized.
- * @return array Array with sanitized arguments.
- */
-function km_rpbt_sanitize_args( $args ) {
-
-	$defaults = km_rpbt_get_query_vars();
-	$args     = wp_parse_args( $args, $defaults );
-
-	// Arrays with strings.
-	if ( isset( $args['taxonomies'] ) ) {
-		$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
-	}
-
-	$post_types         = km_rpbt_get_post_types( $args['post_types'] );
-	$args['post_types'] = ! empty( $post_types ) ? $post_types : array( 'post' );
-
-	// Arrays with integers.
-	$ids = array( 'exclude_terms', 'include_terms', 'exclude_posts', 'terms' );
-	foreach ( $ids as $id ) {
-		$args[ $id ] = km_rpbt_validate_ids( $args[ $id ] );
-	}
-
-	// Strings.
-	$args['fields']  = is_string( $args['fields'] ) ? $args['fields'] : '';
-	$args['orderby'] = is_string( $args['orderby'] ) ? $args['orderby'] : '';
-	$args['order']   = is_string( $args['order'] ) ? $args['order'] : '';
-
-	// Integers.
-	$args['limit_year']     = absint( $args['limit_year'] );
-	$args['limit_month']    = absint( $args['limit_month'] );
-	$args['limit_posts']    = (int) $args['limit_posts'];
-	$args['posts_per_page'] = (int) $args['posts_per_page'];
-
-	if ( isset( $args['post_id'] ) ) {
-		$args['post_id'] = absint( $args['post_id'] );
-	}
-
-	// Booleans
-	// True for true, 1, "1", "true", "on", "yes". Everything else return false.
-	$args['related']        = (bool) filter_var( $args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	$args['post_thumbnail'] = (bool) filter_var( $args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	$args['public_only']    = (bool) filter_var( $args['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-
-	if ( 'regular_order' !== $args['include_self'] ) {
-		$args['include_self'] = (bool) filter_var( $args['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	}
-
-	return $args;
-}
-
-/**
  * Checks if the cache class is loaded
  *
  * @param object $plugin Related_Posts_By_Taxonomy_Cache object. Default null.
