@@ -388,9 +388,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			remove_filter( 'related_posts_by_taxonomy_widget_hide_empty',    array( $this, 'hide_empty' ), 99 );
 			remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'hide_empty' ), 99 );
 
-			$supports = $this->plugin->get_plugin_supports();
+			$supports = km_rpbt_get_plugin_supports();
 			foreach ( $supports as $key => $support ) {
-				$supports[ $key ] = $this->plugin->plugin_supports( $key );
+				$supports[ $key ] = km_rpbt_plugin_supports( $key );
 			}
 
 			return $supports;

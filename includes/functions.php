@@ -26,114 +26,25 @@ function km_rpbt_plugin() {
  *
  * @since  2.4.2
  *
- * @param string $support Feature
+ * @param string $type Type of feature.
  * @return bool True if the feature is supported.
  */
-function km_rpbt_plugin_supports( $support ) {
-	$plugin = km_rpbt_plugin();
-	return $plugin && $plugin->plugin_supports( $support );
-}
+function km_rpbt_plugin_supports( $type ) {
+	$supports = km_rpbt_get_plugin_supports();
 
-/**
- * Returns default arguments.
- *
- * @since 2.1
- *
- * @return array Array with default arguments.
- */
-function km_rpbt_get_query_vars() {
-
-	return array(
-		'post_types'     => 'post',
-		'posts_per_page' => 5,
-		'order'          => 'DESC',
-		'fields'         => '',
-		'limit_posts'    => -1,
-		'limit_year'     => '',
-		'limit_month'    => '',
-		'orderby'        => 'post_date',
-		'terms'          => '',
-		'exclude_terms'  => '',
-		'include_terms'  => '',
-		'exclude_posts'  => '',
-		'post_thumbnail' => false,
-		'related'        => true,
-		'public_only'    => false,
-		'include_self'   => false,
-	);
-}
-
-/**
- * Returns the default settings.
- *
- * @since 2.2.2
- * @param unknown $type Type of settings. Accepts 'shortcode', widget, 'all'.
- * @return array|false Array with default settings by type 'shortcode', 'widget' or 'all'.
- */
-function km_rpbt_get_default_settings( $type = '' ) {
-	// Settings for the query.
-	$defaults = km_rpbt_get_query_vars();
-	$types    = array(
-		'shortcode',
-		'widget',
-		'wp_rest_api',
-	);
-
-	$_type         = $type;
-	$rest_api_type = ( 'wp_rest_api' === $type );
-
-	// wp_rest_api settings are the same as a shortcode.
-	$type  = $rest_api_type ? 'shortcode' : $type;
-
-	// Common settings for the widget and shortcode.
-	$settings = array(
-		'post_id'        => '',
-		'taxonomies'     => 'all',
-		'title'          => __( 'Related Posts', 'related-posts-by-taxonomy' ),
-		'format'         => 'links',
-		'image_size'     => 'thumbnail',
-		'columns'        => 3,
-		'link_caption'   => false,
-		'caption'        => 'post_title',
-		'post_class'     => '',
-	);
-
-	$settings = array_merge( $defaults, $settings );
-
-	// No default setting for post types.
-	$settings['post_types'] = '';
-
-	if ( ! in_array( $_type, $types ) ) {
-		return $settings;
+	if ( ! in_array( $type , array_keys( $supports ) ) ) {
+		return false;
 	}
 
-	// Custom settings for the widget.
-	if ( ( 'widget' === $type ) ) {
-		$settings['random']            = false;
-		$settings['singular_template'] = false;
-	}
-
-	// Custom settings for the shortcode.
-	if ( ( 'shortcode' === $type ) ) {
-		$shortcode_args = array(
-			'before_shortcode' => '<div class="rpbt_shortcode">',
-			'after_shortcode'  => '</div>',
-			'before_title'     => '<h3>',
-			'after_title'      => '</h3>',
-		);
-
-		$settings = array_merge( $settings, $shortcode_args );
-	}
-
-	// Custom settings for the WP rest API.
-	if ( $rest_api_type ) {
-		$settings['before_shortcode'] = "<div class=\"rpbt_{$_type}\">";
-		$settings['after_shortcode']  = '</div>';
-	}
-
-	$settings['type'] = $_type;
-
-	return $settings;
+	/**
+	 * Filter whether to support cache, wp_rest_api or debug.
+	 *
+	 * The dynamic portion of the hook name, `$type`, refers to the
+	 * type type of support ('cache', 'wp_rest_api', 'etc).
+	 *
+	 * @param bool $bool Add support if true. Default false
+	 */
+	return apply_filters( "related_posts_by_taxonomy_{$type}", (bool) $supports[ $type ] );
 }
 
 /**

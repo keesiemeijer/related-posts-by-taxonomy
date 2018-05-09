@@ -64,13 +64,13 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		private function setup() {
 
 			$this->default_args = km_rpbt_get_query_vars();
-			$this->cache        = $this->get_cache_options();
+			$this->cache        = $this->get_cache_settings();
 
 			// Enable cache for the shortcode and widget.
 			add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'add_cache' ), 9 );
 			add_filter( 'related_posts_by_taxonomy_widget_args',    array( $this, 'add_cache' ), 9 );
 
-			if ( $this->cache['display_cache_log'] ) {
+			if ( $this->cache['display_log'] ) {
 				add_action( 'admin_bar_menu', array( $this, 'display_cache_log' ), 999 );
 			}
 
@@ -107,20 +107,17 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 
 		/**
-		 * Get the cache arguments.
+		 * Get the cache settings.
 		 *
 		 * @since 2.0.1
+		 * @since 2.4.2 Moved logic to km_rpbt_get_default_settings().
+		 *
 		 * @return array Array with cache arguments.
 		 */
-		private function get_cache_options() {
-			$cache_log = (bool) km_rpbt_plugin_supports( 'display_cache_log' );
+		private function get_cache_settings() {
+			$settings = km_rpbt_get_default_settings( 'cache' );
 
-			return apply_filters( 'related_posts_by_taxonomy_cache_args', array(
-					'expiration'        => DAY_IN_SECONDS * 5, // Five days.
-					'flush_manually'    => false,
-					'display_cache_log' => $cache_log,
-				)
-			);
+			return apply_filters( 'related_posts_by_taxonomy_cache_args', $settings );
 		}
 
 

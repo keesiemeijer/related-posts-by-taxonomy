@@ -154,63 +154,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		}
 
 		/**
-		 * Get the features this plugin supports
-		 *
-		 * @since  2.3.1
-		 *
-		 * @return Array Array with plugin support types
-		 */
-		public function get_plugin_supports() {
-			$supports = array(
-				'widget'               => true,
-				'shortcode'            => true,
-				'shortcode_hide_empty' => true,
-				'widget_hide_empty'    => true,
-				'cache'                => false,
-				'display_cache_log'    => false,
-				'wp_rest_api'          => false,
-				'debug'                => false,
-			);
-
-			/**
-			 * Filter plugin features.
-			 *
-			 * @since 2.3.1
-			 *
-			 * @param array $support Array with all supported plugin features.
-			 */
-			$plugin = apply_filters( 'related_posts_by_taxonomy_supports', $supports );
-
-			return array_merge( $supports, (array) $plugin );
-		}
-
-		/**
-		 * Adds opt in support with a filter for cache, WP REST API and debug.
-		 *
-		 * @since  2.3.0
-		 *
-		 * @param string $type Type of support ('cache', 'wp_rest_api', etc.).
-		 * @return bool True if set to true with a filter. Default false.
-		 */
-		public function plugin_supports( $type = '' ) {
-			$supports = $this->get_plugin_supports();
-
-			if ( ! in_array( $type , array_keys( $supports ) ) ) {
-				return false;
-			}
-
-			/**
-			 * Filter whether to support cache, wp_rest_api or debug.
-			 *
-			 * The dynamic portion of the hook name, `$type`, refers to the
-			 * type type of support ('cache', 'wp_rest_api', 'etc).
-			 *
-			 * @param bool $bool Add support if true. Default false
-			 */
-			return apply_filters( "related_posts_by_taxonomy_{$type}", (bool) $supports[ $type ] );
-		}
-
-		/**
 		 * Returns all public post types.
 		 *
 		 * @since 0.2.1
@@ -338,13 +281,38 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * Returns default settings for the shortcode and widget.
 		 *
 		 * @since 2.2.2
-		 * @since 2.4.2 Moved logic to a function.
+		 * @since 2.4.2 Moved logic to km_rpbt_get_default_settings().
 		 *
 		 * @param tring $type Type of settings. Choose from 'widget', 'shortcode', 'wp_rest_api' or 'all'.
 		 * @return string ype of settings. Values can be 'shortcode' or 'widget'
 		 */
 		public function get_default_settings( $type = '' ) {
 			return km_rpbt_get_default_settings( $type );
+		}
+
+		/**
+		 * Get the features this plugin supports
+		 *
+		 * @since 2.3.1
+		 * @since 2.4.2 Moved logic to a km_rpbt_get_plugin_supports().
+		 *
+		 * @return Array Array with plugin support types
+		 */
+		public function get_plugin_supports() {
+			return km_rpbt_get_plugin_supports();
+		}
+
+		/**
+		 * Adds opt in support with a filter for cache, WP REST API and debug.
+		 *
+		 * @since 2.3.0
+		 * @since 2.4.2 Moved logic to km_rpbt_plugin_supports().
+		 *
+		 * @param string $type Type of support ('cache', 'wp_rest_api', etc.).
+		 * @return bool True if set to true with a filter. Default false.
+		 */
+		public function plugin_supports( $type = '' ) {
+			return km_rpbt_plugin_supports( $type );
 		}
 
 	} // end class

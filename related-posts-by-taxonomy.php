@@ -52,6 +52,9 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		// Defaults used by this plugin.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/defaults.php';
 
+		// Defaults used by this plugin.
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/settings.php';
+
 		// Deprecated functions.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/deprecated.php';
 
