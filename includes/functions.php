@@ -91,7 +91,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 		return $related_posts;
 	}
 
-	if ( km_rpbt_plugin_supports( 'cache' ) && km_rpbt_is_cache_loaded( $plugin ) ) {
+	if ( km_rpbt_plugin_supports( 'cache' ) && km_rpbt_is_cache_loaded() ) {
 		// Get related posts from cache.
 		$related_posts = $plugin->cache->get_related_posts( $args );
 	} else {
@@ -305,11 +305,8 @@ function km_rpbt_sanitize_args( $args ) {
  * @param object $plugin Related_Posts_By_Taxonomy_Cache object. Default null.
  * @return bool True if the cache class is loaded.
  */
-function km_rpbt_is_cache_loaded( $plugin = null ) {
-	if ( ! $plugin ) {
-		$plugin = km_rpbt_plugin();
-	}
-
+function km_rpbt_is_cache_loaded() {
+	$plugin = km_rpbt_plugin();
 	return isset( $plugin->cache ) && $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
 }
 
