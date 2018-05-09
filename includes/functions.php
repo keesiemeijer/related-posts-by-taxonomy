@@ -126,8 +126,14 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	$terms = array();
 	$args   = km_rpbt_sanitize_args( $args );
 	if ( $args['terms'] ) {
-		// Return sanitized terms.
-		return $args['terms'];
+		$term_args = array(
+			'include'  => $args['terms'],
+			'taxonomy' => $taxonomies,
+			'fields'   => 'ids',
+		);
+
+		// Filter out terms not assigned to the taxonomies
+		return get_terms( $term_args );
 	}
 
 	if ( ! $args['related'] && ! empty( $args['include_terms'] ) ) {
