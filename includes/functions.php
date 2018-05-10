@@ -137,7 +137,9 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 		);
 
 		// Filter out terms not assigned to the taxonomies
-		return get_terms( $term_args );
+		$terms = get_terms( $term_args );
+
+		return ! is_wp_error( $terms ) ? $terms : array();
 	}
 
 	if ( ! $args['related'] && ! empty( $args['include_terms'] ) ) {
