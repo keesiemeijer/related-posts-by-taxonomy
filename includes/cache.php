@@ -201,18 +201,27 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// Restricted query arguments.
 			unset( $query_args['taxonomies'], $query_args['post_id'], $query_args['fields'] );
 
-			// Add a filter to get the current arguments with related terms found.
-			add_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
+			/** This filter is documented in includes/functions.php */
+			$posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $args );
 
-			// Get related posts.
-			$posts = km_rpbt_query_related_posts( $args['post_id'], $args['taxonomies'], $query_args );
+			if ( ! is_array( $posts ) ) {
+				// Add a filter to get the current arguments with related terms found.
+				add_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
 
-			// Remove the filter.
-			remove_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
+				// Get related posts.
+				$posts = km_rpbt_query_related_posts( $args['post_id'], $args['taxonomies'], $query_args );
+
+				// Remove the filter.
+				remove_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
+			}
 
 			// Create the array with cached post ids
 			// and add the related term count.
 			foreach ( $posts as $post ) {
+				if ( ! isset( $post->ID ) ) {
+					continue;
+				}
+
 				$cache['ids'][ $post->ID ] = isset( $post->termcount ) ? $post->termcount : 0;
 			}
 
@@ -283,15 +292,20 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				'update_post_meta_cache' => false,
 			);
 
-			// Get related posts with get_posts().
-			$posts = get_posts( $wp_query_args );
+			/** This filter is documented in includes/functions.php */
+			$posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $args );
+
+			if ( ! is_array( $posts ) ) {
+				// Get related posts with get_posts().
+				$posts = get_posts( $wp_query_args );
+			}
 
 			if ( ! empty( $posts ) ) {
 				$query_args['termcount'] = array();
 
 				// Add defaults back to the found posts.
 				foreach ( $posts as $key => $post ) {
-					if ( isset( $cache['ids'][ $post->ID ] ) ) {
+					if ( isset( $post->ID ) && isset( $cache['ids'][ $post->ID ] ) ) {
 						$posts[ $key ]->termcount  = $cache['ids'][ $post->ID ];
 						$query_args['termcount'][] = $cache['ids'][ $post->ID ];
 					}
