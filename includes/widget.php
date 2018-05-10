@@ -18,7 +18,6 @@ function km_rpbt_related_posts_by_taxonomy_widget() {
 	}
 }
 
-
 /**
  * Related_Posts_By_Taxonomy widget class.
  *
@@ -74,7 +73,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 	}
 
-
 	/**
 	 * Displays the related posts on the front end.
 	 *
@@ -119,7 +117,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		 *
 		 * @since 0.1
 		 *
-		 * @param string $args                Widget instance.
+		 * @param string $args        Widget instance.
 		 * @param string $widget_args Widget arguments.
 		 */
 		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $args, $widget_args );
@@ -202,7 +200,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		echo $rpbt_widget_args['after_widget'];
 	}
 
-
 	/**
 	 * Updates the widget settings.
 	 *
@@ -250,7 +247,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		return $i;
 	}
-
 
 	/**
 	 * Displays the widget form in /wp-admin/widgets.php.
@@ -411,7 +407,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		return $query_vars;
 	}
 
-
 	/**
 	 * Returns the current post id to get related posts for.
 	 *
@@ -439,7 +434,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		return $post_id;
 	}
 
-
 	/**
 	 * Returns all widget instance settings.
 	 *
@@ -455,7 +449,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		return array_merge( $defaults, $i );
 	}
-
 
 	/**
 	 * Returns correct settings if taxonomies argument is not defined.
