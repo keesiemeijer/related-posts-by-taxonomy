@@ -107,7 +107,6 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		return rest_ensure_response( $data );
 	}
 
-
 	/**
 	 * Check if a given request has access to get items
 	 *

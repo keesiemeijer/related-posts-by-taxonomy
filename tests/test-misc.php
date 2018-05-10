@@ -13,7 +13,6 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		return $posts;
 	}
 
-
 	/**
 	 * Test if terms are created with the factory class.
 	 *
@@ -24,7 +23,6 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$terms = $this->assign_taxonomy_terms( $posts, 'category', 1 );
 		$this->assertNotEmpty( $terms );
 	}
-
 
 	/**
 	 * Test if posts and terms are created with the factory class.
@@ -40,14 +38,12 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertCount( 5, $create_posts['tax2_terms'] );
 	}
 
-
 	/**
 	 * Test if default WordPress taxonomies exist.
 	 */
 	function test_get_post_taxonomies() {
 		$this->assertEquals( array( 'category', 'post_tag', 'post_format' ), get_object_taxonomies( 'post' ) );
 	}
-
 
 	/**
 	 * Test output from WordPress function get_posts_by_author_sql().
@@ -58,7 +54,6 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$where  = get_posts_by_author_sql( 'post' );
 		$this->assertTrue( (bool) preg_match( "/post_type = 'post'/", $where ) );
 	}
-
 
 	/**
 	 * Tests for functions that should not output anything.
@@ -84,13 +79,13 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$plugin              = km_rpbt_plugin();
 		$capability          = km_rpbt_plugin_supports( 'widget' );
 		$rel_posts           = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
-		$rel_posts3          = km_rpbt_get_related_posts( $_posts[0]->ID);
+		$rel_posts3          = km_rpbt_get_related_posts( $_posts[0]->ID );
 		$cache_posts         = km_rpbt_cache_related_posts( $posts[0], $taxonomies, $args );
 		$_args               = km_rpbt_get_query_vars();
 		$_args['taxonomies'] = $taxonomies;
 		$sanitize            = km_rpbt_sanitize_args( $_args );
 		$shortcode           = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
-		$settings            = km_rpbt_get_default_settings('shortcode');
+		$settings            = km_rpbt_get_default_settings( 'shortcode' );
 		$settings['post_id'] = $posts[0];
 		$sc_validate         = km_rpbt_validate_shortcode_atts( $settings );
 		$sc_output           = km_rpbt_shortcode_output( $_posts, $sc_validate );

@@ -40,7 +40,6 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return compact( 'posts', 'tax1_terms', 'tax2_terms' );
 	}
 
-
 	/**
 	 * Creates posts with decreasing timestamps a day apart.
 	 *

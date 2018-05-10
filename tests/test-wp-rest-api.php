@@ -295,7 +295,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test invalid function arguments.
 	 *
-	 * @group fail
 	 *  @requires function WP_REST_Controller::register_routes
 	 */
 	function test_invalid_arguments() {
@@ -326,7 +325,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 		// No arguments should return an empty array.
 		$fail5 = $this->rest_related_posts_by_taxonomy();
-		$this->assertEquals( 'rest_post_invalid_id', $fail5, 'no arguments');
+		$this->assertEquals( 'rest_post_invalid_id', $fail5, 'no arguments' );
 	}
 
 	/**

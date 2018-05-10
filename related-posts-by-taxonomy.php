@@ -80,7 +80,6 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		Related_Posts_By_Taxonomy_Defaults::init();
 	}
 
-
 	/* initialize plugin */
 	related_posts_by_taxonomy_init();
 

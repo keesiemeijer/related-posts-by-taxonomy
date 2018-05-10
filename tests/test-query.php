@@ -78,7 +78,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEmpty( $rel_post4 );
 	}
 
-
 	/**
 	 * test related posts for post type post
 	 *
@@ -133,7 +132,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$rel_post4 = km_rpbt_query_related_posts( $posts[4], $taxonomies, $args );
 		$this->assertEmpty( $rel_post4 );
 	}
-
 
 	/**
 	 * test related posts for custom post type and custom taxonomy.
@@ -201,7 +199,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEmpty( $rel_post4 );
 	}
 
-
 	/**
 	 * Test invalid function arguments.
 	 *
@@ -240,7 +237,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEmpty( $fail5 );
 	}
 
-
 	/**
 	 * Test exclude_terms argument.
 	 *
@@ -256,7 +252,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( $this->posts[1], $this->posts[2] ), $rel_post0 );
 	}
 
-
 	/**
 	 * Test include_terms argument.
 	 *
@@ -271,7 +266,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[2] ), $rel_post0 );
 	}
-
 
 	/**
 	 * Test include_terms argument when related === false.
@@ -291,14 +285,12 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test terms argument.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_related_posts_by_terms() {
 		$this->setup_posts();
 		$args = array(
 			'terms'   => array( $this->tax_2_terms[3] ),
-			'related' => false,
+			//'related' => false,
 			'fields'  => 'ids',
 		);
 
@@ -322,7 +314,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
 	}
 
-
 	/**
 	 * Test exclude_posts function argument.
 	 *
@@ -337,7 +328,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
-
 
 	/**
 	 * Test limit_posts function argument.
@@ -354,7 +344,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( $this->posts[1], $this->posts[2] ), $rel_post0 );
 	}
 
-
 	/**
 	 * Test posts_per_page function argument.
 	 *
@@ -369,7 +358,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$rel_post3 = km_rpbt_query_related_posts( $this->posts[3], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1] ), $rel_post3 );
 	}
-
 
 	/**
 	 * Test fields function argument.
@@ -400,7 +388,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( $titles[1], $titles[2], $titles[3] ), $rel_post0 );
 	}
 
-
 	/**
 	 * Test post_thumbnail function argument.
 	 *
@@ -420,7 +407,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
-
 
 	/**
 	 * Test limit_month function argument.
@@ -450,7 +436,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$rel_post0 = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
-
 
 	/**
 	 * Test ascending order.
@@ -493,7 +478,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( $posts[3], $posts[2], $posts[1] ), $rel_post0 );
 	}
 
-
 	/**
 	 * Test random order of posts.
 	 * Todo: Find out how to test random results and apply
@@ -518,7 +502,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertContains( $posts[3], $rel_post0 );
 		$this->assertEquals( count( $rel_post0 ), 3 );
 	}
-
 
 	/**
 	 * Test order by post_modified.
@@ -547,7 +530,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		// test post 0
 		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
 	}
-
 
 	function test_post_status() {
 		$this->setup_posts();

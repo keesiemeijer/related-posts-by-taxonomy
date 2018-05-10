@@ -13,7 +13,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
 	}
 
-
 	function setup_cache() {
 		// Activate cache
 		add_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
@@ -39,7 +38,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertSame( 1, $transient, "Cache transient wasn't set" );
 	}
 
-
 	/**
 	 * Tests if cache filter is set to false (by default).
 	 *
@@ -53,7 +51,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$this->arg = null;
 	}
 
-
 	/**
 	 * Tests if cache filter display_cache_log is set to false (by default).
 	 *
@@ -63,7 +60,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$this->setup_cache();
 		$this->assertFalse( $this->plugin->cache->cache['display_log']  );
 	}
-
 
 	/**
 	 * Test cache.
@@ -116,7 +112,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 		$this->assertEquals( $cache_ids, $related );
 	}
-
 
 	/**
 	 * Test manually setting the cache for a post id.
@@ -225,7 +220,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( $posts[1], $related_posts[0]->ID );
 	}
 
-
 	/**
 	 * Test manually setting the cache for a post id.
 	 *
@@ -253,7 +247,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Cache should be empty.
 		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
-
 
 	/**
 	 * Test flushing cache when deleting a post.
@@ -289,7 +282,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
 
-
 	/**
 	 * Test flushing cache when setting a post thumbnail.
 	 *
@@ -324,7 +316,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Cache should be empty.
 		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
-
 
 	/**
 	 * Test flushing cache when setting a post thumbnail.

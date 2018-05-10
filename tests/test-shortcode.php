@@ -18,7 +18,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		parent::tearDown();
 	}
 
-
 	/**
 	 * Test if shortcode is registered.
 	 */
@@ -61,7 +60,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( $expected, $atts );
 	}
 
-
 	/**
 	 * Test validation of atts.
 	 *
@@ -77,7 +75,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( 'post' ), $atts['post_types'] );
 	}
 
-
 	/**
 	 * Test if the shortcode_hide_empty filter is set to true (by default).
 	 */
@@ -89,7 +86,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertTrue( $this->arg );
 		$this->arg = null;
 	}
-
 
 	/**
 	 * Test if the shortcode_hide_empty filter works as intended.
@@ -112,7 +108,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$shortcode = ob_get_clean();
 		$this->assertContains( '<p>No related posts found</p>', $shortcode );
 	}
-
 
 	/**
 	 * Test the related posts retrieved by the shortcode
@@ -204,7 +199,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$this->arg = null;
 	}
 
-
 	/**
 	 * Test the arguments for the related_posts_by_taxonomy_shortcode_atts filter.
 	 * Should be te similar to the arguments as for the related_posts_by_taxonomy_widget_args filter
@@ -228,7 +222,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( $expected, $this->arg );
 		$this->arg = null;
 	}
-
 
 	/**
 	 * Test output from shortcode.
@@ -346,7 +339,6 @@ EOF;
 		$this->assertFalse( $this->arg['include_self'] );
 		$this->arg = null;
 	}
-
 
 	/**
 	 * Test booleans in shortcode arguments.

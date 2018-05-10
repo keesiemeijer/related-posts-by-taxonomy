@@ -14,7 +14,6 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		parent::tearDown();
 	}
 
-
 	/**
 	 * Test if the widget exists.
 	 */
@@ -162,7 +161,6 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertContains( '<p>No related posts found</p>', $output );
 	}
 
-
 	/**
 	 * Test the arguments for the filter related_posts_by_taxonomy_widget_args.
 	 * Should be te similar to the arguments as for the related_posts_by_taxonomy_shortcode_atts filter
@@ -193,7 +191,6 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$this->arg = null;
 	}
 
-
 	/**
 	 * Test args validation.
 	 */
@@ -207,7 +204,6 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
 		$this->assertEquals( $expected, $settings );
 	}
-
 
 	/**
 	 * Test output from widget.
