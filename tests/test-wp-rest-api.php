@@ -390,6 +390,38 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
 
+	/**
+	 * Test terms argument with and without the correct taxonomy.
+	 */
+	function test_related_posts_by_terms_with_taxonomy() {
+		$this->setup_posts();
+
+		register_taxonomy( 'ctax', 'post' );
+		$terms = $this->factory->term->create_many( 3, array( 'taxonomy' => 'ctax' ) );
+		$term_id1 = wp_set_post_terms ( $this->posts[2], (int) $terms[0], 'ctax', true );
+		$taxonomies = array( 'category' );
+
+		$args = array(
+			'terms'   => array( $this->tax_2_terms[3], (int) $term_id1[0] ),
+			'fields'  => 'ids',
+		);
+
+		// Post 2 should not be related as the 'ctax' taxonomy is not used in the query.
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+
+		$taxonomies[] = 'ctax';
+		// Post 2 should now be related as the 'ctax' taxonomy is queried.
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
+
+		$term_id2 = wp_set_post_terms ( $this->posts[2], (int) $terms[1], 'ctax', true );
+		$args['terms'][] = $term_id2[0];
+
+		// Post two has more terms in common now
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $this->posts[2], $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
 
 	/**
 	 * Test related === false without include_terms.
