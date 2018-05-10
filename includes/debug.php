@@ -55,7 +55,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$this->taxonomies = array_unique( $this->taxonomies );
 
 			$this->plugin  = km_rpbt_plugin();
-			$this->cache   = km_rpbt_is_cache_loaded( $this->plugin );
+			$this->cache   = km_rpbt_is_cache_loaded();
 
 			// Adds debug link before the widget title.
 			add_filter( 'dynamic_sidebar_params', array( $this, 'widget_params' ), 99 );

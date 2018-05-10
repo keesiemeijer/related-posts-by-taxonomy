@@ -32,7 +32,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 	function test_cache_setup() {
 		$this->setup_cache();
 		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Cache' ), "Class doesn't exist"  );
-		$this->assertTrue( km_rpbt_is_cache_loaded( $this->plugin ), 'Cache not loaded' );
+		$this->assertTrue( km_rpbt_is_cache_loaded(), 'Cache not loaded' );
 		$this->assertTrue( km_rpbt_plugin_supports( 'cache' ), 'Cache not supported' );
 		$transient = get_transient( 'rpbt_related_posts_flush_cache' );
 		$this->assertSame( 1, $transient, "Cache transient wasn't set" );

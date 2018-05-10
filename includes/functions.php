@@ -303,7 +303,7 @@ function km_rpbt_flush_cache() {
 	$plugin = km_rpbt_plugin();
 
 	// Check if the cache class is loaded and instantiated.
-	if ( km_rpbt_is_cache_loaded( $plugin ) ) {
+	if ( km_rpbt_is_cache_loaded() ) {
 		return $plugin->cache->flush_cache();
 	}
 
