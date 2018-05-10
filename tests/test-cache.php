@@ -145,10 +145,13 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
-	 * Test if the default properties exist for cached posts
+	 * Test if the default properties exist for cached posts.
 	 */
 	function test_default_post_properties() {
 		$this->setup_cache();
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
 
 		// Cache should be loaded after setup
 		$this->assertTrue( km_rpbt_is_cache_loaded(), 'cache is not loaded' );
@@ -162,7 +165,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Get posts from cache
 		$from_cache   = km_rpbt_get_related_posts( $posts[1] );
 
-		$this->assertSame( $cached_posts[0]->ID, $from_cache[0]->ID );
+		$this->assertSame( (int) $cached_posts[0]->ID, $from_cache[0]->ID );
 		$this->assertTrue( isset( $from_cache[0]->termcount ) && $from_cache[0]->termcount , 'termcount failed' );
 		$this->assertTrue( isset( $from_cache[0]->rpbt_current ) && $from_cache[0]->rpbt_current, 'rpbt_current failed' );
 		$this->assertTrue( isset( $from_cache[0]->rpbt_post_class ), 'rpbt_post_class failed' );
@@ -172,7 +175,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test if cache posts manually returns false if the cache is not supported.
 	 */
-	function test_cache_manually_without_cache(){
+	function test_cache_manually_without_cache() {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 

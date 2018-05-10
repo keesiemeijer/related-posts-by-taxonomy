@@ -271,12 +271,14 @@ function km_rpbt_is_cache_loaded() {
  * Uses the same arguments as the km_rpbt_query_related_posts() function.
  *
  * @since 2.1
+ * @since  2.4.2 Use empty string as default value for $taxonomies parameter.
+ *
  * @param int          $post_id    The post id to cache related posts for.
  * @param array|string $taxonomies The taxonomies to cache related posts from.
  * @param array|string $args       Optional. Cache arguments.
  * @return array Array with cached related posts objects or false if no posts where cached.
  */
-function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $args = array() ) {
+function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = '', $args = array() ) {
 	// Check if cache is loaded.
 	if ( ! ( km_rpbt_plugin_supports( 'cache' ) && km_rpbt_is_cache_loaded() ) ) {
 		return false;
