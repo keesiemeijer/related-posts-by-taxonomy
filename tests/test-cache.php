@@ -158,9 +158,18 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Cache posts
 		$cached_posts = km_rpbt_cache_related_posts( $posts[1] );
 
+		// Check if related posts were cached
+		$log = sprintf( 'Post ID %d - caching posts...', $posts[1] );
+		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not cached' );
+
 		// Get posts from cache
 		$from_cache   = km_rpbt_get_related_posts( $posts[1] );
 
+		// Check if related posts are from the cache
+		$log = sprintf( 'Post ID %d - cache exists', $posts[1] );
+		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not found in cache' );
+
+		// Test default post properties.
 		$this->assertSame( (int) $cached_posts[0]->ID, $from_cache[0]->ID );
 		$this->assertTrue( isset( $from_cache[0]->termcount ) && $from_cache[0]->termcount , 'termcount failed' );
 		$this->assertTrue( isset( $from_cache[0]->rpbt_current ) && $from_cache[0]->rpbt_current, 'rpbt_current failed' );
