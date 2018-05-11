@@ -11,8 +11,6 @@ class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test output from shortcode.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_output_with_post_class() {
 

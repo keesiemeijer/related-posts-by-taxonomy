@@ -225,8 +225,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test output from shortcode.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_output() {
 
@@ -264,8 +262,6 @@ EOF;
 
 	/**
 	 * Test output if the shortcode is disabled.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_disabled_output() {
 		$create_posts = $this->create_posts_with_terms();
@@ -283,8 +279,6 @@ EOF;
 
 	/**
 	 * Test booleans in shortcode arguments.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_boolean_values() {
 
@@ -342,8 +336,6 @@ EOF;
 
 	/**
 	 * Test booleans in shortcode arguments.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_link_caption_value() {
 

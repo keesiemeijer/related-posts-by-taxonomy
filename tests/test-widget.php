@@ -207,8 +207,6 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test output from widget.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_rpbt_widget_output() {
 

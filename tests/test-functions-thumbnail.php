@@ -73,8 +73,6 @@ EOF;
 
 	/**
 	 * Test output from gallery with gallery style.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_with_gallery_style() {
 		$gallery_args = $this->setup_gallery();
@@ -121,8 +119,6 @@ EOF;
 
 	/**
 	 * Test output gallery with no caption.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_gallery_no_caption() {
 		$gallery_args = $this->setup_gallery();

@@ -60,8 +60,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Tests if wp_rest_api filter is set to false (by default).
-	 *
-	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
 	 */
 	function test_wp_rest_Api_filter() {
 		// Added by setUp().
@@ -123,7 +121,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test success response for rest request.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_wp_rest_api_success_response() {
@@ -181,7 +178,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test related posts for post type post.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_post_type_post() {
@@ -235,7 +231,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test related posts for custom post type and custom taxonomy.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_custom_post_type_and_custom_taxonomy() {
@@ -331,7 +326,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test exclude_terms argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_exclude_terms() {
@@ -344,7 +338,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test include_terms argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_include_terms() {
@@ -357,7 +350,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test include_terms argument when related === false.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_include_terms_unrelated() {
@@ -375,7 +367,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test terms argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related_posts_by_terms() {
@@ -426,7 +417,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test related === false without include_terms.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related() {
@@ -442,7 +432,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test exclude_posts function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_exclude_posts() {
@@ -455,7 +444,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test limit_posts function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_limit_posts() {
@@ -468,7 +456,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test posts_per_page function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_posts_per_page() {
@@ -481,7 +468,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test fields function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_fields() {
@@ -504,7 +490,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test post_thumbnail function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_post_thumbnail() {
@@ -522,7 +507,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test limit_month function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_limit_month() {
@@ -544,7 +528,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test ascending order.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_order_asc() {
@@ -562,7 +545,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test unrelated ascending order.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_order_asc_non_related() {
@@ -582,7 +564,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	 * Test random order of posts.
 	 * Todo: Find out how to test random results and apply
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_order_rand() {
@@ -604,7 +585,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test order by post_modified.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_orderby_post_modified() {

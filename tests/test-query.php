@@ -80,8 +80,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * test related posts for post type post
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_post_type_post() {
 		$this->setup_posts();
@@ -135,8 +133,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * test related posts for custom post type and custom taxonomy.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_custom_post_type_and_custom_taxonomy() {
 
@@ -201,8 +197,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test invalid function arguments.
-	 *
-	 *  @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_invalid_arguments() {
 
@@ -239,8 +233,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test exclude_terms argument.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_exclude_terms() {
 		$this->setup_posts();
@@ -254,8 +246,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test include_terms argument.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_include_terms() {
 		$this->setup_posts();
@@ -269,8 +259,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test include_terms argument when related === false.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_include_terms_unrelated() {
 		$this->setup_posts();
@@ -333,8 +321,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test related === false without include_terms.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_related() {
 		$this->setup_posts();
@@ -348,8 +334,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test exclude_posts function argument.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_exclude_posts() {
 		$this->setup_posts();
@@ -363,8 +347,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test limit_posts function argument.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_limit_posts() {
 		$this->setup_posts();
@@ -378,8 +360,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test posts_per_page function argument.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_posts_per_page() {
 		$this->setup_posts();
@@ -393,8 +373,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test fields function argument.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_fields() {
 		$this->setup_posts();
@@ -422,8 +400,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test post_thumbnail function argument.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_post_thumbnail() {
 		$this->setup_posts();
@@ -442,8 +418,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test limit_month function argument.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_limit_month() {
 		$this->setup_posts();
@@ -471,8 +445,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test ascending order.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_order_asc() {
 		$this->setup_posts();
@@ -491,8 +463,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test unrelated ascending order.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_order_asc_non_related() {
 		$this->setup_posts();
@@ -513,8 +483,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test random order of posts.
 	 * Todo: Find out how to test random results and apply
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_order_rand() {
 		$this->setup_posts();
@@ -537,8 +505,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test order by post_modified.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_orderby_post_modified() {
 		$this->setup_posts();

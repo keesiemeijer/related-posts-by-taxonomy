@@ -26,8 +26,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test if cache is enabled by using the filter.
-	 *
-	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
 	 */
 	function test_cache_setup() {
 		$this->setup_cache();
@@ -40,8 +38,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Tests if cache filter is set to false (by default).
-	 *
-	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
 	 */
 	function test_cache_filter() {
 		add_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_first_argument' ) );

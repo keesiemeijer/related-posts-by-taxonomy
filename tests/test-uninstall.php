@@ -19,8 +19,6 @@ class KM_RPBT_Uninstall_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Tests if debug filter is set to false (by default).
-	 *
-	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
 	 */
 	function test_uninstall() {
 		global $wpdb;
