@@ -70,7 +70,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	// Check if any taxonomies are used for the query.
 	$taxonomies = isset( $args['taxonomies'] ) ? $args['taxonomies'] : '';
 	if ( ! $taxonomies ) {
-		$args['taxonomies'] = km_rpbt_get_all_taxonomies();
+		$args['taxonomies'] = km_rpbt_get_public_taxonomies();
 	}
 
 	// Sanitize arguments.
@@ -215,7 +215,7 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
  *
  * @return array Array with all public taxonomies.
  */
-function km_rpbt_get_all_taxonomies() {
+function km_rpbt_get_public_taxonomies() {
 	$plugin = km_rpbt_plugin();
 	return isset( $plugin->all_tax ) ? km_rpbt_get_taxonomies( $plugin->all_tax ) : array();
 }

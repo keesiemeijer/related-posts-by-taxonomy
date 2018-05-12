@@ -159,7 +159,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 
 		/* Default to all taxonomies if none were provided. */
 		if ( ! $args['taxonomies'] ) {
-			$args['taxonomies'] = km_rpbt_get_all_taxonomies();
+			$args['taxonomies'] = km_rpbt_get_public_taxonomies();
 		}
 
 		$data = array(
