@@ -70,17 +70,17 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		// loads the different templates used for the widget and shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-loader.php';
 
-		// The widget.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/widget.php';
-
 		// The shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
 
+		// The widget.
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-widget.php';
+
 		// Defaults
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/defaults.php';
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-defaults.php';
 
 		// Plugin.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/plugin.php';
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-plugin.php';
 
 		// Instantiate the plugin class.
 		$km_rpbt_related_posts = new Related_Posts_By_Taxonomy_Plugin();
