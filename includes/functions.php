@@ -283,7 +283,7 @@ function km_rpbt_is_cache_loaded() {
  * @param array|string $args       Optional. Cache arguments.
  * @return array Array with cached related posts objects or false if no posts where cached.
  */
-function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = '', $args = array() ) {
+function km_rpbt_cache_related_posts( $post_id, $taxonomies = '', $args = array() ) {
 	// Check if cache is loaded.
 	if ( ! ( km_rpbt_plugin_supports( 'cache' ) && km_rpbt_is_cache_loaded() ) ) {
 		return false;
