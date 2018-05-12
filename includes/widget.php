@@ -134,7 +134,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		 * Set by the related_posts_by_taxonomy_widget_hide_empty filter.
 		 * Default true.
 		 */
-		$hide_empty = (bool) $this->plugin->plugin_supports( 'widget_hide_empty' );
+		$hide_empty = (bool) km_rpbt_plugin_supports( 'widget_hide_empty' );
 
 		if ( ! $hide_empty || ! empty( $related_posts ) ) {
 			$this->widget_output( $related_posts, $args, $widget_args );

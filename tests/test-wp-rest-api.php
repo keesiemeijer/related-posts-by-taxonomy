@@ -66,7 +66,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy_wp_rest_api', '__return_true' );
 
 		$plugin = km_rpbt_plugin();
-		$this->assertFalse( $plugin->plugin_supports( 'wp_rest_api' ) );
+		$this->assertFalse( km_rpbt_plugin_supports( 'wp_rest_api' ) );
 	}
 
 	/**
