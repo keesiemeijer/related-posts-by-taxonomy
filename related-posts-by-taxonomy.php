@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Related Posts By Taxonomy
-Version: 2.4.2-alpha
+Version: 2.5.0-alpha
 Plugin URI: http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/
 Description: Display related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the most terms in common will display at the top.
 Author: keesiemijer
@@ -49,37 +49,46 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 
 		load_plugin_textdomain( 'related-posts-by-taxonomy', '', dirname( plugin_basename( __FILE__ ) ) . '/lang' );
 
-		// Defaults used by this plugin.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/defaults.php';
+		// Deprecated functions and files.
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/back-compat/deprecated.php';
 
-		// Deprecated functions.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/deprecated.php';
+		// Settings used by this plugin.
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/settings.php';
+
+		// Functions to query the database
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/query.php';
 
 		// Functions used in the templates.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-tags.php';
 
-		// The widget.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/widget.php';
-
-		// Functions to retrieve related posts from the database.
+		// Functions for related posts
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions.php';
 
-		// Functions for display of the related post thumbnail gallery.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions-thumbnail.php';
+		// The related post thumbnail gallery.
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/gallery.php';
 
 		// loads the different templates used for the widget and shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-loader.php';
 
-		// displays the related posts from the shortcode.
+		// The shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
 
 		// Ads the related posts editor block.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/editor-block.php';
 
-		// Instantiate the defaults class.
-		Related_Posts_By_Taxonomy_Defaults::init();
-	}
+		// The widget.
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-widget.php';
 
+		// Defaults
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-defaults.php';
+
+		// Plugin.
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-plugin.php';
+
+		// Instantiate the plugin class.
+		$km_rpbt_related_posts = new Related_Posts_By_Taxonomy_Plugin();
+		$km_rpbt_related_posts->init();
+	}
 
 	/* initialize plugin */
 	related_posts_by_taxonomy_init();

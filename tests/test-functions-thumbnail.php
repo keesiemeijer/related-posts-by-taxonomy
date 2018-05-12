@@ -12,7 +12,6 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
 	}
 
-
 	/**
 	 * Test output from gallery.
 	 */
@@ -72,11 +71,8 @@ EOF;
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
 	}
 
-
 	/**
 	 * Test output from gallery with gallery style.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_with_gallery_style() {
 		$gallery_args = $this->setup_gallery();
@@ -121,11 +117,8 @@ EOF;
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
 	}
 
-
 	/**
 	 * Test output gallery with no caption.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_gallery_no_caption() {
 		$gallery_args = $this->setup_gallery();
@@ -149,7 +142,6 @@ EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
 	}
-
 
 	/**
 	 * Test linked caption.
@@ -181,7 +173,6 @@ EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
 	}
-
 
 	/**
 	 * Test the output of a regular WordPress gallery.

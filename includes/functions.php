@@ -5,8 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-include_once 'query.php';
-
 /**
  * Returns plugin defaults instance or false.
  *
@@ -22,90 +20,69 @@ function km_rpbt_plugin() {
 }
 
 /**
- * Returns the default settings.
+ * Check if the plugin supports a feature.
  *
- * @since 2.2.2
- * @param unknown $type Type of settings. Accepts 'shortcode', widget, 'all'.
- * @return array|false Array with default settings by type 'shortcode', 'widget' or 'all'.
+ * @since  2.5.0
+ *
+ * @param string $type Type of feature.
+ * @return bool True if the feature is supported.
  */
-function km_rpbt_get_default_settings( $type = '' ) {
-	$plugin = km_rpbt_plugin();
+function km_rpbt_plugin_supports( $type ) {
+	$supports = km_rpbt_get_plugin_supports();
 
-	if ( ! $plugin ) {
+	if ( ! in_array( $type , array_keys( $supports ) ) ) {
 		return false;
 	}
 
-	return $plugin->get_default_settings( $type );
+	/**
+	 * Filter whether to support cache, wp_rest_api or debug.
+	 *
+	 * The dynamic portion of the hook name, `$type`, refers to the
+	 * type type of support ('cache', 'wp_rest_api', 'etc).
+	 *
+	 * @param bool $bool Add support if true. Default false
+	 */
+	return apply_filters( "related_posts_by_taxonomy_{$type}", (bool) $supports[ $type ] );
 }
 
 /**
- * Check if the plugin supports a feature.
+ * Get related posts from the database or cache.
  *
- * @since  2.4.2
+ * Used by the widget, shortcode, and rest api.
  *
- * @param string $support Feature
- * @return bool True if the feature is supported.
- */
-function km_rpbt_plugin_supports( $support ) {
-	$plugin = km_rpbt_plugin();
-	return $plugin && $plugin->plugin_supports( $support );
-}
-
-/**
- * Returns default arguments.
+ * If taxonomies are not set in the arguments it gets the
+ * related posts from all public taxonomies.
  *
- * @since 2.1
+ * @since  2.5.0
  *
- * @return array Array with default arguments.
- */
-function km_rpbt_get_query_vars() {
-
-	return array(
-		'post_types'     => 'post',
-		'posts_per_page' => 5,
-		'order'          => 'DESC',
-		'fields'         => '',
-		'limit_posts'    => -1,
-		'limit_year'     => '',
-		'limit_month'    => '',
-		'orderby'        => 'post_date',
-		'terms'          => '',
-		'exclude_terms'  => '',
-		'include_terms'  => '',
-		'exclude_posts'  => '',
-		'post_thumbnail' => false,
-		'related'        => true,
-		'public_only'    => false,
-		'include_self'   => false,
-	);
-}
-
-/**
- * Get related posts from database or cache.
- *
- * @since  2.4.2
- *
- * @param array $post_id The post id to get related posts for.
- * @param array|string $args Array of arguments.
+ * @param array        $post_id The post id to get related posts for.
+ * @param array|string $args    Array of arguments.
  * @return array Array with related post objects.
  */
 function km_rpbt_get_related_posts( $post_id, $args = array() ) {
-	// Returns an array with arguments.
-	$args = km_rpbt_sanitize_args( $args );
+	$plugin  = km_rpbt_plugin();
+	$post_id = absint( $post_id );
 
-	$plugin = km_rpbt_plugin();
-	if ( ! isset( $args['taxonomies'] ) ) {
-		// Default to all taxonomies or catecories.
-		$all_tax            = isset( $plugin->all_tax ) ? $plugin->all_tax : 'category';
-		$args['taxonomies'] = km_rpbt_get_taxonomies( $all_tax );
+	if ( ! $post_id ) {
+		return array();
 	}
 
-	$query_args = $args;
+	// Check if any taxonomies are used for the query.
+	$taxonomies = isset( $args['taxonomies'] ) ? $args['taxonomies'] : '';
+	if ( ! $taxonomies ) {
+		$args['taxonomies'] = km_rpbt_get_public_taxonomies();
+	}
+
+	// Sanitize arguments.
+	$args = km_rpbt_sanitize_args( $args );
+
+	// Set post_id the same as used for the $post_id parameter.
+	$args['post_id'] = $post_id;
 
 	/**
 	 * Filter whether to use your own related posts.
 	 *
-	 * @since  2.4.2
+	 * @since  2.5.0
 	 *
 	 * @param boolean|array $related_posts Array with (related) post objects.
 	 *                                     Default false (Don't use your own related posts).
@@ -119,15 +96,17 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 		return $related_posts;
 	}
 
-	/* restricted arguments */
-	unset( $query_args['post_id'], $query_args['taxonomies'] );
-
-	$cache = isset( $plugin->cache ) && $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
-	if ( $cache && ( isset( $args['cache'] ) && $args['cache'] ) ) {
+	if ( km_rpbt_plugin_supports( 'cache' ) && km_rpbt_is_cache_loaded() ) {
+		// Get related posts from cache.
 		$related_posts = $plugin->cache->get_related_posts( $args );
 	} else {
+		$query_args = $args;
+
+		/* restricted arguments */
+		unset( $query_args['post_id'], $query_args['taxonomies'] );
+
 		/* get related posts */
-		$related_posts = km_rpbt_query_related_posts( $post_id, $args['taxonomies'], $query_args );
+		$related_posts = km_rpbt_query_related_posts( $args['post_id'], $args['taxonomies'], $query_args );
 	}
 
 	$related_posts = km_rpbt_add_post_classes( $related_posts, $args );
@@ -138,7 +117,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 /**
  * Get the terms from the post or from included terms
  *
- * @since  2.4.2
+ * @since  2.5.0
  *
  * @param int          $post_id    The post id to get terms for.
  * @param array|string $taxonomies The taxonomies to retrieve terms from.
@@ -147,10 +126,19 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
  */
 function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	$terms = array();
-	$args   = km_rpbt_sanitize_args( $args );
+	$args  = km_rpbt_sanitize_args( $args );
+
 	if ( $args['terms'] ) {
-		// Return sanitized terms.
-		return $args['terms'];
+		$term_args = array(
+			'include'  => $args['terms'],
+			'taxonomy' => $taxonomies,
+			'fields'   => 'ids',
+		);
+
+		// Filter out terms not assigned to the taxonomies
+		$terms = get_terms( $term_args );
+
+		return ! is_wp_error( $terms ) ? $terms : array();
 	}
 
 	if ( ! $args['related'] && ! empty( $args['include_terms'] ) ) {
@@ -209,7 +197,6 @@ function km_rpbt_get_post_types( $post_types = '' ) {
  * @return array        Array with taxonomy names.
  */
 function km_rpbt_get_taxonomies( $taxonomies ) {
-
 	$plugin  = km_rpbt_plugin();
 
 	if ( $plugin && ( $taxonomies === $plugin->all_tax ) ) {
@@ -222,10 +209,22 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
 }
 
 /**
+ * Get all public taxonomies found by this plugin.
+ *
+ * @since 2.5.0
+ *
+ * @return array Array with all public taxonomies.
+ */
+function km_rpbt_get_public_taxonomies() {
+	$plugin = km_rpbt_plugin();
+	return isset( $plugin->all_tax ) ? km_rpbt_get_taxonomies( $plugin->all_tax ) : array();
+}
+
+/**
  * Validates ids.
  * Checks if ids is a comma separated string or an array with ids.
  *
- * @since 2.4.2
+ * @since 2.5.0
  * @param string|array $ids Comma separated list or array with ids.
  * @return array Array with postive integers
  */
@@ -262,57 +261,14 @@ function km_rpbt_get_comma_separated_values( $value ) {
 }
 
 /**
- * Returns sanitized arguments.
+ * Checks if the cache class is loaded
  *
- * @since 2.1
- * @param array $args Arguments to be sanitized.
- * @return array Array with sanitized arguments.
+ * @param object $plugin Related_Posts_By_Taxonomy_Cache object. Default null.
+ * @return bool True if the cache class is loaded.
  */
-function km_rpbt_sanitize_args( $args ) {
-
-	$defaults = km_rpbt_get_query_vars();
-	$args     = wp_parse_args( $args, $defaults );
-
-	// Arrays with strings.
-	if ( isset( $args['taxonomies'] ) ) {
-		$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
-	}
-
-	$post_types         = km_rpbt_get_post_types( $args['post_types'] );
-	$args['post_types'] = ! empty( $post_types ) ? $post_types : array( 'post' );
-
-	// Arrays with integers.
-	$ids = array( 'exclude_terms', 'include_terms', 'exclude_posts', 'terms' );
-	foreach ( $ids as $id ) {
-		$args[ $id ] = km_rpbt_validate_ids( $args[ $id ] );
-	}
-
-	// Strings.
-	$args['fields']  = is_string( $args['fields'] ) ? $args['fields'] : '';
-	$args['orderby'] = is_string( $args['orderby'] ) ? $args['orderby'] : '';
-	$args['order']   = is_string( $args['order'] ) ? $args['order'] : '';
-
-	// Integers.
-	$args['limit_year']     = absint( $args['limit_year'] );
-	$args['limit_month']    = absint( $args['limit_month'] );
-	$args['limit_posts']    = (int) $args['limit_posts'];
-	$args['posts_per_page'] = (int) $args['posts_per_page'];
-
-	if ( isset( $args['post_id'] ) ) {
-		$args['post_id'] = absint( $args['post_id'] );
-	}
-
-	// Booleans
-	// True for true, 1, "1", "true", "on", "yes". Everything else return false.
-	$args['related']        = (bool) filter_var( $args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	$args['post_thumbnail'] = (bool) filter_var( $args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	$args['public_only']    = (bool) filter_var( $args['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-
-	if ( 'regular_order' !== $args['include_self'] ) {
-		$args['include_self'] = (bool) filter_var( $args['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	}
-
-	return $args;
+function km_rpbt_is_cache_loaded() {
+	$plugin = km_rpbt_plugin();
+	return isset( $plugin->cache ) && $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
 }
 
 /**
@@ -320,17 +276,16 @@ function km_rpbt_sanitize_args( $args ) {
  * Uses the same arguments as the km_rpbt_query_related_posts() function.
  *
  * @since 2.1
+ * @since  2.5.0 Use empty string as default value for $taxonomies parameter.
+ *
  * @param int          $post_id    The post id to cache related posts for.
  * @param array|string $taxonomies The taxonomies to cache related posts from.
  * @param array|string $args       Optional. Cache arguments.
  * @return array Array with cached related posts objects or false if no posts where cached.
  */
-function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $args = '' ) {
-
-	$plugin = km_rpbt_plugin();
-
-	// Check if the Cache class is instantiated.
-	if ( $plugin && ! ( $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache ) ) {
+function km_rpbt_cache_related_posts( $post_id, $taxonomies = '', $args = array() ) {
+	// Check if cache is loaded.
+	if ( ! ( km_rpbt_plugin_supports( 'cache' ) && km_rpbt_is_cache_loaded() ) ) {
 		return false;
 	}
 
@@ -338,12 +293,14 @@ function km_rpbt_cache_related_posts( $post_id = 0, $taxonomies = 'category', $a
 	$args['post_id']    = $post_id;
 	$args['taxonomies'] = $taxonomies;
 
-	// Cache related posts if not in cache.
-	return $plugin->cache->get_related_posts( $args );
+	// Caches related posts if not in cache.
+	return km_rpbt_get_related_posts( $post_id, $args );
 }
 
 /**
  * Public function to flush the persistent cache.
+ *
+ * Note: This function doesn't check if the plugin supports the cache.
  *
  * @since 2.1
  * @return int|bool Returns number of deleted rows or false on failure.
@@ -352,8 +309,8 @@ function km_rpbt_flush_cache() {
 
 	$plugin = km_rpbt_plugin();
 
-	// Check if the cache class is instantiated.
-	if ( $plugin && ( $plugin->cache instanceof Related_Posts_By_Taxonomy_Cache ) ) {
+	// Check if the cache class is loaded and instantiated.
+	if ( km_rpbt_is_cache_loaded() ) {
 		return $plugin->cache->flush_cache();
 	}
 

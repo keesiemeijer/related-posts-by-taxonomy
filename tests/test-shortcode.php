@@ -18,7 +18,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		parent::tearDown();
 	}
 
-
 	/**
 	 * Test if shortcode is registered.
 	 */
@@ -34,7 +33,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 
 		$expected = array(
 			'post_id'          => '',
-			'taxonomies'       => 'all',
+			'taxonomies'       => '',
 			'before_shortcode' => '<div class="rpbt_shortcode">',
 			'after_shortcode'  => '</div>',
 			'before_title'     => '<h3>',
@@ -54,9 +53,12 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$expected['post_types'] = '';
 
 		$atts = km_rpbt_get_default_settings( 'shortcode' );
+
+		ksort( $expected );
+		ksort( $atts );
+
 		$this->assertEquals( $expected, $atts );
 	}
-
 
 	/**
 	 * Test validation of atts.
@@ -73,7 +75,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( 'post' ), $atts['post_types'] );
 	}
 
-
 	/**
 	 * Test if the shortcode_hide_empty filter is set to true (by default).
 	 */
@@ -85,7 +86,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertTrue( $this->arg );
 		$this->arg = null;
 	}
-
 
 	/**
 	 * Test if the shortcode_hide_empty filter works as intended.
@@ -108,7 +108,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$shortcode = ob_get_clean();
 		$this->assertContains( '<p>No related posts found</p>', $shortcode );
 	}
-
 
 	/**
 	 * Test the related posts retrieved by the shortcode
@@ -200,7 +199,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$this->arg = null;
 	}
 
-
 	/**
 	 * Test the arguments for the related_posts_by_taxonomy_shortcode_atts filter.
 	 * Should be te similar to the arguments as for the related_posts_by_taxonomy_widget_args filter
@@ -225,11 +223,8 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$this->arg = null;
 	}
 
-
 	/**
 	 * Test output from shortcode.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_output() {
 
@@ -267,8 +262,6 @@ EOF;
 
 	/**
 	 * Test output if the shortcode is disabled.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_disabled_output() {
 		$create_posts = $this->create_posts_with_terms();
@@ -286,8 +279,6 @@ EOF;
 
 	/**
 	 * Test booleans in shortcode arguments.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_boolean_values() {
 
@@ -343,11 +334,8 @@ EOF;
 		$this->arg = null;
 	}
 
-
 	/**
 	 * Test booleans in shortcode arguments.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_link_caption_value() {
 

@@ -115,7 +115,6 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		return rest_ensure_response( $data );
 	}
 
-
 	/**
 	 * Check if a given request has access to get items
 	 *
@@ -157,7 +156,6 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @return mixed
 	 */
 	public function prepare_item_for_response( $args, $request ) {
-
 		$related_posts = $this->get_related_posts( $args );
 		$fields        = strtolower( $args['fields'] );
 
@@ -167,12 +165,17 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 			$rendered = km_rpbt_shortcode_output( $related_posts, $args );
 		}
 
+		/* Default to all taxonomies if none were provided. */
+		if ( ! $args['taxonomies'] ) {
+			$args['taxonomies'] = km_rpbt_get_public_taxonomies();
+		}
+
 		$data = array(
 			'posts'         => $related_posts,
-			'termcount'     => isset( $this->filter_args['termcount'] ) ? $this->filter_args['termcount'] : array(),
 			'post_id'       => $args['post_id'],
 			'post_types'    => $args['post_types'],
-			'taxonomies'    => km_rpbt_get_taxonomies( $args['taxonomies'] ),
+			'taxonomies'    => $args['taxonomies'],
+			'termcount'     => isset( $this->filter_args['termcount'] ) ? $this->filter_args['termcount'] : array(),
 			'related_terms' => isset( $this->filter_args['related_terms'] ) ? $this->filter_args['related_terms'] : array(),
 			'rendered'      => $rendered,
 		);

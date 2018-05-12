@@ -18,7 +18,6 @@ function km_rpbt_related_posts_by_taxonomy_widget() {
 	}
 }
 
-
 /**
  * Related_Posts_By_Taxonomy widget class.
  *
@@ -74,7 +73,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 	}
 
-
 	/**
 	 * Displays the related posts on the front end.
 	 *
@@ -119,7 +117,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		 *
 		 * @since 0.1
 		 *
-		 * @param string $args                Widget instance.
+		 * @param string $args        Widget instance.
 		 * @param string $widget_args Widget arguments.
 		 */
 		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $args, $widget_args );
@@ -136,7 +134,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		 * Set by the related_posts_by_taxonomy_widget_hide_empty filter.
 		 * Default true.
 		 */
-		$hide_empty = (bool) $this->plugin->plugin_supports( 'widget_hide_empty' );
+		$hide_empty = (bool) km_rpbt_plugin_supports( 'widget_hide_empty' );
 
 		if ( ! $hide_empty || ! empty( $related_posts ) ) {
 			$this->widget_output( $related_posts, $args, $widget_args );
@@ -154,7 +152,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * Get the related posts used by the widget.
 	 *
 	 * @since 2.3.2
-	 * @since 2.4.2 Deprecated.
+	 * @since 2.5.0 Deprecated.
 	 *
 	 * @param array $args Widget arguments.
 	 * @return array Array with related post objects.
@@ -201,7 +199,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		echo $rpbt_widget_args['after_widget'];
 	}
-
 
 	/**
 	 * Updates the widget settings.
@@ -250,7 +247,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		return $i;
 	}
-
 
 	/**
 	 * Displays the widget form in /wp-admin/widgets.php.
@@ -404,13 +400,12 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * called by filter hook 'query_vars'
 	 *
 	 * @since 0.2.1
-	 * @param unknown $query_vars Query var.
+	 * @param array $query_vars Array with query vars.
 	 */
 	function add_related_post_id( $query_vars ) {
 		$query_vars[] = 'km_rpbt_related_post_id';
 		return $query_vars;
 	}
-
 
 	/**
 	 * Returns the current post id to get related posts for.
@@ -439,7 +434,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		return $post_id;
 	}
 
-
 	/**
 	 * Returns all widget instance settings.
 	 *
@@ -455,7 +449,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		return array_merge( $defaults, $i );
 	}
-
 
 	/**
 	 * Returns correct settings if taxonomies argument is not defined.

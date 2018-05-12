@@ -11,8 +11,6 @@ class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test output from shortcode.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_shortcode_output_with_post_class() {
 
@@ -105,7 +103,30 @@ EOF;
 	 * Test getting the link for a related post title
 	 * used in the templates
 	 */
-	function test_km_rpbt_get_post_link() {
+	function test_rpbt_get_post_link_global_post() {
+		$link2 = km_rpbt_get_post_link();
+		if ( $GLOBALS['post'] ) {
+			$this->assertNotEmpty( $link2 );
+		} else {
+			$this->assertEmpty( $link2 );
+		}
+	}
+
+	/**
+	 * Test getting the link for a related post title
+	 * used in the templates
+	 */
+	function test_rpbt_get_post_link_invalid_argument() {
+		// get_post() returns null if a post is not found
+		$link = km_rpbt_get_post_link( 'lala' );
+		$this->assertEmpty( $link );
+	}
+
+	/**
+	 * Test getting the link for a related post title
+	 * used in the templates
+	 */
+	function test_km_rpbt_get_post_link_output() {
 		$posts = $this->create_posts();
 		$posts = get_posts();
 

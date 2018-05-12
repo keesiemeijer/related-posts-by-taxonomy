@@ -55,7 +55,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$this->taxonomies = array_unique( $this->taxonomies );
 
 			$this->plugin  = km_rpbt_plugin();
-			$this->cache   = $this->plugin->cache instanceof Related_Posts_By_Taxonomy_Cache;
+			$this->cache   = km_rpbt_is_cache_loaded();
 
 			// Adds debug link before the widget title.
 			add_filter( 'dynamic_sidebar_params', array( $this, 'widget_params' ), 99 );
@@ -278,7 +278,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			if ( ! empty( $results ) ) {
 				if ( isset( $results[0]->ID ) ) {
-					$this->debug['related post ids found'] = wp_list_pluck( $results, 'ID' );
+					$post_ids = wp_list_pluck( $results, 'ID' );
+					$this->debug['related post ids found'] = ! empty( $post_ids ) ? implode( ', ', $post_ids ) : '';
 				} else {
 					$this->debug['related post ids found']['error'] = 'results found but could not get post IDs';
 					$this->debug['related post ids found']['results'] = $results;
@@ -387,9 +388,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			remove_filter( 'related_posts_by_taxonomy_widget_hide_empty',    array( $this, 'hide_empty' ), 99 );
 			remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'hide_empty' ), 99 );
 
-			$supports = $this->plugin->get_plugin_supports();
+			$supports = km_rpbt_get_plugin_supports();
 			foreach ( $supports as $key => $support ) {
-				$supports[ $key ] = $this->plugin->plugin_supports( $key );
+				$supports[ $key ] = km_rpbt_plugin_supports( $key );
 			}
 
 			return $supports;

@@ -1,6 +1,6 @@
 # [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Build Status](https://travis-ci.org/keesiemeijer/related-posts-by-taxonomy.svg?branch=gutenberg)](http://travis-ci.org/keesiemeijer/related-posts-by-taxonomy) #
 
-Version:           2.4.2-alpha  
+Version:           2.5.0-alpha  
 Requires at least: 4.1  
 Tested up to:      4.9  
 
