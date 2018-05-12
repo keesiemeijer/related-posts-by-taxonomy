@@ -152,7 +152,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * Get the related posts used by the widget.
 	 *
 	 * @since 2.3.2
-	 * @since 2.4.2 Deprecated.
+	 * @since 2.5.0 Deprecated.
 	 *
 	 * @param array $args Widget arguments.
 	 * @return array Array with related post objects.

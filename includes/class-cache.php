@@ -108,7 +108,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * Get the cache settings.
 		 *
 		 * @since 2.0.1
-		 * @since 2.4.2 Moved logic to km_rpbt_get_default_settings().
+		 * @since 2.5.0 Moved logic to km_rpbt_get_default_settings().
 		 *
 		 * @return array Array with cache arguments.
 		 */

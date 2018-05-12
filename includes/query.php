@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Queries for related posts by taxonomy.
  *
- * @since 2.4.2
+ * @since 2.5.0
  *
  * @global object       $wpdb
  *

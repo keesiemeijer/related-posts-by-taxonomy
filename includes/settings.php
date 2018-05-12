@@ -2,7 +2,7 @@
 /**
  * Setting types supported by this plugin.
  *
- * @since  2.4.2
+ * @since  2.5.0
  *
  * @return array Array with supported setting types.
  */
@@ -49,7 +49,7 @@ function km_rpbt_get_plugin_supports() {
 /**
  * Returns defaults for the related posts query.
  *
- * @since 2.4.2
+ * @since 2.5.0
  *
  * @return array Array with default query vars.
  */

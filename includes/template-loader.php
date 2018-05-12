@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Gets the template used for display of related posts
  *
- * @since 2.4.2
+ * @since 2.5.0
  *
  * Used by widget and shortcode
  *

@@ -244,7 +244,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * Returns default settings for the shortcode and widget.
 		 *
 		 * @since 2.2.2
-		 * @since 2.4.2 Moved logic to km_rpbt_get_default_settings().
+		 * @since 2.5.0 Moved logic to km_rpbt_get_default_settings().
 		 *
 		 * @param tring $type Type of settings. Choose from 'widget', 'shortcode', 'wp_rest_api' or 'all'.
 		 * @return string ype of settings. Values can be 'shortcode' or 'widget'
@@ -257,7 +257,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * Get the features this plugin supports
 		 *
 		 * @since 2.3.1
-		 * @since 2.4.2 Moved logic to a km_rpbt_get_plugin_supports().
+		 * @since 2.5.0 Moved logic to a km_rpbt_get_plugin_supports().
 		 *
 		 * @return Array Array with plugin support types
 		 */
@@ -269,7 +269,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * Adds opt in support with a filter for cache, WP REST API and debug.
 		 *
 		 * @since 2.3.0
-		 * @since 2.4.2 Moved logic to km_rpbt_plugin_supports().
+		 * @since 2.5.0 Moved logic to km_rpbt_plugin_supports().
 		 *
 		 * @param string $type Type of support ('cache', 'wp_rest_api', etc.).
 		 * @return bool True if set to true with a filter. Default false.

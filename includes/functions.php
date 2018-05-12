@@ -22,7 +22,7 @@ function km_rpbt_plugin() {
 /**
  * Check if the plugin supports a feature.
  *
- * @since  2.4.2
+ * @since  2.5.0
  *
  * @param string $type Type of feature.
  * @return bool True if the feature is supported.
@@ -53,7 +53,7 @@ function km_rpbt_plugin_supports( $type ) {
  * If taxonomies are not set in the arguments it gets the
  * related posts from all public taxonomies.
  *
- * @since  2.4.2
+ * @since  2.5.0
  *
  * @param array        $post_id The post id to get related posts for.
  * @param array|string $args    Array of arguments.
@@ -82,7 +82,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	/**
 	 * Filter whether to use your own related posts.
 	 *
-	 * @since  2.4.2
+	 * @since  2.5.0
 	 *
 	 * @param boolean|array $related_posts Array with (related) post objects.
 	 *                                     Default false (Don't use your own related posts).
@@ -117,7 +117,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 /**
  * Get the terms from the post or from included terms
  *
- * @since  2.4.2
+ * @since  2.5.0
  *
  * @param int          $post_id    The post id to get terms for.
  * @param array|string $taxonomies The taxonomies to retrieve terms from.
@@ -211,7 +211,7 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
 /**
  * Get all public taxonomies found by this plugin.
  *
- * @since 2.4.2
+ * @since 2.5.0
  *
  * @return array Array with all public taxonomies.
  */
@@ -224,7 +224,7 @@ function km_rpbt_get_public_taxonomies() {
  * Validates ids.
  * Checks if ids is a comma separated string or an array with ids.
  *
- * @since 2.4.2
+ * @since 2.5.0
  * @param string|array $ids Comma separated list or array with ids.
  * @return array Array with postive integers
  */
@@ -276,7 +276,7 @@ function km_rpbt_is_cache_loaded() {
  * Uses the same arguments as the km_rpbt_query_related_posts() function.
  *
  * @since 2.1
- * @since  2.4.2 Use empty string as default value for $taxonomies parameter.
+ * @since  2.5.0 Use empty string as default value for $taxonomies parameter.
  *
  * @param int          $post_id    The post id to cache related posts for.
  * @param array|string $taxonomies The taxonomies to cache related posts from.
