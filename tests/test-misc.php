@@ -76,13 +76,17 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 
 		// these functions should not output anything.
 		$plugin              = km_rpbt_plugin();
+		$plugin2             = related_posts_by_taxonomy_init();
 		$capability          = km_rpbt_plugin_supports( 'widget' );
 		$rel_posts           = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
 		$rel_posts3          = km_rpbt_get_related_posts( $_posts[0]->ID );
 		$cache_posts         = km_rpbt_cache_related_posts( $posts[0], $taxonomies, $args );
+		$cache_posts2        = km_rpbt_is_cache_loaded();
 		$_args               = km_rpbt_get_query_vars();
 		$_args['taxonomies'] = $taxonomies;
 		$sanitize            = km_rpbt_sanitize_args( $_args );
+		$gallery             = km_rpbt_related_posts_by_taxonomy_gallery( array( 'id' => $posts[0] ), array() );
+		$widget              = km_rpbt_related_posts_by_taxonomy_widget();
 		$shortcode           = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
 		$settings            = km_rpbt_get_default_settings( 'shortcode' );
 		$settings['post_id'] = $posts[0];
@@ -90,6 +94,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$sc_output           = km_rpbt_shortcode_output( $_posts, $sc_validate );
 		$post_types          = km_rpbt_get_post_types( 'post,page' );
 		$taxonomies          = km_rpbt_get_taxonomies( $taxonomies );
+		$taxonomies2         = km_rpbt_get_public_taxonomies();
 		$terms               = km_rpbt_get_terms( $_posts[0]->ID, $taxonomies );
 		$value               = km_rpbt_get_comma_separated_values( 'hello,world' );
 		$template            = km_rpbt_get_template( 'excerpts' );
