@@ -225,10 +225,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		// Empty string should default to taxonomy 'category'.
 		$fail4 = km_rpbt_query_related_posts( $posts[0], '', $args );
 		$this->assertEmpty( $fail4 );
-
-		// No arguments should return an empty array.
-		$fail5 = km_rpbt_query_related_posts();
-		$this->assertEmpty( $fail5 );
 	}
 
 	/**

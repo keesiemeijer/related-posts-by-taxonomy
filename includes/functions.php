@@ -5,8 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-include_once 'query.php';
-
 /**
  * Returns plugin defaults instance or false.
  *
@@ -81,8 +79,6 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	// Set post_id the same as used for the $post_id parameter.
 	$args['post_id'] = $post_id;
 
-	$query_args = $args;
-
 	/**
 	 * Filter whether to use your own related posts.
 	 *
@@ -104,6 +100,8 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 		// Get related posts from cache.
 		$related_posts = $plugin->cache->get_related_posts( $args );
 	} else {
+		$query_args = $args;
+
 		/* restricted arguments */
 		unset( $query_args['post_id'], $query_args['taxonomies'] );
 
@@ -128,7 +126,8 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
  */
 function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	$terms = array();
-	$args   = km_rpbt_sanitize_args( $args );
+	$args  = km_rpbt_sanitize_args( $args );
+
 	if ( $args['terms'] ) {
 		$term_args = array(
 			'include'  => $args['terms'],

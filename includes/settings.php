@@ -99,6 +99,9 @@ function km_rpbt_get_default_settings( $type = '' ) {
 	// Default related posts query vars
 	$defaults = km_rpbt_get_query_vars();
 
+	// There is no default  for post types.
+	$defaults['post_types'] = '';
+
 	// Common settings for the widget and shortcode and wp rest api.
 	$settings = array(
 		'post_id'        => '',
@@ -114,9 +117,6 @@ function km_rpbt_get_default_settings( $type = '' ) {
 
 	$settings = array_merge( $defaults, $settings );
 
-	// There is no default setting for post types.
-	$settings['post_types'] = '';
-
 	if ( ! $valid_type ) {
 		return $settings;
 	}
@@ -124,10 +124,10 @@ function km_rpbt_get_default_settings( $type = '' ) {
 	$rest_api_type = ( 'wp_rest_api' === $type ) ? $type : '';
 
 	// wp_rest_api settings are the same as a shortcode.
-	$type  = $rest_api_type ? 'shortcode' : $type;
+	$type = $rest_api_type ? 'shortcode' : $type;
 
 	// Custom settings for the shortcode and rest api types.
-	if ( ( 'shortcode' === $type ) ) {
+	if ( 'shortcode' === $type ) {
 		$shortcode_args = array(
 			'before_shortcode' => '<div class="rpbt_shortcode">',
 			'after_shortcode'  => '</div>',

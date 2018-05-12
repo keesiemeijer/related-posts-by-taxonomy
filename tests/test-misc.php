@@ -31,7 +31,6 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_create_posts_with_terms() {
 		$create_posts = $this->create_posts_with_terms();
-		//$create_posts = array();
 		$this->assertNotEmpty( $create_posts );
 		$this->assertCount( 5, $create_posts['posts'] );
 		$this->assertCount( 5, $create_posts['tax1_terms'] );
