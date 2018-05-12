@@ -94,7 +94,8 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_wp_rest_api_class_is_loaded() {
-		$plugin = km_rpbt_plugin();
+		$plugin = new Related_Posts_By_Taxonomy_Plugin();
+		//$cache->_setup();
 		global $wp_rest_server;
 		$wp_rest_server = new Spy_REST_Server;
 		do_action( 'rest_api_init' );
@@ -109,7 +110,8 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_wp_rest_api_route_is_registered() {
-		$plugin = km_rpbt_plugin();
+		// Setup plugin with cache activated.
+		$plugin = new Related_Posts_By_Taxonomy_Plugin();
 		global $wp_rest_server;
 		$wp_rest_server = new Spy_REST_Server;
 		do_action( 'rest_api_init' );

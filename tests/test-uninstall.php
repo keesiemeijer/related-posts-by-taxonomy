@@ -26,10 +26,10 @@ class KM_RPBT_Uninstall_Tests extends KM_RPBT_UnitTestCase {
 		$posts        = $create_posts['posts'];
 
 		add_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
-		$plugin = km_rpbt_plugin();
 
-		// Setup (again) with cache layer activated.
-		$plugin->_setup();
+		// Setup plugin with cache activated.
+		$cache = new Related_Posts_By_Taxonomy_Plugin();
+		$cache->_setup();
 
 		// Transient should be set.
 		$transient = get_transient( 'rpbt_related_posts_flush_cache' );

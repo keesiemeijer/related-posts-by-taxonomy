@@ -100,7 +100,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 */
 		public static function init() {
 			add_action( 'wp_loaded', array( self::get_instance(), '_setup' ) );
-			add_action( 'rest_api_init', array( self::get_instance(), '_setup_wp_rest_api' ) );
 		}
 
 		/**
@@ -109,48 +108,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @since 0.2.1
 		 */
 		public function _setup() {
-
-			// Default taxonomies.
 			$this->all_tax     = 'all'; // All taxonomies.
 			$this->default_tax = array( 'category' => __( 'Category', 'related-posts-by-taxonomy' ) );
 			$this->post_types  = $this->get_post_types();
 			$this->taxonomies  = $this->get_taxonomies();
 			$this->image_sizes = $this->get_image_sizes();
 			$this->formats     = $this->get_formats();
-
-			if ( $this->plugin_supports( 'cache' ) ) {
-				// Only load the cache class when $cache is set to true.
-				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/cache.php';
-				$this->cache = new Related_Posts_By_Taxonomy_Cache();
-			}
-
-			if ( $this->plugin_supports( 'debug' ) && ! is_admin() ) {
-				// Only load the debug file when $debug is set to true.
-				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/debug.php';
-				$debug = new Related_Posts_By_Taxonomy_Debug();
-			}
-		}
-
-		/**
-		 * Sets up the WordPress REST API
-		 *
-		 * @since 2.3.0
-		 *
-		 * @return array Array with post type objects.
-		 */
-		public function _setup_wp_rest_api() {
-
-			// Class exists for WordPress 4.7 and up.
-			if ( ! class_exists( 'WP_REST_Controller' ) ) {
-				return;
-			}
-
-			if ( is_user_logged_in() || $this->plugin_supports( 'wp_rest_api' ) ) {
-				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/wp-rest-api.php';
-
-				$rest_api = new Related_Posts_By_Taxonomy_Rest_API();
-				$rest_api->register_routes();
-			}
 		}
 
 		/**
