@@ -95,11 +95,10 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	 */
 	function test_wp_rest_api_class_is_loaded() {
 		$plugin = new Related_Posts_By_Taxonomy_Plugin();
-		//$cache->_setup();
 		global $wp_rest_server;
 		$wp_rest_server = new Spy_REST_Server;
 		do_action( 'rest_api_init' );
-		$plugin->_setup_wp_rest_api();
+		$plugin->rest_api_init();
 		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Rest_API' ) );
 		$wp_rest_server = null;
 	}
@@ -115,7 +114,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		global $wp_rest_server;
 		$wp_rest_server = new Spy_REST_Server;
 		do_action( 'rest_api_init' );
-		$plugin->_setup_wp_rest_api();
+		$plugin->rest_api_init();
 		$this->assertTrue( in_array( '/related-posts-by-taxonomy/v1', array_keys( $wp_rest_server->get_routes() ) ) );
 		$wp_rest_server = null;
 	}

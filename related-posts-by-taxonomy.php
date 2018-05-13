@@ -67,14 +67,11 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		// The related post thumbnail gallery.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/gallery.php';
 
-		// loads the different templates used for the widget and shortcode.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-loader.php';
-
-		// The shortcode.
+		// The Shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
 
-		// The widget.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-widget.php';
+		// loads the different templates used for the widget and shortcode.
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-loader.php';
 
 		// Defaults
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-defaults.php';
@@ -83,8 +80,8 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-plugin.php';
 
 		// Instantiate the plugin class.
-		$km_rpbt_related_posts = new Related_Posts_By_Taxonomy_Plugin();
-		$km_rpbt_related_posts->init();
+		$related_posts = new Related_Posts_By_Taxonomy_Plugin();
+		$related_posts->init();
 	}
 
 	/* initialize plugin */

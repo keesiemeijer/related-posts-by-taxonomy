@@ -61,6 +61,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 * @expectedDeprecated km_rpbt_related_posts_by_taxonomy_validate_ids
 	 * @expectedDeprecated km_rpbt_related_posts_by_taxonomy_template
 	 * @expectedDeprecated km_rpbt_shortcode_get_related_posts
+	 * @expectedDeprecated km_rpbt_related_posts_by_taxonomy_widget
 	 * @expectedDeprecated km_rpbt_get_related_post_title_link
 	 * @expectedDeprecated km_rpbt_get_shortcode_atts
 	 * @expectedDeprecated km_rpbt_get_default_args

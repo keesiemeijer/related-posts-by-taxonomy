@@ -270,8 +270,12 @@ EOF;
 		$shortcode = do_shortcode( '[related_posts_by_tax post_id="' . $posts[1] . '"]' );
 		$this->assertNotEmpty( $shortcode );
 
-		// Removes support for the widget.
+		// Removes support for the shortcode.
 		add_filter( 'related_posts_by_taxonomy_shortcode', '__return_false' );
+
+		// Loads plugin with shortcode support removed
+		$shortcode = new Related_Posts_By_Taxonomy_Plugin();
+		$shortcode->shortcode_init();
 
 		$shortcode = do_shortcode( '[related_posts_by_tax post_id="' . $posts[1] . '"]' );
 		$this->assertEmpty( $shortcode );
