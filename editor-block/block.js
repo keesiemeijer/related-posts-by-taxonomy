@@ -8,7 +8,7 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 const { InspectorControls } = wp.blocks;
-const { BaseControl, PanelBody } = wp.components;
+const { BaseControl, PanelBody, ToggleControl } = wp.components;
 const { Component, Fragment, RawHTML, compose } = wp.element;
 const { __, sprintf } = wp.i18n;
 
@@ -18,7 +18,8 @@ const { __, sprintf } = wp.i18n;
 import './editor.scss'
 import { getPluginData } from './data/data';
 import { relatedPosts } from './data/posts';
-import QueryPanel from './components/query-panel';
+import PostsPanel from './components/posts-panel';
+import ImagePanel from './components/image-panel';
 import LoadingPlaceholder from './components/placeholder';
 
 let instances = 0;
@@ -37,6 +38,8 @@ class RelatedPostsBlock extends Component {
 		// This allows the user more time to type.
 		this.onTitleChange = this.onTitleChange.bind(this);
 		this.titleDebounced = debounce( this.updateTitle, 1000);
+
+		this.toggleLinkCaption = this.toggleLinkCaption.bind( this );
 
 		this.instanceId = instances++;
 	}
@@ -62,10 +65,17 @@ class RelatedPostsBlock extends Component {
 		setAttributes( { post_types: postTypes } );
 	}
 
+	toggleLinkCaption(){
+		const { link_caption } = this.props.attributes;
+		const { setAttributes } = this.props;
+
+		setAttributes( { link_caption: ! link_caption } );
+	}
+
 	render(){
 		const relatedPosts = this.props.relatedPosts.data;
 		const { attributes, focus, isSelected, setAttributes, editorData } = this.props;
-		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns } = attributes;
+		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption } = attributes;
 		const titleID = 'inspector-text-control-' + this.instanceId;
 		const className = classnames( this.props.className, { 'rpbt-html5-gallery': ( 'thumbnails' === format ) && this.html5Gallery } );
 
@@ -92,7 +102,7 @@ class RelatedPostsBlock extends Component {
 								id={titleID}
 							/>
 						</BaseControl>
-						<QueryPanel
+						<PostsPanel
 							postsPerPage={posts_per_page}
 							onPostsPerPageChange={ ( value ) => {
 									// Don't allow 0 as a value.
@@ -104,14 +114,23 @@ class RelatedPostsBlock extends Component {
 							onTaxonomiesChange={ ( value ) => setAttributes( { taxonomies: value } ) }
 							format={ format }
 							onFormatChange={ ( value ) => setAttributes( { format: value } ) }
-							imageSize={image_size}
-							onImageSizeChange={ ( value ) => setAttributes( { image_size: value } ) }
-							columns={columns}
-							onColumnsChange={ ( value ) => setAttributes( { columns: Number( value ) } ) }
 							postTypes={ checkedPostTypes }
 							onPostTypesChange={ this.updatePostTypes }
 						/>
 					</div>
+				</PanelBody>
+				<PanelBody title={ __( 'Image Settings' ) }>
+					<ImagePanel
+						imageSize={image_size}
+						onImageSizeChange={ ( value ) => setAttributes( { image_size: value } ) }
+						columns={columns}
+						onColumnsChange={ ( value ) => setAttributes( { columns: Number( value ) } ) }
+					/>
+					<ToggleControl
+						label={ __( ' Link image captions to posts' ) }
+						checked={ link_caption }
+						onChange={ this.toggleLinkCaption }
+					/>
 				</PanelBody>
 			</InspectorControls>
 			);

@@ -128,6 +128,10 @@ function km_rpbt_register_block_type() {
 					'type' => 'int',
 					'default' => 3,
 				),
+				'link_caption' => array(
+					'type'    => 'boolean',
+					'default' => false,
+				),
 			),
 			'render_callback' => 'km_rpbt_render_block_related_post',
 		) );

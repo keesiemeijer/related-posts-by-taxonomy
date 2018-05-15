@@ -23,7 +23,7 @@ export const relatedPosts = compose(
 	editorData,
 	withAPIData( ( props ) => {
 		const { editorData, isSelected } = props;
-		const { post_types, title, posts_per_page, format, image_size, columns } = props.attributes;
+		const { post_types, title, posts_per_page, format, image_size, columns, link_caption } = props.attributes;
 		const type = 'editor_block';
 		let { taxonomies} = props.attributes;
 		let fields = '';
@@ -52,6 +52,7 @@ export const relatedPosts = compose(
 			format,
 			image_size,
 			columns,
+			link_caption,
 			type,
 			fields,
 		};

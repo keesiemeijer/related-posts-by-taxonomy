@@ -2571,8 +2571,9 @@ module.exports = nodeUtil;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__editor_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__editor_scss__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__data_data__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__data_posts__ = __webpack_require__(100);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_query_panel__ = __webpack_require__(162);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_placeholder__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_posts_panel__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_image_panel__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_placeholder__ = __webpack_require__(164);
 
  /**
                                                 * External dependencies
@@ -2594,7 +2595,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var InspectorControls = wp.blocks.InspectorControls;
 var _wp$components = wp.components,
     BaseControl = _wp$components.BaseControl,
-    PanelBody = _wp$components.PanelBody;
+    PanelBody = _wp$components.PanelBody,
+    ToggleControl = _wp$components.ToggleControl;
 var _wp$element = wp.element,
     Component = _wp$element.Component,
     Fragment = _wp$element.Fragment,
@@ -2607,6 +2609,7 @@ var _wp$i18n = wp.i18n,
 /**
  * Internal dependencies
  */
+
 
 
 
@@ -2634,6 +2637,8 @@ var RelatedPostsBlock = function (_Component) {
 		// This allows the user more time to type.
 		_this.onTitleChange = _this.onTitleChange.bind(_this);
 		_this.titleDebounced = __WEBPACK_IMPORTED_MODULE_0_lodash_debounce___default()(_this.updateTitle, 1000);
+
+		_this.toggleLinkCaption = _this.toggleLinkCaption.bind(_this);
 
 		_this.instanceId = instances++;
 		return _this;
@@ -2667,6 +2672,15 @@ var RelatedPostsBlock = function (_Component) {
 			setAttributes({ post_types: postTypes });
 		}
 	}, {
+		key: 'toggleLinkCaption',
+		value: function toggleLinkCaption() {
+			var link_caption = this.props.attributes.link_caption;
+			var setAttributes = this.props.setAttributes;
+
+
+			setAttributes({ link_caption: !link_caption });
+		}
+	}, {
 		key: 'render',
 		value: function render() {
 			var relatedPosts = this.props.relatedPosts.data;
@@ -2682,7 +2696,8 @@ var RelatedPostsBlock = function (_Component) {
 			    posts_per_page = attributes.posts_per_page,
 			    format = attributes.format,
 			    image_size = attributes.image_size,
-			    columns = attributes.columns;
+			    columns = attributes.columns,
+			    link_caption = attributes.link_caption;
 
 			var titleID = 'inspector-text-control-' + this.instanceId;
 			var className = __WEBPACK_IMPORTED_MODULE_2_classnames___default()(this.props.className, { 'rpbt-html5-gallery': 'thumbnails' === format && this.html5Gallery });
@@ -2721,7 +2736,7 @@ var RelatedPostsBlock = function (_Component) {
 								id: titleID
 							})
 						),
-						wp.element.createElement(__WEBPACK_IMPORTED_MODULE_6__components_query_panel__["a" /* default */], {
+						wp.element.createElement(__WEBPACK_IMPORTED_MODULE_6__components_posts_panel__["a" /* default */], {
 							postsPerPage: posts_per_page,
 							onPostsPerPageChange: function onPostsPerPageChange(value) {
 								// Don't allow 0 as a value.
@@ -2736,18 +2751,29 @@ var RelatedPostsBlock = function (_Component) {
 							onFormatChange: function onFormatChange(value) {
 								return setAttributes({ format: value });
 							},
-							imageSize: image_size,
-							onImageSizeChange: function onImageSizeChange(value) {
-								return setAttributes({ image_size: value });
-							},
-							columns: columns,
-							onColumnsChange: function onColumnsChange(value) {
-								return setAttributes({ columns: Number(value) });
-							},
 							postTypes: checkedPostTypes,
 							onPostTypesChange: this.updatePostTypes
 						})
 					)
+				),
+				wp.element.createElement(
+					PanelBody,
+					{ title: __('Image Settings') },
+					wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__components_image_panel__["a" /* default */], {
+						imageSize: image_size,
+						onImageSizeChange: function onImageSizeChange(value) {
+							return setAttributes({ image_size: value });
+						},
+						columns: columns,
+						onColumnsChange: function onColumnsChange(value) {
+							return setAttributes({ columns: Number(value) });
+						}
+					}),
+					wp.element.createElement(ToggleControl, {
+						label: __(' Link image captions to posts'),
+						checked: link_caption,
+						onChange: this.toggleLinkCaption
+					})
 				)
 			);
 
@@ -2775,7 +2801,7 @@ var RelatedPostsBlock = function (_Component) {
 					Fragment,
 					null,
 					inspectorControls,
-					wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__components_placeholder__["a" /* default */], {
+					wp.element.createElement(__WEBPACK_IMPORTED_MODULE_8__components_placeholder__["a" /* default */], {
 						className: className,
 						queryFinished: queryFinished,
 						postsFound: postsFound,
@@ -3861,7 +3887,8 @@ var relatedPosts = compose(__WEBPACK_IMPORTED_MODULE_4__editor__["a" /* editorDa
 	    posts_per_page = _props$attributes.posts_per_page,
 	    format = _props$attributes.format,
 	    image_size = _props$attributes.image_size,
-	    columns = _props$attributes.columns;
+	    columns = _props$attributes.columns,
+	    link_caption = _props$attributes.link_caption;
 
 	var type = 'editor_block';
 	var taxonomies = props.attributes.taxonomies;
@@ -3892,6 +3919,7 @@ var relatedPosts = compose(__WEBPACK_IMPORTED_MODULE_4__editor__["a" /* editorDa
 		format: format,
 		image_size: image_size,
 		columns: columns,
+		link_caption: link_caption,
 		type: type,
 		fields: fields
 	};
@@ -6077,123 +6105,7 @@ module.exports = isFlattenable;
 
 
 /***/ }),
-/* 162 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = QueryPanel;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_data__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_post_type_control__ = __webpack_require__(163);
-/**
- * WordPress dependencies
- */
-var __ = wp.i18n.__;
-var _wp$components = wp.components,
-    SelectControl = _wp$components.SelectControl,
-    RangeControl = _wp$components.RangeControl;
-
-/**
- * Internal dependencies
- */
-
-
-
-
-// Select input options
-var taxonomyOptions = getTaxonomyOptions();
-var formatOptions = getOptions('formats');
-var imageOptions = getOptions('image_sizes');
-
-function QueryPanel(_ref) {
-	var taxonomies = _ref.taxonomies,
-	    onTaxonomiesChange = _ref.onTaxonomiesChange,
-	    postsPerPage = _ref.postsPerPage,
-	    onPostsPerPageChange = _ref.onPostsPerPageChange,
-	    format = _ref.format,
-	    onFormatChange = _ref.onFormatChange,
-	    imageSize = _ref.imageSize,
-	    onImageSizeChange = _ref.onImageSizeChange,
-	    columns = _ref.columns,
-	    onColumnsChange = _ref.onColumnsChange,
-	    postTypes = _ref.postTypes,
-	    onPostTypesChange = _ref.onPostTypesChange;
-
-
-	return [onPostsPerPageChange && wp.element.createElement(RangeControl, {
-		key: 'rpbt-range-posts-per-page',
-		label: __('Number of items'),
-		value: postsPerPage,
-		onChange: onPostsPerPageChange,
-		min: -1,
-		max: 100
-	}), onTaxonomiesChange && wp.element.createElement(SelectControl, {
-		key: 'rpbt-select-taxonomies',
-		label: __('Taxonomies'),
-		value: '' + taxonomies,
-		options: taxonomyOptions,
-		onChange: function onChange(value) {
-			onTaxonomiesChange(value);
-		}
-	}), onPostTypesChange && wp.element.createElement(__WEBPACK_IMPORTED_MODULE_1__components_post_type_control__["a" /* default */], {
-		label: __('Post Types'),
-		onChange: onPostTypesChange,
-		postTypes: postTypes
-	}), onFormatChange && wp.element.createElement(SelectControl, {
-		key: 'rpbt-select-format',
-		label: __('Format'),
-		value: '' + format,
-		options: formatOptions,
-		onChange: function onChange(value) {
-			onFormatChange(value);
-		}
-	}), onImageSizeChange && wp.element.createElement(SelectControl, {
-		key: 'rpbt-select-image-size',
-		label: __('Image Size'),
-		value: '' + imageSize,
-		options: imageOptions,
-		onChange: function onChange(value) {
-			onImageSizeChange(value);
-		}
-	}), onColumnsChange && wp.element.createElement(RangeControl, {
-		key: 'rpbt-range-columns',
-		label: __('Image Columns'),
-		value: columns,
-		onChange: onColumnsChange,
-		min: 0,
-		max: 20
-	})];
-}
-
-function getTaxonomyOptions() {
-	if (!Object(__WEBPACK_IMPORTED_MODULE_0__data_data__["b" /* getPluginData */])('all_tax')) {
-		return [];
-	}
-
-	var options = [{
-		label: __('all taxonomies'),
-		value: Object(__WEBPACK_IMPORTED_MODULE_0__data_data__["b" /* getPluginData */])('all_tax')
-	}];
-
-	return getOptions('taxonomies', options);
-}
-
-function getOptions(type) {
-	var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-
-	var typeOptions = Object(__WEBPACK_IMPORTED_MODULE_0__data_data__["b" /* getPluginData */])(type);
-	for (var key in typeOptions) {
-		if (typeOptions.hasOwnProperty(key)) {
-			options.push({
-				label: typeOptions[key],
-				value: key
-			});
-		}
-	}
-
-	return options;
-}
-
-/***/ }),
+/* 162 */,
 /* 163 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -6445,6 +6357,168 @@ function LoadingPlaceholder(_ref) {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (LoadingPlaceholder);
+
+/***/ }),
+/* 165 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = PostsPanel;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_data__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data_options__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_post_type_control__ = __webpack_require__(163);
+/**
+ * WordPress dependencies
+ */
+var __ = wp.i18n.__;
+var _wp$components = wp.components,
+    SelectControl = _wp$components.SelectControl,
+    RangeControl = _wp$components.RangeControl;
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+
+// Select input options
+var taxonomyOptions = getTaxonomyOptions();
+var formatOptions = Object(__WEBPACK_IMPORTED_MODULE_1__data_options__["a" /* getOptions */])('formats');
+
+function PostsPanel(_ref) {
+	var taxonomies = _ref.taxonomies,
+	    onTaxonomiesChange = _ref.onTaxonomiesChange,
+	    postsPerPage = _ref.postsPerPage,
+	    onPostsPerPageChange = _ref.onPostsPerPageChange,
+	    format = _ref.format,
+	    onFormatChange = _ref.onFormatChange,
+	    postTypes = _ref.postTypes,
+	    onPostTypesChange = _ref.onPostTypesChange;
+
+
+	return [onPostsPerPageChange && wp.element.createElement(RangeControl, {
+		key: 'rpbt-range-posts-per-page',
+		label: __('Number of items'),
+		value: postsPerPage,
+		onChange: onPostsPerPageChange,
+		min: -1,
+		max: 100
+	}), onTaxonomiesChange && wp.element.createElement(SelectControl, {
+		key: 'rpbt-select-taxonomies',
+		label: __('Taxonomies'),
+		value: '' + taxonomies,
+		options: taxonomyOptions,
+		onChange: function onChange(value) {
+			onTaxonomiesChange(value);
+		}
+	}), onPostTypesChange && wp.element.createElement(__WEBPACK_IMPORTED_MODULE_2__components_post_type_control__["a" /* default */], {
+		label: __('Post Types'),
+		onChange: onPostTypesChange,
+		postTypes: postTypes
+	}), onFormatChange && wp.element.createElement(SelectControl, {
+		key: 'rpbt-select-format',
+		label: __('Format'),
+		value: '' + format,
+		options: formatOptions,
+		onChange: function onChange(value) {
+			onFormatChange(value);
+		}
+	})];
+}
+
+function getTaxonomyOptions() {
+	if (!Object(__WEBPACK_IMPORTED_MODULE_0__data_data__["b" /* getPluginData */])('all_tax')) {
+		return [];
+	}
+
+	var options = [{
+		label: __('all taxonomies'),
+		value: Object(__WEBPACK_IMPORTED_MODULE_0__data_data__["b" /* getPluginData */])('all_tax')
+	}];
+
+	return Object(__WEBPACK_IMPORTED_MODULE_1__data_options__["a" /* getOptions */])('taxonomies', options);
+}
+
+/***/ }),
+/* 166 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = getOptions;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data__ = __webpack_require__(8);
+/**
+ * Internal dependencies
+ */
+
+
+function getOptions(type) {
+	var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+	var typeOptions = Object(__WEBPACK_IMPORTED_MODULE_0__data__["b" /* getPluginData */])(type);
+	for (var key in typeOptions) {
+		if (typeOptions.hasOwnProperty(key)) {
+			options.push({
+				label: typeOptions[key],
+				value: key
+			});
+		}
+	}
+
+	return options;
+}
+
+/***/ }),
+/* 167 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = ImagePanel;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_data__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__data_options__ = __webpack_require__(166);
+/**
+ * WordPress dependencies
+ */
+var __ = wp.i18n.__;
+var _wp$components = wp.components,
+    SelectControl = _wp$components.SelectControl,
+    RangeControl = _wp$components.RangeControl;
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+// Select input options
+var imageOptions = Object(__WEBPACK_IMPORTED_MODULE_1__data_options__["a" /* getOptions */])('image_sizes');
+
+function ImagePanel(_ref) {
+	var imageSize = _ref.imageSize,
+	    onImageSizeChange = _ref.onImageSizeChange,
+	    columns = _ref.columns,
+	    onColumnsChange = _ref.onColumnsChange;
+
+
+	return [onImageSizeChange && wp.element.createElement(SelectControl, {
+		key: 'rpbt-select-image-size',
+		label: __('Image Size'),
+		value: '' + imageSize,
+		options: imageOptions,
+		onChange: function onChange(value) {
+			onImageSizeChange(value);
+		}
+	}), onColumnsChange && wp.element.createElement(RangeControl, {
+		key: 'rpbt-range-columns',
+		label: __('Image Columns'),
+		value: columns,
+		onChange: onColumnsChange,
+		min: 0,
+		max: 20
+	})];
+}
 
 /***/ })
 /******/ ]);
