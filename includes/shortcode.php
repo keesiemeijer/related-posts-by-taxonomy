@@ -5,10 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_shortcode( 'related_posts_by_tax', 'km_rpbt_related_posts_by_taxonomy_shortcode' );
-
 /**
  * Callback function for the shortcode [related_posts_by_tax].
+ *
+ * The shortcode returns an empty string if it's is not supported by this plugin.
  *
  * @since 0.1
  *
@@ -116,7 +116,7 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 
 	global $post; // Used for setup_postdata() in templates.
 
-	/* public template variables */
+	/* public template variables (back-compat) */
 	$image_size = $rpbt_args['image_size']; // deprecated in version 0.3.
 	$columns    = absint( $rpbt_args['columns'] ); // deprecated in version 0.3.
 

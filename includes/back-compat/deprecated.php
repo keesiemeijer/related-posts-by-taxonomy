@@ -135,3 +135,15 @@ function km_rpbt_get_related_post_title_link( $post, $title_attr = false ) {
 
 	return km_rpbt_get_post_link( $post, $title_attr );
 }
+
+/**
+ * Registers the related posts by taxonomy widget.
+ *
+ * @since 0.1
+ * @since 2.5.0 Deprecated
+ */
+function km_rpbt_related_posts_by_taxonomy_widget() {
+	_deprecated_function( __FUNCTION__, '2.5.0', 'Related_Posts_By_Taxonomy_Plugin::widget_init()' );
+	$widget = new Related_Posts_By_Taxonomy_Plugin();
+	$widget->widget_init();
+}

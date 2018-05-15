@@ -37,7 +37,8 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		add_filter( 'related_posts_by_taxonomy_widget', '__return_false' );
 
 		// Registers the widget if supported.
-		km_rpbt_related_posts_by_taxonomy_widget();
+		$widget = new Related_Posts_By_Taxonomy_Plugin();
+		$widget->widget_init();
 
 		$widget_class = 'Related_Posts_By_Taxonomy';
 		$this->assertArrayNotHasKey( $widget_class, $wp_widget_factory->widgets );

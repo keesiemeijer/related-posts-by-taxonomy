@@ -19,7 +19,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 		// Setup plugin with cache activated.
 		$cache = new Related_Posts_By_Taxonomy_Plugin();
-		$cache->_setup();
+		$cache->cache_init();
 
 		$plugin = km_rpbt_plugin();
 		if ( $plugin ) {
@@ -48,7 +48,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 		// Setup plugin with cache activated.
 		$cache = new Related_Posts_By_Taxonomy_Plugin();
-		$cache->_setup();
+		$cache->cache_init();
 
 		$this->assertFalse( $this->arg  );
 		$this->arg = null;

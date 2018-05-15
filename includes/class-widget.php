@@ -5,19 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_action( 'widgets_init', 'km_rpbt_related_posts_by_taxonomy_widget' );
-
-/**
- * Registers the related posts by taxonomy widget.
- *
- * @since 0.1
- */
-function km_rpbt_related_posts_by_taxonomy_widget() {
-	if ( km_rpbt_plugin_supports( 'widget' ) ) {
-		register_widget( 'Related_Posts_By_Taxonomy' );
-	}
-}
-
 /**
  * Related_Posts_By_Taxonomy widget class.
  *

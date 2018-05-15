@@ -12,48 +12,78 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 	class Related_Posts_By_Taxonomy_Plugin {
 
 		/**
-		 * Sets up class properties on action hook wp_loaded.
-		 * wp_loaded is fired after custom post types and taxonomies are registered by themes and plugins.
+		 * Sets up plugin features.
 		 *
-		 * @since 0.2.1
+		 * @since 2.5.0
 		 */
 		public function init() {
 			Related_Posts_By_Taxonomy_Defaults::init();
 
-			add_action( 'wp_loaded', array( $this, '_setup' ) );
-			add_action( 'rest_api_init', array( $this, '_setup_wp_rest_api' ) );
+			// Initialize plugin features.
+			add_action( 'init', array( $this, 'shortcode_init' ) );
+			add_action( 'widgets_init', array( $this, 'widget_init' ) );
+			add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
+			add_action( 'wp_loaded', array( $this, 'cache_init' ) );
+			add_action( 'wp_loaded', array( $this, 'debug_init' ) );
 		}
 
 		/**
-		 * Sets up class properties.
+		 * Set up cache feature.
 		 *
-		 * @since 0.2.1
+		 * @since 2.5.0
 		 */
-		public function _setup() {
-
+		public function cache_init() {
 			if ( km_rpbt_plugin_supports( 'cache' ) ) {
-				$defaults = Related_Posts_By_Taxonomy_Defaults::get_instance();
-
-				// Only load the cache class when $cache is set to true.
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-cache.php';
+				$defaults        = Related_Posts_By_Taxonomy_Defaults::get_instance();
 				$defaults->cache = new Related_Posts_By_Taxonomy_Cache();
 			}
+		}
 
-			if ( km_rpbt_plugin_supports( 'debug' ) && ! is_admin() ) {
-				// Only load the debug file when $debug is set to true.
+		/**
+		 * Sets up debug feature.
+		 *
+		 * @since 2.5.0
+		 */
+		public function debug_init() {
+			if ( ! is_admin() && km_rpbt_plugin_supports( 'debug' ) ) {
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-debug.php';
 				$debug = new Related_Posts_By_Taxonomy_Debug();
 			}
 		}
 
 		/**
-		 * Sets up the WordPress REST API
+		 * Set up the widget feature.
+		 *
+		 * @since 2.5.0
+		 */
+		public function widget_init() {
+			if ( km_rpbt_plugin_supports( 'widget' ) ) {
+				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-widget.php';
+				register_widget( 'Related_Posts_By_Taxonomy' );
+			}
+		}
+
+		/**
+		 * Set up the shortcode feature.
+		 *
+		 * The shortcode file is loaded in the main plugin file.
+		 * Other features rely on shortcode functions as well.
+		 *
+		 * The shortcode returns an empty string if it's is not supported by this plugin.
+		 *
+		 * @since 2.5.0
+		 */
+		public function shortcode_init() {
+			add_shortcode( 'related_posts_by_tax', 'km_rpbt_related_posts_by_taxonomy_shortcode' );
+		}
+
+		/**
+		 * Set up the WordPress REST API feature.
 		 *
 		 * @since 2.3.0
-		 *
-		 * @return array Array with post type objects.
 		 */
-		public function _setup_wp_rest_api() {
+		public function rest_api_init() {
 
 			// Class exists for WordPress 4.7 and up.
 			if ( ! class_exists( 'WP_REST_Controller' ) ) {
