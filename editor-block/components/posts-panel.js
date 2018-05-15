@@ -8,24 +8,20 @@ const { SelectControl, RangeControl } = wp.components;
  * Internal dependencies
  */
 import { getPluginData } from '../data/data';
+import { getOptions } from '../data/options';
 import PostTypeControl from '../components/post-type-control';
 
 // Select input options
 const taxonomyOptions = getTaxonomyOptions();
 const formatOptions = getOptions('formats');
-const imageOptions = getOptions('image_sizes');
 
-export default function QueryPanel( {
+export default function PostsPanel( {
 	taxonomies,
 	onTaxonomiesChange,
 	postsPerPage,
 	onPostsPerPageChange,
 	format,
 	onFormatChange,
-	imageSize,
-	onImageSizeChange,
-	columns,
-	onColumnsChange,
 	postTypes,
 	onPostTypesChange,
 } ) {
@@ -62,23 +58,6 @@ export default function QueryPanel( {
 				options={  formatOptions }
 				onChange={ ( value ) => { onFormatChange( value ); } }
 			/> ),
-		onImageSizeChange && (
-			<SelectControl
-				key="rpbt-select-image-size"
-				label={ __( 'Image Size' ) }
-				value={ `${ imageSize }` }
-				options={  imageOptions }
-				onChange={ ( value ) => { onImageSizeChange( value ); } }
-			/> ),
-		onColumnsChange && (
-			<RangeControl
-				key="rpbt-range-columns"
-				label={ __( 'Image Columns' ) }
-				value={ columns }
-				onChange={ onColumnsChange }
-				min={ 0 }
-				max={ 20 }
-			/> ),
 	];
 }
 
@@ -95,18 +74,4 @@ function getTaxonomyOptions() {
 	];
 
 	return getOptions( 'taxonomies', options );
-}
-
-function getOptions(type, options = []) {
-	const typeOptions = getPluginData( type );
-	for ( var key in typeOptions ) {
-		if ( typeOptions.hasOwnProperty( key ) ) {
-			options.push({
-				label: typeOptions[ key ],
-				value: key,
-			});
-		}
-	}
-
-	return options;
 }
