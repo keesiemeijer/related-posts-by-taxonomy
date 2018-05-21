@@ -36,7 +36,7 @@
 		?>
 
 		<div<?php km_rpbt_post_class( $post ); ?>>
-			<?php km_rpbt_post_title_link( $post ); ?>
+			<?php km_rpbt_post_link( $post ); ?>
 			<?php the_excerpt(); ?>
 		</div>
 

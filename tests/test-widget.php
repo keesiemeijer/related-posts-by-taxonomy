@@ -4,22 +4,15 @@
  */
 class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
-	/**
-	 * Widget settings.
-	 *
-	 * @var array
-	 */
-	private $settings;
-
 	function tearDown() {
 		// use tearDown for WP < 4.0
-		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_bool' ) );
+		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_first_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', '__return_false' );
 		remove_filter( 'related_posts_by_taxonomy_widget', '__return_false' );
 		remove_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'override_related_posts' ), 10, 2 );
 		parent::tearDown();
 	}
-
 
 	/**
 	 * Test if the widget exists.
@@ -44,7 +37,8 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		add_filter( 'related_posts_by_taxonomy_widget', '__return_false' );
 
 		// Registers the widget if supported.
-		km_rpbt_related_posts_by_taxonomy_widget();
+		$widget = new Related_Posts_By_Taxonomy_Plugin();
+		$widget->widget_init();
 
 		$widget_class = 'Related_Posts_By_Taxonomy';
 		$this->assertArrayNotHasKey( $widget_class, $wp_widget_factory->widgets );
@@ -57,7 +51,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_bool' ) );
+		add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_first_argument' ) );
 		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 
 		// run the widget
@@ -73,8 +67,8 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
 
-		$this->assertTrue( $this->boolean  );
-		$this->boolean = null;
+		$this->assertTrue( $this->arg  );
+		$this->arg = null;
 	}
 
 	/**
@@ -84,7 +78,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		//add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_bool' ) );
+		//add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_first_argument' ) );
 		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 		$args   = array(
 			'before_widget' => '<section>',
@@ -168,7 +162,6 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertContains( '<p>No related posts found</p>', $output );
 	}
 
-
 	/**
 	 * Test the arguments for the filter related_posts_by_taxonomy_widget_args.
 	 * Should be te similar to the arguments as for the related_posts_by_taxonomy_shortcode_atts filter
@@ -176,7 +169,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 	function test_widget_filter_settings() {
 		$create_posts = $this->create_posts_with_terms();
 
-		add_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_settings' ) );
+		add_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_first_argument' ) );
 		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 
 		// run the widget
@@ -195,9 +188,9 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$expected['post_types'] = array( 'post' ); // set in the widget as default
 		$expected['post_id']    = false; // not in the loop
 
-		$this->assertEquals( $expected, $this->settings );
+		$this->assertEquals( $expected, $this->arg );
+		$this->arg = null;
 	}
-
 
 	/**
 	 * Test args validation.
@@ -213,11 +206,8 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( $expected, $settings );
 	}
 
-
 	/**
 	 * Test output from widget.
-	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 */
 	function test_rpbt_widget_output() {
 
@@ -260,10 +250,6 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $output ) );
-	}
-
-	function return_settings( $settings ) {
-		return $this->settings = $settings;
 	}
 
 	function override_related_posts( $related_posts, $args ) {

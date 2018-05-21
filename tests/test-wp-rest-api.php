@@ -16,7 +16,9 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 	function tearDown() {
 		remove_filter( 'related_posts_by_taxonomy_wp_rest_api', '__return_true' );
-		remove_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_bool' ) );
+		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_query_args' ), 10, 4 );
+		remove_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_first_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy_wp_rest_api_args', array( $this, 'return_first_argument' ) );
 	}
 
 	/**
@@ -47,7 +49,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		}
 
 		$response = rest_do_request( $request );
-		$data = $response->get_data();
+		$data     = $response->get_data();
 
 		if ( isset( $data['code'] ) ) {
 			return $data['code'];
@@ -58,15 +60,32 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Tests if wp_rest_api filter is set to false (by default).
-	 *
-	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
 	 */
 	function test_wp_rest_Api_filter() {
 		// Added by setUp().
 		remove_filter( 'related_posts_by_taxonomy_wp_rest_api', '__return_true' );
 
 		$plugin = km_rpbt_plugin();
-		$this->assertFalse( $plugin->plugin_supports( 'wp_rest_api' ) );
+		$this->assertFalse( km_rpbt_plugin_supports( 'wp_rest_api' ) );
+	}
+
+	/**
+	 * Tests if wp_rest_api filter is set to false (by default).
+	 */
+	function test_wp_rest_Api_not_registered_route() {
+		// Added by setUp().
+		remove_filter( 'related_posts_by_taxonomy_wp_rest_api', '__return_true' );
+
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+
+		$response = rest_do_request( $request );
+		$data     = $response->get_data();
+
+		$this->assertTrue( array_key_exists( 'code', $data ) );
+		$this->assertSame( "rest_no_route", $data['code'] );
 	}
 
 	/**
@@ -75,11 +94,11 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_wp_rest_api_class_is_loaded() {
-		$plugin = km_rpbt_plugin();
+		$plugin = new Related_Posts_By_Taxonomy_Plugin();
 		global $wp_rest_server;
 		$wp_rest_server = new Spy_REST_Server;
 		do_action( 'rest_api_init' );
-		$plugin->_setup_wp_rest_api();
+		$plugin->rest_api_init();
 		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Rest_API' ) );
 		$wp_rest_server = null;
 	}
@@ -90,11 +109,12 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_wp_rest_api_route_is_registered() {
-		$plugin = km_rpbt_plugin();
+		// Setup plugin with cache activated.
+		$plugin = new Related_Posts_By_Taxonomy_Plugin();
 		global $wp_rest_server;
 		$wp_rest_server = new Spy_REST_Server;
 		do_action( 'rest_api_init' );
-		$plugin->_setup_wp_rest_api();
+		$plugin->rest_api_init();
 		$this->assertTrue( in_array( '/related-posts-by-taxonomy/v1', array_keys( $wp_rest_server->get_routes() ) ) );
 		$wp_rest_server = null;
 	}
@@ -102,7 +122,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test success response for rest request.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_wp_rest_api_success_response() {
@@ -124,13 +143,42 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 			'rendered',
 		);
 
-		$this->assertEquals( $expected, array_keys( $data ) );
+		$data = array_keys( $data );
+
+		sort( $expected );
+		sort( $data );
+
+		$this->assertEquals( $expected, $data );
+	}
+
+	/**
+	 * Test type of request.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_wp_rest_api_default_type_request() {
+
+		$this->setup_posts();
+		$posts = $this->posts;
+		add_filter( 'related_posts_by_taxonomy_wp_rest_api_args', array( $this, 'return_first_argument' ) );
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+		$request->set_param( 'fields', 'ids' );
+		$response = rest_do_request( $request );
+
+		// Default response without a type.
+		$this->assertEquals( 'wp_rest_api', $this->arg['type'] );
+		$this->arg = null;
+
+		// Invalid type.
+		$request->set_param( 'type', 'lala' );
+		$response = rest_do_request( $request );
+		$this->assertEquals( 'wp_rest_api', $this->arg['type'] );
+		$this->arg = null;
 	}
 
 	/**
 	 * Test related posts for post type post.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_post_type_post() {
@@ -184,7 +232,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test related posts for custom post type and custom taxonomy.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_custom_post_type_and_custom_taxonomy() {
@@ -244,7 +291,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test invalid function arguments.
 	 *
-	 *  @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 *  @requires function WP_REST_Controller::register_routes
 	 */
 	function test_invalid_arguments() {
@@ -259,29 +305,28 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 		// Not a post ID.
 		$fail = $this->rest_related_posts_by_taxonomy( 'not a post ID', $taxonomies, $args );
-		$this->assertEquals( 'rest_no_route', $fail );
+		$this->assertEquals( 'rest_no_route', $fail, 'Not a post ID' );
 
 		// Non existant post ID.
 		$fail2 = $this->rest_related_posts_by_taxonomy( 9999999999, $taxonomies, $args );
-		$this->assertEquals( 'rest_post_invalid_id', $fail2 );
+		$this->assertEquals( 'rest_post_invalid_id', $fail2, 'Non existant post ID' );
 
 		// Non existant taxonomy.
 		$fail3 = $this->rest_related_posts_by_taxonomy( $posts[0], 'not a taxonomy', $args );
-		$this->assertEmpty( $fail3 );
+		$this->assertEmpty( $fail3, 'Non existant taxonomy' );
 
 		// Empty string should default to taxonomy 'category'.
-		$fail4 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
-		$this->assertEmpty( $fail4 );
+		//$fail4 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
+		//$this->assertEmpty( $fail4, 'empty string' );
 
 		// No arguments should return an empty array.
 		$fail5 = $this->rest_related_posts_by_taxonomy();
-		$this->assertEquals( 'rest_post_invalid_id', $fail5 );
+		$this->assertEquals( 'rest_post_invalid_id', $fail5, 'no arguments' );
 	}
 
 	/**
 	 * Test exclude_terms argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_exclude_terms() {
@@ -294,7 +339,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test include_terms argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_include_terms() {
@@ -307,7 +351,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test include_terms argument when related === false.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_include_terms_unrelated() {
@@ -322,11 +365,59 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( $this->posts[3], $this->posts[4] ), $rel_post0 );
 	}
 
+	/**
+	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_related_posts_by_terms() {
+		$this->setup_posts();
+		$args = array(
+			'terms' => array( $this->tax_2_terms[3] ),
+			'related'       => false,
+			'fields'        => 'ids',
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument with and without the correct taxonomy.
+	 */
+	function test_related_posts_by_terms_with_taxonomy() {
+		$this->setup_posts();
+
+		register_taxonomy( 'ctax', 'post' );
+		$terms = $this->factory->term->create_many( 3, array( 'taxonomy' => 'ctax' ) );
+		$term_id1 = wp_set_post_terms ( $this->posts[2], (int) $terms[0], 'ctax', true );
+		$taxonomies = array( 'category' );
+
+		$args = array(
+			'terms'   => array( $this->tax_2_terms[3], (int) $term_id1[0] ),
+			'fields'  => 'ids',
+		);
+
+		// Post 2 should not be related as the 'ctax' taxonomy is not used in the query.
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+
+		$taxonomies[] = 'ctax';
+		// Post 2 should now be related as the 'ctax' taxonomy is queried.
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
+
+		$term_id2 = wp_set_post_terms ( $this->posts[2], (int) $terms[1], 'ctax', true );
+		$args['terms'][] = $term_id2[0];
+
+		// Post two has more terms in common now
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $this->posts[2], $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
 
 	/**
 	 * Test related === false without include_terms.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related() {
@@ -342,7 +433,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test exclude_posts function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_exclude_posts() {
@@ -355,7 +445,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test limit_posts function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_limit_posts() {
@@ -368,7 +457,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test posts_per_page function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_posts_per_page() {
@@ -381,7 +469,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test fields function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_fields() {
@@ -404,7 +491,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test post_thumbnail function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_post_thumbnail() {
@@ -422,7 +508,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test limit_month function argument.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_limit_month() {
@@ -444,7 +529,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test ascending order.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_order_asc() {
@@ -462,7 +546,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test unrelated ascending order.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_order_asc_non_related() {
@@ -482,7 +565,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	 * Test random order of posts.
 	 * Todo: Find out how to test random results and apply
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_order_rand() {
@@ -504,7 +586,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test order by post_modified.
 	 *
-	 * @depends KM_RPBT_Misc_Tests::test_create_posts_with_terms
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_orderby_post_modified() {
@@ -525,6 +606,126 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 		// Test post 0.
 		$this->assertEquals( array( $posts[2], $posts[1],  $posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 *
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_post_status() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		$user_id = $this->factory->user->create(
+			array(
+				'role' => 'author',
+			)
+		);
+
+		$private = array(
+			'ID' => $this->posts[2],
+			'post_status' => 'private',
+		);
+
+		wp_update_post( $private );
+		$taxonomies = array( 'category', 'post_tag' );
+
+		$args       = array(
+			'fields' => 'ids',
+		);
+
+		// User is not set, private post is not included.
+		$rel_post3 = $this->rest_related_posts_by_taxonomy( $posts[3], $taxonomies, $args );
+		$this->assertEquals( array( $posts[1], $posts[0] ), $rel_post3 );
+
+		$private = array(
+			'ID' => $this->posts[2],
+			'post_status' => 'private',
+			'post_author' => $user_id,
+		);
+
+		wp_update_post( $private );
+
+		// Set user to private post author, post is included.
+		wp_set_current_user( $user_id );
+
+		$rel_post3 = $this->rest_related_posts_by_taxonomy( $posts[3], $taxonomies, $args );
+		$this->assertEquals( array( $posts[1], $posts[0], $posts[2] ), $rel_post3 );
+	}
+
+	/**
+	 * test related posts for post type post
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_include_self() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		// Test with a single taxonomy.
+		$taxonomies = array( 'post_tag' );
+		$args       = array(
+			'fields' => 'ids',
+			'include_self' => true,
+		);
+
+		// test post 0
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $posts[0], $posts[2], $posts[1], $posts[3] ), $rel_post0 );
+
+		// test post with post date prior then inclusive post
+		$rel_post1 = $this->rest_related_posts_by_taxonomy( $posts[1], $taxonomies, $args );
+		$this->assertEquals( array( $posts[1], $posts[0], $posts[2], $posts[3] ), $rel_post1 );
+	}
+
+	/**
+	 * test related posts for post type post
+	 */
+	function test_include_self_orderby_rand() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		add_filter( 'related_posts_by_taxonomy_posts_orderby', array( $this, 'return_first_argument' ), 10, 4 );
+
+		// Test with a single taxonomy.
+		$taxonomies = array( 'post_tag' );
+		$args       = array(
+			'fields' => 'ids',
+			'include_self' => true,
+			'order' => 'RAND',
+		);
+
+		// test post 0
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+
+		$this->assertCount( 4, $rel_post0 );
+		$this->assertSame( (int) $posts[0], (int) $rel_post0[0] );
+
+		//Check if the query contains 'RAND()'
+		$this->assertContains( 'RAND()', $this->arg );
+		$this->arg = null;
+	}
+
+	/**
+	 * test include self argument regular order.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_include_self_regular_order() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		// Test with a single taxonomy.
+		$taxonomies = array( 'post_tag' );
+		$args       = array(
+			'fields' => 'ids',
+			'include_self' => 'regular_order',
+		);
+
+		// test post with post date prior then inclusive post
+		$rel_post1 = $this->rest_related_posts_by_taxonomy( $posts[1], $taxonomies, $args );
+		$this->assertEquals( array( $posts[0], $posts[1], $posts[2], $posts[3] ), $rel_post1 );
 	}
 
 }

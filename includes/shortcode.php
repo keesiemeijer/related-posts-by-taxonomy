@@ -5,20 +5,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_shortcode( 'related_posts_by_tax', 'km_rpbt_related_posts_by_taxonomy_shortcode' );
-
 /**
  * Callback function for the shortcode [related_posts_by_tax].
  *
+ * The shortcode returns an empty string if it's is not supported by this plugin.
+ *
  * @since 0.1
  *
- * @uses km_rpbt_related_posts_by_taxonomy()
- * @uses km_rpbt_related_posts_by_taxonomy_template()
+ * @uses km_rpbt_query_related_posts()
+ * @uses km_rpbt_get_template()
  *
- * @param string $rpbt_args Attributes used by the shortcode.
+ * @param string $atts Attributes used by the shortcode.
  * @return string Related posts html or empty string.
  */
-function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
+function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 
 	/* for filter recursion (infinite loop) */
 	static $recursing = false;
@@ -29,9 +29,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 		return '';
 	}
 
-	$plugin = km_rpbt_plugin();
-
-	if ( ! ( $plugin && $plugin->plugin_supports( 'shortcode' ) ) ) {
+	if ( ! km_rpbt_plugin_supports( 'shortcode' ) ) {
 		$recursing = false;
 		return '';
 	}
@@ -48,34 +46,36 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 	$defaults = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
 
 	/* Can also be filtered in WordPress > 3.5 (hook: shortcode_atts_related_posts_by_tax) */
-	$rpbt_args = shortcode_atts( (array) $defaults, $rpbt_args, 'related_posts_by_tax' );
+	$atts = shortcode_atts( (array) $defaults, $atts, 'related_posts_by_tax' );
 
 	/* Validates atts. Sets the post type and post id if not set in filters above */
-	$validated_args = km_rpbt_validate_shortcode_atts( (array) $rpbt_args );
+	$validated_args = km_rpbt_validate_shortcode_atts( (array) $atts );
 
 	/**
 	 * Filter attributes.
 	 *
-	 * @param array $rpbt_args See $defaults above
+	 * @param array $atts See $defaults above
 	 */
-	$rpbt_args = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $validated_args );
-	$rpbt_args = array_merge( $validated_args, (array) $rpbt_args );
+	$atts = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $validated_args );
+	$atts = array_merge( $validated_args, (array) $atts );
 
-	/* Not filterable */
-	$rpbt_args['type'] = 'shortcode';
+	/* Un-filterable arguments */
+	$atts['type'] = 'shortcode';
+	$atts['fields'] = '';
 
-	$related_posts = km_rpbt_shortcode_get_related_posts( $rpbt_args, $plugin->cache );
+	// Get the related posts from database or cache.
+	$related_posts = km_rpbt_get_related_posts( $atts['post_id'], $atts );
 
 	/*
 	 * Whether to hide the shortcode if no related posts are found.
 	 * Set by the related_posts_by_taxonomy_shortcode_hide_empty filter.
 	 * Default true.
 	 */
-	$hide_empty = (bool) $plugin->plugin_supports( 'shortcode_hide_empty' );
+	$hide_empty = (bool) km_rpbt_plugin_supports( 'shortcode_hide_empty' );
 
 	$shortcode = '';
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
-		$shortcode = km_rpbt_shortcode_output( $related_posts, $rpbt_args );
+		$shortcode = km_rpbt_shortcode_output( $related_posts, $atts );
 	}
 
 	/**
@@ -91,50 +91,6 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $rpbt_args ) {
 } // end km_rpbt_related_posts_by_taxonomy_shortcode()
 
 /**
- * Get the related posts used by the shortcode.
- *
- * @since 2.3.2
- * @param array  $rpbt_args Widget arguments.
- * @param object $cache_obj This plugins cache object. Default null.
- * @return array Array with related post objects.
- */
-function km_rpbt_shortcode_get_related_posts( $rpbt_args, $cache_obj = null ) {
-	$function_args = $rpbt_args;
-
-	/**
-	 * Filter whether to use your own related posts.
-	 *
-	 * @since  2.3.2
-	 *
-	 * @param boolean|array $related_posts Array with (related) post objects.
-	 *                                     Default false (Don't use your own related posts).
-	 *                                     Use empty array to not retrieve related posts from the database.
-	 *
-	 * @param array         Array with widget or shortcode arguments.
-	 */
-	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $rpbt_args );
-
-	if ( is_array( $related_posts ) ) {
-		return $related_posts;
-	}
-
-	/* restricted arguments */
-	unset( $function_args['post_id'], $function_args['taxonomies'], $function_args['fields'] );
-
-	$cache = $cache_obj instanceof Related_Posts_By_Taxonomy_Cache;
-	if ( $cache && ( isset( $rpbt_args['cache'] ) && $rpbt_args['cache'] ) ) {
-		$related_posts = $cache_obj->get_related_posts( $rpbt_args );
-	} else {
-		/* get related posts */
-		$related_posts = km_rpbt_related_posts_by_taxonomy( $rpbt_args['post_id'], $rpbt_args['taxonomies'], $function_args );
-	}
-
-	$related_posts = km_rpbt_add_post_classes( $related_posts, $rpbt_args );
-
-	return $related_posts;
-}
-
-/**
  * Returns shortcode output.
  *
  * @since 2.1
@@ -148,7 +104,7 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 	$rpbt_args = array_merge( km_rpbt_get_default_settings( $rpbt_args['type'] ), $rpbt_args );
 
 	/* get the template depending on the format  */
-	$template = km_rpbt_related_posts_by_taxonomy_template( $rpbt_args['format'], $rpbt_args['type'] );
+	$template = km_rpbt_get_template( $rpbt_args['format'], $rpbt_args['type'] );
 
 	if ( ! $template ) {
 		return '';
@@ -160,7 +116,7 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 
 	global $post; // Used for setup_postdata() in templates.
 
-	/* public template variables */
+	/* public template variables (back-compat) */
 	$image_size = $rpbt_args['image_size']; // deprecated in version 0.3.
 	$columns    = absint( $rpbt_args['columns'] ); // deprecated in version 0.3.
 

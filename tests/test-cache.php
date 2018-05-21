@@ -13,10 +13,13 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
 	}
 
-
 	function setup_cache() {
 		// Activate cache
 		add_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
+
+		// Setup plugin with cache activated.
+		$cache = new Related_Posts_By_Taxonomy_Plugin();
+		$cache->cache_init();
 
 		$plugin = km_rpbt_plugin();
 		if ( $plugin ) {
@@ -27,30 +30,29 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test if cache is enabled by using the filter.
-	 *
-	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
 	 */
 	function test_cache_setup() {
 		$this->setup_cache();
-		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Cache' )  );
-		$this->assertTrue( isset( $this->plugin->cache ) );
-		$this->assertTrue( $this->plugin->cache instanceof Related_Posts_By_Taxonomy_Cache );
+		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Cache' ), "Class doesn't exist"  );
+		$this->assertTrue( km_rpbt_is_cache_loaded(), 'Cache not loaded' );
+		$this->assertTrue( km_rpbt_plugin_supports( 'cache' ), 'Cache not supported' );
+		$transient = get_transient( 'rpbt_related_posts_flush_cache' );
+		$this->assertSame( 1, $transient, "Cache transient wasn't set" );
 	}
-
 
 	/**
 	 * Tests if cache filter is set to false (by default).
-	 *
-	 * @depends KM_RPBT_Functions_Tests::test_km_rpbt_plugin
 	 */
 	function test_cache_filter() {
-		add_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_bool' ) );
-		$plugin = km_rpbt_plugin();
-		$plugin->_setup();
-		$this->assertFalse( $this->boolean  );
-		$this->boolean = null;
-	}
+		add_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_first_argument' ) );
 
+		// Setup plugin with cache activated.
+		$cache = new Related_Posts_By_Taxonomy_Plugin();
+		$cache->cache_init();
+
+		$this->assertFalse( $this->arg  );
+		$this->arg = null;
+	}
 
 	/**
 	 * Tests if cache filter display_cache_log is set to false (by default).
@@ -59,9 +61,8 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_cache_filter_display_cache_log() {
 		$this->setup_cache();
-		$this->assertFalse( $this->plugin->cache->cache['display_cache_log']  );
+		$this->assertFalse( $this->plugin->cache->cache['display_log']  );
 	}
-
 
 	/**
 	 * Test cache.
@@ -110,16 +111,13 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Get related post ids with function.
 		$args = array( 'fields' => 'ids' );
 		$taxonomies = array_keys( $this->plugin->taxonomies );
-		$related = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$related = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
 
 		$this->assertEquals( $cache_ids, $related );
 	}
 
-
 	/**
 	 * Test manually setting the cache for a post id.
-	 *
-	 * @depends test_cache_setup
 	 */
 	function test_manually_cache_related_posts() {
 		global $wpdb;
@@ -145,10 +143,58 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 		$this->assertEquals( array( $posts[0], $posts[2], $posts[3] ), $cache_ids );
 
-		$related = km_rpbt_related_posts_by_taxonomy( $posts[1], $taxonomies, $args );
+		$related = km_rpbt_query_related_posts( $posts[1], $taxonomies, $args );
 		$this->assertEquals( $cache_ids, $related );
 	}
 
+	/**
+	 * Test if the default properties exist for cached posts.
+	 */
+	function test_default_post_properties() {
+		$this->setup_cache();
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// Cache should be loaded after setup
+		$this->assertTrue( km_rpbt_is_cache_loaded(), 'cache is not loaded' );
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// Cache posts
+		$cached_posts = km_rpbt_cache_related_posts( $posts[1] );
+
+		// Check if related posts were cached
+		$log = sprintf( 'Post ID %d - caching posts...', $posts[1] );
+		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not cached' );
+
+		// Get posts from cache
+		$from_cache   = km_rpbt_get_related_posts( $posts[1] );
+
+		// Check if related posts are from the cache
+		$log = sprintf( 'Post ID %d - cache exists', $posts[1] );
+		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not found in cache' );
+
+		// Test default post properties.
+		$this->assertSame( (int) $cached_posts[0]->ID, $from_cache[0]->ID );
+		$this->assertTrue( isset( $from_cache[0]->termcount ) && $from_cache[0]->termcount , 'termcount failed' );
+		$this->assertTrue( isset( $from_cache[0]->rpbt_current ) && $from_cache[0]->rpbt_current, 'rpbt_current failed' );
+		$this->assertTrue( isset( $from_cache[0]->rpbt_post_class ), 'rpbt_post_class failed' );
+		$this->assertTrue( isset( $from_cache[0]->rpbt_type ), 'rpbt_type failed' );
+	}
+
+	/**
+	 * Test if cache posts manually returns false if the cache is not supported.
+	 */
+	function test_cache_manually_without_cache() {
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// Cache posts
+		$cached_posts = km_rpbt_cache_related_posts( $posts[1] );
+		$this->assertFalse( $cached_posts );
+	}
 
 	/**
 	 * test cache for custom post type and custom taxonomy.
@@ -189,7 +235,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( $posts[1], $related_posts[0]->ID );
 	}
 
-
 	/**
 	 * Test manually setting the cache for a post id.
 	 *
@@ -217,7 +262,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Cache should be empty.
 		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
-
 
 	/**
 	 * Test flushing cache when deleting a post.
@@ -253,7 +297,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
 
-
 	/**
 	 * Test flushing cache when setting a post thumbnail.
 	 *
@@ -288,7 +331,6 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Cache should be empty.
 		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
-
 
 	/**
 	 * Test flushing cache when setting a post thumbnail.

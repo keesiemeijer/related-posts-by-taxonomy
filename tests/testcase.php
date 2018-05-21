@@ -1,15 +1,18 @@
 <?php
 class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 
-	public $boolean;
-	//public $gallery = 0;
+	public $arg;
+	public $query_args;
 
 	function setUp() {
 		parent::setUp();
+		$this->arg = null;
+		$this->query_args = null;
 	}
 
 	function tearDown() {
 		parent::tearDown();
+		unregister_taxonomy( 'ctax' );
 	}
 
 	/**
@@ -37,7 +40,6 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 
 		return compact( 'posts', 'tax1_terms', 'tax2_terms' );
 	}
-
 
 	/**
 	 * Creates posts with decreasing timestamps a day apart.
@@ -121,8 +123,24 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return $tax_terms;
 	}
 
-	function return_bool( $bool ) {
-		return $this->boolean = $bool;
+	function return_first_argument( $arg ) {
+		$this->arg = $arg;
+		return  $arg;
+	}
+
+	function return_query_args( $results, $post_id, $taxonomies, $args ) {
+		$this->query_args = $args;
+		return  $results;
+	}
+
+	function cache_log_contains( $string ) {
+		$plugin = km_rpbt_plugin();
+		foreach ( $plugin->cache->cache_log as $log ) {
+			if ( false !== strpos( $log, $string ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	function get_cache_meta_key() {

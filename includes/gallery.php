@@ -161,7 +161,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		if ( 'post_title' === $args['caption'] ) {
 			$caption = $title;
 			if ( (bool) $args['link_caption'] ) {
-				$caption = km_rpbt_get_related_post_title_link( $related );
+				$caption = km_rpbt_get_post_link( $related );
 			}
 		} elseif ( 'post_excerpt' === $args['caption'] ) {
 			global $post;

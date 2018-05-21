@@ -2,10 +2,10 @@
 # This file is distributed under the GPL v2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Related Posts By Taxonomy 2.4.1\n"
+"Project-Id-Version: Related Posts By Taxonomy 2.5.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2018-01-29 15:13:46+00:00\n"
+"POT-Creation-Date: 2018-05-21 13:19:24+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,152 +25,152 @@ msgstr ""
 "X-Textdomain-Support: yes\n"
 "X-Generator: grunt-wp-i18n1.0.0\n"
 
-#: includes/defaults.php:115
+#: includes/class-defaults.php:112
 msgid "Category"
 msgstr ""
 
-#: includes/defaults.php:231
+#: includes/class-defaults.php:137
 msgid "Post"
 msgstr ""
 
-#: includes/defaults.php:314
+#: includes/class-defaults.php:220
 msgid "Thumbnail"
 msgstr ""
 
-#: includes/defaults.php:329
+#: includes/class-defaults.php:235
 msgid "Links"
 msgstr ""
 
-#: includes/defaults.php:330
+#: includes/class-defaults.php:236
 msgid "Posts"
 msgstr ""
 
-#: includes/defaults.php:331
+#: includes/class-defaults.php:237
 msgid "Excerpts"
 msgstr ""
 
-#: includes/defaults.php:332
+#: includes/class-defaults.php:238
 msgid "Post thumbnails"
 msgstr ""
 
-#: includes/defaults.php:363
-msgid "Related Posts"
+#: includes/class-rest-api.php:35
+msgid "Unique identifier for the object."
+msgstr ""
+
+#: includes/class-rest-api.php:63
+msgid "Invalid post ID."
+msgstr ""
+
+#: includes/class-rest-api.php:203
+msgid "The related posts."
+msgstr ""
+
+#: includes/class-rest-api.php:211
+msgid "Number of related terms in common with the post."
+msgstr ""
+
+#: includes/class-rest-api.php:219
+msgid "The Post ID to get related posts for."
+msgstr ""
+
+#: includes/class-rest-api.php:224
+msgid "Post types used in query for related posts."
+msgstr ""
+
+#: includes/class-rest-api.php:232
+msgid "Taxonomies used in query for related posts."
+msgstr ""
+
+#: includes/class-rest-api.php:240
+msgid "Related term ids used in query for related posts."
+msgstr ""
+
+#: includes/class-rest-api.php:248
+msgid "Rendered related posts HTML"
 msgstr ""
 
 #. Plugin Name of the plugin/theme
 msgid "Related Posts By Taxonomy"
 msgstr ""
 
-#: includes/widget.php:44
+#: includes/class-widget.php:29
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/widget.php:288
+#: includes/class-widget.php:249
 msgid "Oops, something went wrong"
 msgstr ""
 
-#: includes/widget.php:302
+#: includes/class-widget.php:263
 msgid "Title"
 msgstr ""
 
-#: includes/widget.php:308
+#: includes/class-widget.php:269
 msgid "Number of related posts to show"
 msgstr ""
 
-#: includes/widget.php:311
+#: includes/class-widget.php:272
 msgid "Use -1 to show all related posts."
 msgstr ""
 
-#: includes/widget.php:318
+#: includes/class-widget.php:279
 msgid "Randomize related posts."
 msgstr ""
 
-#: includes/widget.php:321
+#: includes/class-widget.php:282
 msgid "Taxonomies"
 msgstr ""
 
-#: includes/widget.php:323
+#: includes/class-widget.php:284
 msgid "Taxonomy"
 msgstr ""
 
-#: includes/widget.php:326
+#: includes/class-widget.php:287
 msgid "All Taxonomies"
 msgstr ""
 
-#: includes/widget.php:333
+#: includes/class-widget.php:294
 msgid "Post Types"
 msgstr ""
 
-#: includes/widget.php:345
+#: includes/class-widget.php:306
 msgid "Display"
 msgstr ""
 
-#: includes/widget.php:349
+#: includes/class-widget.php:310
 msgid "Format"
 msgstr ""
 
-#: includes/widget.php:356
+#: includes/class-widget.php:317
 msgid "Image Display"
 msgstr ""
 
-#: includes/widget.php:360
+#: includes/class-widget.php:321
 msgid "Image Size"
 msgstr ""
 
-#: includes/widget.php:369
+#: includes/class-widget.php:330
 msgid "Number of image columns"
 msgstr ""
 
-#: includes/widget.php:379
+#: includes/class-widget.php:340
 msgid "Link image captions to posts"
 msgstr ""
 
-#: includes/widget.php:382
+#: includes/class-widget.php:343
 msgid "Widget Display"
 msgstr ""
 
-#: includes/widget.php:389
+#: includes/class-widget.php:350
 msgid "Display this widget on single post pages only"
 msgstr ""
 
-#: includes/widget.php:393
+#: includes/class-widget.php:354
 msgid "Display related posts for post ID (optional)"
 msgstr ""
 
-#: includes/wp-rest-api.php:40
-msgid "Unique identifier for the object."
-msgstr ""
-
-#: includes/wp-rest-api.php:68
-msgid "Invalid post ID."
-msgstr ""
-
-#: includes/wp-rest-api.php:193
-msgid "The related posts."
-msgstr ""
-
-#: includes/wp-rest-api.php:201
-msgid "Number of related terms in common with the post."
-msgstr ""
-
-#: includes/wp-rest-api.php:209
-msgid "The Post ID to get related posts for."
-msgstr ""
-
-#: includes/wp-rest-api.php:214
-msgid "Post types used in query for related posts."
-msgstr ""
-
-#: includes/wp-rest-api.php:222
-msgid "Taxonomies used in query for related posts."
-msgstr ""
-
-#: includes/wp-rest-api.php:230
-msgid "Related term ids used in query for related posts."
-msgstr ""
-
-#: includes/wp-rest-api.php:238
-msgid "Rendered related posts HTML"
+#: includes/settings.php:109
+msgid "Related Posts"
 msgstr ""
 
 #: templates/related-posts-excerpts.php:46 templates/related-posts-links.php:44
