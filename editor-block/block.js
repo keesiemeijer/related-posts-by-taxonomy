@@ -7,7 +7,7 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-const { InspectorControls } = wp.blocks;
+const { InspectorControls } = wp.editor;
 const { BaseControl, PanelBody, ToggleControl } = wp.components;
 const { Component, Fragment, RawHTML, compose } = wp.element;
 const { __, sprintf } = wp.i18n;
