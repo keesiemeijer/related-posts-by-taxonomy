@@ -111,6 +111,16 @@ Yes. Review [Setting your own defaults for the shortcode](https://keesiemeijer.w
 
 Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) on how to do that.
 
+= Is this plugin GDPR compliant? =
+* This plugin doesn’t process, share, send or retain any user data.
+* This plugin doesn't track (user) data for analytics (or for any other reason).
+* This plugin doesn't save or read cookies.
+* This plugin doesn't use 3rd party libraries.
+
+Read [this article](https://developer.wordpress.org/plugins/wordpress-org/compliance-disclaimers/) why plugin authors cannot guarantee 100% compliance.
+
+Please contact a GDPR consultant or law firm to assess if this plugin is complient in your country.
+
 == Screenshots ==
 
 1. The Widget
@@ -119,6 +129,23 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.5.0 =
+* Enhancement
+	* Prepare plugin for gutenberg blocks
+	* Add terms parameter for shortcode and widget
+	* Add GDPR information to readme.txt
+	* deprecate functions (with back compatibility)
+		* km_rpbt_related_posts_by_taxonomy()
+		* km_rpbt_get_default_args()
+		* km_rpbt_related_posts_by_taxonomy_validate_ids()
+		* km_rpbt_related_posts_by_taxonomy_template()
+		* km_rpbt_post_title_link()
+		* km_rpbt_get_related_post_title_link()
+		* km_rpbt_related_posts_by_taxonomy_widget()
+* Bug fixes
+	* (minor) Add missing filter pre_related_posts before cache queries
+	* (minor) Add missing properties to related posts returned by the cache 
+
 = 2.4.1 =
 * Enhancement
 	* Add post classes with filters or as a shortcode or widget argument
@@ -148,5 +175,5 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.4.1 =
-This update adds the ability to add CSS classes with a widget or shortcode argument. See the changelog.
+= 2.5.0 =
+This update adds a terms parameter for the shortcode and widget. (see changelog for more changes) 
