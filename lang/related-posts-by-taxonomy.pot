@@ -2,10 +2,10 @@
 # This file is distributed under the GPL v2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Related Posts By Taxonomy 2.5.0-alpha\n"
+"Project-Id-Version: Related Posts By Taxonomy 2.5.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2018-05-12 13:43:59+00:00\n"
+"POT-Creation-Date: 2018-05-21 13:19:24+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -93,79 +93,79 @@ msgstr ""
 msgid "Related Posts By Taxonomy"
 msgstr ""
 
-#: includes/class-widget.php:42
+#: includes/class-widget.php:29
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/class-widget.php:262
+#: includes/class-widget.php:249
 msgid "Oops, something went wrong"
 msgstr ""
 
-#: includes/class-widget.php:276
+#: includes/class-widget.php:263
 msgid "Title"
 msgstr ""
 
-#: includes/class-widget.php:282
+#: includes/class-widget.php:269
 msgid "Number of related posts to show"
 msgstr ""
 
-#: includes/class-widget.php:285
+#: includes/class-widget.php:272
 msgid "Use -1 to show all related posts."
 msgstr ""
 
-#: includes/class-widget.php:292
+#: includes/class-widget.php:279
 msgid "Randomize related posts."
 msgstr ""
 
-#: includes/class-widget.php:295
+#: includes/class-widget.php:282
 msgid "Taxonomies"
 msgstr ""
 
-#: includes/class-widget.php:297
+#: includes/class-widget.php:284
 msgid "Taxonomy"
 msgstr ""
 
-#: includes/class-widget.php:300
+#: includes/class-widget.php:287
 msgid "All Taxonomies"
 msgstr ""
 
-#: includes/class-widget.php:307
+#: includes/class-widget.php:294
 msgid "Post Types"
 msgstr ""
 
-#: includes/class-widget.php:319
+#: includes/class-widget.php:306
 msgid "Display"
 msgstr ""
 
-#: includes/class-widget.php:323
+#: includes/class-widget.php:310
 msgid "Format"
 msgstr ""
 
-#: includes/class-widget.php:330
+#: includes/class-widget.php:317
 msgid "Image Display"
 msgstr ""
 
-#: includes/class-widget.php:334
+#: includes/class-widget.php:321
 msgid "Image Size"
 msgstr ""
 
-#: includes/class-widget.php:343
+#: includes/class-widget.php:330
 msgid "Number of image columns"
 msgstr ""
 
-#: includes/class-widget.php:353
+#: includes/class-widget.php:340
 msgid "Link image captions to posts"
 msgstr ""
 
-#: includes/class-widget.php:356
+#: includes/class-widget.php:343
 msgid "Widget Display"
 msgstr ""
 
-#: includes/class-widget.php:363
+#: includes/class-widget.php:350
 msgid "Display this widget on single post pages only"
 msgstr ""
 
-#: includes/class-widget.php:367
+#: includes/class-widget.php:354
 msgid "Display related posts for post ID (optional)"
 msgstr ""
 
