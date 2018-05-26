@@ -129,6 +129,11 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	$args  = km_rpbt_sanitize_args( $args );
 
 	if ( $args['terms'] ) {
+
+		if ( ! $args['related'] ) {
+			return $args['terms'];
+		}
+
 		$term_args = array(
 			'include'  => $args['terms'],
 			'taxonomy' => $taxonomies,

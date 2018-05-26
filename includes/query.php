@@ -37,6 +37,11 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$args['related_terms'] = $terms;
 	$args['termcount']     = array();
 
+	$related = $args['related'];
+	if( ! $related && $args[ 'terms' ] ){
+		$related = true;
+	}
+
 	// Term ids sql.
 	if ( count( $terms ) > 1 ) {
 		$term_ids_sql = 'tt.term_id IN (' . implode( ', ', $terms ) . ')';
@@ -138,7 +143,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	}
 
 	if ( ! $order_by_rand ) {
-		if ( $args['related'] ) {
+		if ( $related ) {
 			// Related terms count sql.
 			$select_sql .= ' , count(distinct tt.term_taxonomy_id) as termcount';
 		}
@@ -270,7 +275,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	if ( $results ) {
 
 		/* Order the related posts */
-		if ( ! $order_by_rand && $args['related'] ) {
+		if ( ! $order_by_rand && $related ) {
 
 			/* Add the (termcount) score and key to results for ordering*/
 			for ( $i = 0; $i < count( $results ); $i++ ) {
