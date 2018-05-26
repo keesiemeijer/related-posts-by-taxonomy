@@ -39,10 +39,12 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	 * @param array|string $args       Optional. Change what is returned.
 	 * @return array|string            Empty array if no related posts found. Array with post objects, or error code returned by the request.
 	 */
-	function rest_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'category', $args = '' ) {
+	function rest_related_posts_by_taxonomy( $post_id = 0, $taxonomies = '', $args = '' ) {
 
 		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $post_id );
-		$request->set_param( 'taxonomies', $taxonomies );
+		if ( $taxonomies ) {
+			$request->set_param( 'taxonomies', $taxonomies );
+		}
 		$args    = is_array( $args ) ? $args : array( $args );
 		foreach ( $args as $key => $value ) {
 			$request->set_param( $key, $value );
@@ -289,9 +291,27 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
+	 *
+	 */
+	function test_with_no_taxonomies() {
+		register_post_type( 'rel_cpt', array( 'taxonomies' => array( 'post_tag', 'rel_ctax' ) ) );
+		register_taxonomy( 'rel_ctax', 'rel_cpt' );
+
+		$this->assertFalse( is_taxonomy_hierarchical( 'rel_ctax' ) );
+
+		$this->setup_posts( 'rel_cpt', 'post_tag', 'rel_ctax' );
+		$posts = $this->posts;
+
+		$args = array( 'post_types' => array( 'rel_cpt', 'post' ), 'fields' => 'ids' );
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], false, $args );
+
+		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
+	}
+
+	/**
 	 * Test invalid function arguments.
 	 *
-	 *  @requires function WP_REST_Controller::register_routes
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_invalid_arguments() {
 
@@ -307,21 +327,23 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$fail = $this->rest_related_posts_by_taxonomy( 'not a post ID', $taxonomies, $args );
 		$this->assertEquals( 'rest_no_route', $fail, 'Not a post ID' );
 
-		// Non existant post ID.
+		// Nonexistent post ID.
 		$fail2 = $this->rest_related_posts_by_taxonomy( 9999999999, $taxonomies, $args );
-		$this->assertEquals( 'rest_post_invalid_id', $fail2, 'Non existant post ID' );
+		$this->assertSame( 'rest_post_invalid_id', $fail2, 'Non existant post ID' );
 
-		// Non existant taxonomy.
+		// Nonexistent taxonomy.
 		$fail3 = $this->rest_related_posts_by_taxonomy( $posts[0], 'not a taxonomy', $args );
-		$this->assertEmpty( $fail3, 'Non existant taxonomy' );
+		$this->assertSame( $fail3, 'rest_post_invalid_parameters', 'Non existant taxonomy' );
 
-		// Empty string should default to taxonomy 'category'.
-		//$fail4 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
-		//$this->assertEmpty( $fail4, 'empty string' );
+		//Empty taxonomy should default to all taxonomies.
+		$fail4 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
+		$this->assertNotEmpty( $fail4, 'empty string' );
 
-		// No arguments should return an empty array.
-		$fail5 = $this->rest_related_posts_by_taxonomy();
-		$this->assertEquals( 'rest_post_invalid_id', $fail5, 'no arguments' );
+		// Nonexistent post type.
+		$args['post_types'] = 'not a post type';
+		// Non existant post_type.
+		$fail5 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$this->assertSame( $fail5, 'rest_post_invalid_parameters', 'Non existant taxonomy' );
 	}
 
 	/**
@@ -384,6 +406,8 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test terms argument with and without the correct taxonomy.
+	 *
+	 *
 	 */
 	function test_related_posts_by_terms_with_taxonomy() {
 		$this->setup_posts();
@@ -391,17 +415,25 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		register_taxonomy( 'ctax', 'post' );
 		$terms = $this->factory->term->create_many( 3, array( 'taxonomy' => 'ctax' ) );
 		$term_id1 = wp_set_post_terms ( $this->posts[2], (int) $terms[0], 'ctax', true );
+
 		$taxonomies = array( 'category' );
 
 		$args = array(
-			'terms'   => array( $this->tax_2_terms[3], (int) $term_id1[0] ),
-			'fields'  => 'ids',
+			'terms'      => array( $this->tax_2_terms[3], (int) $term_id1[0] ),
+			'fields'     => 'ids',
+			'related'    => true,
 		);
 
 		// Post 2 should not be related as the 'ctax' taxonomy is not used in the query.
 		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 
+		$args['related'] = false;
+		// Post 2 should now be related because we can get any term from any taxonomy.
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
+
+		$args['related'] = true;
 		$taxonomies[] = 'ctax';
 		// Post 2 should now be related as the 'ctax' taxonomy is queried.
 		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $taxonomies, $args );
