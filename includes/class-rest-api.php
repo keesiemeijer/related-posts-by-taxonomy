@@ -62,12 +62,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		$args  = $request->get_params();
 		$error = new WP_Error( 'rest_post_invalid_id', __( 'Invalid post ID.', 'related-posts-by-taxonomy' ), array( 'status' => 404 ) );
 
-		if ( ! isset( $args['id'] ) || ( (int) $args['id'] <= 0 ) ) {
-			return $error;
-		}
-
-		$post = get_post( (int) $args['id'] );
-		if ( empty( $post ) || empty( $post->ID ) ) {
+		if ( ! isset( $args['id'] ) || ! absint( $args['id'] ) ) {
 			return $error;
 		}
 
@@ -80,6 +75,12 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		$type = isset( $args['type'] ) ? $args['type'] : 'wp_rest_api';
 		$type = ( 'editor_block' === $type ) ? $type : 'wp_rest_api';
 
+		$post_id = absint( $args['id'] );
+		$post    = get_post( $post_id );
+		if ( empty( $post ) || empty( $post->ID ) ) {
+			return $error;
+		}
+
 		$defaults = km_rpbt_get_default_settings( $type );
 
 		/**
@@ -90,13 +91,20 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 * @param array $defaults Default wp_rest_api arguments.
 		 */
 		$defaults = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_defaults', $defaults );
-
-		$args['post_id'] = $args['id'];
 		$args = array_merge( $defaults, (array) $args );
 
-		/* Validates args. Sets the post types and post id if not set in filter above */
-		$validated_args         = km_rpbt_validate_shortcode_atts( (array) $args );
+		// Un-filterable arguments.
+		$args['type']    = $type;
+		$args['post_id'] = $post_id;
+
+		$taxonomies             = ! empty( $args['taxonomies'] );
+		$post_types             = ! empty( $args['post_types'] );
+		$validated_args         = $this->validate_request( $args, $post_id );
 		$validated_args['type'] = $type;
+
+		// Check if request taxonomies and post types were valid
+		$tax_fail  = $taxonomies && ! $validated_args['taxonomies'];
+		$type_fail = $post_types && ! $validated_args['post_types'];
 
 		/**
 		 * Filter wp_rest_api arguments.
@@ -108,11 +116,60 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		$args = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_args', $validated_args );
 		$args = array_merge( $validated_args, (array) $args );
 
-		// Un-filterable argument.
-		$args['type']  = $type;
+		// Un-filterable arguments.
+		$args['type']    = $type;
+		$args['post_id'] = $post_id;
+
+		$error = false;
+
+		// Validate arguments again
+		if (  $tax_fail ) {
+			$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
+			$error = ! $args['taxonomies'];
+		}
+
+		if ( $type_fail ) {
+			$args['post_type'] = km_rpbt_get_post_types( $args['post_types'] );
+			$error = $error ? $error : ! $args['post_types'];
+		}
+
+		if ( $error ) {
+			$error = new WP_Error( 'rest_post_invalid_parameters', __( 'Invalid parameters.', 'related-posts-by-taxonomy' ), array( 'status' => 404 ) );
+			return $error;
+		}
 
 		$data = $this->prepare_item_for_response( $args, $request );
 		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Validate request.
+	 *
+	 * @since  2.5.1
+	 *
+	 * @param array $args    Request arguments.
+	 * @param int   $post_id Post ID.
+	 * @return array Validated request arguments.
+	 */
+	public function validate_request( $args, $post_id ) {
+		$defaults = km_rpbt_get_default_settings( $args['type'] );
+		$args     = array_merge( $defaults, (array) $args );
+
+		$args['post_id']    = $post_id;
+		$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
+
+		// Default to the post type from the current post.
+		if ( empty( $args['post_types'] ) ) {
+			$args['post_types'] = get_post_type( $post_id );
+		}
+
+		$args['post_types'] = km_rpbt_get_post_types( $args['post_types'] );
+
+		if ( 'thumbnails' === $args['format'] ) {
+			$args['post_thumbnail'] = true;
+		}
+
+		return $args;
 	}
 
 	/**
@@ -157,10 +214,10 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 */
 	public function prepare_item_for_response( $args, $request ) {
 		$related_posts = $this->get_related_posts( $args );
-		$fields        = strtolower( $args['fields'] );
 
 		$rendered = '';
-		if ( ! in_array( $fields, array( 'ids', 'names', 'slugs' ) ) ) {
+		$fields   = strtolower( $args['fields'] );
+		if ( $related_posts && ! in_array( $fields, array( 'ids', 'names', 'slugs' ) ) ) {
 			// Render posts if the query was for post objects.
 			$rendered = km_rpbt_shortcode_output( $related_posts, $args );
 		}
@@ -294,9 +351,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	public function get_related_posts( $args ) {
 		add_filter( 'related_posts_by_taxonomy', array( $this, 'get_filter_args' ), 10, 4 );
 
-		if ( isset( $args['id'] ) ) {
-			unset( $args['id'] );
-		}
+		unset( $args['id'] );
 
 		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'get_filter_args' ), 10, 4 );

@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.1
 Tested up to: 4.9
-Stable tag: 2.5.0-alpha
+Stable tag: 2.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,8 +57,9 @@ Attributes for the shortcode are:
 * `title`
 * `before_title`
 * `after_title`
-* `exclude_terms`
+* `terms`
 * `include_terms`
+* `exclude_terms`
 * `exclude_posts`
 * `format`
 * `image_size`
@@ -102,14 +103,24 @@ Yes. Review [this section](https://keesiemeijer.wordpress.com/related-posts-by-t
 Review [Adding Related Posts After the Post Content](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#after-content).
 
 = Can I include or exclude posts or terms with the widget or shortcode =
-Yes. For the widget see [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) and for the shortcode see the attributes [exclude-terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-terms), [include_terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#include-terms) and [exclude_posts](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-posts).
+Yes. For the widget see [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) and for the shortcode see the attributes [terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#terms), [include_terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#include-terms), [exclude-terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-terms) and [exclude_posts](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-posts).
 
 = Can I set my own defaults for the shortcode? =
 Yes. Review [Setting your own defaults for the shortcode](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/recipes/#shortcode_defaults) 
 
-= The widget only lets you choose "all taxonomies" or a single taxonomy. Can I make it only use the taxonomies I want? =
+= The widget only lets you choose "all taxonomies" or a single taxonomy. Can I make it use multiple specific taxonomies? =
 
 Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) on how to do that.
+
+= Is this plugin GDPR compliant? =
+* This plugin doesn’t process, share, send or retain any user data.
+* This plugin doesn't track (user) data for analytics (or for any other reason).
+* This plugin doesn't save or read cookies.
+* This plugin doesn't use 3rd party libraries.
+
+Read [this article](https://developer.wordpress.org/plugins/wordpress-org/compliance-disclaimers/) why plugin authors cannot guarantee 100% compliance.
+
+Please contact a GDPR consultant or law firm with this information to assess if this plugin is compliant.
 
 == Screenshots ==
 
@@ -119,6 +130,23 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.5.0 =
+* Enhancement
+	* Prepare plugin for gutenberg blocks
+	* Add 'terms' parameter for shortcode and widget
+	* Add GDPR information to readme.txt
+	* deprecate functions (with back compatibility)
+		* km_rpbt_related_posts_by_taxonomy()
+		* km_rpbt_get_default_args()
+		* km_rpbt_related_posts_by_taxonomy_validate_ids()
+		* km_rpbt_related_posts_by_taxonomy_template()
+		* km_rpbt_post_title_link()
+		* km_rpbt_get_related_post_title_link()
+		* km_rpbt_related_posts_by_taxonomy_widget()
+* Bug fixes
+	* (minor) Add missing filter pre_related_posts before cache queries
+	* (minor) Add missing properties to related posts returned by the cache 
+
 = 2.4.1 =
 * Enhancement
 	* Add post classes with filters or as a shortcode or widget argument
@@ -148,5 +176,5 @@ Yes. See [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxono
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.4.1 =
-This update adds the ability to add CSS classes with a widget or shortcode argument. See the changelog.
+= 2.5.0 =
+This update adds a terms parameter for the shortcode and widget. (see changelog for more changes) 
