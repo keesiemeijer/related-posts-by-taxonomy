@@ -145,9 +145,10 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
  * @return array Array with validated shortcode attributes.
  */
 function km_rpbt_validate_shortcode_atts( $atts ) {
+	$defaults = km_rpbt_get_default_settings( 'shortcode' );
 
 	/* make sure all defaults are present */
-	$atts = array_merge( km_rpbt_get_default_settings( 'shortcode' ), $atts );
+	$atts = array_merge( $defaults, $atts );
 
 	// Default to shortcode.
 	$atts['type']  = 'shortcode';
@@ -169,15 +170,18 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 
 	// Convert (strings) to booleans.
 	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
-	$atts['related']      = (bool) filter_var( $atts['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$atts['link_caption'] = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
-	$atts['link_caption'] = (bool) filter_var( $atts['link_caption'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
-	$atts['public_only']  = (bool) filter_var( $atts['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	if ( 'regular_order' !== $atts['include_self'] ) {
+	$atts['show_date']    = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
+
+	$booleans = array_filter( $defaults, 'is_bool' );
+	if ( 'regular_order' === $atts['include_self'] ) {
+		unset( $booleans['include_self'] );
+	} else {
 		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
-		$atts['include_self']  = (bool) filter_var( $atts['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 	}
+
+	$atts = km_rpbt_validate_booleans( $atts, array_keys( $booleans ) );
 
 	return $atts;
 }

@@ -226,46 +226,6 @@ function km_rpbt_get_public_taxonomies() {
 }
 
 /**
- * Validates ids.
- * Checks if ids is a comma separated string or an array with ids.
- *
- * @since 2.5.0
- * @param string|array $ids Comma separated list or array with ids.
- * @return array Array with postive integers
- */
-function km_rpbt_validate_ids( $ids ) {
-
-	if ( ! is_array( $ids ) ) {
-		/* allow positive integers, 0 and commas only */
-		$ids = preg_replace( '/[^0-9,]/', '', (string) $ids );
-		/* convert string to array */
-		$ids = explode( ',', $ids );
-	}
-
-	/* convert to integers and remove 0 values */
-	$ids = array_filter( array_map( 'intval', (array) $ids ) );
-
-	return array_values( array_unique( $ids ) );
-}
-
-/**
- * Sanitizes comma separetad values.
- * Returns an array.
- *
- * @since 2.2
- * @param string|array $value Comma seperated value or array with values.
- * @return array       Array with unique array values
- */
-function km_rpbt_get_comma_separated_values( $value ) {
-
-	if ( ! is_array( $value ) ) {
-		$value = explode( ',', (string) $value );
-	}
-
-	return array_values( array_filter( array_unique( array_map( 'trim', $value ) ) ) );
-}
-
-/**
  * Checks if the cache class is loaded
  *
  * @param object $plugin Related_Posts_By_Taxonomy_Cache object. Default null.

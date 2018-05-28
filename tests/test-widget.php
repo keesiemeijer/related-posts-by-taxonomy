@@ -242,9 +242,73 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$expected = <<<EOF
 <section><h2>Related Posts</h2>
 <ul>
-<li><a href="{$permalinks[1]}">{$_posts[1]->post_title}</a></li>
-<li><a href="{$permalinks[2]}">{$_posts[2]->post_title}</a></li>
-<li><a href="{$permalinks[3]}">{$_posts[3]->post_title}</a></li>
+<li>
+<a href="{$permalinks[1]}">{$_posts[1]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[2]}">{$_posts[2]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[3]}">{$_posts[3]->post_title}</a>
+</li>
+</ul>
+</section>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $output ) );
+	}
+
+	/**
+	 * Test output from widget.
+	 */
+	function test_rpbt_widget_output_show_date() {
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+
+		ob_start();
+		$args = array(
+			'before_widget' => '<section>',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2>',
+			'after_title'   => '</h2>',
+		);
+
+		$instance = array( 'post_id' => $posts[0], 'show_date' => true );
+		$widget->_set( 2 );
+		$widget->widget( $args, $instance );
+		$output = ob_get_clean();
+
+		$this->assertContains( '<h2>Related Posts</h2>', $output );
+		$this->assertContains( '<section>', $output );
+		$this->assertContains( '</section>', $output );
+
+		// get post ids array and permalinks array
+		$_posts     = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
+		$ids        = wp_list_pluck( $_posts, 'ID' );
+		$permalinks = array_map( 'get_permalink', $ids );
+		$date       = array();
+		$datetime   = array();
+		foreach($_posts as $post) {
+			$date[] = get_the_date( '', $post );
+			$datetime[] = get_the_date( DATE_W3C, $post );
+		}
+
+		// expected related posts are post 1,2,3
+		$expected = <<<EOF
+<section><h2>Related Posts</h2>
+<ul>
+<li>
+<a href="{$permalinks[1]}">{$_posts[1]->post_title}</a> <time class="rpbt-post-date" datetime="{$datetime[1]}">{$date[1]}</time>
+</li>
+<li>
+<a href="{$permalinks[2]}">{$_posts[2]->post_title}</a> <time class="rpbt-post-date" datetime="{$datetime[2]}">{$date[2]}</time>
+</li>
+<li>
+<a href="{$permalinks[3]}">{$_posts[3]->post_title}</a> <time class="rpbt-post-date" datetime="{$datetime[3]}">{$date[3]}</time>
+</li>
 </ul>
 </section>
 EOF;

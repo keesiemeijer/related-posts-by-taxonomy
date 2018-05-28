@@ -100,6 +100,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test sanitizing arguments.
+	 *
 	 */
 	function test_km_rpbt_sanitize_args_string() {
 		$expected = $this->get_default_sanitized_args();

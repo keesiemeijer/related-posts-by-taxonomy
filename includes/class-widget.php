@@ -210,6 +210,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$i['singular_template'] = isset( $new_instance['singular_template'] ) ? (bool) $new_instance['singular_template'] : '';
 		$i['link_caption']      = isset( $new_instance['link_caption'] ) ? (bool) $new_instance['link_caption'] : '';
 		$i['random']            = isset( $new_instance['random'] ) ? (bool) $new_instance['random'] : '';
+		$i['show_date']         = isset( $new_instance['show_date'] ) ? (bool) $new_instance['show_date'] : '';
 
 		// Validation.
 		$i['post_id'] = $i['post_id'] ? $i['post_id']  : '';
@@ -314,6 +315,14 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 		$format = $before . $field . '</select></p>' . $after;
 
+		// Field: show_date.
+		$field = '<p class="rpbt_show_date">';
+		$field .= '<input class="checkbox" type="checkbox" ' . checked( $i['show_date'], 1, false ) . ' ';
+		$field .= 'id="' . $this->get_field_id( 'show_date' ) . '" name="' . $this->get_field_name( 'show_date' ) . '" />';
+		$field .= ' <label for="' . $this->get_field_id( 'show_date' ) . '">';
+		$field = $field . __( 'Display post date', 'related-posts-by-taxonomy' ) . '</label>';
+		$show_date = $before . $field . '</p>' . $after;
+
 		$image_display = $before . '<h4 class="rpbt_widget_image_display_title" ' . $style . '>' . __( 'Image Display', 'related-posts-by-taxonomy' ) . '</h4>' . $after;
 
 		// Field: image_size.
@@ -363,6 +372,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			'post_types',
 			'display',
 			'format',
+			'show_date',
 			'image_display',
 			'image_size',
 			'columns',

@@ -119,8 +119,8 @@ function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
  * @param int|WP_Post|null $post       Optional. Post ID or post object. Default is global $post.
  * @param bool             $title_attr Whether to use a title attribute in the link. Default false.
  */
-function km_rpbt_post_link( $post = null, $title_attr = false ) {
-	echo km_rpbt_get_post_link( $post, $title_attr );
+function km_rpbt_post_link( $post = null, $args = array() ) {
+	echo km_rpbt_get_post_link( $post, $args ) . "\n";
 }
 
 /**
@@ -128,26 +128,39 @@ function km_rpbt_post_link( $post = null, $title_attr = false ) {
  *
  * @since 2.4.0
  *
- * @param int|WP_Post|null $post       Optional. Post ID or post object. Default is global $post.
- * @param bool             $title_attr Whether to use a title attribute in the link. Default false.
+ * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
+ * @param array|string     $args Whether to use a title attribute in the link. Default false.
  * @return string Related post link HTML.
  */
-function km_rpbt_get_post_link( $post = null, $title_attr = false ) {
-
-	// get_the_title() and get_permalink() functions use the global $post object
+function km_rpbt_get_post_link( $post = null, $args = array() ) {
+	// get_the_title() and get_permalink() functions use the global $post object.
 	$post = get_post( $post );
 	if ( ! $post ) {
 		return '';
 	}
 
-	$link = '';
-	$title = get_the_title( $post );
+	$defaults = array(
+		'show_date'  => false,
+		'title_attr' => false,
+	);
+
+	if( is_bool( $args ) ) {
+		// Back compat
+		$_title_attr = $args;
+		$args = array( 'title_attr' => $_title_attr );
+	}
+
+	$args               = wp_parse_args( $args, $defaults );
+	$args               = array_map('km_rpbt_validate_boolean', $args);
+	$title              = get_the_title( $post );
+	$link               = '';
+	$title_attr         = '';
 
 	if ( ! $title ) {
 		$title = get_the_ID();
 	}
 
-	if ( $title_attr && $title ) {
+	if ( $args['title_attr'] && $title ) {
 		$title_attr = ' title="' . esc_attr( $title ) . '"';
 	}
 
@@ -155,8 +168,34 @@ function km_rpbt_get_post_link( $post = null, $title_attr = false ) {
 	$permalink  = esc_url( apply_filters( 'the_permalink', get_permalink( $post ), $post ) );
 
 	if ( $permalink && $title ) {
-		$link = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . '</a>';
+		$link = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . "</a>";
+		$link .= $args['show_date'] ? ' ' . km_rpbt_get_post_date( $post ) : '';
 	}
 
-	return apply_filters( 'related_posts_by_taxonomy_post_link', $link, $post, compact( 'title', 'permalink' ) );
+	return apply_filters( 'related_posts_by_taxonomy_post_link', $link, $post, compact( 'title', 'permalink, $args' ) );
+}
+
+/**
+ * Get the related post date.
+ *
+ * @since 2.4.0
+ *
+ * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
+ * @return [type]       [description]
+ */
+function km_rpbt_get_post_date( $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return '';
+	}
+
+	$time_string = '<time class="rpbt-post-date" datetime="%1$s">%2$s</time>';
+
+	$time_string = sprintf(
+		$time_string,
+		get_the_date( DATE_W3C, $post ),
+		get_the_date( '', $post )
+	);
+
+	return $time_string;
 }

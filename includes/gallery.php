@@ -37,6 +37,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		'itemtag'       => $html5 ? 'figure' : 'dl',
 		'icontag'       => $html5 ? 'div' : 'dt',
 		'captiontag'    => $html5 ? 'figcaption' : 'dd',
+		'show_date'     => false,
 		'columns'       => 3,
 		'size'          => 'thumbnail',
 		'caption'       => 'post_title', // Use 'post_title', 'post_excerpt', 'attachment_caption', attachment_alt, or a custom string.
@@ -159,9 +160,11 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		$title         = apply_filters( 'the_title', $related->post_title, $related->ID );
 
 		if ( 'post_title' === $args['caption'] ) {
-			$caption = $title;
+			$date    = $args['show_date'] ? ' ' . km_rpbt_get_post_date( $related ) : '';
+			$caption = $title . $date;
+
 			if ( (bool) $args['link_caption'] ) {
-				$caption = km_rpbt_get_post_link( $related );
+				$caption = km_rpbt_get_post_link( $related, $args );
 			}
 		} elseif ( 'post_excerpt' === $args['caption'] ) {
 			global $post;

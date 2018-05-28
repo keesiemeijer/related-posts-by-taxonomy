@@ -1,6 +1,7 @@
 <?php
 /**
  * Tests for the km_rpbt_query_related_posts() function in functions.php.
+ *
  */
 class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 
@@ -32,9 +33,15 @@ class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 <div class="rpbt_shortcode">
 <h3>Related Posts</h3>
 <ul>
-<li class="someclass"><a href="{$permalinks[1]}">{$_posts[1]->post_title}</a></li>
-<li class="someclass"><a href="{$permalinks[2]}">{$_posts[2]->post_title}</a></li>
-<li class="someclass"><a href="{$permalinks[3]}">{$_posts[3]->post_title}</a></li>
+<li class="someclass">
+<a href="{$permalinks[1]}">{$_posts[1]->post_title}</a>
+</li>
+<li class="someclass">
+<a href="{$permalinks[2]}">{$_posts[2]->post_title}</a>
+</li>
+<li class="someclass">
+<a href="{$permalinks[3]}">{$_posts[3]->post_title}</a>
+</li>
 </ul>
 </div>
 EOF;
@@ -42,7 +49,6 @@ EOF;
 		ob_start();
 		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '" post_class="someclass"]' );
 		$shortcode = ob_get_clean();
-
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );
 	}
 
@@ -135,7 +141,7 @@ EOF;
 		$expected  = '<a href="' . $permalink . '">' . $posts[0]->post_title . '</a>';
 		$this->assertSame( $expected, $link );
 
-		$link     = km_rpbt_get_post_link( $posts[0], true );
+		$link     = km_rpbt_get_post_link( $posts[0], array('title_attr'  => true ) );
 		$expected = '<a href="' . $permalink . '" title="' . $posts[0]->post_title . '">' . $posts[0]->post_title . '</a>';
 		$this->assertSame( $expected, $link );
 	}

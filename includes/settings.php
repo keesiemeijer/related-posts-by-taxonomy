@@ -111,6 +111,7 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		'image_size'     => 'thumbnail',
 		'columns'        => 3,
 		'link_caption'   => false,
+		'show_date'      => false,
 		'caption'        => 'post_title',
 		'post_class'     => '',
 	);
@@ -197,14 +198,83 @@ function km_rpbt_sanitize_args( $args ) {
 	}
 
 	// Booleans
-	// True for true, 1, "1", "true", "on", "yes". Everything else return false.
-	$args['related']        = (bool) filter_var( $args['related'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	$args['post_thumbnail'] = (bool) filter_var( $args['post_thumbnail'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-	$args['public_only']    = (bool) filter_var( $args['public_only'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-
-	if ( 'regular_order' !== $args['include_self'] ) {
-		$args['include_self'] = (bool) filter_var( $args['include_self'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+	$booleans = array_filter($defaults, 'is_bool');
+	if ( 'regular_order' === $args['include_self'] ) {
+		unset($booleans[ 'include_self' ]);
 	}
 
+	$args = km_rpbt_validate_booleans( $args, array_keys( $booleans ) );
+
+	return $args;
+}
+
+/**
+ * Validates ids.
+ * Checks if ids is a comma separated string or an array with ids.
+ *
+ * @since 2.5.0
+ * @param string|array $ids Comma separated list or array with ids.
+ * @return array Array with postive integers
+ */
+function km_rpbt_validate_ids( $ids ) {
+
+	if ( ! is_array( $ids ) ) {
+		/* allow positive integers, 0 and commas only */
+		$ids = preg_replace( '/[^0-9,]/', '', (string) $ids );
+		/* convert string to array */
+		$ids = explode( ',', $ids );
+	}
+
+	/* convert to integers and remove 0 values */
+	$ids = array_filter( array_map( 'intval', (array) $ids ) );
+
+	return array_values( array_unique( $ids ) );
+}
+
+/**
+ * Sanitizes comma separetad values.
+ * Returns an array.
+ *
+ * @since 2.2
+ * @param string|array $value Comma seperated value or array with values.
+ * @return array       Array with unique array values
+ */
+function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
+
+	if ( ! is_array( $value ) ) {
+		$value = explode( ',', (string) $value );
+	}
+
+	return array_values( array_filter( array_unique( array_map( 'trim', $value ) ) ) );
+}
+
+/**
+ * Validate boolean
+ *
+ * @since 2.5.1
+ *
+ * @param string|array $value Value to validate
+ * @return boolean Boolean value
+ */
+function km_rpbt_validate_boolean( $value ) {
+	// True for true, 1, "1", "true", "on", "yes". Everything else return false.
+	return (bool) filter_var( $value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+}
+
+/**
+ * Validate booleans
+ *
+ * @since 2.5.1
+ *
+ * @param array $args Array with arguments.
+ * @param array $keys Array keys to validate boolean for.
+ * @return array Array with validated boolean values
+ */
+function km_rpbt_validate_booleans( $args, $keys ) {
+	foreach ( $keys as $key ) {
+		if ( isset( $args[ $key ] ) ) {
+			$args[ $key ] = km_rpbt_validate_boolean( $args[ $key ] );
+		}
+	}
 	return $args;
 }
