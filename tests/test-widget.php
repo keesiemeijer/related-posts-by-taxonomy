@@ -320,4 +320,45 @@ EOF;
 		return get_posts( 'post_type=cpt' );
 	}
 
+	/**
+	 * Test output from widget form.
+	 */
+	function test_rpbt_widget_form() {
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+
+		ob_start();
+		$args = array(
+			'before_widget' => '<section>',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2>',
+			'after_title'   => '</h2>',
+		);
+
+		$instance = array( 'post_id' => $posts[0], 'show_date' => true );
+		$widget->_set( 2 );
+		$widget->form($instance);
+		$output = ob_get_clean();
+
+		$pieces = array(
+			'title',
+			'posts_per_page',
+			'random',
+			'taxonomies',
+			'post_types',
+			'format',
+			'show_date',
+			'image_size',
+			'columns',
+			'link_caption',
+			'singular_template',
+			'post_id',
+		);
+
+		foreach ($pieces as $class) {
+			$this->assertContains( 'class="rpbt_' . $class . '"', $output );
+		}
+	}
 }
