@@ -161,19 +161,24 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'f' => array(),
 			'g' => 'string',
 			'h' => null,
+			'include_self' => false,
 		);
+
+		$expected = $defaults;
+		$expected['include_self'] = 'regular_order';
 
 		$args = array(
-			'a' => true,
-			'b' => 'true',
-			'c' => false,
-			'd' => 'false',
-			'e' => 'yes',
-			'f' => array(),
-			'g' => 'string',
-			'h' => null,
+			'a'            => true,
+			'b'            => 'true',
+			'c'            => false,
+			'd'            => 'false',
+			'e'            => 'yes',
+			'f'            => array(),
+			'g'            => 'string',
+			'h'            => null,
+			'include_self' => 'regular_order',
 		);
 
-		$this->assertSame( $defaults, km_rpbt_validate_booleans( $args, $defaults ) );
+		$this->assertSame( $expected, km_rpbt_validate_booleans( $args, $defaults ) );
 	}
 }

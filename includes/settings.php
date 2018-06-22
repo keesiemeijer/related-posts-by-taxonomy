@@ -197,6 +197,7 @@ function km_rpbt_sanitize_args( $args ) {
 		$args['post_id'] = absint( $args['post_id'] );
 	}
 
+	// Booleans.
 	$args = km_rpbt_validate_booleans( $args, $defaults );
 
 	return $args;
@@ -268,7 +269,7 @@ function km_rpbt_validate_boolean( $value ) {
  */
 function km_rpbt_validate_booleans( $args, $defaults ) {
 
-	// include_self can be a boolean or string 'regular_order'
+	// The include_self argument can be a boolean or string 'regular_order'.
 	if ( isset( $args['include_self'] ) && ( 'regular_order' === $args['include_self'] ) ) {
 		$defaults['include_self'] = 'regular_order';
 	}
