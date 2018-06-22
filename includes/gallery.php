@@ -43,7 +43,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		'caption'       => 'post_title', // Use 'post_title', 'post_excerpt', 'attachment_caption', attachment_alt, or a custom string.
 		'link_caption'  => false,
 		'gallery_class' => 'gallery',
-		'type'          => 'rpbt_gallery'
+		'type'          => 'rpbt_gallery',
 	);
 
 	/* Can be filtered in WordPress > 3.5 (hook: shortcode_atts_gallery) */
@@ -63,12 +63,13 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$id = intval( $args['id'] );
 
 	if ( is_feed() ) {
+		$args['type'] = 'rpbt_gallery_feed';
 		$output = "\n";
 		foreach ( (array) $related_posts as $related ) {
 
 			$thumbnail_id = get_post_thumbnail_id( $related->ID );
 			$thumbnail    = wp_get_attachment_image( $thumbnail_id, $args['size'] );
-			$permalink    = get_permalink( $related->ID );
+			$permalink    = km_rpbt_get_permalink( $related->ID, $args );
 			$title_attr   = apply_filters( 'the_title', esc_attr( $related->post_title ), $related->ID );
 
 			$image_link = ( $thumbnail ) ? "<a href='$permalink' title='$title_attr'>$thumbnail</a>" : '';
@@ -196,7 +197,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 			'aria-describedby' => "{$selector}-{$related->ID}",
 		) : '';
 		$thumbnail   = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $describedby );
-		$permalink   = get_permalink( $related->ID );
+		$permalink   = km_rpbt_get_permalink(  $related, $args );
 		$title_attr  = esc_attr( $title );
 		$image_link  = ( $thumbnail ) ? "<a href='$permalink' title='$title_attr'>$thumbnail</a>" : '';
 		$image_attr  = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );

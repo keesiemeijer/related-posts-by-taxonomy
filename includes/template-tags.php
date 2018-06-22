@@ -133,7 +133,7 @@ function km_rpbt_post_link( $post = null, $args = array() ) {
  * @return string Related post link HTML.
  */
 function km_rpbt_get_post_link( $post = null, $args = array() ) {
-	// get_the_title() and get_permalink() functions use the global $post object.
+
 	$post = get_post( $post );
 	if ( ! $post ) {
 		return '';
@@ -142,19 +142,21 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 	$defaults = array(
 		'show_date'  => false,
 		'title_attr' => false,
+		'type'       => '',
 	);
 
-	if( is_bool( $args ) ) {
-		// Back compat
+	if ( is_bool( $args ) ) {
+		// Back compat.
 		$_title_attr = $args;
 		$args = array( 'title_attr' => $_title_attr );
 	}
 
-	$args               = wp_parse_args( $args, $defaults );
-	$args               = array_map('km_rpbt_validate_boolean', $args);
-	$title              = get_the_title( $post );
-	$link               = '';
-	$title_attr         = '';
+	$args       = wp_parse_args( $args, $defaults );
+	$booleans   = array_filter( $defaults, 'is_bool' );
+	$args       = km_rpbt_validate_booleans( $args, array_keys( $booleans ) );
+	$title      = get_the_title( $post );
+	$link       = '';
+	$title_attr = '';
 
 	if ( ! $title ) {
 		$title = get_the_ID();
@@ -165,15 +167,37 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 	}
 
 	$title_attr = is_string( $title_attr ) ? $title_attr : '';
-	$permalink  = esc_url( apply_filters( 'the_permalink', get_permalink( $post ), $post ) );
-
+	$permalink  = km_rpbt_get_permalink( $post, $args );
 	if ( $permalink && $title ) {
-		$link = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . "</a>";
+		$link = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . '</a>';
 		$link .= $args['show_date'] ? ' ' . km_rpbt_get_post_date( $post ) : '';
 	}
 
 	return apply_filters( 'related_posts_by_taxonomy_post_link', $link, $post, compact( 'title', 'permalink, $args' ) );
 }
+
+/**
+ * Return filterable permalink.
+ *
+ * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
+ * @return string permalink.
+ */
+function km_rpbt_get_permalink( $post = null, $args = '' ) {
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return '';
+	}
+
+	$permalink = esc_url( apply_filters( 'the_permalink', get_permalink( $post ), $post ) );
+
+	/**
+	 * Permalink for related posts.
+	 *
+	 * @param string Permalink.
+	 */
+	return apply_filters( 'related_posts_by_taxonomy_the_permalink', $permalink, $post, $args );
+}
+
 
 /**
  * Get the related post date.
