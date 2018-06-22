@@ -197,13 +197,7 @@ function km_rpbt_sanitize_args( $args ) {
 		$args['post_id'] = absint( $args['post_id'] );
 	}
 
-	// Booleans
-	$booleans = array_filter($defaults, 'is_bool');
-	if ( 'regular_order' === $args['include_self'] ) {
-		unset($booleans[ 'include_self' ]);
-	}
-
-	$args = km_rpbt_validate_booleans( $args, array_keys( $booleans ) );
+	$args = km_rpbt_validate_booleans( $args, $defaults );
 
 	return $args;
 }
@@ -233,10 +227,11 @@ function km_rpbt_validate_ids( $ids ) {
 
 /**
  * Sanitizes comma separetad values.
- * Returns an array.
+ *
+ * Returns an array with values.
  *
  * @since 2.2
- * @param string|array $value Comma seperated value or array with values.
+ * @param string|array $value Comma seperated string or array with values.
  * @return array       Array with unique array values
  */
 function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
@@ -251,13 +246,14 @@ function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
 /**
  * Validate boolean
  *
+ * Returns true for true, 1, "1", "true", "on", "yes". Everything else return false.
+ *
  * @since 2.5.1
  *
  * @param string|array $value Value to validate
  * @return boolean Boolean value
  */
 function km_rpbt_validate_boolean( $value ) {
-	// True for true, 1, "1", "true", "on", "yes". Everything else return false.
 	return (bool) filter_var( $value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
 }
 
@@ -266,12 +262,20 @@ function km_rpbt_validate_boolean( $value ) {
  *
  * @since 2.5.1
  *
- * @param array $args Array with arguments.
- * @param array $keys Array keys to validate boolean for.
+ * @param array $args     Array with arguments.
+ * @param array $defaults Defaults.
  * @return array Array with validated boolean values
  */
-function km_rpbt_validate_booleans( $args, $keys ) {
-	foreach ( $keys as $key ) {
+function km_rpbt_validate_booleans( $args, $defaults ) {
+
+	// include_self can be a boolean or string 'regular_order'
+	if ( isset( $args['include_self'] ) && ( 'regular_order' === $args['include_self'] ) ) {
+		$defaults['include_self'] = 'regular_order';
+	}
+
+	$booleans = array_filter( (array) $defaults, 'is_bool' );
+
+	foreach ( array_keys( $booleans ) as $key ) {
 		if ( isset( $args[ $key ] ) ) {
 			$args[ $key ] = km_rpbt_validate_boolean( $args[ $key ] );
 		}

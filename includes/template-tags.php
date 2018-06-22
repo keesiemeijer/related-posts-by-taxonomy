@@ -145,15 +145,10 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 		'type'       => '',
 	);
 
-	if ( is_bool( $args ) ) {
-		// Back compat.
-		$_title_attr = $args;
-		$args = array( 'title_attr' => $_title_attr );
-	}
+	$args = is_bool( $args ) ? array( 'title_attr' => $args ) : $args;
+	$args = wp_parse_args( $args, $defaults );
+	$args = km_rpbt_validate_booleans( $args, $defaults );
 
-	$args       = wp_parse_args( $args, $defaults );
-	$booleans   = array_filter( $defaults, 'is_bool' );
-	$args       = km_rpbt_validate_booleans( $args, array_keys( $booleans ) );
 	$title      = get_the_title( $post );
 	$link       = '';
 	$title_attr = '';
@@ -166,7 +161,6 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 		$title_attr = ' title="' . esc_attr( $title ) . '"';
 	}
 
-	$title_attr = is_string( $title_attr ) ? $title_attr : '';
 	$permalink  = km_rpbt_get_permalink( $post, $args );
 	if ( $permalink && $title ) {
 		$link = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . '</a>';

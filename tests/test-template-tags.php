@@ -145,4 +145,18 @@ EOF;
 		$expected = '<a href="' . $permalink . '" title="' . $posts[0]->post_title . '">' . $posts[0]->post_title . '</a>';
 		$this->assertSame( $expected, $link );
 	}
+
+	/**
+	 * Test getting the link for a related post title
+	 * used in the templates
+	 */
+	function test_km_rpbt_get_post_link_output_deprecated_parameter_title_attr() {
+		$posts = $this->create_posts();
+		$posts = get_posts();
+
+		$permalink = get_permalink( $posts[0] );
+		$link      = km_rpbt_get_post_link( $posts[0], true );
+		$expected  = '<a href="' . $permalink . '" title="' . $posts[0]->post_title . '">' . $posts[0]->post_title . '</a>';
+		$this->assertSame( $expected, $link );
+	}
 }

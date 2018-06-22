@@ -51,31 +51,4 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 		sort( $taxonomies );
 		$this->assertEquals( $expected, $taxonomies );
 	}
-
-	/**
-	 * Test values separated by.
-	 */
-	function test_km_rpbt_get_comma_separated_values() {
-		$expected = array( 'lol', 'hihi' );
-		$value = ' lol, hihi,lol';
-		$this->assertEquals( $expected, km_rpbt_get_comma_separated_values( $value ) );
-
-		$value = array( ' lol', 'hihi ', ' lol ' );
-		$this->assertEquals( $expected, km_rpbt_get_comma_separated_values( $value ) );
-	}
-
-	/**
-	 * Test if array with validated ids are returned.
-	 */
-	function test_km_rpbt_validate_ids() {
-
-		$ids = array( 1, false, 'string', 2, 0, 1, 3 );
-
-		$validated_ids = km_rpbt_validate_ids( $ids );
-		$this->assertEquals( array( 1, 2, 3 ), $validated_ids );
-
-		$ids = '1,string,2,0,###,2,3';
-		$validated_ids = km_rpbt_validate_ids( $ids );
-		$this->assertEquals( array( 1, 2, 3 ), $validated_ids );
-	}
 }

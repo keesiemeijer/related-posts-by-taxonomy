@@ -120,4 +120,60 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 
 		$this->assertEquals( $expected, $sanitized_args );
 	}
+
+	/**
+	 * Test values separated by.
+	 */
+	function test_km_rpbt_get_comma_separated_values() {
+		$expected = array( 'lol', 'hihi' );
+		$value = ' lol, hihi,lol';
+		$this->assertEquals( $expected, km_rpbt_get_comma_separated_values( $value ) );
+
+		$value = array( ' lol', 'hihi ', ' lol ' );
+		$this->assertEquals( $expected, km_rpbt_get_comma_separated_values( $value ) );
+	}
+
+	/**
+	 * Test if array with validated ids are returned.
+	 */
+	function test_km_rpbt_validate_ids() {
+
+		$ids = array( 1, false, 'string', 2, 0, 1, 3 );
+
+		$validated_ids = km_rpbt_validate_ids( $ids );
+		$this->assertEquals( array( 1, 2, 3 ), $validated_ids );
+
+		$ids = '1,string,2,0,###,2,3';
+		$validated_ids = km_rpbt_validate_ids( $ids );
+		$this->assertEquals( array( 1, 2, 3 ), $validated_ids );
+	}
+
+	/**
+	 * Test if array with validated booleans are returned.
+	 */
+	function test_km_rpbt_validate_booleans() {
+		$defaults = array(
+			'a' => true,
+			'b' => true,
+			'c' => false,
+			'd' => false,
+			'e' => true,
+			'f' => array(),
+			'g' => 'string',
+			'h' => null,
+		);
+
+		$args = array(
+			'a' => true,
+			'b' => 'true',
+			'c' => false,
+			'd' => 'false',
+			'e' => 'yes',
+			'f' => array(),
+			'g' => 'string',
+			'h' => null,
+		);
+
+		$this->assertSame( $defaults, km_rpbt_validate_booleans( $args, $defaults ) );
+	}
 }

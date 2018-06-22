@@ -174,14 +174,11 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
 	$atts['show_date']    = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
 
-	$booleans = array_filter( $defaults, 'is_bool' );
-	if ( 'regular_order' === $atts['include_self'] ) {
-		unset( $booleans['include_self'] );
-	} else {
+	if ( 'regular_order' !== $atts['include_self'] ) {
 		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
 	}
 
-	$atts = km_rpbt_validate_booleans( $atts, array_keys( $booleans ) );
+	$atts = km_rpbt_validate_booleans( $atts, $defaults );
 
 	return $atts;
 }
