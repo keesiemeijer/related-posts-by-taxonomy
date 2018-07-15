@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Related_Posts_By_Taxonomy widget class.
+ * Class to display related posts with a widget.
  *
  * @since 0.1
  */

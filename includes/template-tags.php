@@ -116,8 +116,8 @@ function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
  *
  * @since 2.4.0
  *
- * @param int|WP_Post|null $post       Optional. Post ID or post object. Default is global $post.
- * @param bool             $title_attr Whether to use a title attribute in the link. Default false.
+ * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
+ * @param array            $args Widget or shortcode arguments.
  */
 function km_rpbt_post_link( $post = null, $args = array() ) {
 	echo km_rpbt_get_post_link( $post, $args ) . "\n";
@@ -129,7 +129,7 @@ function km_rpbt_post_link( $post = null, $args = array() ) {
  * @since 2.4.0
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
- * @param array|string     $args Whether to use a title attribute in the link. Default false.
+ * @param array            $args Widget or shortcode arguments.
  * @return string Related post link HTML.
  */
 function km_rpbt_get_post_link( $post = null, $args = array() ) {
@@ -173,7 +173,10 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 /**
  * Return filterable permalink.
  *
+ * @since 2.5.1
+ *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
+ * @param array            $args Widget or shortcode arguments.
  * @return string permalink.
  */
 function km_rpbt_get_permalink( $post = null, $args = '' ) {
@@ -196,10 +199,10 @@ function km_rpbt_get_permalink( $post = null, $args = '' ) {
 /**
  * Get the related post date.
  *
- * @since 2.4.0
+ * @since 2.5.1
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
- * @return [type]       [description]
+ * @return string Post date wrapped in a HTML time tag.
  */
 function km_rpbt_get_post_date( $post = null ) {
 	$post = get_post( $post );
