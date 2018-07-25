@@ -30,7 +30,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		);
 
 		/**
-		 * Filter for changing name and description of widget.
+		 * Filter for changing the name and description of the widget.
 		 *
 		 * @since 0.3
 		 *
@@ -100,7 +100,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 
 		/**
-		 * Filter widget arguments to get the related posts.
+		 * Filter widget arguments.
 		 *
 		 * @since 0.1
 		 *
@@ -128,7 +128,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 
 		/**
-		 * Fires after the related posts are displayed
+		 * Fires after the related posts are displayed by the widget or shortcode.
 		 *
 		 * @param string Display type, widget or shortcode.
 		 */

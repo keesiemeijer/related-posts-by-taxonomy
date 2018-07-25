@@ -16,11 +16,13 @@ function km_rpbt_get_setting_types() {
 }
 
 /**
- * Get the features this plugin supports
+ * Get the features this plugin supports.
+ *
+ * Opt-in features can be activated with the {related_posts_by_taxonomy_supports} filter.
  *
  * @since  2.3.1
  *
- * @return Array Array with plugin support types
+ * @return Array Array with plugin support types.
  */
 function km_rpbt_get_plugin_supports() {
 	$supports = array(
@@ -37,9 +39,22 @@ function km_rpbt_get_plugin_supports() {
 	/**
 	 * Filter plugin features.
 	 *
+	 * Supported features:
+	 *
+	 * - widget
+	 * - shortcode
+	 * - shortcode_hide_empty
+	 * - widget_hide_empty
+	 *
+	 * Opt-in features
+	 * - cache
+	 * - display_cache_log
+	 * - wp_rest_api
+	 * - debug
+	 *
 	 * @since 2.3.1
 	 *
-	 * @param array $support Array with all supported plugin features.
+	 * @param array $support Array with all supported and opt-in plugin features.
 	 */
 	$plugin = apply_filters( 'related_posts_by_taxonomy_supports', $supports );
 
@@ -47,7 +62,7 @@ function km_rpbt_get_plugin_supports() {
 }
 
 /**
- * Returns defaults for the related posts query.
+ * Returns default query vars for the related posts query.
  *
  * @since 2.5.0
  *
@@ -79,7 +94,7 @@ function km_rpbt_get_query_vars() {
  *
  * @since 2.2.2
  * @param string $type Type of settings. Accepts 'shortcode', widget, 'wp_rest_api', 'cache'.
- * @return array|false Array with default settings by type 'shortcode', 'widget' or .
+ * @return array|false Array with default settings by type 'shortcode', 'widget' or cache.
  */
 function km_rpbt_get_default_settings( $type = '' ) {
 	$setting_types = km_rpbt_get_setting_types();
@@ -96,7 +111,7 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		return $settings;
 	}
 
-	// Default related posts query vars
+	// Default related posts query vars.
 	$defaults = km_rpbt_get_query_vars();
 
 	// There is no default  for post types.
@@ -161,6 +176,8 @@ function km_rpbt_get_default_settings( $type = '' ) {
  *
  * @since 2.1
  * @param array $args Arguments to be sanitized.
+ *                    See km_rpbt_get_related_posts() for for more
+ *                    information on accepted arguments.
  * @return array Array with sanitized arguments.
  */
 function km_rpbt_sanitize_args( $args ) {
@@ -205,7 +222,7 @@ function km_rpbt_sanitize_args( $args ) {
 
 /**
  * Validates ids.
- * Checks if ids is a comma separated string or an array with ids.
+ * Checks ids in a comma separated string or an array with ids.
  *
  * @since 2.5.0
  * @param string|array $ids Comma separated list or array with ids.

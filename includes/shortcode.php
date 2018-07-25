@@ -12,10 +12,55 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.1
  *
- * @uses km_rpbt_query_related_posts()
- * @uses km_rpbt_get_template()
+ * @param string|array $atts {
+ *     Optional. Arguments used by the shortcode.
  *
- * @param string $atts Attributes used by the shortcode.
+ *     @type int            $post_id          Post id to use for related posts query . Default empty (current post).
+ *     @type string|array   $taxonomies       Taxonomies to use for related posts query. Default empty (all taxonomies).
+ *     @type string|array   $post_types       Post types to use for related posts query. Defaut current post post type.
+ *     @type int            $posts_per_page   How many related posts to display. Default 5.
+ *     @type string         $order            Order to display related posts in.
+ *                                            Accepts 'DESC', 'ASC' and 'RAND'. Default 'DESC'.
+ *     @type string         $orderby          Order by post date or by date modified.
+ *                                            Accepts 'post_date'and 'post_modified'. Default 'post_date'.
+ *     @type string         $before_shortcode HTML to display before shortcode. Default `<div class="rpbt_shortcode">`.
+ *     @type string         $after_shortcode  HTML to display before shortcode. Default `</div>`.
+ *     @type string         $title            Title above related posts Default 'Related Posts'.
+ *     @type string         $before_title     HTML before title. Default `<h3>`.
+ *     @type string         $after_title      HTML after title. Default `</h3>`.
+ *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
+ *                                            list of term ids. It doesn't matter if the current post has these terms in common.
+ *                                            Default empty.
+ *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
+ *                                            list of term ids. Only includes terms in common with the current post.
+ *                                            Default empty.
+ *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
+ *                                            list of term ids. Default empty
+ *     @type boolean        $related          If false the ` $include_terms` argument also includes terms
+ *                                            not in common with the current post. Default true.
+ *     @type array|string   $exclude_post     Exclude posts for the related posts query. Array or comma separated
+ *                                            list of post ids. Default empty.
+ *     @type string         $format           Format to display related posts.
+ *                                            Accepts 'links', 'posts', 'excerpts' and 'thumbnails'. Default 'links'.
+ *     @type string         $image_size       Image size used for the format thumbnails. Accepts default image sizes
+ *                                            'thumbnail', 'medium', 'large', 'post-thumbnail' and the image sizes set by
+ *                                            the current theme. Default 'thumbnail'
+ *     @type int            $columns          The number of image columns for the thumbnail gallery. Default 3.
+ *     @type string         $caption          Caption text for the post thumbnail.
+ *                                            Accepts 'post_title', 'post_excerpt' 'attachment_caption', 'attachment_alt', or
+ *                                            a custom string. Default 'post_title'
+ *     @type boolean        $link_caption     Whether to link the caption to the related post. Default false.
+ *     @type int            $limit_posts      Limit the posts to search related posts in. Default -1 (search in all posts).
+ *     @type int            $limit_month      Limit the posts to the past months to search related posts in.
+ *                                            Default empty (search in all posts).
+ *     @type boolean        $public_only      Whether to exclude private posts in the related posts display, even if
+ *                                            the current user has the capability to see those posts.
+ *                                            Default false (include private posts)
+ *     @type string|boolean $include_self     Whether to include the current post in the related posts results. The included
+ *                                            post is ordered at the top. Use 'regular_order' to include the current post ordered by
+ *                                            terms in common. Default false (exclude current post).
+ *     @type string         $post_class       Add a class to the related post items. Default empty.
+ * }
  * @return string Related posts html or empty string.
  */
 function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
@@ -37,7 +82,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 	$defaults = km_rpbt_get_default_settings( 'shortcode' );
 
 	/**
-	 * Filter default attributes.
+	 * Filter default shortcode attributes.
 	 *
 	 * @since 0.2.1
 	 *
@@ -52,7 +97,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 	$validated_args = km_rpbt_validate_shortcode_atts( (array) $atts );
 
 	/**
-	 * Filter attributes.
+	 * Filter shortcode attributes.
 	 *
 	 * @param array $atts See $defaults above
 	 */
@@ -79,7 +124,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 	}
 
 	/**
-	 * Fires after the related posts are displayed
+	 * Fires after the related posts are displayed by the widget or shortcode.
 	 *
 	 * @param string Display type, widget or shortcode.
 	 */
@@ -93,9 +138,13 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 /**
  * Returns shortcode output.
  *
+ * @see km_rpbt_related_posts_by_taxonomy_shortcode()
+ *
  * @since 2.1
  * @param array $related_posts Array with related post objects.
- * @param array $rpbt_args     Shortcode settings.
+ * @param array $rpbt_args     Shortcode arguments.
+ *                             See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                             information on accepted arguments.
  * @return string Shortcode output.
  */
 function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
@@ -138,11 +187,17 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 }
 
 /**
- * Validate shortcode attributes.
+ * Validate shortcode arguments.
+ *
+ * The post type and post id of the current post is used if not provided.
+ *
+ * @see km_rpbt_related_posts_by_taxonomy_shortcode()
  *
  * @since 2.1
- * @param array $atts Array with shortcode attributes.
- * @return array Array with validated shortcode attributes.
+ * @param array $atts Array with shortcode arguments.
+ *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                    information on accepted arguments.
+ * @return array Array with validated shortcode arguments.
  */
 function km_rpbt_validate_shortcode_atts( $atts ) {
 	$defaults = km_rpbt_get_default_settings( 'shortcode' );
@@ -158,7 +213,7 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 		$atts['post_id'] = get_the_ID();
 	}
 
-	/* if no post type is set use the post type of the current post (new default since 0.3) */
+	/* If no post type is set use the post type of the current post (new default since 0.3) */
 	if ( empty( $atts['post_types'] ) ) {
 		$post_type = get_post_type( $atts['post_id'] );
 		$atts['post_types'] = $post_type ? array( $post_type ) : array( 'post' );
@@ -168,7 +223,7 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 		$atts['post_thumbnail'] = true;
 	}
 
-	// Convert (strings) to booleans.
+	// Convert (strings) to booleans or use defaults.
 	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
 	$atts['link_caption'] = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
 	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;

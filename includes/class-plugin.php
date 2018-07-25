@@ -9,6 +9,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
+	/**
+	 * Class to setup plugin features and enqueue scripts.
+	 *
+	 * Features:
+	 * - shortcode
+	 * - widget
+	 * - cache
+	 * - debug
+	 * - WP Rest API
+	 */
 	class Related_Posts_By_Taxonomy_Plugin {
 
 		/**

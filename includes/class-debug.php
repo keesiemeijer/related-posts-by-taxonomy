@@ -11,6 +11,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
+	/**
+	 * Class to debug this plugin.
+	 *
+	 * Adds links for debugging shortcodes and widget.
+	 * Displays debug information (to admins) in the footer of a website.
+	 */
 	class Related_Posts_By_Taxonomy_Debug {
 
 		public $debug             = array();

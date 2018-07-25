@@ -8,13 +8,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Related Posts by Taxonomy Gallery.
  *
- * Altered WordPress gallery_shortcode() for displaying the related post thumbnails.
+ * Similar to the WordPress gallery_shortcode() for displaying the related post thumbnails.
  *
  * @since 0.2
  *
  * @global string $wp_version
  * @global string $post
- * @param array $args          Attributes of the shortcode.
+ * @param array $args          Shortcode or widget arguments.
  * @param array $related_posts Array with related post objects that have a post thumbnail.
  * @return string HTML content to display gallery.
  */
@@ -50,7 +50,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$args = shortcode_atts( $defaults, $args, 'gallery' );
 
 	/**
-	 * Filter the function arguments.
+	 * Filter the related post thumbnail gallery arguments.
 	 *
 	 * @since 0.2.1
 	 *
@@ -203,7 +203,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		$image_attr  = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
 
 		/**
-		 * Filter the gallery image.
+		 * Filter the gallery image link.
 		 *
 		 * @since 0.3
 		 *
@@ -218,7 +218,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		}
 
 		/**
-		 * Gallery item css classes.
+		 * Filter the related posts gallery item css classes.
 		 *
 		 * @since
 		 *

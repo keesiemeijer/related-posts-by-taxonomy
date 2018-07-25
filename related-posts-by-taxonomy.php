@@ -45,6 +45,11 @@ if ( ! defined( 'RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL' ) ) {
 /* loads plugin files, adds the shortcode and sets the text domain */
 if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 
+	/**
+	 * Initialize plugin.
+	 *
+	 * Includes all plugin files and initializes plugin.
+	 */
 	function related_posts_by_taxonomy_init() {
 
 		load_plugin_textdomain( 'related-posts-by-taxonomy', '', dirname( plugin_basename( __FILE__ ) ) . '/lang' );

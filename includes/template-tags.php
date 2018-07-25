@@ -69,9 +69,10 @@ function km_rpbt_sanitize_classes( $classes ) {
  *
  * @since  2.4.0
  *
- * @param array $related_posts Array with related post objects.
- * @param int   $post_id       Current post id.
- * @param array $args          Array with widget or shortcode arguments.
+ * @param array        $related_posts Array with related post objects.
+ * @param array|string $args          Widget or shortcode arguments.
+ *                                    See km_rpbt_get_related_posts() for for more
+ *                                    information on accepted arguments.
  * @return array Array with related post objects with classes added.
  */
 function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
@@ -118,6 +119,7 @@ function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
  * @param array            $args Widget or shortcode arguments.
+ *
  */
 function km_rpbt_post_link( $post = null, $args = array() ) {
 	echo km_rpbt_get_post_link( $post, $args ) . "\n";
@@ -171,7 +173,7 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 }
 
 /**
- * Return filterable permalink.
+ * Returns a filterable related post permalink.
  *
  * @since 2.5.1
  *
@@ -188,7 +190,7 @@ function km_rpbt_get_permalink( $post = null, $args = '' ) {
 	$permalink = esc_url( apply_filters( 'the_permalink', get_permalink( $post ), $post ) );
 
 	/**
-	 * Permalink for related posts.
+	 * Filter the permalink used for related posts.
 	 *
 	 * @param string Permalink.
 	 */

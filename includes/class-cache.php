@@ -12,6 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
+	/**
+	 * Class to manage the persistent cache feature.
+	 */
 	class Related_Posts_By_Taxonomy_Cache {
 
 		/**
@@ -123,6 +126,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 *
 		 * @since 2.0.1
 		 * @param array $args Array with widget or shortcode args.
+		 *                    See km_rpbt_get_related_posts() for for more
+		 *                    information on accepted arguments.
 		 * @return array Array with widget or shortcode args.
 		 */
 		public function add_cache( $args ) {
@@ -135,6 +140,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 *
 		 * @since 2.0.1
 		 * @param array $args Array with widget or shortcode args.
+		 *                    See km_rpbt_get_related_posts() for for more
+		 *                    information on accepted arguments.
 		 * @return array  Array with related post objects .
 		 */
 		public function get_related_posts( $args ) {
@@ -190,6 +197,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 *
 		 * @since 2.0.1
 		 * @param array $args Array with Widget or shortcode arguments.
+		 *                    See km_rpbt_get_related_posts() for for more
+		 *                    information on accepted arguments.
 		 * @return array Array with related post objects that are cached.
 		 */
 		private function set_cache( $args ) {
@@ -252,6 +261,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 *
 		 * @since 2.0.1
 		 * @param array $args  Array with sanitized widget or shortcode arguments.
+		 *                     See km_rpbt_get_related_posts() for for more
+		 *                     information on accepted arguments.
 		 * @param array $cache Array with cached post ids.
 		 * @return array Array with related post objects.
 		 */
@@ -333,6 +344,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 *
 		 * @since 2.1.2
 		 * @param array $args Widget or Shortcode arguments.
+		 *                    See km_rpbt_get_related_posts() for for more
+		 *                    information on accepted arguments.
 		 * @return boolean True if post_id and taxonomies are set.
 		 */
 		public function is_valid_cache_args( $args ) {
@@ -349,6 +362,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 *
 		 * @since 2.1
 		 * @param array $args Array with widget or shortcode argument.
+		 *                    See km_rpbt_get_related_posts() for for more
+		 *                    information on accepted arguments.
 		 * @return array      Array with sanitized widget or shortcode arguments.
 		 */
 		public function sanitize_cache_args( $args ) {
@@ -371,7 +386,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 *
 		 * @since 2.2
 		 * @param array $args Arguments.
-		 * @return array       Sorted arguments.
+		 * @return array      Sorted arguments.
 		 */
 		public function order_cache_args( $args ) {
 
@@ -392,6 +407,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 *
 		 * @since 2.0.1
 		 * @param array $args Array with widget or shortcode arguments.
+		 *                    See km_rpbt_get_related_posts() for for more
+		 *                    information on accepted arguments.
 		 * @return array Array with Related posts ids, empty string, or empty array.
 		 */
 		public function get_post_meta( $args ) {
@@ -404,6 +421,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 *
 		 * @since 2.0.1
 		 * @param array $args Array with widget or shortcode arguments.
+		 *                    See km_rpbt_get_related_posts() for for more
+		 *                    information on accepted arguments.
 		 * @return string Meta key created from sanitized args.
 		 */
 		public function get_post_meta_key( $args ) {
@@ -418,7 +437,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @param array $results    Related posts. Array with Post objects or post IDs or post titles or post slugs.
 		 * @param int   $post_id    Post id used to get the related posts.
 		 * @param array $taxonomies Taxonomies used to get the related posts.
-		 * @param array $args       Function arguments used to get the related posts.
+		 * @param array $args       Query arguments used to get the related posts.
+		 *                          See km_rpbt_get_related_posts() for for more
+		 *                          information on accepted arguments.
 		 * @return array Array with widget or shortcode args.
 		 */
 		public function current_post( $results, $post_id, $taxonomies, $args ) {

@@ -97,6 +97,8 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @since 2.5.1
 	 *
 	 * @param array $args Request arguments
+	 *                    See km_rpbt_get_related_posts() for for more
+	 *                    information on accepted arguments.
 	 * @return array|false Filtered request arguments or false when invalid
 	 *                     taxonomies or post types are used int the request.
 	 */
@@ -213,6 +215,8 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param array           $args    WP Rest API arguments of the item.
+	 *                                 See km_rpbt_get_related_posts() for for more
+	 *                                 information on accepted request arguments.
 	 * @param WP_REST_Request $request Request object.
 	 * @return mixed
 	 */
@@ -333,7 +337,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @param array $results    Related posts. Array with Post objects or post IDs or post titles or post slugs.
 	 * @param int   $post_id    Post id used to get the related posts.
 	 * @param array $taxonomies Taxonomies used to get the related posts.
-	 * @param array $args       Function arguments used to get the related posts.
+	 * @param array $args       Query arguments used to get the related posts.
 	 * @return array Related Posts.
 	 */
 	public function get_filter_args( $results, $post_id, $taxonomies, $args ) {
@@ -347,7 +351,9 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @since 2.3.0
 	 * @access public
 	 *
-	 * @param array $args Function arguments used to get the related posts.
+	 * @param array $args Query arguments used to get the related posts.
+	 *                    See km_rpbt_get_related_posts() for for more
+	 *                    information on accepted arguments.
 	 * @return array Related Posts.
 	 */
 	public function get_related_posts( $args ) {
