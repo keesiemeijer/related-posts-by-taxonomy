@@ -22,12 +22,15 @@ function km_rpbt_post_class( $post = null, $class = '' ) {
 }
 
 /**
- * Returns post classes if set.
+ * Returns post classes from a post object.
+ *
+ * Uses the 'rpbt_post_class' property of a post object (if it exists).
  *
  * @since  2.4.0
  *
  * @param object $post  Post object.
- * @param string $class String of classes to add to the post classes. Default empty string.
+ * @param string $class Space separated string of classes to add to the post classes.
+ *                      Default empty string.
  * @return string Post classes string.
  */
 function km_rpbt_get_post_classes( $post = null, $class = '' ) {
@@ -66,6 +69,8 @@ function km_rpbt_sanitize_classes( $classes ) {
 
 /**
  * Add classes to array of (related) post objects.
+ *
+ * Used by the shortcode and widget and WP Rest API after retrieving the related posts.
  *
  * @since  2.4.0
  *
@@ -115,6 +120,8 @@ function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
 /**
  * Display of the related post link.
  *
+ * Used in the templates for displaying related posts.
+ *
  * @since 2.4.0
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
@@ -126,12 +133,16 @@ function km_rpbt_post_link( $post = null, $args = array() ) {
 }
 
 /**
- * Get the related $post link.
+ * Gets a related post link.
+ *
+ * The post date is appended depending on the `$show_date` argument.
  *
  * @since 2.4.0
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
- * @param array            $args Widget or shortcode arguments.
+ * @param array            $args Optional. Widget or shortcode arguments.
+ *                               See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                               information on accepted arguments.
  * @return string Related post link HTML.
  */
 function km_rpbt_get_post_link( $post = null, $args = array() ) {
@@ -179,6 +190,8 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
  * @param array            $args Widget or shortcode arguments.
+ *                               See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                               information on accepted arguments.
  * @return string permalink.
  */
 function km_rpbt_get_permalink( $post = null, $args = '' ) {
@@ -204,7 +217,7 @@ function km_rpbt_get_permalink( $post = null, $args = '' ) {
  * @since 2.5.1
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
- * @return string Post date wrapped in a HTML time tag.
+ * @return string Post date wrapped in a HTML `<time>` tag.
  */
 function km_rpbt_get_post_date( $post = null ) {
 	$post = get_post( $post );

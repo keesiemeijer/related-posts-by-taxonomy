@@ -26,6 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *     @type string         $before_shortcode HTML to display before shortcode. Default `<div class="rpbt_shortcode">`.
  *     @type string         $after_shortcode  HTML to display before shortcode. Default `</div>`.
  *     @type string         $title            Title above related posts Default 'Related Posts'.
+ *     @type string         $show_date        Whether to display the post date after the title.
  *     @type string         $before_title     HTML before title. Default `<h3>`.
  *     @type string         $after_title      HTML after title. Default `</h3>`.
  *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
