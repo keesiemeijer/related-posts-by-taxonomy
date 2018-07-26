@@ -172,7 +172,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				$posts = $this->set_cache( $args );
 			}
 
-			return $posts;
+			return km_rpbt_add_post_classes( $posts, $args );
 		}
 
 		/**

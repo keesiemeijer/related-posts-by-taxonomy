@@ -8,6 +8,21 @@ class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 	function tearDown() {
 		remove_filter( 'use_default_gallery_style', '__return_false', 99 );
 		remove_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 4 );
+		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
+	}
+
+	function setup_cache() {
+		// Activate cache
+		add_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
+
+		// Setup plugin with cache activated.
+		$cache = new Related_Posts_By_Taxonomy_Plugin();
+		$cache->cache_init();
+
+		$plugin = km_rpbt_plugin();
+		if ( $plugin ) {
+			$plugin->_setup();
+		}
 	}
 
 	/**
@@ -50,6 +65,36 @@ EOF;
 		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '" post_class="someclass"]' );
 		$shortcode = ob_get_clean();
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );
+	}
+
+	/**
+	 */
+	function test_post_class_is_added_with_filter_for_cached_posts() {
+		$this->setup_cache();
+
+		$plugin = km_rpbt_plugin();
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		$args = array( 'fields' => 'ids' );
+		$taxonomies = array( 'post_tag' );
+		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, $args );
+
+		$log = sprintf( 'Post ID %d - caching posts...', $posts[1] );
+		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not cached' );
+
+		add_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 4 );
+		$args['taxonomies'] = $taxonomies;
+		$args['post_id'] =  $posts[1];
+		$related = $plugin->cache->get_related_posts( $args );
+
+		// Check if related posts are from the cache
+		$log = sprintf( 'Post ID %d - cache exists', $posts[1] );
+		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not found in cache' );
+
+		$this->assertTrue( isset( $related[0]->rpbt_post_class ), 'property not found' );
+		$this->assertEquals( 'someclass', $related[0]->rpbt_post_class );
 	}
 
 	/**
@@ -119,7 +164,7 @@ EOF;
 	}
 
 	/**
-	 * Test getting the link for a related post title
+	 * Test getting the link with invalid post id
 	 * used in the templates
 	 */
 	function test_rpbt_get_post_link_invalid_argument() {
@@ -141,8 +186,33 @@ EOF;
 		$expected  = '<a href="' . $permalink . '">' . $posts[0]->post_title . '</a>';
 		$this->assertSame( $expected, $link );
 
-		$link     = km_rpbt_get_post_link( $posts[0], array('title_attr'  => true ) );
+		$link     = km_rpbt_get_post_link( $posts[0], array( 'title_attr'  => true ) );
 		$expected = '<a href="' . $permalink . '" title="' . $posts[0]->post_title . '">' . $posts[0]->post_title . '</a>';
+		$this->assertSame( $expected, $link );
+	}
+
+	/**
+	 * Test getting the link for a related post title
+	 * used in the templates
+	 *
+	 */
+	function test_km_rpbt_get_post_link_with_date_output() {
+		$posts = $this->create_posts();
+		$posts = get_posts();
+
+		$link      = km_rpbt_get_post_link( $posts[0], array( 'show_date' => true ) );
+		$permalink = get_permalink( $posts[0] );
+
+		$time_string = '<time class="rpbt-post-date" datetime="%1$s">%2$s</time>';
+
+		$time_string = sprintf(
+			$time_string,
+			get_the_date( DATE_W3C, $posts[0] ),
+			get_the_date( '', $posts[0] )
+		);
+
+		$expected  = '<a href="' . $permalink . '">' . $posts[0]->post_title . '</a> ' . $time_string;
+
 		$this->assertSame( $expected, $link );
 	}
 
