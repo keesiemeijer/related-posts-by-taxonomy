@@ -6,14 +6,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Queries for related posts by taxonomy.
+ * The query for related posts.
  *
  * @since 2.5.0
  *
  * @global object       $wpdb
  *
  * @param int          $post_id    The post id to get related posts for.
- * @param array|string $taxonomies The taxonomies to retrieve related posts from. default 'category'.
+ * @param array|string $taxonomies The taxonomies to use for the related posts query. default 'category'.
  * @param string|array $args       {
  *     Optional. Arguments to get related posts.
  *
@@ -354,7 +354,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	 * @param array $results    Related posts. Array with Post objects or post IDs or post titles or post slugs.
 	 * @param int   $post_id    Post id used to get the related posts.
 	 * @param array $taxonomies Taxonomies used to get the related posts.
-	 * @param array $args       Arguments used to get the related posts.
+	 * @param array $args       Arguments used to query the related posts.
 	 */
 	return apply_filters( 'related_posts_by_taxonomy', $results, $post_id, $taxonomies, $args );
 }

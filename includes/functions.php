@@ -38,9 +38,16 @@ function km_rpbt_plugin_supports( $type ) {
 	 * Filter whether to support a plugin feature.
 	 *
 	 * The dynamic portion of the hook name, `$type`, refers to the
-	 * type of support: 'widget', 'shortcode', 'shortcode_hide_empty',
-	 *                  'widget_hide_empty'.'cache', 'display_cache_log',
-	 *                  'wp_rest_api' or 'debug'.
+	 * type of support.
+	 *
+	 * - widget
+	 * - shortcode
+	 * - shortcode_hide_empty
+	 * - widget_hide_empty
+	 * - cache
+	 * - display_cache_log
+	 * - wp_rest_api
+	 * - debug
 	 *
 	 * @param bool $bool Add support if true. Default false
 	 */
@@ -124,9 +131,9 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	 *
 	 * @since  2.5.0
 	 *
-	 * @param boolean|array $related_posts Array with (related) post objects.
-	 *                                     Default false (Don't use your own related posts).
-	 *                                     Use empty array to not retrieve related posts from the database.
+	 * @param boolean|array $related_posts Return an array with (related) post objects to use your own
+	 *                                     related post. This prevents the query for related posts by this plugin.
+	 *                                     Default false (Let this plugin query for related posts).
 	 *
 	 * @param array         Array with widget or shortcode arguments.
 	 */
@@ -230,7 +237,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 }
 
 /**
- * Returns array with validated post types.
+ * Returns array with validated post type names.
  *
  * @since 2.2
  * @param string|array $post_types Comma separated list or array with post type names.
@@ -248,7 +255,7 @@ function km_rpbt_get_post_types( $post_types = '' ) {
 }
 
 /**
- * Returns array with validated taxonomies.
+ * Returns array with validated taxonomy names.
  *
  * @since 2.2
  * @param string|array $taxonomies Taxonomies.
@@ -267,7 +274,7 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
 }
 
 /**
- * Get all public taxonomies found by this plugin.
+ * Get all public taxonomies.
  *
  * @since 2.5.0
  *
@@ -291,16 +298,17 @@ function km_rpbt_is_cache_loaded() {
 
 /**
  * Public function to cache related posts.
- * Uses the same arguments as the km_rpbt_query_related_posts() function.
+ *
+ * The opt-in cache feature needs to be activated to cache posts.
  *
  * @since 2.1
  * @since  2.5.0 Use empty string as default value for $taxonomies parameter.
  *
  * @param int          $post_id    The post id to cache related posts for.
- * @param array|string $taxonomies The taxonomies to cache related posts from.
- * @param array|string $args       Optional. See km_rpbt_query_related_posts() for more
+ * @param array|string $taxonomies Taxonomies for the related posts query.
+ * @param array|string $args       Optional arguments. See km_rpbt_query_related_posts() for more
  *                                 information on accepted arguments.
- * @return array Array with cached related posts objects or false if no posts where cached.
+ * @return array|false Array with cached related posts objects or false if no posts where cached.
  */
 function km_rpbt_cache_related_posts( $post_id, $taxonomies = '', $args = array() ) {
 	// Check if cache is loaded.
@@ -319,7 +327,7 @@ function km_rpbt_cache_related_posts( $post_id, $taxonomies = '', $args = array(
 /**
  * Public function to flush the persistent cache.
  *
- * Note: This function doesn't check if the plugin supports the cache.
+ * Call this function on the wp_load hook or later.
  *
  * @since 2.1
  * @return int|bool Returns number of deleted rows or false on failure.

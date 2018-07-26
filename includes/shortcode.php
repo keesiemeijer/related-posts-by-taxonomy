@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *     @type string         $before_shortcode HTML to display before shortcode. Default `<div class="rpbt_shortcode">`.
  *     @type string         $after_shortcode  HTML to display before shortcode. Default `</div>`.
  *     @type string         $title            Title above related posts Default 'Related Posts'.
- *     @type string         $show_date        Whether to display the post date after the title.
+ *     @type string         $show_date        Whether to display the post date after the title. Default false.
  *     @type string         $before_title     HTML before title. Default `<h3>`.
  *     @type string         $after_title      HTML after title. Default `</h3>`.
  *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
@@ -48,7 +48,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *                                            the current theme. Default 'thumbnail'
  *     @type int            $columns          The number of image columns for the thumbnail gallery. Default 3.
  *     @type string         $caption          Caption text for the post thumbnail.
- *                                            Accepts 'post_title', 'post_excerpt' 'attachment_caption', 'attachment_alt', or
+ *                                            Accepts 'post_title', 'post_excerpt', 'attachment_caption', 'attachment_alt', or
  *                                            a custom string. Default 'post_title'
  *     @type boolean        $link_caption     Whether to link the caption to the related post. Default false.
  *     @type int            $limit_posts      Limit the posts to search related posts in. Default -1 (search in all posts).

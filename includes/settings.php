@@ -1,6 +1,6 @@
 <?php
 /**
- * Setting types supported by this plugin.
+ * Plugin feature setting types.
  *
  * @since  2.5.0
  *
@@ -18,7 +18,8 @@ function km_rpbt_get_setting_types() {
 /**
  * Get the features this plugin supports.
  *
- * Opt-in features can be activated with the {related_posts_by_taxonomy_supports} filter.
+ * Use the {@see related_posts_by_taxonomy_supports} filter to activate and
+ * deactivate features in one go.
  *
  * @since  2.3.1
  *
@@ -90,11 +91,11 @@ function km_rpbt_get_query_vars() {
 }
 
 /**
- * Returns default settings by type.
+ * Returns the default settings for a plugin feature.
  *
  * @since 2.2.2
- * @param string $type Type of settings. Accepts 'shortcode', widget, 'wp_rest_api', 'cache'.
- * @return array|false Array with default settings by type 'shortcode', 'widget' or cache.
+ * @param string $type Type of feature settings. Accepts 'shortcode', 'widget, 'wp_rest_api', 'cache'.
+ * @return array|false Array with default settings for a feature.
  */
 function km_rpbt_get_default_settings( $type = '' ) {
 	$setting_types = km_rpbt_get_setting_types();
@@ -221,11 +222,12 @@ function km_rpbt_sanitize_args( $args ) {
 }
 
 /**
- * Validates ids.
- * Checks ids in a comma separated string or an array with ids.
+ * Validates an array or comma separated string with ids.
+ *
+ * Removes duplicates and "0" values.
  *
  * @since 2.5.0
- * @param string|array $ids Comma separated list or array with ids.
+ * @param string|array $ids Array or comma separated string with ids.
  * @return array Array with postive integers
  */
 function km_rpbt_validate_ids( $ids ) {
@@ -244,9 +246,9 @@ function km_rpbt_validate_ids( $ids ) {
 }
 
 /**
- * Sanitizes comma separetad values.
+ * Get the values from a comma separated string.
  *
- * Returns an array with values.
+ * Removes duplicates and empty values.
  *
  * @since 2.2
  * @param string|array $value Comma seperated string or array with values.
@@ -262,7 +264,7 @@ function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
 }
 
 /**
- * Validate boolean
+ * Validate a boolean value
  *
  * Returns true for true, 1, "1", "true", "on", "yes". Everything else return false.
  *
@@ -276,18 +278,19 @@ function km_rpbt_validate_boolean( $value ) {
 }
 
 /**
- * Validate booleans
+ * Validate boolean values in arguments.
  *
  * @since 2.5.1
  *
  * @param array $args     Array with arguments.
- * @param array $defaults Defaults.
+ * @param array $defaults Array with default arguments.
  * @return array Array with validated boolean values
  */
 function km_rpbt_validate_booleans( $args, $defaults ) {
 
 	// The include_self argument can be a boolean or string 'regular_order'.
 	if ( isset( $args['include_self'] ) && ( 'regular_order' === $args['include_self'] ) ) {
+		// Do not check this value as a boolean
 		$defaults['include_self'] = 'regular_order';
 	}
 

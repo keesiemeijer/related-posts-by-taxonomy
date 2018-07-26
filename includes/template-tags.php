@@ -6,7 +6,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Prints the post class
+ * Prints the post classes.
+ *
+ * This function is used in the related posts display templates.
  *
  * @since  2.4.0
  *
@@ -22,9 +24,9 @@ function km_rpbt_post_class( $post = null, $class = '' ) {
 }
 
 /**
- * Returns post classes from a post object.
+ * Get the post classes from a post object.
  *
- * Uses the 'rpbt_post_class' property of a post object (if it exists).
+ * Gets the classes from the 'rpbt_post_class' property of a post object (if it exists).
  *
  * @since  2.4.0
  *
@@ -68,13 +70,16 @@ function km_rpbt_sanitize_classes( $classes ) {
 }
 
 /**
- * Add classes to array of (related) post objects.
+ * Add CSS classes to (related) post objects.
  *
- * Used by the shortcode and widget and WP Rest API after retrieving the related posts.
+ * This function is used after retrieving the related posts from the database or cache.
+ *
+ * Use the {@see 'related_posts_by_taxonomy_post_class'} filter to add post classes on a
+ * post per post basis
  *
  * @since  2.4.0
  *
- * @param array        $related_posts Array with related post objects.
+ * @param array        $related_posts Array with (related) post objects.
  * @param array|string $args          Widget or shortcode arguments.
  *                                    See km_rpbt_get_related_posts() for for more
  *                                    information on accepted arguments.
@@ -99,7 +104,7 @@ function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
 		$classes = explode( ' ', $classes );
 
 		/**
-		 * Filter post classes.
+		 * Filter CSS classes used in related posts display templates.
 		 *
 		 * @since 2.4.0
 		 *
@@ -135,7 +140,7 @@ function km_rpbt_post_link( $post = null, $args = array() ) {
 /**
  * Gets a related post link.
  *
- * The post date is appended depending on the `$show_date` argument.
+ * The post date is appended depending on the `$show_date` value in the arguments.
  *
  * @since 2.4.0
  *
@@ -184,7 +189,9 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 }
 
 /**
- * Returns a filterable related post permalink.
+ * Wrapper function for get_permalink() to allow filtering.
+ *
+ * Filter related posts permalinks with the {@see 'related_posts_by_taxonomy_the_permalink'} filter.
  *
  * @since 2.5.1
  *
