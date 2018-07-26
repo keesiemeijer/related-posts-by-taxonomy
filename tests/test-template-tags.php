@@ -77,16 +77,11 @@ EOF;
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		$args = array( 'fields' => 'ids' );
 		$taxonomies = array( 'post_tag' );
-		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, $args );
-
-		$log = sprintf( 'Post ID %d - caching posts...', $posts[1] );
-		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not cached' );
+		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies );
 
 		add_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 4 );
-		$args['taxonomies'] = $taxonomies;
-		$args['post_id'] =  $posts[1];
+		$args = array( 'taxonomies' => $taxonomies, 'post_id' => $posts[1] );
 		$related = $plugin->cache->get_related_posts( $args );
 
 		// Check if related posts are from the cache

@@ -81,7 +81,7 @@ function km_rpbt_plugin_supports( $type ) {
  *     @type string         $orderby          Order by post date or by date modified.
  *                                            Accepts 'post_date'and 'post_modified'. Default 'post_date'.
  *     @type string         $fields           Return full post objects, IDs, post titles or post slugs.
- *                                            Accepts 'all', 'ids', 'names' or 'slugs'.  Default is 'all'.
+ *                                            Accepts 'all', 'ids', 'names' or 'slugs'. Default is 'all'.
  *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
  *                                            list of term ids. The terms don't need to be assigned to the post to
  *                                            get related posts for. Default empty.

@@ -172,7 +172,24 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				$posts = $this->set_cache( $args );
 			}
 
-			return km_rpbt_add_post_classes( $posts, $args );
+			$fields = isset( $args['fields'] ) ? (string) $args['fields'] : '';
+
+			$allowed_fields = array(
+				'ids' => 'ID',
+				'names' => 'post_title',
+				'slugs' => 'post_name',
+			);
+
+			if ( $posts ) {
+				if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {
+					/* Get the field used in the query */
+					$posts = wp_list_pluck( $posts, $allowed_fields[ $fields ] );
+				} else {
+					$posts = km_rpbt_add_post_classes( $posts, $args );
+				}
+			}
+
+			return $posts;
 		}
 
 		/**
