@@ -45,6 +45,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 			'caption'          => 'post_title',
 			'post_class'       => '',
 			'link_caption'     => false,
+			'show_date'        => false,
 			'type'             => 'shortcode',
 		);
 
@@ -246,15 +247,71 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 <div class="rpbt_shortcode">
 <h3>Related Posts</h3>
 <ul>
-<li><a href="{$permalinks[1]}">{$_posts[1]->post_title}</a></li>
-<li><a href="{$permalinks[2]}">{$_posts[2]->post_title}</a></li>
-<li><a href="{$permalinks[3]}">{$_posts[3]->post_title}</a></li>
+<li>
+<a href="{$permalinks[1]}">{$_posts[1]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[2]}">{$_posts[2]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[3]}">{$_posts[3]->post_title}</a>
+</li>
 </ul>
 </div>
 EOF;
 
 		ob_start();
 		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '"]' );
+		$shortcode = ob_get_clean();
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );
+	}
+
+	/**
+	 * Test output from shortcode.
+	 *
+	 */
+	function test_shortcode_output_with_date() {
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// get post ids array and permalinks array
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $posts,
+				'order' => 'post__in',
+			)
+		);
+		$ids        = wp_list_pluck( $_posts, 'ID' );
+		$permalinks = array_map( 'get_permalink', $ids );
+		$date       = array();
+		$datetime   = array();
+		foreach($posts as $post) {
+			$date[] = get_the_date( '', $post );
+			$datetime[] = get_the_date( DATE_W3C, $post );
+		}
+
+		// expected related posts are post 1,2,3
+		$expected = <<<EOF
+<div class="rpbt_shortcode">
+<h3>Related Posts</h3>
+<ul>
+<li>
+<a href="{$permalinks[1]}">{$_posts[1]->post_title}</a> <time class="rpbt-post-date" datetime="{$datetime[1]}">{$date[1]}</time>
+</li>
+<li>
+<a href="{$permalinks[2]}">{$_posts[2]->post_title}</a> <time class="rpbt-post-date" datetime="{$datetime[2]}">{$date[2]}</time>
+</li>
+<li>
+<a href="{$permalinks[3]}">{$_posts[3]->post_title}</a> <time class="rpbt-post-date" datetime="{$datetime[3]}">{$date[3]}</time>
+</li>
+</ul>
+</div>
+EOF;
+
+		ob_start();
+		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '" show_date="true"]' );
 		$shortcode = ob_get_clean();
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );

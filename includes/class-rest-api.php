@@ -6,12 +6,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Adds WordPress REST API endpoint to get related posts.
+ * Adds a WordPress REST API endpoint to get related posts.
+ *
+ * Registered endpoint: /wp-json/related-posts-by-taxonomy/v1/posts/{$post_id}
+ *
+ * @since 2.3.0
  */
 class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 
 	/**
-	 * Arguments used for a related posts query.
+	 * Arguments used by the related posts query.
 	 *
 	 * @since 2.3.0
 	 * @var array
@@ -50,7 +54,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get one item from the collection
+	 * Get one item from the collection.
 	 *
 	 * @since 2.3.0
 	 * @access public
@@ -62,16 +66,45 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		$args  = $request->get_params();
 		$error = new WP_Error( 'rest_post_invalid_id', __( 'Invalid post ID.', 'related-posts-by-taxonomy' ), array( 'status' => 404 ) );
 
-		if ( ! isset( $args['id'] ) || ( (int) $args['id'] <= 0 ) ) {
+		if ( ! isset( $args['id'] ) || ! absint( $args['id'] ) ) {
 			return $error;
 		}
 
-		$post = get_post( (int) $args['id'] );
-		if ( empty( $post ) || empty( $post->ID ) ) {
+		$post = get_post( absint( $args['id'] ) );
+		if ( ! $post ) {
 			return $error;
 		}
 
+		$args['post_id'] = $post->ID;
+
+		$args = $this->filter_request( $args );
+
+		if ( ! $args ) {
+			$error = new WP_Error( 'rest_post_invalid_parameters', __( 'Invalid parameters.', 'related-posts-by-taxonomy' ), array( 'status' => 404 ) );
+			return $error;
+		}
+
+		$data = $this->prepare_item_for_response( $args, $request );
+		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Filter the request arguments.
+	 *
+	 * Set defaults for every requests with the related_posts_by_taxonomy_wp_rest_api_defaults filter.
+	 * Filter validated request arguments with the related_posts_by_taxonomy_wp_rest_api_args filter.
+	 *
+	 * @since 2.5.1
+	 *
+	 * @param array $args Request arguments
+	 *                    See km_rpbt_get_related_posts() for for more
+	 *                    information on accepted arguments.
+	 * @return array|false Filtered request arguments or false when invalid
+	 *                     taxonomies or post types are used int the request.
+	 */
+	private function filter_request( $args ) {
 		$type     = 'wp_rest_api';
+		$post_id  = $args['post_id'];
 		$defaults = km_rpbt_get_default_settings( $type );
 
 		/**
@@ -79,16 +112,36 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param array $defaults Default wp_rest_api arguments.
+		 * @param array   $defaults Default wp_rest_api arguments.
+		 * @param WP_Post Post object to get the releated posts for
 		 */
-		$defaults = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_defaults', $defaults );
-
-		$args['post_id'] = $args['id'];
+		$defaults = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_defaults', $defaults, $post_id );
 		$args = array_merge( $defaults, (array) $args );
 
-		/* Validates args. Sets the post types and post id if not set in filter above */
-		$validated_args         = km_rpbt_validate_shortcode_atts( (array) $args );
-		$validated_args['type'] = $type;
+		// Un-filterable arguments.
+		$args['type']    = $type;
+		$args['post_id'] = $post_id;
+
+		// Check taxonomies.
+		$taxonomies         = ! empty( $args['taxonomies'] );
+		$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
+		$tax_fail           = $taxonomies && ! $args['taxonomies'];
+
+		// Check post types
+		$post_types = ! empty( $args['post_types'] );
+
+		// Default to the post type from the current post if no post types are in the request.
+		if ( ! $post_types ) {
+			$args['post_types'] = get_post_type( $post_id );
+		}
+
+		$args['post_types'] = km_rpbt_get_post_types( $args['post_types'] );
+		$type_fail          = $post_types && ! $args['post_types'];
+
+		// Set post_thumbnail argument depending on format.
+		if ( 'thumbnails' === $args['format'] ) {
+			$args['post_thumbnail'] = true;
+		}
 
 		/**
 		 * Filter wp_rest_api arguments.
@@ -97,14 +150,32 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 *
 		 * @param array $args wp_rest_api arguments.
 		 */
-		$args = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_args', $validated_args );
-		$args = array_merge( $validated_args, (array) $args );
+		$args = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_args', $args );
+		$args = array_merge( $defaults, (array) $args );
 
-		// Un-filterable argument.
-		$args['type']  = $type;
+		// Un-filterable arguments.
+		$args['type']    = $type;
+		$args['post_id'] = $post_id;
 
-		$data = $this->prepare_item_for_response( $args, $request );
-		return rest_ensure_response( $data );
+		$error = false;
+
+		// Validate taxonomies again (could be set by wp_rest_api_args filter).
+		if ( $tax_fail ) {
+			$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
+			$error = ! $args['taxonomies'];
+		}
+
+		// Validate post types again (could be set by wp_rest_api_args filter).
+		if ( $type_fail ) {
+			$args['post_type'] = km_rpbt_get_post_types( $args['post_types'] );
+			$error = $error ? $error : ! $args['post_types'];
+		}
+
+		if ( $error ) {
+			return false;
+		}
+
+		return $args;
 	}
 
 	/**
@@ -144,15 +215,17 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param array           $args    WP Rest API arguments of the item.
+	 *                                 See km_rpbt_get_related_posts() for for more
+	 *                                 information on accepted request arguments.
 	 * @param WP_REST_Request $request Request object.
 	 * @return mixed
 	 */
 	public function prepare_item_for_response( $args, $request ) {
 		$related_posts = $this->get_related_posts( $args );
-		$fields        = strtolower( $args['fields'] );
 
 		$rendered = '';
-		if ( ! in_array( $fields, array( 'ids', 'names', 'slugs' ) ) ) {
+		$fields   = strtolower( $args['fields'] );
+		if ( $related_posts && ! in_array( $fields, array( 'ids', 'names', 'slugs' ) ) ) {
 			// Render posts if the query was for post objects.
 			$rendered = km_rpbt_shortcode_output( $related_posts, $args );
 		}
@@ -256,7 +329,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Returns arguments used for the related posts query.
+	 * Returns arguments used by the related posts query.
 	 *
 	 * @since 2.3.0
 	 * @access public
@@ -264,8 +337,8 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @param array $results    Related posts. Array with Post objects or post IDs or post titles or post slugs.
 	 * @param int   $post_id    Post id used to get the related posts.
 	 * @param array $taxonomies Taxonomies used to get the related posts.
-	 * @param array $args       Function arguments used to get the related posts.
-	 * @return array            Related Posts.
+	 * @param array $args       Query arguments used to get the related posts.
+	 * @return array Related Posts.
 	 */
 	public function get_filter_args( $results, $post_id, $taxonomies, $args ) {
 		$this->filter_args = $args;
@@ -278,17 +351,15 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @since 2.3.0
 	 * @access public
 	 *
-	 * @param int   $post_id    Post id used to get the related posts.
-	 * @param array $taxonomies Taxonomies used to get the related posts.
-	 * @param array $args       Function arguments used to get the related posts.
-	 * @return array            Related Posts.
+	 * @param array $args Query arguments used to get the related posts.
+	 *                    See km_rpbt_get_related_posts() for for more
+	 *                    information on accepted arguments.
+	 * @return array Related Posts.
 	 */
 	public function get_related_posts( $args ) {
 		add_filter( 'related_posts_by_taxonomy', array( $this, 'get_filter_args' ), 10, 4 );
 
-		if ( isset( $args['id'] ) ) {
-			unset( $args['id'] );
-		}
+		unset( $args['id'] );
 
 		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'get_filter_args' ), 10, 4 );

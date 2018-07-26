@@ -45,6 +45,37 @@ EOF;
 	/**
 	 * Test output from gallery.
 	 */
+	function test_shortcode_no_gallery_style_post_date() {
+		$gallery_args = $this->setup_gallery();
+		extract( $gallery_args );
+		$args['show_date'] = true;
+
+		add_filter( 'use_default_gallery_style', '__return_false', 99 );
+		ob_start();
+		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+		$gallery  = ob_get_clean();
+		$date     = get_the_date( '', $related_post );
+		$datetime = get_the_date( DATE_W3C, $related_post );
+
+		$static   = $this->get_gallery_instance_id( $gallery );
+		$expected = <<<EOF
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
+<dt class='gallery-icon '>
+<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
+{$related_post->post_title} <time class="rpbt-post-date" datetime="{$datetime}">{$date}</time>
+</dd></dl>
+<br style='clear: both' />
+</div>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
+	}
+
+	/**
+	 * Test output from gallery.
+	 */
 	function test_shortcode_no_gallery_class() {
 		$gallery_args = $this->setup_gallery();
 		extract( $gallery_args );

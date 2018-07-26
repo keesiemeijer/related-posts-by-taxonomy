@@ -6,15 +6,47 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Queries for related posts by taxonomy.
+ * The query for related posts.
  *
  * @since 2.5.0
  *
  * @global object       $wpdb
  *
  * @param int          $post_id    The post id to get related posts for.
- * @param array|string $taxonomies The taxonomies to retrieve related posts from.
- * @param array|string $args       Optional. Change what is returned.
+ * @param array|string $taxonomies The taxonomies to use for the related posts query. default 'category'.
+ * @param string|array $args       {
+ *     Optional. Arguments to get related posts.
+ *
+ *     @type string|array   $post_types       Post types to use for related posts query. Array or comma separated
+ *                                            list of post type names. Default 'post'.
+ *     @type int            $posts_per_page   Number of related posts. Default 5.
+ *     @type string         $order            Order of related posts. Accepts 'DESC', 'ASC' and 'RAND'. Default 'DESC'.
+ *     @type string         $orderby          Order by post date or by date modified.
+ *                                            Accepts 'post_date'and 'post_modified'. Default 'post_date'.
+ *     @type string         $fields           Return full post objects, IDs, post titles or post slugs.
+ *                                            Accepts 'all', 'ids', 'names' or 'slugs'.  Default is 'all'.
+ *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
+ *                                            list of term ids. The terms don't need to be assigned to the post to
+ *                                            get related posts for. Default empty.
+ *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
+ *                                            list of term ids. Only includes terms also assigned to the post to get
+ *                                            related posts for. Default empty.
+ *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
+ *                                            list of term ids. Default empty
+ *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
+ *                                            the post to get related posts for. Default true.
+ *     @type array|string   $exclude_post     Exclude posts for the related posts query. Array or comma separated
+ *                                            list of post ids. Default empty.
+ *     @type int            $limit_posts      Limit the posts to search related posts in. Default -1 (search in all posts).
+ *     @type int            $limit_month      Limit the posts to the past months to search related posts in.
+ *     @type boolean        $post_thumbnail   Whether to query for related posts with a featured image only. Default false.
+ *     @type boolean        $public_only      Whether to exclude private posts in the related posts display, even if
+ *                                            the current user has the capability to see those posts.
+ *                                            Default false (include private posts)
+ *     @type string|boolean $include_self     Whether to include the current post in the related posts results. The included
+ *                                            post is ordered at the top. Use 'regular_order' to include the current post ordered by
+ *                                            terms in common. Default false (exclude current post).
+ * }
  * @return array Array with post objects. Empty array if no related posts found.
  */
 function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args = '' ) {
@@ -36,6 +68,11 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 
 	$args['related_terms'] = $terms;
 	$args['termcount']     = array();
+
+	$related = $args['related'];
+	if ( ! $related && $args['terms'] ) {
+		$related = true;
+	}
 
 	// Term ids sql.
 	if ( count( $terms ) > 1 ) {
@@ -138,7 +175,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	}
 
 	if ( ! $order_by_rand ) {
-		if ( $args['related'] ) {
+		if ( $related ) {
 			// Related terms count sql.
 			$select_sql .= ' , count(distinct tt.term_taxonomy_id) as termcount';
 		}
@@ -165,11 +202,11 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$pieces   = array( 'select_sql', 'join_sql', 'where_sql', 'group_by_sql', 'order_by_sql', 'limit_sql' );
 
 	/**
-	 * Filter the SELECT clause of the query.
+	 * Filter the SELECT clause of the related posts query.
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $select_sql The SELECT clause of the query.
+	 * @param string $select_sql The SELECT clause of the related posts query.
 	 */
 	$select_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_fields', array( $select_sql, $post_id, $taxonomies, $args ) );
 
@@ -177,63 +214,63 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$join_sql .= " INNER JOIN {$wpdb->term_taxonomy} tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id){$meta_join_sql}";
 
 	/**
-	 * Filter the JOIN clause of the query.
+	 * Filter the JOIN clause of the related posts query.
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $join_sql The JOIN clause of the query.
+	 * @param string $join_sql The JOIN clause of the related posts query.
 	 */
 	$join_sql  = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_join', array( $join_sql, $post_id, $taxonomies, $args ) );
 
 	$where_sql = "{$where_sql} {$post_ids_sql}{$limit_date_sql} AND ( $term_ids_sql ){$meta_where_sql}";
 
 	/**
-	 * Filter the WHERE clause of the query.
+	 * Filter the WHERE clause of the related posts query.
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $where The WHERE clause of the query.
+	 * @param string $where The WHERE clause of the related posts query.
 	 */
 	$where_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_where', array( $where_sql, $post_id, $taxonomies, $args ) );
 
 	/**
-	 * Filter the GROUP BY clause of the query.
+	 * Filter the GROUP BY clause of the related posts query.
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $groupby The GROUP BY clause of the query.
+	 * @param string $groupby The GROUP BY clause of the related posts query.
 	 */
 	$group_by_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_groupby', array( $group_by_sql, $post_id, $taxonomies, $args ) );
 
 	$order_by_sql = "{$order_by_sql} {$order_sql}";
 
 	/**
-	 * Filter the ORDER BY clause of the query.
+	 * Filter the ORDER BY clause of the related posts query.
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $orderby The ORDER BY clause of the query.
+	 * @param string $orderby The ORDER BY clause of the related posts query.
 	 */
 	$order_by_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_orderby', array( $order_by_sql, $post_id, $taxonomies, $args ) );
 
 	/**
-	 * Filter the LIMIT clause of the query.
+	 * Filter the LIMIT clause of the related posts query.
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $limits The LIMIT clause of the query.
+	 * @param string $limits The LIMIT clause of the related posts query.
 	 */
 	$limit_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_limits', array( $limit_sql, $post_id, $taxonomies, $args ) );
 
 	/**
-	 * Filter all query clauses at once, for convenience.
+	 * Filter all related posts query clauses at once, for convenience.
 	 *
 	 * Covers the WHERE, GROUP BY, JOIN, ORDER BY,
 	 * fields (SELECT), and LIMITS clauses.
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param array $pieces The list of clauses for the query.
+	 * @param array $pieces The list of clauses for the related posts query.
 	 */
 	$clauses = (array) apply_filters_ref_array( 'related_posts_by_taxonomy_posts_clauses', array( compact( $pieces ), $post_id, $taxonomies, $args ) );
 
@@ -270,7 +307,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	if ( $results ) {
 
 		/* Order the related posts */
-		if ( ! $order_by_rand && $args['related'] ) {
+		if ( ! $order_by_rand && $related ) {
 
 			/* Add the (termcount) score and key to results for ordering*/
 			for ( $i = 0; $i < count( $results ); $i++ ) {
@@ -310,14 +347,14 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	}
 
 	/**
-	 * Filter related_posts_by_taxonomy.
+	 * Filter related posts retrieved from the database.
 	 *
 	 * @since 0.1
 	 *
 	 * @param array $results    Related posts. Array with Post objects or post IDs or post titles or post slugs.
 	 * @param int   $post_id    Post id used to get the related posts.
 	 * @param array $taxonomies Taxonomies used to get the related posts.
-	 * @param array $args       Function arguments used to get the related posts.
+	 * @param array $args       Arguments used to query the related posts.
 	 */
 	return apply_filters( 'related_posts_by_taxonomy', $results, $post_id, $taxonomies, $args );
 }

@@ -148,6 +148,27 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
+	 */
+	function test_manually_cache_related_posts_by_id_field() {
+		$this->setup_cache();
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		$taxonomies = array( 'post_tag' );
+		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, array('fields' => 'ids') );
+
+		$args = array( 'taxonomies' => $taxonomies, 'post_id' => $posts[1], 'fields' => 'ids' );
+		$related = $this->plugin->cache->get_related_posts( $args );
+
+		// Check if related posts are from the cache
+		$log = sprintf( 'Post ID %d - cache exists', $posts[1] );
+		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not found in cache' );
+
+		$this->assertEquals( array( $posts[0], $posts[2], $posts[3] ), $related );
+	}
+
+	/**
 	 * Test if the default properties exist for cached posts.
 	 */
 	function test_default_post_properties() {

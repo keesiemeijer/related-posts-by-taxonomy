@@ -86,48 +86,48 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$posts = $this->posts;
 
 		// Test with a single taxonomy.
-		$taxonomies = array( 'post_tag' );
-		$args       = array(
+		$args = array(
 			'fields' => 'ids',
+			'taxonomies' => array( 'post_tag' ),
 		);
 
 		// test post 0
-		$rel_post0 = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
 		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
 
 		// test post 1
-		$rel_post1 = km_rpbt_query_related_posts( $posts[1], $taxonomies, $args );
+		$rel_post1 = km_rpbt_get_related_posts( $posts[1], $args );
 		$this->assertEquals( array( $posts[0], $posts[2], $posts[3] ), $rel_post1 );
 
 		// test post 2
-		$rel_post2 = km_rpbt_query_related_posts( $posts[2], $taxonomies, $args );
+		$rel_post2 = km_rpbt_get_related_posts( $posts[2], $args );
 		$this->assertEquals( array( $posts[0], $posts[1], $posts[3] ), $rel_post2 );
 
 		// test post 3
-		$rel_post3 = km_rpbt_query_related_posts( $posts[3], $taxonomies, $args );
+		$rel_post3 = km_rpbt_get_related_posts( $posts[3], $args );
 		$this->assertEquals( array( $posts[0], $posts[1], $posts[2] ), $rel_post3 );
 
 		// Test with multiple taxonomies.
-		$taxonomies = array( 'category', 'post_tag' );
+		$args['taxonomies'] = array( 'category', 'post_tag' );
 
 		// test post 0
-		$rel_post0 = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
 		$this->assertEquals( array( $posts[1], $posts[2], $posts[3] ), $rel_post0 );
 
 		// test post 1
-		$rel_post1 = km_rpbt_query_related_posts( $posts[1], $taxonomies, $args );
+		$rel_post1 = km_rpbt_get_related_posts( $posts[1], $args );
 		$this->assertEquals( array( $posts[0], $posts[3], $posts[2] ), $rel_post1 );
 
 		// test post 2
-		$rel_post2 = km_rpbt_query_related_posts( $posts[2], $taxonomies, $args );
+		$rel_post2 = km_rpbt_get_related_posts( $posts[2], $args );
 		$this->assertEquals( array( $posts[0], $posts[1], $posts[3] ), $rel_post2 );
 
 		// test post 3
-		$rel_post3 = km_rpbt_query_related_posts( $posts[3], $taxonomies, $args );
+		$rel_post3 = km_rpbt_get_related_posts( $posts[3], $args );
 		$this->assertEquals( array( $posts[1], $posts[0], $posts[2] ), $rel_post3 );
 
 		// test post 4
-		$rel_post4 = km_rpbt_query_related_posts( $posts[4], $taxonomies, $args );
+		$rel_post4 = km_rpbt_get_related_posts( $posts[4], $args );
 		$this->assertEmpty( $rel_post4 );
 	}
 
@@ -151,47 +151,45 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$args = array(
 			'post_types' => array( 'rel_cpt', 'post' ),
 			'fields'     => 'ids',
+			'taxonomies' => array( 'rel_ctax' ),
 		);
 
-		// Test with a single taxonomy.
-		$taxonomies = array( 'rel_ctax' );
-
-		$rel_post0 = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
 		$this->assertEquals( array( $posts[1] ), $rel_post0 );
 
 		// test post 1
-		$rel_post1 = km_rpbt_query_related_posts( $posts[1], $taxonomies, $args );
+		$rel_post1 = km_rpbt_get_related_posts( $posts[1], $args );
 		$this->assertEquals( array( $posts[0], $posts[3] ), $rel_post1 );
 
 		// test post 2
-		$rel_post2 = km_rpbt_query_related_posts( $posts[2], $taxonomies, $args );
+		$rel_post2 = km_rpbt_get_related_posts( $posts[2], $args );
 		$this->assertEmpty( $rel_post2 );
 
 		// test post 3
-		$rel_post3 = km_rpbt_query_related_posts( $posts[3], $taxonomies, $args );
+		$rel_post3 = km_rpbt_get_related_posts( $posts[3], $args );
 		$this->assertEquals( array( $posts[1] ), $rel_post3 );
 
 		// Test with multiple taxonomies.
-		$taxonomies = array( 'rel_ctax', 'post_tag' );
+		$args['taxonomies'] = array( 'rel_ctax', 'post_tag' );
 
 		// test post 0
-		$rel_post0 = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
 		$this->assertEquals( array( $posts[1], $posts[2], $posts[3] ), $rel_post0 );
 
 		// test post 1
-		$rel_post1 = km_rpbt_query_related_posts( $posts[1], $taxonomies, $args );
+		$rel_post1 = km_rpbt_get_related_posts( $posts[1], $args );
 		$this->assertEquals( array( $posts[0], $posts[3], $posts[2] ), $rel_post1 );
 
 		// test post 2
-		$rel_post2 = km_rpbt_query_related_posts( $posts[2], $taxonomies, $args );
+		$rel_post2 = km_rpbt_get_related_posts( $posts[2], $args );
 		$this->assertEquals( array( $posts[0], $posts[1], $posts[3] ), $rel_post2 );
 
 		// test post 3
-		$rel_post3 = km_rpbt_query_related_posts( $posts[3], $taxonomies, $args );
+		$rel_post3 = km_rpbt_get_related_posts( $posts[3], $args );
 		$this->assertEquals( array( $posts[1], $posts[0], $posts[2] ), $rel_post3 );
 
 		// test post 4
-		$rel_post4 = km_rpbt_query_related_posts( $posts[4], $taxonomies, $args );
+		$rel_post4 = km_rpbt_get_related_posts( $posts[4], $args );
 		$this->assertEmpty( $rel_post4 );
 	}
 
@@ -235,8 +233,9 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$args       = array(
 			'exclude_terms' => $this->tax_1_terms[2],
 			'fields'        => 'ids',
+			'taxonomies'    => $this->taxonomies,
 		);
-		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[2] ), $rel_post0 );
 	}
 
@@ -248,8 +247,9 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$args       = array(
 			'include_terms' => $this->tax_1_terms[0],
 			'fields'        => 'ids',
+			'taxonomies'    => $this->taxonomies,
 		);
-		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[2] ), $rel_post0 );
 	}
 
@@ -262,8 +262,9 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 			'include_terms' => array( $this->tax_2_terms[2], $this->tax_1_terms[3] ),
 			'related'       => false,
 			'fields'        => 'ids',
+			'taxonomies'    => $this->taxonomies,
 		);
-		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[3], $this->posts[4] ), $rel_post0 );
 	}
 
@@ -273,12 +274,12 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 	function test_related_posts_by_terms() {
 		$this->setup_posts();
 		$args = array(
-			'terms'   => array( $this->tax_2_terms[3] ),
-			//'related' => false,
-			'fields'  => 'ids',
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
+			'taxonomies' => $this->taxonomies,
 		);
 
-		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
 
@@ -291,27 +292,34 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		register_taxonomy( 'ctax', 'post' );
 		$terms = $this->factory->term->create_many( 3, array( 'taxonomy' => 'ctax' ) );
 		$term_id1 = wp_set_post_terms ( $this->posts[2], (int) $terms[0], 'ctax', true );
-		$taxonomies = array( 'category' );
 
 		$args = array(
-			'terms'   => array( $this->tax_2_terms[3], (int) $term_id1[0] ),
-			'fields'  => 'ids',
+			'terms'      => array( $this->tax_2_terms[3], (int) $term_id1[0] ),
+			'fields'     => 'ids',
+			'taxonomies' => array( 'category' ),
+			'related'    => true,
 		);
 
 		// Post 2 should not be related as the 'ctax' taxonomy is not used in the query.
-		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $taxonomies, $args );
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 
-		$taxonomies[] = 'ctax';
+		$args['related'] = false;
+		// Post 2 should now be related because we can get any term from any taxonomy.
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
+
+		$args['related'] = true;
+	    $args['taxonomies'][] = 'ctax';
 		// Post 2 should now be related as the 'ctax' taxonomy is queried.
-		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $taxonomies, $args );
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
 
 		$term_id2 = wp_set_post_terms ( $this->posts[2], (int) $terms[1], 'ctax', true );
 		$args['terms'][] = $term_id2[0];
 
 		// Post two has more terms in common now
-		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $taxonomies, $args );
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[2], $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
 
@@ -323,8 +331,9 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$args = array(
 			'related' => false,
 			'fields'  => 'ids',
+			'taxonomies'  => $this->taxonomies,
 		);
-		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
 	}
 
@@ -336,8 +345,9 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$args       = array(
 			'exclude_posts' => $this->posts[2],
 			'fields'        => 'ids',
+			'taxonomies'  => $this->taxonomies,
 		);
-		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
 
@@ -349,8 +359,9 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$args      = array(
 			'limit_posts' => 2,
 			'fields'      => 'ids',
+			'taxonomies'  => $this->taxonomies,
 		);
-		$rel_post0 = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[2] ), $rel_post0 );
 	}
 
@@ -362,8 +373,9 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$args      = array(
 			'posts_per_page' => 1,
 			'fields'         => 'ids',
+			'taxonomies'     => $this->taxonomies,
 		);
-		$rel_post3 = km_rpbt_query_related_posts( $this->posts[3], $this->taxonomies, $args );
+		$rel_post3 = km_rpbt_get_related_posts( $this->posts[3], $args );
 		$this->assertEquals( array( $this->posts[1] ), $rel_post3 );
 	}
 
@@ -381,16 +393,17 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 		$slugs      = wp_list_pluck( $_posts, 'post_name' );
 		$args       = array(
-			'fields' => 'slugs',
+			'fields'      => 'slugs',
+			'taxonomies'  => $this->taxonomies,
 		);
 
-		$rel_post0 = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $slugs[1], $slugs[2], $slugs[3] ), $rel_post0 );
 
 		$titles     = wp_list_pluck( $_posts, 'post_title' );
 		$args['fields'] = 'names';
 
-		$rel_post0 = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $titles[1], $titles[2], $titles[3] ), $rel_post0 );
 	}
 
@@ -407,8 +420,9 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$args       = array(
 			'post_thumbnail' => true,
 			'fields'         => 'ids',
+			'taxonomies'     => $this->taxonomies,
 		);
-		$rel_post0  = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
 
@@ -431,11 +445,12 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		);
 		wp_update_post( $mypost );
 
-		$args       = array(
+		$args = array(
 			'limit_month' => 2,
 			'fields'      => 'ids',
+			'taxonomies'  => $this->taxonomies,
 		);
-		$rel_post0 = km_rpbt_query_related_posts( $this->posts[0], $this->taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
 
@@ -446,14 +461,14 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->setup_posts();
 		$posts = $this->posts;
 
-		$taxonomies = array( 'category', 'post_tag' );
-		$args       = array(
-			'fields' => 'ids',
-			'order'  => 'asc',
+		$args = array(
+			'fields'     => 'ids',
+			'order'      => 'asc',
+			'taxonomies' => array( 'category', 'post_tag' ),
 		);
 
 		// test post 0
-		$rel_post0 = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
 		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
 	}
 
@@ -464,15 +479,15 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->setup_posts();
 		$posts = $this->posts;
 
-		$taxonomies = array( 'category', 'post_tag' );
-		$args       = array(
-			'fields'  => 'ids',
-			'order'   => 'asc',
-			'related' => false,
+		$args = array(
+			'fields'     => 'ids',
+			'order'      => 'asc',
+			'related'    => false,
+			'taxonomies' => array( 'category', 'post_tag' ),
 		);
 
 		// test post 0
-		$rel_post0 = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
 		$this->assertEquals( array( $posts[3], $posts[2], $posts[1] ), $rel_post0 );
 	}
 
@@ -484,14 +499,14 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->setup_posts();
 		$posts = $this->posts;
 
-		$taxonomies = array( 'category', 'post_tag' );
-		$args       = array(
-			'fields' => 'ids',
-			'order'  => 'rand',
+		$args = array(
+			'fields'     => 'ids',
+			'order'      => 'rand',
+			'taxonomies' => array( 'category', 'post_tag' ),
 		);
 
 		// test post 0
-		$rel_post0 = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
 
 		$this->assertContains( $posts[1], $rel_post0 );
 		$this->assertContains( $posts[2], $rel_post0 );
@@ -514,12 +529,12 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		// Update post_modified
 		wp_update_post( $mypost );
 
-		$taxonomies = array( 'category', 'post_tag' );
-		$args       = array(
-			'fields'  => 'ids',
-			'orderby' => 'post_modified',
+		$args = array(
+			'fields'     => 'ids',
+			'orderby'    => 'post_modified',
+			'taxonomies' => array( 'category', 'post_tag' ),
 		);
-		$rel_post0  = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
+		$rel_post0  = km_rpbt_get_related_posts( $posts[0], $args );
 
 		// test post 0
 		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
@@ -541,14 +556,14 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		);
 
 		wp_update_post( $private );
-		$taxonomies = array( 'category', 'post_tag' );
 
 		$args       = array(
-			'fields' => 'ids',
+			'fields'     => 'ids',
+			'taxonomies' => array( 'category', 'post_tag' ),
 		);
 
 		// User is not set, private post is not included.
-		$rel_post3 = km_rpbt_query_related_posts( $posts[3], $taxonomies, $args );
+		$rel_post3 = km_rpbt_get_related_posts( $posts[3], $args );
 		$this->assertEquals( array( $posts[1], $posts[0] ), $rel_post3 );
 
 		$private = array(
@@ -562,7 +577,7 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		// Set user to private post author, post is included.
 		wp_set_current_user( $user_id );
 
-		$rel_post3 = km_rpbt_query_related_posts( $posts[3], $taxonomies, $args );
+		$rel_post3 = km_rpbt_get_related_posts( $posts[3], $args );
 		$this->assertEquals( array( $posts[1], $posts[0], $posts[2] ), $rel_post3 );
 	}
 
@@ -574,18 +589,18 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$posts = $this->posts;
 
 		// Test with a single taxonomy.
-		$taxonomies = array( 'post_tag' );
-		$args       = array(
+		$args = array(
 			'fields'       => 'ids',
 			'include_self' => true,
+			'taxonomies'   => array( 'post_tag' ),
 		);
 
 		// test post 0
-		$rel_post0 = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
 		$this->assertEquals( array( $posts[0], $posts[2], $posts[1], $posts[3] ), $rel_post0 );
 
 		// test post with post date prior then inclusive post
-		$rel_post1 = km_rpbt_query_related_posts( $posts[1], $taxonomies, $args );
+		$rel_post1 = km_rpbt_get_related_posts( $posts[1], $args );
 		$this->assertEquals( array( $posts[1], $posts[0], $posts[2], $posts[3] ), $rel_post1 );
 	}
 
@@ -599,15 +614,15 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		add_filter( 'related_posts_by_taxonomy_posts_orderby', array( $this, 'return_first_argument' ), 10, 4 );
 
 		// Test with a single taxonomy.
-		$taxonomies = array( 'post_tag' );
-		$args       = array(
+		$args = array(
 			'fields'       => 'ids',
 			'include_self' => true,
 			'order'        => 'RAND',
+			'taxonomies'   => array( 'post_tag' ),
 		);
 
 		// test post 0
-		$rel_post0 = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
 
 		$this->assertCount( 4, $rel_post0 );
 		$this->assertSame( (int) $posts[0], (int) $rel_post0[0] );
@@ -625,14 +640,14 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$posts = $this->posts;
 
 		// Test with a single taxonomy.
-		$taxonomies = array( 'post_tag' );
 		$args       = array(
 			'fields'       => 'ids',
 			'include_self' => 'regular_order',
+			'taxonomies'   => array( 'post_tag' ),
 		);
 
 		// test post with post date prior then inclusive post
-		$rel_post1 = km_rpbt_query_related_posts( $posts[1], $taxonomies, $args );
+		$rel_post1 = km_rpbt_get_related_posts( $posts[1], $args );
 		$this->assertEquals( array( $posts[0], $posts[1], $posts[2], $posts[3] ), $rel_post1 );
 	}
 
