@@ -2,10 +2,10 @@
 # This file is distributed under the GPL v2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Related Posts By Taxonomy 2.5.1-alpha\n"
+"Project-Id-Version: Related Posts By Taxonomy 2.5.2-alpha\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2018-05-21 14:17:44+00:00\n"
+"POT-Creation-Date: 2018-07-31 10:43:52+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,73 +26,149 @@ msgstr ""
 "X-Generator: grunt-wp-i18n1.0.0\n"
 
 #: includes/assets/editor-block-templates/thumbnail-gallery.php:56
-#: templates/related-posts-excerpts.php:46 templates/related-posts-links.php:44
+#: templates/related-posts-excerpts.php:46 templates/related-posts-links.php:46
 #: templates/related-posts-posts.php:46
-#: templates/related-posts-thumbnails.php:60
+#: templates/related-posts-thumbnails.php:61
 msgid "No related posts found"
 msgstr ""
 
-#: includes/class-defaults.php:112
+#: includes/assets/partials/widget/columns.php:3
+msgid "Number of image columns"
+msgstr ""
+
+#: includes/assets/partials/widget/format.php:2
+msgid "Display"
+msgstr ""
+
+#: includes/assets/partials/widget/format.php:6
+msgid "Format"
+msgstr ""
+
+#: includes/assets/partials/widget/image-size.php:2
+msgid "Image Display"
+msgstr ""
+
+#: includes/assets/partials/widget/image-size.php:6
+msgid "Image Size"
+msgstr ""
+
+#: includes/assets/partials/widget/link-caption.php:4
+msgid "Link image captions to posts"
+msgstr ""
+
+#: includes/assets/partials/widget/post-id.php:3
+msgid "Display related posts for post ID (optional)"
+msgstr ""
+
+#: includes/assets/partials/widget/post-types.php:3
+msgid "Post Types"
+msgstr ""
+
+#: includes/assets/partials/widget/posts-per-page.php:3
+msgid "Number of related posts to show"
+msgstr ""
+
+#: includes/assets/partials/widget/posts-per-page.php:8
+msgid "Use -1 to show all related posts."
+msgstr ""
+
+#: includes/assets/partials/widget/random.php:4
+msgid "Randomize related posts."
+msgstr ""
+
+#: includes/assets/partials/widget/show-date.php:4
+msgid "Display post date"
+msgstr ""
+
+#: includes/assets/partials/widget/singular-template.php:2
+msgid "Widget Display"
+msgstr ""
+
+#: includes/assets/partials/widget/singular-template.php:7
+msgid "Display this widget on single post pages only"
+msgstr ""
+
+#: includes/assets/partials/widget/taxonomies.php:2
+msgid "Taxonomies"
+msgstr ""
+
+#: includes/assets/partials/widget/taxonomies.php:5
+msgid "Taxonomy"
+msgstr ""
+
+#: includes/assets/partials/widget/taxonomies.php:9
+msgid "All Taxonomies"
+msgstr ""
+
+#: includes/assets/partials/widget/title.php:3
+msgid "Title"
+msgstr ""
+
+#: includes/class-defaults.php:123
 msgid "Category"
 msgstr ""
 
-#: includes/class-defaults.php:137
+#: includes/class-defaults.php:148
 msgid "Post"
 msgstr ""
 
-#: includes/class-defaults.php:220
+#: includes/class-defaults.php:237
 msgid "Thumbnail"
 msgstr ""
 
-#: includes/class-defaults.php:235
+#: includes/class-defaults.php:252
 msgid "Links"
 msgstr ""
 
-#: includes/class-defaults.php:236
+#: includes/class-defaults.php:253
 msgid "Posts"
 msgstr ""
 
-#: includes/class-defaults.php:237
+#: includes/class-defaults.php:254
 msgid "Excerpts"
 msgstr ""
 
-#: includes/class-defaults.php:238
+#: includes/class-defaults.php:255
 msgid "Post thumbnails"
 msgstr ""
 
-#: includes/class-rest-api.php:35
+#: includes/class-rest-api.php:39
 msgid "Unique identifier for the object."
 msgstr ""
 
-#: includes/class-rest-api.php:63
+#: includes/class-rest-api.php:67
 msgid "Invalid post ID."
 msgstr ""
 
-#: includes/class-rest-api.php:211
+#: includes/class-rest-api.php:83
+msgid "Invalid parameters."
+msgstr ""
+
+#: includes/class-rest-api.php:284
 msgid "The related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:219
+#: includes/class-rest-api.php:292
 msgid "Number of related terms in common with the post."
 msgstr ""
 
-#: includes/class-rest-api.php:227
+#: includes/class-rest-api.php:300
 msgid "The Post ID to get related posts for."
 msgstr ""
 
-#: includes/class-rest-api.php:232
+#: includes/class-rest-api.php:305
 msgid "Post types used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:240
+#: includes/class-rest-api.php:313
 msgid "Taxonomies used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:248
+#: includes/class-rest-api.php:321
 msgid "Related term ids used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:256
+#: includes/class-rest-api.php:329
 msgid "Rendered related posts HTML"
 msgstr ""
 
@@ -104,79 +180,7 @@ msgstr ""
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/class-widget.php:249
-msgid "Oops, something went wrong"
-msgstr ""
-
-#: includes/class-widget.php:263
-msgid "Title"
-msgstr ""
-
-#: includes/class-widget.php:269
-msgid "Number of related posts to show"
-msgstr ""
-
-#: includes/class-widget.php:272
-msgid "Use -1 to show all related posts."
-msgstr ""
-
-#: includes/class-widget.php:279
-msgid "Randomize related posts."
-msgstr ""
-
-#: includes/class-widget.php:282
-msgid "Taxonomies"
-msgstr ""
-
-#: includes/class-widget.php:284
-msgid "Taxonomy"
-msgstr ""
-
-#: includes/class-widget.php:287
-msgid "All Taxonomies"
-msgstr ""
-
-#: includes/class-widget.php:294
-msgid "Post Types"
-msgstr ""
-
-#: includes/class-widget.php:306
-msgid "Display"
-msgstr ""
-
-#: includes/class-widget.php:310
-msgid "Format"
-msgstr ""
-
-#: includes/class-widget.php:317
-msgid "Image Display"
-msgstr ""
-
-#: includes/class-widget.php:321
-msgid "Image Size"
-msgstr ""
-
-#: includes/class-widget.php:330
-msgid "Number of image columns"
-msgstr ""
-
-#: includes/class-widget.php:340
-msgid "Link image captions to posts"
-msgstr ""
-
-#: includes/class-widget.php:343
-msgid "Widget Display"
-msgstr ""
-
-#: includes/class-widget.php:350
-msgid "Display this widget on single post pages only"
-msgstr ""
-
-#: includes/class-widget.php:354
-msgid "Display related posts for post ID (optional)"
-msgstr ""
-
-#: includes/editor-block.php:113 includes/settings.php:109
+#: includes/editor-block.php:113 includes/settings.php:128
 msgid "Related Posts"
 msgstr ""
 

@@ -9,6 +9,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
+	/**
+	 * Class to setup plugin features and enqueue scripts.
+	 *
+	 * Features:
+	 * - shortcode
+	 * - widget
+	 * - cache
+	 * - debug
+	 * - WP Rest API
+	 */
 	class Related_Posts_By_Taxonomy_Plugin {
 
 		/**
@@ -25,6 +35,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 			add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
 			add_action( 'wp_loaded', array( $this, 'cache_init' ) );
 			add_action( 'wp_loaded', array( $this, 'debug_init' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		}
+
+		public function enqueue_scripts() {
+			$file = RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . 'includes/assets/css/styles.css';
+			wp_enqueue_style( 'related-posts-by-taxonomy', $file );
 		}
 
 		/**

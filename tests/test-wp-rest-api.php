@@ -311,6 +311,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$args = array( 'post_types' => array( 'rel_cpt', 'post' ), 'fields' => 'ids' );
 		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], false, $args );
 
+		// Should default to query in all taxonomies
 		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
 	}
 
@@ -350,6 +351,26 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		// Non existant post_type.
 		$fail5 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
 		$this->assertSame( $fail5, 'rest_post_invalid_parameters', 'Non existant taxonomy' );
+	}
+
+	/**
+	 * Test with valid and invlid post types and taxonomies.
+	 */
+	function test_mixed_arguments() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		// Test with a valid and invalid taxonomy.
+		$taxonomies = array( 'post_tag', 'lala' );
+
+		// Test with a valid and invalid post_type.
+		$args = array( 'post_types' => array( 'post', 'lala' ) );
+
+		$args['fields'] = 'ids';
+
+		// Test post 0.
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
+		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
 	}
 
 	/**

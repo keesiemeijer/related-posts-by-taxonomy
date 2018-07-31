@@ -6,17 +6,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Related Posts by Taxonomy Gallery.
+ * Related posts by taxonomy thumbnail gallery.
  *
- * Altered WordPress gallery_shortcode() for displaying the related post thumbnails.
+ * Similar to the WordPress gallery_shortcode().
  *
  * @since 0.2
  *
  * @global string $wp_version
  * @global string $post
- * @param array $args          Attributes of the shortcode.
+ *
+ * @param array $args          {
+ *     Arguments of the related posts thumbnail gallery.
+ *
+ *     @type int          $id            Post ID.
+ *     @type string       $itemtag       HTML tag to use for each image in the gallery.
+ *                                       Default 'dl', or 'figure' when the theme registers HTML5 gallery support.
+ *     @type string       $icontag       HTML tag to use for each image's icon.
+ *                                       Default 'dt', or 'div' when the theme registers HTML5 gallery support.
+ *     @type string       $captiontag    HTML tag to use for each image's caption.
+ *                                       Default 'dd', or 'figcaption' when the theme registers HTML5 gallery support.
+ *     @type boolean      $show_date     Whether to display the post date after the caption. Default false.
+ *     @type int          $columns       Number of columns of images to display. Default 3.
+ *     @type string|array $size          Size of the images to display. Accepts any valid image size. Default 'thumbnail'.
+ *     @type string       $caption       Caption text for the post thumbnail.
+ *                                       Accepts 'post_title', 'post_excerpt', 'attachment_caption', 'attachment_alt', or
+ *                                       a custom string. Default 'post_title'
+ *     @type boolean      $link_caption  Whether to link the caption to the related post. Default false.
+ *     @type string       $gallery_class Default class for the gallery. Default 'gallery'.
+ *     @type string       $type          Gallery type. Default gallery type 'rpbt_gallery'.
+ * }
  * @param array $related_posts Array with related post objects that have a post thumbnail.
- * @return string HTML content to display gallery.
+ * @return string HTML string of a gallery.
  */
 function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = array() ) {
 
@@ -37,19 +57,20 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		'itemtag'       => $html5 ? 'figure' : 'dl',
 		'icontag'       => $html5 ? 'div' : 'dt',
 		'captiontag'    => $html5 ? 'figcaption' : 'dd',
+		'show_date'     => false,
 		'columns'       => 3,
 		'size'          => 'thumbnail',
 		'caption'       => 'post_title', // Use 'post_title', 'post_excerpt', 'attachment_caption', attachment_alt, or a custom string.
 		'link_caption'  => false,
 		'gallery_class' => 'gallery',
-		'type'          => 'rpbt_gallery'
+		'type'          => 'rpbt_gallery',
 	);
 
 	/* Can be filtered in WordPress > 3.5 (hook: shortcode_atts_gallery) */
 	$args = shortcode_atts( $defaults, $args, 'gallery' );
 
 	/**
-	 * Filter the function arguments.
+	 * Filter the related post thumbnail gallery arguments.
 	 *
 	 * @since 0.2.1
 	 *
@@ -62,12 +83,13 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$id = intval( $args['id'] );
 
 	if ( is_feed() ) {
+		$args['type'] = 'rpbt_gallery_feed';
 		$output = "\n";
 		foreach ( (array) $related_posts as $related ) {
 
 			$thumbnail_id = get_post_thumbnail_id( $related->ID );
 			$thumbnail    = wp_get_attachment_image( $thumbnail_id, $args['size'] );
-			$permalink    = get_permalink( $related->ID );
+			$permalink    = km_rpbt_get_permalink( $related->ID, $args );
 			$title_attr   = apply_filters( 'the_title', esc_attr( $related->post_title ), $related->ID );
 
 			$image_link = ( $thumbnail ) ? "<a href='$permalink' title='$title_attr'>$thumbnail</a>" : '';
@@ -159,9 +181,11 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		$title         = apply_filters( 'the_title', $related->post_title, $related->ID );
 
 		if ( 'post_title' === $args['caption'] ) {
-			$caption = $title;
+			$date    = $args['show_date'] ? ' ' . km_rpbt_get_post_date( $related ) : '';
+			$caption = $title . $date;
+
 			if ( (bool) $args['link_caption'] ) {
-				$caption = km_rpbt_get_post_link( $related );
+				$caption = km_rpbt_get_post_link( $related, $args );
 			}
 		} elseif ( 'post_excerpt' === $args['caption'] ) {
 			global $post;
@@ -193,13 +217,13 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 			'aria-describedby' => "{$selector}-{$related->ID}",
 		) : '';
 		$thumbnail   = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $describedby );
-		$permalink   = get_permalink( $related->ID );
+		$permalink   = km_rpbt_get_permalink(  $related, $args );
 		$title_attr  = esc_attr( $title );
 		$image_link  = ( $thumbnail ) ? "<a href='$permalink' title='$title_attr'>$thumbnail</a>" : '';
 		$image_attr  = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
 
 		/**
-		 * Filter the gallery image.
+		 * Filter the gallery image link.
 		 *
 		 * @since 0.3
 		 *
@@ -214,7 +238,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		}
 
 		/**
-		 * Gallery item css classes.
+		 * Filter the related posts gallery item CSS classes.
 		 *
 		 * @since
 		 *

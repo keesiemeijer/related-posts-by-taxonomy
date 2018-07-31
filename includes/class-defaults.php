@@ -9,6 +9,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
+	/**
+	 * Class to get default data needed by this plugin.
+	 *
+	 * Data needed by this plugin:
+	 *
+	 * - registered taxonomies
+	 * - registered post types
+	 * - default and registered image sizes
+	 * - allowed formats
+	 * - cache instance (if feature is activated)
+	 */
 	class Related_Posts_By_Taxonomy_Defaults {
 
 		/**
@@ -185,12 +196,18 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		}
 
 		/**
-		 * Returns all image sizes.
+		 * Returns default and added image sizes.
+		 *
+		 * Default image sizes
+		 * - thumbnail
+		 * - medium
+		 * - large
+		 * - post-thumbnail
 		 *
 		 * @since 0.2.1
 		 *
 		 * @global array $_wp_additional_image_sizes
-		 * @return array Array with all image sized.
+		 * @return array Array with all image sizes.
 		 */
 		public function get_image_sizes() {
 
@@ -224,7 +241,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		}
 
 		/**
-		 * Returns all formats.
+		 * Returns all supported formats.
 		 *
 		 * @since 0.2.1
 		 *

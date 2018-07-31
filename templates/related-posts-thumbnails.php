@@ -49,7 +49,8 @@
 			'columns'      => $rpbt_args['columns'],    // zero or positive number
 			'size'         => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
 			'caption'      => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
-			'link_caption' => $rpbt_args['link_caption'],
+			'link_caption' => $rpbt_args['link_caption'], // Link caption to post
+			'show_date'    => $rpbt_args['show_date'], // Show post date
 		);
 
 		// Plugin function to display the galllery in /includes/functions-thumbnail.php

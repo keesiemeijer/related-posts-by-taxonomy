@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Related_Posts_By_Taxonomy widget class.
+ * Class to display related posts with a widget.
  *
  * @since 0.1
  */
@@ -30,7 +30,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		);
 
 		/**
-		 * Filter for changing name and description of widget.
+		 * Filter for changing the name and description of the widget.
 		 *
 		 * @since 0.3
 		 *
@@ -100,7 +100,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 
 		/**
-		 * Filter widget arguments to get the related posts.
+		 * Filter widget arguments.
 		 *
 		 * @since 0.1
 		 *
@@ -128,7 +128,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 
 		/**
-		 * Fires after the related posts are displayed
+		 * Fires after the related posts are displayed by the widget or shortcode.
 		 *
 		 * @param string Display type, widget or shortcode.
 		 */
@@ -210,6 +210,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$i['singular_template'] = isset( $new_instance['singular_template'] ) ? (bool) $new_instance['singular_template'] : '';
 		$i['link_caption']      = isset( $new_instance['link_caption'] ) ? (bool) $new_instance['link_caption'] : '';
 		$i['random']            = isset( $new_instance['random'] ) ? (bool) $new_instance['random'] : '';
+		$i['show_date']         = isset( $new_instance['show_date'] ) ? (bool) $new_instance['show_date'] : '';
 
 		// Validation.
 		$i['post_id'] = $i['post_id'] ? $i['post_id']  : '';
@@ -242,144 +243,57 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * @param array $instance Current settings.
 	 */
 	function form( $instance ) {
-
-		$plugin = $this->plugin;
-
-		if ( ! $plugin ) {
-			printf( '<p>%s</p>', __( 'Oops, something went wrong', 'related-posts-by-taxonomy' ) );
-			return;
-		}
-
 		$i = $this->get_instance_settings( $instance );
 
-		/* widget form fields */
-
-		$after = "\n\t";
-		$before = "\t";
-		$style = ' style="border-top: 1px solid #e5e5e5; padding-top: 1em;"';
-
-		// Title.
-		$field = "\t" . '<p class="rpbt_title"><label for="' . $this->get_field_id( 'title' ) . '">';
-		$field .= __( 'Title', 'related-posts-by-taxonomy' ) . ': </label>';
-		$field .= '<input id="' . $this->get_field_id( 'title' ) . '" name="' . $this->get_field_name( 'title' ) . '" ';
-		$title = $before . $field . 'type="text" value="' . esc_attr( $i['title'] ) . '" class="widefat" /></p>' . $after;
-
-		// Field: posts_per_page.
-		$field = '<p class="rpbt_posts_per_page"><label for="' . $this->get_field_id( 'posts_per_page' ) . '">';
-		$field .= __( 'Number of related posts to show', 'related-posts-by-taxonomy' ) . ': </label>';
-		$field .= '<input id="' . $this->get_field_id( 'posts_per_page' ) . '" name="' . $this->get_field_name( 'posts_per_page' ) . '" ';
-		$field .= 'value="' . esc_attr( $i['posts_per_page'] ) . '" size="3" class="tiny-text" step="1" min="-1" type="number" />';
-		$field .= '<br/><span class="description">' . __( 'Use -1 to show all related posts.', 'related-posts-by-taxonomy' ) . '</span>';
-		$posts_per_page = $before . $field . '</p>' . $after;
-
-		$field = '<p>';
-		$field .= '<input class="checkbox" type="checkbox" ' . checked( $i['random'], 1, false ) . ' ';
-		$field .= 'id="' . $this->get_field_id( 'random' ) . '" name="' . $this->get_field_name( 'random' ) . '" />';
-		$field .= ' <label for="' . $this->get_field_id( 'random' ) . '">';
-		$random = $before . $field . __( 'Randomize related posts.', 'related-posts-by-taxonomy' ) . '</label></p>' . $after;
-
-		// Field: taxonomies.
-		$field = '<div class="rpbt_taxonomies"><h4' . $style . '>' . __( 'Taxonomies', 'related-posts-by-taxonomy' ) . ' </h4>';
-		$field .= '<p><label for="' . $this->get_field_id( 'taxonomies' ) . '">';
-		$field .= __( 'Taxonomy', 'related-posts-by-taxonomy' ) . ': </label>';
-		$field .= '<select name="' . $this->get_field_name( 'taxonomies' ) . '" id="' . $this->get_field_id( 'taxonomies' ) . '" class="widefat">';
-		$field .= '<option value="' . esc_attr( $plugin->all_tax ) . '" ' . selected( $i['taxonomies'], $plugin->all_tax, false ) . '>';
-		$field .= __( 'All Taxonomies', 'related-posts-by-taxonomy' ) . '</option>';
-		foreach ( $plugin->taxonomies as $name => $label ) {
-			$field .= '<option value="' . esc_attr( $name ) . '"' . selected( $i['taxonomies'], $name, false ) . '>' . $label . '</option>';
-		}
-		$taxonomies = $before . $field . '</select></p></div>' . $after;
-
-		// Field: post types.
-		$field = '<div class="rpbt_post_types"><h4' . $style . '>' . __( 'Post Types', 'related-posts-by-taxonomy' ) . ' </h4><p>';
-		foreach ( $plugin->post_types as $name => $label ) {
-			$field .= '<input type="checkbox" class="checkbox" id="' . $this->get_field_id( 'post_types' ) . "_$name" . '" ';
-			$field .= 'name="' . $this->get_field_name( 'post_types' ) . "[$name]" . '"';
-			if ( isset( $i['post_types'][ $name ] ) && ( 'on' === $i['post_types'][ $name ] ) ) {
-				$field .= ' checked="checked"';
-			}
-			$field .= ' /> <label for="' . $this->get_field_id( 'post_types' ) . "_$name" . '">' . $label . '</label><br />';
-		}
-		$post_types = $before . $field . '</p></div>' . $after;
-
-		// Display.
-		$display = $before . '<h4 class="rpbt_display_title"' . $style . '>' . __( 'Display', 'related-posts-by-taxonomy' ) . '</h4>' . $after;
-
-		// Field: format.
-		$field = '<p class="rpbt_format"><label for="' . $this->get_field_id( 'format' ) . '">';
-		$field .= __( 'Format', 'related-posts-by-taxonomy' ) . ': </label>';
-		$field .= '<select name="' . $this->get_field_name( 'format' ) . '" id="' . $this->get_field_id( 'format' ) . '" class="widefat">';
-		foreach ( $plugin->formats as $name => $label ) {
-			$field .= '<option value="' . esc_attr( $name ) . '"' . selected( $i['format'], $name, false ) . '>' . $label . '</option>';
-		}
-		$format = $before . $field . '</select></p>' . $after;
-
-		$image_display = $before . '<h4 class="rpbt_widget_image_display_title" ' . $style . '>' . __( 'Image Display', 'related-posts-by-taxonomy' ) . '</h4>' . $after;
-
-		// Field: image_size.
-		$field = '<p class="rpbt_image_size"><label for="' . $this->get_field_id( 'image_size' ) . '">';
-		$field .= __( 'Image Size', 'related-posts-by-taxonomy' ) . ': </label>';
-		$field .= '<select name="' . $this->get_field_name( 'image_size' ) . '" id="' . $this->get_field_id( 'image_size' ) . '" class="widefat">';
-		foreach ( $plugin->image_sizes as $name => $label ) {
-			$field .= '<option value="' . esc_attr( $name ) . '"' . selected( $i['image_size'], $name, false ) . '>' . $label . '</option>';
-		}
-		$image_size = $before . $field . '</select></p>' . $after;
-
-		// Field columns.
-		$field = '<p class="rpbt_columns"><label for="' . $this->get_field_id( 'columns' ) . '">';
-		$field .= __( 'Number of image columns', 'related-posts-by-taxonomy' ) . ': </label>';
-		$field .= '<input id="' . $this->get_field_id( 'columns' ) . '" name="' . $this->get_field_name( 'columns' ) . '" ';
-		$field .= 'value="' . esc_attr( $i['columns'] ) . '" size="3" class="tiny-text" step="1" min="0" type="number" />';
-		$columns = $before . $field . '</p>' . $after;
-
-		// Field: link_caption.
-		$field = '<p class="rpbt_link_caption">';
-		$field .= '<input class="checkbox" type="checkbox" ' . checked( $i['link_caption'], 1, false ) . ' ';
-		$field .= 'id="' . $this->get_field_id( 'link_caption' ) . '" name="' . $this->get_field_name( 'link_caption' ) . '" />';
-		$field .= ' <label for="' . $this->get_field_id( 'link_caption' ) . '">';
-		$field = $field . __( 'Link image captions to posts', 'related-posts-by-taxonomy' ) . '</label>';
-		$link_caption = $before . $field . '</p>' . $after;
-
-		$widget_display = $before . '<h4 class="rpbt_widget_display_title" ' . $style . '>' . __( 'Widget Display', 'related-posts-by-taxonomy' ) . '</h4>' . $after;
-
-		// Field: singular_template.
-		$field = '<p class="rpbt_singular">';
-		$field .= '<input class="checkbox" type="checkbox" ' . checked( $i['singular_template'], 1, false ) . ' ';
-		$field .= 'id="' . $this->get_field_id( 'singular_template' ) . '" name="' . $this->get_field_name( 'singular_template' ) . '" />';
-		$field .= ' <label for="' . $this->get_field_id( 'singular_template' ) . '">';
-		$singular_template = $before . $field . __( 'Display this widget on single post pages only', 'related-posts-by-taxonomy' ) . '</label></p>' . $after;
-
-		// Field: post_id.
-		$field = '<p class="rpbt_post_id"><label for="' . $this->get_field_id( 'post_id' ) . '">';
-		$field .= __( 'Display related posts for post ID (optional)', 'related-posts-by-taxonomy' ) . ': </label>';
-		$field .= '<input id="' . $this->get_field_id( 'post_id' ) . '" name="' . $this->get_field_name( 'post_id' ) . '" ';
-		$post_id = $before . $field . 'type="text" value="' . $i['post_id'] . '" size="5" /></p>' . "\n";
-
+		$fields = array();
 		$pieces = array(
 			'title',
 			'posts_per_page',
 			'random',
 			'taxonomies',
 			'post_types',
-			'display',
 			'format',
-			'image_display',
+			'show_date',
 			'image_size',
 			'columns',
 			'link_caption',
-			'widget_display',
 			'singular_template',
 			'post_id',
 		);
-
-		/* Filter all fields at once, for convenience */
-		$form_fields = (array) apply_filters_ref_array( 'related_posts_by_taxonomy_widget_form_fields', array( compact( $pieces ), $i, $this ) );
-
 		foreach ( $pieces as $piece ) {
-			echo  ( isset( $form_fields[ $piece ] ) ) ? $form_fields[ $piece ] : '';
+			$file = str_replace( '_', '-', $piece );
+			$fields[ $piece ] = $this->get_field( $file, $i );
 		}
 
+		/* Filter all fields at once, for convenience */
+		$fields = (array) apply_filters_ref_array( 'related_posts_by_taxonomy_widget_form_fields', array( $fields, $i, $this ) );
+
+		foreach ( $pieces as $piece ) {
+			echo  ( isset( $fields[ $piece ] ) ) ? $fields[ $piece ] : '';
+		}
 	} // end form
+
+	/**
+	 * Get form field
+	 *
+	 * @since  2.5.1
+	 *
+	 * @param string $field Field name.
+	 * @param array  $i     Widget instance settings.
+	 * @return string String with field HYML.
+	 */
+	function get_field( $field, $i ) {
+		$plugin = $this->plugin;
+		$style = ' style="border-top: 1px solid #e5e5e5; padding-top: 1em;"';
+		$file = RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/assets/partials/widget/' . $field . '.php';
+		if ( ! is_readable( $file ) ) {
+			return '';
+		}
+
+		ob_start();
+		include $file;
+		return ob_get_clean();
+	}
 
 
 	/**

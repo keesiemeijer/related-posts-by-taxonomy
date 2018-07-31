@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.1
 Tested up to: 4.9
-Stable tag: 2.4.1
+Stable tag: 2.5.2-alpha
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,7 @@ Attributes for the shortcode are:
 * `before_shortcode`
 * `after_shortcode`
 * `title`
+* `show_date`
 * `before_title`
 * `after_title`
 * `terms`
@@ -130,6 +131,16 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.5.1 =
+* Enhancement
+    * Add ability to show the post date after the post title
+    * Allow getting post fields from the cache
+    * Add new filter to filter all related post permalinks
+    * Add new tests for the post type feature (GitHub)
+* Bug fixes
+	* (minor) Add post classes after retrieving posts from the cache
+	* (minor) Return an error if invalid taxonomies or post types was requested with the WP Rest API
+
 = 2.5.0 =
 * Enhancement
 	* Prepare plugin for gutenberg blocks
@@ -166,15 +177,9 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 	* Add support to disable the shortcode or widget for this plugin
 	* Add support to update all plugin settings with one filter.
 
-= 2.3.0 =
-
-* Enhancement
-	* Add a WordPress REST API layer to get related posts (opt-in feature)
-	* Add new filter to activate the WordPress REST API layer
-
 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.5.0 =
-This update adds a terms parameter for the shortcode and widget. (see changelog for more changes) 
+= 2.5.1 =
+With this update you can add the post date after post titles. (see changelog for more changes) 

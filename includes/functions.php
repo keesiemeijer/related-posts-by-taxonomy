@@ -35,10 +35,19 @@ function km_rpbt_plugin_supports( $type ) {
 	}
 
 	/**
-	 * Filter whether to support cache, wp_rest_api or debug.
+	 * Filter whether to support a plugin feature.
 	 *
 	 * The dynamic portion of the hook name, `$type`, refers to the
-	 * type type of support ('cache', 'wp_rest_api', 'etc).
+	 * type of support.
+	 *
+	 * - widget
+	 * - shortcode
+	 * - shortcode_hide_empty
+	 * - widget_hide_empty
+	 * - cache
+	 * - display_cache_log
+	 * - wp_rest_api
+	 * - debug
 	 *
 	 * @param bool $bool Add support if true. Default false
 	 */
@@ -50,13 +59,51 @@ function km_rpbt_plugin_supports( $type ) {
  *
  * Used by the widget, shortcode, and rest api.
  *
- * If taxonomies are not set in the arguments it gets the
- * related posts from all public taxonomies.
+ * If the cache feature of this plugin is activated it tries to get the
+ * related posts from the cache first. If not found in the cache they will be
+ * cached before returning related posts
+ *
+ * If taxonomies are not set in the arguments it queries for
+ * related posts in all public taxonomies.
  *
  * @since  2.5.0
  *
  * @param array        $post_id The post id to get related posts for.
- * @param array|string $args    Array of arguments.
+ * @param string|array $args    {
+ *     Optional. Arguments to get related posts.
+ *
+ *     @type string|array   $taxonomies       Taxonomies to use for related posts query. Array or comma separated
+ *                                            list of taxonomy names. Default empty (all taxonomies).
+ *     @type string|array   $post_types       Post types to use for related posts query. Array or comma separated
+ *                                            list of post type names. Default 'post'.
+ *     @type int            $posts_per_page   Number of related posts. Default 5.
+ *     @type string         $order            Order of related posts. Accepts 'DESC', 'ASC' and 'RAND'. Default 'DESC'.
+ *     @type string         $orderby          Order by post date or by date modified.
+ *                                            Accepts 'post_date'and 'post_modified'. Default 'post_date'.
+ *     @type string         $fields           Return full post objects, IDs, post titles or post slugs.
+ *                                            Accepts 'all', 'ids', 'names' or 'slugs'. Default is 'all'.
+ *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
+ *                                            list of term ids. The terms don't need to be assigned to the post to
+ *                                            get related posts for. Default empty.
+ *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
+ *                                            list of term ids. Only includes terms also assigned to the post to get
+ *                                            related posts for. Default empty.
+ *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
+ *                                            list of term ids. Default empty
+ *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
+ *                                            the post to get related posts for. Default true.
+ *     @type array|string   $exclude_post     Exclude posts for the related posts query. Array or comma separated
+ *                                            list of post ids. Default empty.
+ *     @type int            $limit_posts      Limit the posts to search related posts in. Default -1 (search in all posts).
+ *     @type int            $limit_month      Limit the posts to the past months to search related posts in.
+ *     @type boolean        $post_thumbnail   Whether to query for related posts with a featured image only. Default false.
+ *     @type boolean        $public_only      Whether to exclude private posts in the related posts display, even if
+ *                                            the current user has the capability to see those posts.
+ *                                            Default false (include private posts)
+ *     @type string|boolean $include_self     Whether to include the current post in the related posts results. The included
+ *                                            post is ordered at the top. Use 'regular_order' to include the current post ordered by
+ *                                            terms in common. Default false (exclude current post).
+ * }
  * @return array Array with related post objects.
  */
 function km_rpbt_get_related_posts( $post_id, $args = array() ) {
@@ -84,9 +131,9 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	 *
 	 * @since  2.5.0
 	 *
-	 * @param boolean|array $related_posts Array with (related) post objects.
-	 *                                     Default false (Don't use your own related posts).
-	 *                                     Use empty array to not retrieve related posts from the database.
+	 * @param boolean|array $related_posts Return an array with (related) post objects to use your own
+	 *                                     related post. This prevents the query for related posts by this plugin.
+	 *                                     Default false (Let this plugin query for related posts).
 	 *
 	 * @param array         Array with widget or shortcode arguments.
 	 */
@@ -115,13 +162,26 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 }
 
 /**
- * Get the terms from the post or from included terms
+ * Get the terms from a post or from included terms.
  *
  * @since  2.5.0
  *
  * @param int          $post_id    The post id to get terms for.
  * @param array|string $taxonomies The taxonomies to retrieve terms from.
- * @param array|string $args       Optional. Change what is returned.
+ * @param string|array $args       {
+ *     Optional. Arguments to get terms.
+ *
+ *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
+ *                                            list of term ids. The terms don't need to be assigned to the post set by the
+ *                                            `$post_id` argument. Default empty.
+ *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
+ *                                            list of term ids. Only includes terms also assigned to the post set by the
+ *                                            `$post_id` argument. Default empty.
+ *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
+ *                                            list of term ids. Default empty
+ *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
+ *                                            the post set by the `$post_id` argument. Default true.
+ * }
  * @return array Array with term ids.
  */
 function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
@@ -177,7 +237,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 }
 
 /**
- * Returns array with validated post types.
+ * Returns array with validated post type names.
  *
  * @since 2.2
  * @param string|array $post_types Comma separated list or array with post type names.
@@ -195,7 +255,7 @@ function km_rpbt_get_post_types( $post_types = '' ) {
 }
 
 /**
- * Returns array with validated taxonomies.
+ * Returns array with validated taxonomy names.
  *
  * @since 2.2
  * @param string|array $taxonomies Taxonomies.
@@ -214,7 +274,7 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
 }
 
 /**
- * Get all public taxonomies found by this plugin.
+ * Get all public taxonomies.
  *
  * @since 2.5.0
  *
@@ -223,46 +283,6 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
 function km_rpbt_get_public_taxonomies() {
 	$plugin = km_rpbt_plugin();
 	return isset( $plugin->all_tax ) ? km_rpbt_get_taxonomies( $plugin->all_tax ) : array();
-}
-
-/**
- * Validates ids.
- * Checks if ids is a comma separated string or an array with ids.
- *
- * @since 2.5.0
- * @param string|array $ids Comma separated list or array with ids.
- * @return array Array with postive integers
- */
-function km_rpbt_validate_ids( $ids ) {
-
-	if ( ! is_array( $ids ) ) {
-		/* allow positive integers, 0 and commas only */
-		$ids = preg_replace( '/[^0-9,]/', '', (string) $ids );
-		/* convert string to array */
-		$ids = explode( ',', $ids );
-	}
-
-	/* convert to integers and remove 0 values */
-	$ids = array_filter( array_map( 'intval', (array) $ids ) );
-
-	return array_values( array_unique( $ids ) );
-}
-
-/**
- * Sanitizes comma separetad values.
- * Returns an array.
- *
- * @since 2.2
- * @param string|array $value Comma seperated value or array with values.
- * @return array       Array with unique array values
- */
-function km_rpbt_get_comma_separated_values( $value ) {
-
-	if ( ! is_array( $value ) ) {
-		$value = explode( ',', (string) $value );
-	}
-
-	return array_values( array_filter( array_unique( array_map( 'trim', $value ) ) ) );
 }
 
 /**
@@ -278,15 +298,17 @@ function km_rpbt_is_cache_loaded() {
 
 /**
  * Public function to cache related posts.
- * Uses the same arguments as the km_rpbt_query_related_posts() function.
+ *
+ * The opt-in cache feature needs to be activated to cache posts.
  *
  * @since 2.1
  * @since  2.5.0 Use empty string as default value for $taxonomies parameter.
  *
  * @param int          $post_id    The post id to cache related posts for.
- * @param array|string $taxonomies The taxonomies to cache related posts from.
- * @param array|string $args       Optional. Cache arguments.
- * @return array Array with cached related posts objects or false if no posts where cached.
+ * @param array|string $taxonomies Taxonomies for the related posts query.
+ * @param array|string $args       Optional arguments. See km_rpbt_query_related_posts() for more
+ *                                 information on accepted arguments.
+ * @return array|false Array with cached related posts objects or false if no posts where cached.
  */
 function km_rpbt_cache_related_posts( $post_id, $taxonomies = '', $args = array() ) {
 	// Check if cache is loaded.
@@ -305,7 +327,7 @@ function km_rpbt_cache_related_posts( $post_id, $taxonomies = '', $args = array(
 /**
  * Public function to flush the persistent cache.
  *
- * Note: This function doesn't check if the plugin supports the cache.
+ * Call this function on the wp_load hook or later.
  *
  * @since 2.1
  * @return int|bool Returns number of deleted rows or false on failure.

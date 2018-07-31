@@ -1,3 +1,35 @@
+= 2.5.1 =
+* Enhancement
+    * Add ability to show the post date after the post title
+    * Allow getting post fields from the cache
+    * Add new filter to filter all related posts permalinks
+    * Add new tests for the post type feature (GitHub)
+* Bug fixes
+	* (minor) Add post classes after retrieving posts from the cache
+	* (minor) Return an error if invalid taxonomies or post types was requested with the WP Rest API
+
+= 2.5.0 =
+* Enhancement
+	* Prepare plugin for gutenberg blocks
+	* Add 'terms' parameter for shortcode and widget
+	* Add GDPR information to readme.txt
+	* deprecate functions (with back compatibility)
+		* km_rpbt_related_posts_by_taxonomy()
+		* km_rpbt_get_default_args()
+		* km_rpbt_related_posts_by_taxonomy_validate_ids()
+		* km_rpbt_related_posts_by_taxonomy_template()
+		* km_rpbt_post_title_link()
+		* km_rpbt_get_related_post_title_link()
+		* km_rpbt_related_posts_by_taxonomy_widget()
+* Bug fixes
+	* (minor) Add missing filter pre_related_posts before cache queries
+	* (minor) Add missing properties to related posts returned by the cache 
+
+= 2.4.1 =
+* Enhancement
+	* Add post classes with filters or as a shortcode or widget argument
+	* Move included current post to the top of the stack by default 
+
 = 2.4.0 =
 * Enhancement
 	* Add post classes with filters or as a shortcode or widget argument
