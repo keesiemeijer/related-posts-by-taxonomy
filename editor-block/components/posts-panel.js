@@ -2,7 +2,8 @@
  * WordPress dependencies
  */
 const { __ } = wp.i18n;
-const { SelectControl, RangeControl } = wp.components;
+const { SelectControl, RangeControl, ToggleControl } = wp.components;
+
 
 /**
  * Internal dependencies
@@ -22,6 +23,8 @@ export default function PostsPanel( {
 	onPostsPerPageChange,
 	format,
 	onFormatChange,
+	showDate,
+	onShowDateChange,
 	postTypes,
 	onPostTypesChange,
 } ) {
@@ -58,6 +61,13 @@ export default function PostsPanel( {
 				options={  formatOptions }
 				onChange={ ( value ) => { onFormatChange( value ); } }
 			/> ),
+		onFormatChange && (
+			<ToggleControl
+						label={ __( 'Display post date' ) }
+						checked={ showDate }
+						onChange={ onShowDateChange }
+			/>
+		),
 	];
 }
 

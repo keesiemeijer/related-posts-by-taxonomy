@@ -49,6 +49,10 @@
 .wp-block-related-posts-by-taxonomy-related-posts-block ul {
   padding-left: 2.5em; }
 
+.wp-block-related-posts-by-taxonomy-related-posts-block .rpbt-post-date {
+  display: block;
+  font-size: smaller; }
+
 .wp-block-related-posts-by-taxonomy-related-posts-block .components-placeholder__fieldset {
   max-width: none; }
   .wp-block-related-posts-by-taxonomy-related-posts-block .components-placeholder__fieldset .instructions ul {

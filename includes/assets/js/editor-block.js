@@ -286,6 +286,10 @@ var _defaults = {
 	html5_gallery: {
 		type: 'bool',
 		default: false
+	},
+	show_date: {
+		type: 'bool',
+		default: false
 	}
 
 	/**
@@ -5345,6 +5349,8 @@ module.exports = createBaseEach;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -5399,13 +5405,27 @@ var RelatedPostsBlock = function (_Component) {
 		_this.onTitleChange = _this.onTitleChange.bind(_this);
 		_this.titleDebounced = __WEBPACK_IMPORTED_MODULE_0_lodash_debounce___default()(_this.updateTitle, 1000);
 
-		_this.toggleLinkCaption = _this.toggleLinkCaption.bind(_this);
+		_this.toggleLinkCaption = _this.createToggleAttribute('link_caption');
+		_this.toggleShowDate = _this.createToggleAttribute('show_date');
 
 		_this.instanceId = instances++;
 		return _this;
 	}
 
 	_createClass(RelatedPostsBlock, [{
+		key: 'createToggleAttribute',
+		value: function createToggleAttribute(propName) {
+			var _this2 = this;
+
+			return function () {
+				var value = _this2.props.attributes[propName];
+				var setAttributes = _this2.props.setAttributes;
+
+
+				setAttributes(_defineProperty({}, propName, !value));
+			};
+		}
+	}, {
 		key: 'componentWillUnmount',
 		value: function componentWillUnmount() {
 			this.titleDebounced.cancel();
@@ -5433,15 +5453,6 @@ var RelatedPostsBlock = function (_Component) {
 			setAttributes({ post_types: postTypes });
 		}
 	}, {
-		key: 'toggleLinkCaption',
-		value: function toggleLinkCaption() {
-			var link_caption = this.props.attributes.link_caption;
-			var setAttributes = this.props.setAttributes;
-
-
-			setAttributes({ link_caption: !link_caption });
-		}
-	}, {
 		key: 'render',
 		value: function render() {
 			var _props = this.props,
@@ -5457,7 +5468,8 @@ var RelatedPostsBlock = function (_Component) {
 			    format = attributes.format,
 			    image_size = attributes.image_size,
 			    columns = attributes.columns,
-			    link_caption = attributes.link_caption;
+			    link_caption = attributes.link_caption,
+			    show_date = attributes.show_date;
 
 			var titleID = 'inspector-text-control-' + this.instanceId;
 			var className = __WEBPACK_IMPORTED_MODULE_2_classnames___default()(this.props.className, { 'rpbt-html5-gallery': 'thumbnails' === format && this.html5Gallery });
@@ -5524,6 +5536,8 @@ var RelatedPostsBlock = function (_Component) {
 							onFormatChange: function onFormatChange(value) {
 								return setAttributes({ format: value });
 							},
+							showDate: show_date,
+							onShowDateChange: this.toggleShowDate,
 							postTypes: checkedPostTypes,
 							onPostTypesChange: this.updatePostTypes
 						})
@@ -5909,7 +5923,8 @@ module.exports = isBoolean;
 var __ = wp.i18n.__;
 var _wp$components = wp.components,
     SelectControl = _wp$components.SelectControl,
-    RangeControl = _wp$components.RangeControl;
+    RangeControl = _wp$components.RangeControl,
+    ToggleControl = _wp$components.ToggleControl;
 
 /**
  * Internal dependencies
@@ -5930,6 +5945,8 @@ function PostsPanel(_ref) {
 	    onPostsPerPageChange = _ref.onPostsPerPageChange,
 	    format = _ref.format,
 	    onFormatChange = _ref.onFormatChange,
+	    showDate = _ref.showDate,
+	    onShowDateChange = _ref.onShowDateChange,
 	    postTypes = _ref.postTypes,
 	    onPostTypesChange = _ref.onPostTypesChange;
 
@@ -5961,6 +5978,10 @@ function PostsPanel(_ref) {
 		onChange: function onChange(value) {
 			onFormatChange(value);
 		}
+	}), onFormatChange && wp.element.createElement(ToggleControl, {
+		label: __('Display post date'),
+		checked: showDate,
+		onChange: onShowDateChange
 	})];
 }
 

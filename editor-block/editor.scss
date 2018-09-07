@@ -58,6 +58,11 @@ $block-class: wp-block-related-posts-by-taxonomy-related-posts-block;
 		padding-left: 2.5em;
 	}
 
+	.rpbt-post-date {
+		display: block;
+		font-size: smaller;
+	}
+
 	.components-placeholder__fieldset {
 		max-width: none;
 

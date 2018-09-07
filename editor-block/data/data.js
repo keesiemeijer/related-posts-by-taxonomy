@@ -23,6 +23,10 @@ const _defaults = {
 	html5_gallery: {
 		type: 'bool',
 		default: false,
+	},
+	show_date: {
+		type: 'bool',
+		default: false,
 	}
 }
 
