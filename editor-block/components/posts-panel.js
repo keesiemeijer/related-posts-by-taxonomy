@@ -16,7 +16,7 @@ import PostTypeControl from '../components/post-type-control';
 const taxonomyOptions = getTaxonomyOptions();
 const formatOptions = getOptions('formats');
 
-export default function PostsPanel( {
+export default function PostsPanel({
 	taxonomies,
 	onTaxonomiesChange,
 	postsPerPage,
@@ -27,7 +27,7 @@ export default function PostsPanel( {
 	onShowDateChange,
 	postTypes,
 	onPostTypesChange,
-} ) {
+}) {
 
 	return [
 		onPostsPerPageChange && (
@@ -38,7 +38,7 @@ export default function PostsPanel( {
 				onChange={ onPostsPerPageChange }
 				min={ -1 }
 				max={ 100 }
-			/> ),
+			/>),
 		onTaxonomiesChange && (
 			<SelectControl
 				key="rpbt-select-taxonomies"
@@ -46,13 +46,13 @@ export default function PostsPanel( {
 				value={ `${ taxonomies }` }
 				options={ taxonomyOptions }
 				onChange={ ( value ) => { onTaxonomiesChange( value ); } }
-			/> ),
+			/>),
 		onPostTypesChange && (
 			<PostTypeControl
 				label={ __( 'Post Types' ) }
 				onChange={ onPostTypesChange }
 				postTypes={ postTypes }
-			/> ),
+			/>),
 		onFormatChange && (
 			<SelectControl
 				key="rpbt-select-format"
@@ -60,28 +60,26 @@ export default function PostsPanel( {
 				value={ `${ format }` }
 				options={  formatOptions }
 				onChange={ ( value ) => { onFormatChange( value ); } }
-			/> ),
-		onFormatChange && (
+			/>),
+		onShowDateChange && (
 			<ToggleControl
-						label={ __( 'Display post date' ) }
-						checked={ showDate }
-						onChange={ onShowDateChange }
+				label={ __( 'Display post date' ) }
+				checked={ showDate }
+				onChange={ onShowDateChange }
 			/>
 		),
 	];
 }
 
 function getTaxonomyOptions() {
-	if( ! getPluginData( 'all_tax' ) ) {
+	if (!getPluginData('all_tax')) {
 		return [];
 	}
 
-	const options = [
-		{
-			label: __( 'all taxonomies' ),
-			value: getPluginData( 'all_tax' ),
-		},
-	];
+	const options = [{
+		label: __('all taxonomies'),
+		value: getPluginData('all_tax'),
+	}, ];
 
-	return getOptions( 'taxonomies', options );
+	return getOptions('taxonomies', options);
 }

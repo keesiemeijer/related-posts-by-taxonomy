@@ -5978,7 +5978,7 @@ function PostsPanel(_ref) {
 		onChange: function onChange(value) {
 			onFormatChange(value);
 		}
-	}), onFormatChange && wp.element.createElement(ToggleControl, {
+	}), onShowDateChange && wp.element.createElement(ToggleControl, {
 		label: __('Display post date'),
 		checked: showDate,
 		onChange: onShowDateChange
