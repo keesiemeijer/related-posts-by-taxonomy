@@ -6,7 +6,8 @@ import { isEmpty } from 'lodash';
 /**
  * WordPress dependencies
  */
-const { withInstanceId, BaseControl } = wp.components;
+const { BaseControl } = wp.components;
+const { withInstanceId } = wp.compose;
 const { Component } = wp.element;
 
 /**

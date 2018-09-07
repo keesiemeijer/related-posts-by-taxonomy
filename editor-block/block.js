@@ -8,38 +8,37 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 const { InspectorControls } = wp.editor;
-const { BaseControl, PanelBody, ToggleControl } = wp.components;
-const { Component, Fragment, RawHTML, compose } = wp.element;
-const { __, sprintf } = wp.i18n;
+const { BaseControl, PanelBody, ToggleControl, ServerSideRender, Disabled } = wp.components;
+const { Component, Fragment } = wp.element;
+const { __ } = wp.i18n;
 
 /**
  * Internal dependencies
  */
 import './editor.scss'
 import { getPluginData } from './data/data';
-import { relatedPosts } from './data/posts';
 import PostsPanel from './components/posts-panel';
 import ImagePanel from './components/image-panel';
-import LoadingPlaceholder from './components/placeholder';
 
 let instances = 0;
 
-class RelatedPostsBlock extends Component {
+export class RelatedPostsBlock extends Component {
 	constructor() {
-		super( ...arguments );
+		super(...arguments);
 
 		// Data provided by this plugin.
-		this.previewExpanded = getPluginData( 'preview' );
-		this.html5Gallery = getPluginData( 'html5_gallery' );
+		this.previewExpanded = getPluginData('preview');
+		this.html5Gallery = getPluginData('html5_gallery');
+		this.defaultCategory = getPluginData('default_category');
 
 		this.updatePostTypes = this.updatePostTypes.bind(this);
 
 		// The title is updated 1 second after a change.
 		// This allows the user more time to type.
 		this.onTitleChange = this.onTitleChange.bind(this);
-		this.titleDebounced = debounce( this.updateTitle, 1000);
+		this.titleDebounced = debounce(this.updateTitle, 1000);
 
-		this.toggleLinkCaption = this.toggleLinkCaption.bind( this );
+		this.toggleLinkCaption = this.toggleLinkCaption.bind(this);
 
 		this.instanceId = instances++;
 	}
@@ -57,32 +56,44 @@ class RelatedPostsBlock extends Component {
 
 	updateTitle(value) {
 		const { setAttributes } = this.props;
-		setAttributes( { title: value } );
+		setAttributes({ title: value });
 	}
 
-	updatePostTypes( postTypes ) {
+	updatePostTypes(postTypes) {
 		const { setAttributes } = this.props;
-		setAttributes( { post_types: postTypes } );
+		setAttributes({ post_types: postTypes });
 	}
 
-	toggleLinkCaption(){
+	toggleLinkCaption() {
 		const { link_caption } = this.props.attributes;
 		const { setAttributes } = this.props;
 
-		setAttributes( { link_caption: ! link_caption } );
+		setAttributes({ link_caption: !link_caption });
 	}
 
-	render(){
-		const relatedPosts = this.props.relatedPosts.data;
-		const { attributes, focus, isSelected, setAttributes, editorData } = this.props;
+	render() {
+		const { attributes, setAttributes, editorData, postType, postID } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption } = attributes;
 		const titleID = 'inspector-text-control-' + this.instanceId;
-		const className = classnames( this.props.className, { 'rpbt-html5-gallery': ( 'thumbnails' === format ) && this.html5Gallery } );
+		const className = classnames(this.props.className, { 'rpbt-html5-gallery': ('thumbnails' === format) && this.html5Gallery });
+
+		if (isUndefined(editorData)) {
+			return null;
+		}
+
+		let shortcodeAttr = Object.assign({}, attributes);
+		shortcodeAttr['post_id'] = postID;
+		shortcodeAttr['terms'] = editorData.termIDs.join(',');
+
+		if (!shortcodeAttr['terms'].length && (-1 !== editorData.taxonomyNames.indexOf('category'))) {
+			// Use default category if this post supports the 'category' taxonomy and no terms are selected.
+			shortcodeAttr['terms'] = this.defaultCategory;
+		}
 
 		let checkedPostTypes = post_types;
-		if( isUndefined( post_types ) || ! post_types ) {
+		if (isUndefined(post_types) || !post_types) {
 			// Use the post type from the current post if not set.
-			checkedPostTypes = editorData.postType;
+			checkedPostTypes = postType;
 		}
 
 		const inspectorControls = (
@@ -133,62 +144,22 @@ class RelatedPostsBlock extends Component {
 					/>
 				</PanelBody>
 			</InspectorControls>
-			);
-
-
-		let showPosts = this.previewExpanded;
-		if( ! showPosts ) {
-			// Show posts when block is selected
-			showPosts = isSelected;
-		}
-
-		let html       = '';
-		let postsFound = 0;
-
-		const queryFinished = ! isUndefined( relatedPosts );
-		if( queryFinished ) {
-			if( relatedPosts.hasOwnProperty('posts') ) {
-				postsFound = relatedPosts.posts.length ? relatedPosts.posts.length : 0;
-			}
-			if( relatedPosts.hasOwnProperty('rendered') ) {
-				html = relatedPosts.rendered.length ? relatedPosts.rendered : '';
-			}
-		}
-
-		if ( ! showPosts || ! html.length || ! postsFound  ) {
-			return (
-				<Fragment>
-					{ inspectorControls }
-					<LoadingPlaceholder
-						className={className}
-						queryFinished={queryFinished}
-						postsFound={postsFound}
-						showPosts={showPosts}
-						html={html.length}
-						editorTerms={editorData.termIDs}
-						editorTaxonomies={editorData.taxonomyNames}
-						icon="megaphone"
-						label={ __( 'Related Posts by Taxonomy' ) }
-					/>
-				</Fragment>
-			);
-		}
-
-		// Add target blank to all links
-		// Todo: find a better way to do this
-		html = relatedPosts.rendered.replace(/\<a href\=/g, '<a target="_blank" href=');
+		);
 
 		return (
-				<Fragment>
-					{ inspectorControls }
+			<Fragment>
+				{inspectorControls}
+				<Disabled>
 					<div className={className}>
-						<RawHTML>{html}</RawHTML>
+					<ServerSideRender
+						block="related-posts-by-taxonomy/related-posts-block"
+						attributes={ shortcodeAttr }
+					/>
 					</div>
-				</Fragment>
+				</Disabled>
+			</Fragment>
 		);
 	}
 }
 
-export default compose( [
-	relatedPosts,
-] )( RelatedPostsBlock );
+export default RelatedPostsBlock;

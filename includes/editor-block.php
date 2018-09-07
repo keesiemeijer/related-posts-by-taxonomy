@@ -116,6 +116,10 @@ function km_rpbt_register_block_type() {
 					'type' => 'int',
 					'default' => 5,
 				),
+				'post_id' => array(
+					'type' => 'int',
+					'default' => 0,
+				),
 				'format' => array(
 					'type' => 'string',
 					'default' => 'links',
