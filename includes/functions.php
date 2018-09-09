@@ -55,6 +55,63 @@ function km_rpbt_plugin_supports( $type ) {
 }
 
 /**
+ * Filter plugin feature arguments
+ *
+ * All arguments are filterable except the `$type` argument.
+ *
+ * @param array  $args Array with arguments.
+ * @param string $type Type of plugin feature arguments.
+ * @return array Filtered plugin feature arguments.
+ */
+function km_rpbt_filter_arguments( $args, $type ) {
+	$defaults  = km_rpbt_get_default_settings( $type );
+	$args_type = 'shortcode' === $type ? 'atts' : 'args';
+
+	if ( ! in_array( $type, km_rpbt_get_setting_types() ) ) {
+		return $args;
+	}
+
+	if ( 'widget' !== $type ) {
+
+		/**
+		 * Filter default arguments.
+		 *
+		 * @since 0.2.1
+		 *
+		 * @param array $defaults See $defaults above
+		 */
+		$defaults = apply_filters( "related_posts_by_taxonddomy_{$type}_defaults", $defaults );
+		$args = array_merge( $defaults, (array) $args );
+	}
+
+	if ( 'shortcode' === $type ) {
+		$args = shortcode_atts( (array) $defaults, $args, 'related_posts_by_tax' );
+	}
+
+	if ( function_exists( "km_rpbt_validate_{$type}_{$args_type}" ) ) {
+		$args = call_user_func( "km_rpbt_validate_{$type}_{$args_type}", $args );
+		$args = array_merge( $defaults, (array) $args );
+	}
+
+	// Unfilterable argument.
+	$args['type'] = $type;
+
+	/**
+	 * Filter (validated) default arguments.
+	 *
+	 * @since  2.3.0
+	 *
+	 * @param array $args Arguments.
+	 */
+	$args = apply_filters( "related_posts_by_taxonomy_{$type}_{$args_type}", $args );
+
+	// Unfilterable argument.
+	$args['type'] = $type;
+
+	return array_merge( $defaults, (array) $args );
+}
+
+/**
  * Get related posts from the database or cache.
  *
  * Used by the widget, shortcode, and rest api.

@@ -222,6 +222,105 @@ function km_rpbt_sanitize_args( $args ) {
 }
 
 /**
+ * Validate shortcode arguments.
+ *
+ * The post type and post id of the current post is used if not provided.
+ *
+ * @see km_rpbt_related_posts_by_taxonomy_shortcode()
+ *
+ * @since 2.1
+ * @param array $atts Array with shortcode arguments.
+ *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                    information on accepted arguments.
+ * @return array Array with validated shortcode arguments.
+ */
+function km_rpbt_validate_shortcode_atts( $atts ) {
+	$defaults = km_rpbt_get_default_settings( 'shortcode' );
+
+	/* make sure all defaults are present */
+	$atts = array_merge( $defaults, $atts );
+
+	// Default to shortcode.
+	$atts['type']  = 'shortcode';
+	$atts['title'] = trim( $atts['title'] );
+
+	if ( '' === trim( $atts['post_id'] ) ) {
+		$atts['post_id'] = get_the_ID();
+	}
+
+	/* If no post type is set use the post type of the current post (new default since 0.3) */
+	if ( empty( $atts['post_types'] ) ) {
+		$post_type = get_post_type( $atts['post_id'] );
+		$atts['post_types'] = $post_type ? array( $post_type ) : array( 'post' );
+	}
+
+	if ( 'thumbnails' === $atts['format'] ) {
+		$atts['post_thumbnail'] = true;
+	}
+
+	// Convert (strings) to booleans or use defaults.
+	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
+	$atts['link_caption'] = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
+	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
+	$atts['show_date']    = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
+
+	if ( 'regular_order' !== $atts['include_self'] ) {
+		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
+	}
+
+	$atts = km_rpbt_validate_booleans( $atts, $defaults );
+
+	return $atts;
+}
+
+/**
+ * Validate WP Rest API arguments.
+ *
+ * The post type of the current post is used if not provided.
+ * Adds 'invalid_tax' to the arguments if no taxonomies were valid.
+ * Adds 'invalid_post_type' to the arguments if no post_types were valid.
+ *
+ * @since 2.5.2
+ * @param array $atts Array with WP Rest API arguments.
+ *                    See km_rpbt_get_related_posts() for for more
+ *                    information on accepted arguments.
+ * @return array Array with validated WP Rest API arguments.
+ */
+function km_rpbt_validate_wp_rest_api_args( $args ) {
+	$defaults = km_rpbt_get_default_settings( 'wp_rest_api' );
+
+	/* make sure all defaults are present */
+	$args = array_merge( $defaults, $args );
+
+	// Set post_thumbnail argument depending on format.
+	if ( 'thumbnails' === $args['format'] ) {
+		$args['post_thumbnail'] = true;
+	}
+
+	// Check taxonomies.
+	$taxonomies         = ! empty( $args['taxonomies'] );
+	$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
+	if ( $taxonomies && ! $args['taxonomies'] ) {
+		$args['invalid_tax'] = true;
+	}
+
+	// Check post types
+	$post_types = ! empty( $args['post_types'] );
+
+	// Default to the post type from the current post if no post types are in the request.
+	if ( ! $post_types ) {
+		$args['post_types'] = get_post_type( $args['post_id'] );
+	}
+
+	$args['post_types'] = km_rpbt_get_post_types( $args['post_types'] );
+	if ( $post_types && ! $args['post_types'] ) {
+		$args['invalid_post_type'] = true;
+	}
+
+	return $args;
+}
+
+/**
  * Validates an array or comma separated string with ids.
  *
  * Removes duplicates and "0" values.
