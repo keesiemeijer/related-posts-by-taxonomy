@@ -75,13 +75,14 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 		return '';
 	}
 
-	if ( ! km_rpbt_plugin_supports( 'shortcode' ) ) {
+	$type = isset( $atts['type'] ) ? $atts['type'] : 'shortcode';
+	if ( ! is_valid_settings_type( $type ) || ! km_rpbt_plugin_supports( $type ) ) {
 		$recursing = false;
 		return '';
 	}
 
 	// Filter and validate shortcode arguments.
-	$atts = km_rpbt_filter_arguments( $atts, 'shortcode' );
+	$atts = km_rpbt_filter_arguments( $atts, $type );
 
 	/* Un-filterable arguments */
 	$atts['fields'] = '';
@@ -94,7 +95,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 	 * Set by the related_posts_by_taxonomy_shortcode_hide_empty filter.
 	 * Default true.
 	 */
-	$hide_empty = (bool) km_rpbt_plugin_supports( 'shortcode_hide_empty' );
+	$hide_empty = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
 
 	$shortcode = '';
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
@@ -106,7 +107,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 	 *
 	 * @param string Display type, widget or shortcode.
 	 */
-	do_action( 'related_posts_by_taxonomy_after_display', 'shortcode' );
+	do_action( 'related_posts_by_taxonomy_after_display', $type );
 
 	$recursing = false;
 

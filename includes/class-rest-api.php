@@ -92,13 +92,18 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	/**
 	 * Filter the request arguments.
 	 *
-	 * Set defaults for every requests with the related_posts_by_taxonomy_wp_rest_api_defaults filter.
-	 * Filter validated request arguments with the related_posts_by_taxonomy_wp_rest_api_args filter.
+	 * The filter hooks found in the km_rpbt_filter_arguments() function are
+	 * used for filtering the defaults and arguments.
+	 *
+	 * This function returns `false` if no valid taxonomies or post types were
+	 * used in the request.
+	 *
+	 * Note: All arguments are filterable except the `$post_id` argument.
 	 *
 	 * @since 2.5.1
+	 * @see km_rpbt_filter_arguments()
 	 *
-	 * @param array $args Request arguments
-	 *                    See km_rpbt_get_related_posts() for for more
+	 * @param array $args Request arguments. See km_rpbt_get_related_posts() for for more
 	 *                    information on accepted arguments.
 	 * @return array|false Filtered request arguments or false when invalid
 	 *                     taxonomies or post types are used int the request.
