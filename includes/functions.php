@@ -237,6 +237,69 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 }
 
 /**
+ * Filter plugin feature arguments.
+ *
+ * Filter the km_rpbt_get_related_posts() function arguments called in
+ * the widget, shortcode, rest API and cache.
+ * 
+ * Note: All arguments are filterable except the `$type` argument.
+ *
+ * @since 2.5.2
+ *
+ * @param array  $args Array with arguments.
+ * @param string $type Type of plugin feature arguments.
+ * @return array Filtered plugin feature arguments.
+ */
+function km_rpbt_filter_arguments( $args, $type ) {
+	if ( ! is_valid_settings_type( $type ) ) {
+		return $args;
+	}
+
+	$defaults  = km_rpbt_get_default_settings( $type );
+	$args_type = 'shortcode' === $type ? 'atts' : 'args';
+
+	if ( 'widget' !== $type ) {
+
+		/**
+		 * Filter default arguments.
+		 *
+		 * @since 0.2.1
+		 *
+		 * @param array $defaults See $defaults above
+		 */
+		$defaults = apply_filters( "related_posts_by_taxonddomy_{$type}_defaults", $defaults );
+		$args     = array_merge( $defaults, (array) $args );
+	}
+
+	if('shortcode' === $type) {
+		// Shortcode attributes are filterable with the shortcode_atts_related_posts_by_tax filter
+		$args = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
+	}
+
+	if ( function_exists( "km_rpbt_validate_{$type}_{$args_type}" ) ) {
+		$args = call_user_func( "km_rpbt_validate_{$type}_{$args_type}", $args );
+		$args = array_merge( $defaults, (array) $args );
+	}
+
+	// Unfilterable argument.
+	$args['type'] = $type;
+
+	/**
+	 * Filter (validated) arguments of a plugin feature.
+	 *
+	 * @since  2.3.0
+	 *
+	 * @param array $args Arguments.
+	 */
+	$args = apply_filters( "related_posts_by_taxonomy_{$type}_{$args_type}", $args );
+
+	// Unfilterable argument.
+	$args['type'] = $type;
+
+	return array_merge( $defaults, (array) $args );
+}
+
+/**
  * Returns array with validated post type names.
  *
  * @since 2.2
@@ -283,6 +346,24 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
 function km_rpbt_get_public_taxonomies() {
 	$plugin = km_rpbt_plugin();
 	return isset( $plugin->all_tax ) ? km_rpbt_get_taxonomies( $plugin->all_tax ) : array();
+}
+
+/**
+ * Get the values from a comma separated string.
+ *
+ * Removes duplicates and empty values.
+ *
+ * @since 2.2
+ * @param string|array $value Comma seperated string or array with values.
+ * @return array       Array with unique array values
+ */
+function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
+
+	if ( ! is_array( $value ) ) {
+		$value = explode( ',', (string) $value );
+	}
+
+	return array_values( array_filter( array_unique( array_map( 'trim', $value ) ) ) );
 }
 
 /**

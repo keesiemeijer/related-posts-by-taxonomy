@@ -17,6 +17,18 @@ function km_rpbt_get_setting_types() {
 }
 
 /**
+ * Check if the type is a valid settings type
+ *
+ * @since 2.5.2
+ *
+ * @param string $type Plugin feature settings type.
+ * @return boolean       True if it's valid settings type.
+ */
+function is_valid_settings_type( $type ) {
+	return is_string( $type ) && in_array( $type, km_rpbt_get_setting_types() );
+}
+
+/**
  * Get the features this plugin supports.
  *
  * Use the {@see related_posts_by_taxonomy_supports} filter to activate and
@@ -101,8 +113,7 @@ function km_rpbt_get_query_vars() {
  * @return array|false Array with default settings for a feature.
  */
 function km_rpbt_get_default_settings( $type = '' ) {
-	$setting_types = km_rpbt_get_setting_types();
-	$valid_type    = in_array( $type, $setting_types );
+	$valid_type = is_valid_settings_type( $type );
 
 	// Cache settings
 	if ( $valid_type && ( 'cache' === $type ) ) {
@@ -228,6 +239,116 @@ function km_rpbt_sanitize_args( $args ) {
 }
 
 /**
+ * Validate arguments in common with all plugin features.
+ *
+ * @since 2.5.2
+ * 
+ * @param array  $args Array with common arguments.
+ * @param string $type Type of plugin feature arguments.
+ * @return array Validated arguments.
+ */
+function km_rpbt_validate_args( $args, $type ) {
+	$defaults = km_rpbt_get_default_settings( $type );
+
+	/* make sure all defaults are present */
+	$args = array_merge( $defaults, $args );
+	$args['title'] = trim( $args['title'] );
+
+	if ( empty( $args['post_id'] ) ) {
+		$args['post_id'] = get_the_ID();
+	}
+
+	/* If no post type is set use the post type of the current post */
+	if ( empty( $args['post_types'] ) ) {
+		$post_type = get_post_type( $args['post_id'] );
+		$args['post_types'] = $post_type ? array( $post_type ) : array( 'post' );
+	}
+
+	if ( 'thumbnails' === $args['format'] ) {
+		$args['post_thumbnail'] = true;
+	}
+
+	return $args;
+}
+
+/**
+ * Validate shortcode arguments.
+ *
+ * Converts boolean strings to real booleans.
+ *
+ * @see km_rpbt_related_posts_by_taxonomy_shortcode()
+ *
+ * @since 2.1
+ * @param array $atts Array with shortcode arguments.
+ *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                    information on accepted arguments.
+ * @return array Array with validated shortcode arguments.
+ */
+function km_rpbt_validate_shortcode_atts( $atts ) {
+	$defaults = km_rpbt_get_default_settings( 'shortcode' );
+	$atts     = km_rpbt_validate_args( $atts, 'shortcode' );
+
+	// Convert (strings) to booleans or use defaults.
+	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
+	$atts['link_caption'] = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
+	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
+	$atts['show_date']    = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
+
+	if ( 'regular_order' !== $atts['include_self'] ) {
+		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
+	}
+
+	return km_rpbt_validate_booleans( $atts, $defaults );
+}
+
+/**
+ * Validate WP Rest API arguments.
+ *
+ * The post type of the current post is used if not provided.
+ * Adds 'invalid_tax' to the arguments if none of the request taxonomies were valid.
+ * Adds 'invalid_post_type' to the arguments if none of the request post_types were valid.
+ *
+ * @since 2.5.2
+ * @param array $atts Array with WP Rest API arguments.
+ *                    See km_rpbt_get_related_posts() for for more
+ *                    information on accepted arguments.
+ * @return array Array with validated WP Rest API arguments.
+ */
+function km_rpbt_validate_wp_rest_api_args( $args ) {
+	$defaults = km_rpbt_get_default_settings( 'wp_rest_api' );
+
+	/* make sure all defaults are present */
+	$args = array_merge( $defaults, $args );
+
+	// Set post_thumbnail argument depending on format.
+	if ( 'thumbnails' === $args['format'] ) {
+		$args['post_thumbnail'] = true;
+	}
+
+	// Check taxonomies.
+	$taxonomies         = ! empty( $args['taxonomies'] );
+	$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
+	if ( $taxonomies && ! $args['taxonomies'] ) {
+		$args['invalid_tax'] = true;
+	}
+
+	// Check post types
+	$post_types = ! empty( $args['post_types'] );
+
+	// Default to the post type from the current post if no post types are in the request.
+	if ( ! $post_types ) {
+		$args['post_types'] = get_post_type( $args['post_id'] );
+	}
+
+	$args['post_types'] = km_rpbt_get_post_types( $args['post_types'] );
+	if ( $post_types && ! $args['post_types'] ) {
+		$args['invalid_post_type'] = true;
+	}
+
+	return $args;
+}
+
+/**
  * Validates an array or comma separated string with ids.
  *
  * Removes duplicates and "0" values.
@@ -249,24 +370,6 @@ function km_rpbt_validate_ids( $ids ) {
 	$ids = array_filter( array_map( 'intval', (array) $ids ) );
 
 	return array_values( array_unique( $ids ) );
-}
-
-/**
- * Get the values from a comma separated string.
- *
- * Removes duplicates and empty values.
- *
- * @since 2.2
- * @param string|array $value Comma seperated string or array with values.
- * @return array       Array with unique array values
- */
-function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
-
-	if ( ! is_array( $value ) ) {
-		$value = explode( ',', (string) $value );
-	}
-
-	return array_values( array_filter( array_unique( array_map( 'trim', $value ) ) ) );
 }
 
 /**
