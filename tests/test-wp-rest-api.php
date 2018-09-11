@@ -171,12 +171,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( 'wp_rest_api', $this->arg['type'] );
 		$this->arg = null;
 
-		// Editor block type.
-		$request->set_param( 'type', 'editor_block' );
-		$response = rest_do_request( $request );
-		$this->assertEquals( 'editor_block', $this->arg['type'] );
-		$this->arg = null;
-
 		// Invalid type.
 		$request->set_param( 'type', 'lala' );
 		$response = rest_do_request( $request );
