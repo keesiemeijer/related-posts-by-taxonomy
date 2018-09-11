@@ -271,6 +271,10 @@ function km_rpbt_validate_args( $args, $type ) {
 	return $args;
 }
 
+function km_rpbt_validate_editor_block_args( $args ) {
+	return km_rpbt_validate_args($args, 'editor_block');
+}
+
 /**
  * Validate shortcode arguments.
  *

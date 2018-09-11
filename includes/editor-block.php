@@ -159,7 +159,7 @@ function km_rpbt_render_block_related_post( $args ) {
 	}
 
 	// Set the type for the argument filters in the shortcode.
-	$args['type'] = 'related_posts_editor_block';
+	$args['type'] = 'editor_block';
 
 	return km_rpbt_related_posts_by_taxonomy_shortcode( $args );
 }
