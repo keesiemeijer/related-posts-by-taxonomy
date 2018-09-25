@@ -15,6 +15,7 @@ import PostTypeControl from '../components/post-type-control';
 // Select input options
 const taxonomyOptions = getTaxonomyOptions();
 const formatOptions = getOptions('formats');
+const orderOptions = getOptions('order');
 
 export default function PostsPanel({
 	taxonomies,
@@ -27,6 +28,8 @@ export default function PostsPanel({
 	onShowDateChange,
 	postTypes,
 	onPostTypesChange,
+	order,
+	onOrderChange,
 }) {
 
 	return [
@@ -52,6 +55,14 @@ export default function PostsPanel({
 				label={ __( 'Post Types' ) }
 				onChange={ onPostTypesChange }
 				postTypes={ postTypes }
+			/>),
+		onOrderChange && (
+			<SelectControl
+				key="rpbt-select-order"
+				label={ __( 'Order posts' ) }
+				value={ `${ order }` }
+				options={  orderOptions }
+				onChange={ ( value ) => { onOrderChange( value ); } }
 			/>),
 		onFormatChange && (
 			<SelectControl

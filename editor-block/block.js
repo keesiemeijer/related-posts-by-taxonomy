@@ -38,18 +38,19 @@ export class RelatedPostsBlock extends Component {
 		this.onTitleChange = this.onTitleChange.bind(this);
 		this.titleDebounced = debounce(this.updateTitle, 1000);
 
-		this.toggleLinkCaption = this.createToggleAttribute( 'link_caption' );
-		this.toggleShowDate = this.createToggleAttribute( 'show_date' );
+		this.toggleLinkCaption = this.createToggleAttribute('link_caption');
+		this.toggleShowDate = this.createToggleAttribute('show_date');
 
 		this.instanceId = instances++;
 	}
 
-	createToggleAttribute( propName ) {
+	createToggleAttribute(propName) {
 		return () => {
-			const value = this.props.attributes[ propName ];
+			const value = this.props.attributes[propName];
 			const { setAttributes } = this.props;
 
-			setAttributes( { [ propName ]: ! value } );
+			setAttributes({
+				[propName]: !value });
 		};
 	}
 
@@ -76,7 +77,7 @@ export class RelatedPostsBlock extends Component {
 
 	render() {
 		const { attributes, setAttributes, editorData, postType, postID } = this.props;
-		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption, show_date } = attributes;
+		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption, show_date, order } = attributes;
 		const titleID = 'inspector-text-control-' + this.instanceId;
 		const className = classnames(this.props.className, { 'rpbt-html5-gallery': ('thumbnails' === format) && this.html5Gallery });
 
@@ -128,6 +129,8 @@ export class RelatedPostsBlock extends Component {
 							onTaxonomiesChange={ ( value ) => setAttributes( { taxonomies: value } ) }
 							format={ format }
 							onFormatChange={ ( value ) => setAttributes( { format: value } ) }
+							order={ order }
+							onOrderChange={ ( value ) => setAttributes( { order: value } ) }
 							showDate={show_date}
 							onShowDateChange={ this.toggleShowDate }
 							postTypes={ checkedPostTypes }

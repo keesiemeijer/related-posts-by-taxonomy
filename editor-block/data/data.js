@@ -12,6 +12,7 @@ const _defaults = {
 	post_types: { type: 'object' },
 	taxonomies: { type: 'object' },
 	formats: { type: 'object' },
+	order: { type: 'object' },
 	image_sizes: { type: 'object' },
 	default_tax: { type: 'string' },
 	all_tax: { type: 'string' },

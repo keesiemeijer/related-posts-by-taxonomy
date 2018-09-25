@@ -68,6 +68,12 @@ function km_rpbt_block_editor_assets() {
 		array( 'wp-edit-blocks' )
 	);
 
+	$order = array(
+		'DESC' => __('Most terms in common', 'related-posts-by-taxonomy'),
+		'ASC'  => __('Least terms in common', 'related-posts-by-taxonomy'),
+		'RAND' => __('Randomly', 'related-posts-by-taxonomy'),
+	);
+
 	wp_localize_script( 'rpbt-related-posts-block', 'km_rpbt_plugin_data',
 		array(
 			'post_types'       => $plugin->post_types,
@@ -76,6 +82,7 @@ function km_rpbt_block_editor_assets() {
 			'all_tax'          => $plugin->all_tax,
 			'formats'          => $plugin->formats,
 			'image_sizes'      => $plugin->image_sizes,
+			'order'            => $order,
 			'preview'          => (bool) $plugin->plugin_supports( 'editor_block_preview' ),
 			'html5_gallery'    => (bool) current_theme_supports( 'html5', 'gallery' ),
 			'default_category' => absint( get_option( 'default_category' ) ),
@@ -99,7 +106,7 @@ function km_rpbt_register_block_type() {
 	register_block_type( 'related-posts-by-taxonomy/related-posts-block', array(
 			'attributes' => array(
 				'taxonomies' => array(
-					'type' => 'string',
+					'type'    => 'string',
 					'default' => 'all',
 				),
 				'post_types' => array(
@@ -109,27 +116,31 @@ function km_rpbt_register_block_type() {
 					'type' => 'string',
 				),
 				'title' => array(
-					'type' => 'string',
+					'type'    => 'string',
 					'default' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
 				),
 				'posts_per_page' => array(
-					'type' => 'int',
+					'type'    => 'int',
 					'default' => 5,
 				),
+				'order' => array(
+					'type'    => 'string',
+					'default' => 'DESC',
+				),
 				'post_id' => array(
-					'type' => 'int',
+					'type'    => 'int',
 					'default' => 0,
 				),
 				'format' => array(
-					'type' => 'string',
+					'type'    => 'string',
 					'default' => 'links',
 				),
 				'image_size' => array(
-					'type' => 'string',
+					'type'    => 'string',
 					'default' => 'thumbnail',
 				),
 				'columns' => array(
-					'type' => 'int',
+					'type'    => 'int',
 					'default' => 3,
 				),
 				'link_caption' => array(

@@ -275,6 +275,7 @@ var _defaults = {
 	post_types: { type: 'object' },
 	taxonomies: { type: 'object' },
 	formats: { type: 'object' },
+	order: { type: 'object' },
 	image_sizes: { type: 'object' },
 	default_tax: { type: 'string' },
 	all_tax: { type: 'string' },
@@ -5469,7 +5470,8 @@ var RelatedPostsBlock = function (_Component) {
 			    image_size = attributes.image_size,
 			    columns = attributes.columns,
 			    link_caption = attributes.link_caption,
-			    show_date = attributes.show_date;
+			    show_date = attributes.show_date,
+			    order = attributes.order;
 
 			var titleID = 'inspector-text-control-' + this.instanceId;
 			var className = __WEBPACK_IMPORTED_MODULE_2_classnames___default()(this.props.className, { 'rpbt-html5-gallery': 'thumbnails' === format && this.html5Gallery });
@@ -5535,6 +5537,10 @@ var RelatedPostsBlock = function (_Component) {
 							format: format,
 							onFormatChange: function onFormatChange(value) {
 								return setAttributes({ format: value });
+							},
+							order: order,
+							onOrderChange: function onOrderChange(value) {
+								return setAttributes({ order: value });
 							},
 							showDate: show_date,
 							onShowDateChange: this.toggleShowDate,
@@ -5937,6 +5943,7 @@ var _wp$components = wp.components,
 // Select input options
 var taxonomyOptions = getTaxonomyOptions();
 var formatOptions = Object(__WEBPACK_IMPORTED_MODULE_1__data_options__["a" /* getOptions */])('formats');
+var orderOptions = Object(__WEBPACK_IMPORTED_MODULE_1__data_options__["a" /* getOptions */])('order');
 
 function PostsPanel(_ref) {
 	var taxonomies = _ref.taxonomies,
@@ -5948,7 +5955,9 @@ function PostsPanel(_ref) {
 	    showDate = _ref.showDate,
 	    onShowDateChange = _ref.onShowDateChange,
 	    postTypes = _ref.postTypes,
-	    onPostTypesChange = _ref.onPostTypesChange;
+	    onPostTypesChange = _ref.onPostTypesChange,
+	    order = _ref.order,
+	    onOrderChange = _ref.onOrderChange;
 
 
 	return [onPostsPerPageChange && wp.element.createElement(RangeControl, {
@@ -5970,6 +5979,14 @@ function PostsPanel(_ref) {
 		label: __('Post Types'),
 		onChange: onPostTypesChange,
 		postTypes: postTypes
+	}), onOrderChange && wp.element.createElement(SelectControl, {
+		key: 'rpbt-select-order',
+		label: __('Order posts'),
+		value: '' + order,
+		options: orderOptions,
+		onChange: function onChange(value) {
+			onOrderChange(value);
+		}
 	}), onFormatChange && wp.element.createElement(SelectControl, {
 		key: 'rpbt-select-format',
 		label: __('Format'),
