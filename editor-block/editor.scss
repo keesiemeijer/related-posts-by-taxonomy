@@ -53,7 +53,7 @@ $block-class: wp-block-related-posts-by-taxonomy-related-posts-block;
 	}
 }
 
-.#{$block-class} {
+.gutenberg .#{$block-class} {
 	ul {
 		padding-left: 2.5em;
 	}
@@ -88,7 +88,7 @@ $block-class: wp-block-related-posts-by-taxonomy-related-posts-block;
 	padding-top: 16px;
 }
 
-body.rtl .#{$block-class} {
+body.rtl .gutenberg .#{$block-class} {
 	ul {
 		padding-right: 2.5em;
 	}
