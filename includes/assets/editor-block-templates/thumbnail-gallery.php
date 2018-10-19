@@ -45,6 +45,7 @@
 			'size'          => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
 			'caption'       => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
 			'link_caption'  => $rpbt_args['link_caption'],
+			'show_date'     => $rpbt_args['show_date'],
 			'gallery_class' => '',
 		);
 
