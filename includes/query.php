@@ -52,15 +52,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args = '' ) {
 	global $wpdb;
 
-	// Get valid taxonomies.
+	$post_id    = absint( $post_id );
 	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
+	$args       = km_rpbt_sanitize_args( $args );
+	$related    = $args['related'];
 
-	if ( ! absint( $post_id ) || empty( $taxonomies ) ) {
+	// Check if this is a query for unrelated terms.
+	$unrelated_terms = ! $related && $args['terms'];
+
+	if ( ! $post_id || ( ! $unrelated_terms && empty( $taxonomies ) ) ) {
+		// Invalid post ID or invalid taxonomies
 		return array();
 	}
 
-	$args  = km_rpbt_sanitize_args( $args );
-	$terms = km_rpbt_get_terms( $post_id, $taxonomies, $args );
+	if ( ! $unrelated_terms ) {
+		$terms = km_rpbt_get_terms( $post_id, $taxonomies, $args );
+	} else {
+		$terms   = $args['terms'];
+		$related = true;
+	}
 
 	if ( empty( $terms ) ) {
 		return array();
@@ -68,11 +78,6 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 
 	$args['related_terms'] = $terms;
 	$args['termcount']     = array();
-
-	$related = $args['related'];
-	if ( ! $related && $args['terms'] ) {
-		$related = true;
-	}
 
 	// Term ids sql.
 	if ( count( $terms ) > 1 ) {
