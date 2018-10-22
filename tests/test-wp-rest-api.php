@@ -1,6 +1,8 @@
 <?php
 /**
  * Tests for the WordPress REST API in wp-rest-api.php
+ *
+ * @group Rest_API
  */
 class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
@@ -311,6 +313,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test invalid function arguments.
+	 * @group fails
 	 *
 	 * @requires function WP_REST_Controller::register_routes
 	 */
@@ -332,19 +335,19 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$fail2 = $this->rest_related_posts_by_taxonomy( 9999999999, $taxonomies, $args );
 		$this->assertSame( 'rest_post_invalid_id', $fail2, 'Non existant post ID' );
 
-		// Nonexistent taxonomy.
-		$fail3 = $this->rest_related_posts_by_taxonomy( $posts[0], 'not a taxonomy', $args );
-		$this->assertSame( $fail3, 'rest_post_invalid_parameters', 'Non existant taxonomy' );
-
 		//Empty taxonomy should default to all taxonomies.
 		$fail4 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
 		$this->assertNotEmpty( $fail4, 'empty string' );
+
+		// Nonexistent taxonomy.
+		$fail3 = $this->rest_related_posts_by_taxonomy( $posts[0], 'not a taxonomy', $args );
+		$this->assertEmpty( $fail3, 'Non existant taxonomy' );
 
 		// Nonexistent post type.
 		$args['post_types'] = 'not a post type';
 		// Non existant post_type.
 		$fail5 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
-		$this->assertSame( $fail5, 'rest_post_invalid_parameters', 'Non existant taxonomy' );
+		$this->assertEmpty( $fail5, 'Non existant post type' );
 	}
 
 	/**

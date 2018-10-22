@@ -75,6 +75,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 		return '';
 	}
 
+	// This function can be used by other features to display related posts.
 	$type = isset( $atts['type'] ) ? $atts['type'] : 'shortcode';
 	if ( ! is_valid_settings_type( $type ) || ! km_rpbt_plugin_supports( $type ) ) {
 		$recursing = false;
