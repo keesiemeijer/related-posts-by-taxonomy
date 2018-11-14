@@ -1,1 +1,34 @@
-"use strict";var precacheConfig=[["/related-posts-by-taxonomy/index.html","bac2ac85276ead7c281999fcc0d37758"],["/related-posts-by-taxonomy/static/css/main.60a9bb03.css","b588bd72956ef2a68c773608e18f06f6"],["/related-posts-by-taxonomy/static/js/0.9c59074b.chunk.js","9ab889834dfc03813a3648f753d50e30"],["/related-posts-by-taxonomy/static/js/1.0a7e4b0c.chunk.js","0edea3dad281024ee88080ad43d06b2a"],["/related-posts-by-taxonomy/static/js/10.d113a431.chunk.js","7faed0f6259d518d3c4ec45797881a6a"],["/related-posts-by-taxonomy/static/js/11.b176e8c1.chunk.js","27bbd40556af3ae9b84a54e2eb306ace"],["/related-posts-by-taxonomy/static/js/12.54630a72.chunk.js","082ede6a2161b206f0fdaf36a115adfa"],["/related-posts-by-taxonomy/static/js/13.2c586db8.chunk.js","30f84335960db585a8710da6d8e7dae6"],["/related-posts-by-taxonomy/static/js/14.4471c884.chunk.js","43aa3bafbb34d97f470ac1763f38208b"],["/related-posts-by-taxonomy/static/js/15.44252a04.chunk.js","09096920ee1a8508cc8192a66bbb5343"],["/related-posts-by-taxonomy/static/js/16.e3e432d9.chunk.js","3843ecb9265a666c007237b1c8cf8ffd"],["/related-posts-by-taxonomy/static/js/17.393ebe86.chunk.js","e1d1c0e09ba38a599ad8e30e6bae8f62"],["/related-posts-by-taxonomy/static/js/18.861a87cd.chunk.js","446cf43ad58fb4ac5e0fa9526f569dcc"],["/related-posts-by-taxonomy/static/js/19.071e80b6.chunk.js","8412bd31eb46b498429296bca79fde7e"],["/related-posts-by-taxonomy/static/js/2.5b0e9e7b.chunk.js","9bc0937c847193f29a3201d773e85ce2"],["/related-posts-by-taxonomy/static/js/3.445f2b0b.chunk.js","f6e6ee29908221aa6d418fbcdba9d6e6"],["/related-posts-by-taxonomy/static/js/4.4f557414.chunk.js","25e83497da6c6be6e516e783ed48f760"],["/related-posts-by-taxonomy/static/js/5.2d2a8f19.chunk.js","75f4b8dcbd2448f7d5995b21653bab7c"],["/related-posts-by-taxonomy/static/js/6.e50945f7.chunk.js","81882f696c7ab7373972ea3e2756e965"],["/related-posts-by-taxonomy/static/js/7.2dae5601.chunk.js","9feb86fdb37e2282ff279c63dee9fafb"],["/related-posts-by-taxonomy/static/js/8.5b6c70b5.chunk.js","d992d7cf6d34618c5016a8aaf2646f1e"],["/related-posts-by-taxonomy/static/js/9.22dd155e.chunk.js","4a88a7474b5af5ee182953b17da5eab9"],["/related-posts-by-taxonomy/static/js/main.ef39fce3.js","9d99b4bb030fa735d21ddf32dfddf30e"]],cacheName="sw-precache-v3-sw-precache-webpack-plugin-"+(self.registration?self.registration.scope:""),ignoreUrlParametersMatching=[/^utm_/],addDirectoryIndex=function(e,t){var a=new URL(e);return"/"===a.pathname.slice(-1)&&(a.pathname+=t),a.toString()},cleanResponse=function(t){return t.redirected?("body"in t?Promise.resolve(t.body):t.blob()).then(function(e){return new Response(e,{headers:t.headers,status:t.status,statusText:t.statusText})}):Promise.resolve(t)},createCacheKey=function(e,t,a,s){var n=new URL(e);return s&&n.pathname.match(s)||(n.search+=(n.search?"&":"")+encodeURIComponent(t)+"="+encodeURIComponent(a)),n.toString()},isPathWhitelisted=function(e,t){if(0===e.length)return!0;var a=new URL(t).pathname;return e.some(function(e){return a.match(e)})},stripIgnoredUrlParameters=function(e,a){var t=new URL(e);return t.hash="",t.search=t.search.slice(1).split("&").map(function(e){return e.split("=")}).filter(function(t){return a.every(function(e){return!e.test(t[0])})}).map(function(e){return e.join("=")}).join("&"),t.toString()},hashParamName="_sw-precache",urlsToCacheKeys=new Map(precacheConfig.map(function(e){var t=e[0],a=e[1],s=new URL(t,self.location),n=createCacheKey(s,hashParamName,a,/\.\w{8}\./);return[s.toString(),n]}));function setOfCachedUrls(e){return e.keys().then(function(e){return e.map(function(e){return e.url})}).then(function(e){return new Set(e)})}self.addEventListener("install",function(e){e.waitUntil(caches.open(cacheName).then(function(s){return setOfCachedUrls(s).then(function(a){return Promise.all(Array.from(urlsToCacheKeys.values()).map(function(t){if(!a.has(t)){var e=new Request(t,{credentials:"same-origin"});return fetch(e).then(function(e){if(!e.ok)throw new Error("Request for "+t+" returned a response with status "+e.status);return cleanResponse(e).then(function(e){return s.put(t,e)})})}}))})}).then(function(){return self.skipWaiting()}))}),self.addEventListener("activate",function(e){var a=new Set(urlsToCacheKeys.values());e.waitUntil(caches.open(cacheName).then(function(t){return t.keys().then(function(e){return Promise.all(e.map(function(e){if(!a.has(e.url))return t.delete(e)}))})}).then(function(){return self.clients.claim()}))}),self.addEventListener("fetch",function(t){if("GET"===t.request.method){var e,a=stripIgnoredUrlParameters(t.request.url,ignoreUrlParametersMatching),s="index.html";(e=urlsToCacheKeys.has(a))||(a=addDirectoryIndex(a,s),e=urlsToCacheKeys.has(a));var n="/related-posts-by-taxonomy/index.html";!e&&"navigate"===t.request.mode&&isPathWhitelisted(["^(?!\\/__).*"],t.request.url)&&(a=new URL(n,self.location).toString(),e=urlsToCacheKeys.has(a)),e&&t.respondWith(caches.open(cacheName).then(function(e){return e.match(urlsToCacheKeys.get(a)).then(function(e){if(e)return e;throw Error("The cached response that was expected is missing.")})}).catch(function(e){return console.warn('Couldn\'t serve response for "%s" from cache: %O',t.request.url,e),fetch(t.request)}))}});
+/**
+ * Welcome to your Workbox-powered service worker!
+ *
+ * You'll need to register this file in your web app and you should
+ * disable HTTP caching for this file too.
+ * See https://goo.gl/nhQhGp
+ *
+ * The rest of the code is auto-generated. Please don't update this file
+ * directly; instead, make changes to your Workbox build configuration
+ * and re-run your build process.
+ * See https://goo.gl/2aRDsh
+ */
+
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
+
+importScripts(
+  "/keesiemeijer/github-pages-code-reference/precache-manifest.a6993f57122acfb6cedff24a4ae45692.js"
+);
+
+workbox.clientsClaim();
+
+/**
+ * The workboxSW.precacheAndRoute() method efficiently caches and responds to
+ * requests for URLs in the manifest.
+ * See https://goo.gl/S9QRab
+ */
+self.__precacheManifest = [].concat(self.__precacheManifest || []);
+workbox.precaching.suppressWarnings();
+workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+
+workbox.routing.registerNavigationRoute("/keesiemeijer/github-pages-code-reference/index.html", {
+  
+  blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
+});
