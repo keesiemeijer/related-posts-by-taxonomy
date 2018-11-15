@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/keesiemeijer/github-pages-code-reference/precache-manifest.a6993f57122acfb6cedff24a4ae45692.js"
+  "/keesiemeijer/github-pages-code-reference/precache-manifest.92f2908ffa716d2b27f76de6118a67e5.js"
 );
 
 workbox.clientsClaim();
