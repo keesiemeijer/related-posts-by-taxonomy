@@ -182,12 +182,13 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		$order_by_sql .= "$wpdb->posts.$orderby";
 	}
 
-	$meta_query = apply_filters( 'related_posts_by_taxonomy_posts_meta_query', array(), $post_id, $taxonomies, $args );
-	$meta_query = is_array( $meta_query ) ? $meta_query : array();
-
+	$meta_query = array();
 	if ( $args['post_thumbnail'] ) {
 		$meta_query[] = array( 'key' => '_thumbnail_id' );
 	}
+
+	$meta_query = apply_filters( 'related_posts_by_taxonomy_posts_meta_query', $meta_query, $post_id, $taxonomies, $args );
+	$meta_query = is_array( $meta_query ) ? $meta_query : array();
 
 	$meta_join_sql = $meta_where_sql = '';
 	if ( ! empty( $meta_query ) ) {
