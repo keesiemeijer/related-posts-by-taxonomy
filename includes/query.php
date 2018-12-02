@@ -187,14 +187,16 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		$order_by_sql .= "$wpdb->posts.$orderby";
 	}
 
-	// Post thumbnail sql.
-	$meta_join_sql = $meta_where_sql = '';
+	$meta_query = array();
 	if ( $args['post_thumbnail'] ) {
-		$meta_query = array(
-			array(
-				'key' => '_thumbnail_id',
-			),
-		);
+		$meta_query[] = array( 'key' => '_thumbnail_id' );
+	}
+
+	$meta_query = apply_filters( 'related_posts_by_taxonomy_posts_meta_query', $meta_query, $post_id, $taxonomies, $args );
+	$meta_query = is_array( $meta_query ) ? $meta_query : array();
+
+	$meta_join_sql = $meta_where_sql = '';
+	if ( ! empty( $meta_query ) ) {
 		$meta = get_meta_sql( $meta_query, 'post', $wpdb->posts, 'ID' );
 		$meta_join_sql = ( isset( $meta['join'] ) && $meta['join'] ) ? $meta['join'] : '';
 		$meta_where_sql = ( isset( $meta['where'] ) && $meta['where'] ) ? $meta['where'] : '';
