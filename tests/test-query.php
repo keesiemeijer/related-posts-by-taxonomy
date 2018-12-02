@@ -1,6 +1,8 @@
 <?php
 /**
  * Tests for the km_rpbt_query_related_posts() function in functions.php.
+ *
+ * @group Query
  */
 class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
@@ -12,6 +14,7 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 	function tearDown() {
 		parent::tearDown();
 		remove_filter( 'related_posts_by_taxonomy_posts_orderby', array( $this, 'return_first_argument' ), 10, 4 );
+		remove_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'meta_query_callback' ), 10, 4 );
 	}
 
 	/**
@@ -310,7 +313,7 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
 
 		$args['related'] = true;
-	    $args['taxonomies'][] = 'ctax';
+		$args['taxonomies'][] = 'ctax';
 		// Post 2 should now be related as the 'ctax' taxonomy is queried.
 		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
@@ -424,6 +427,32 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		);
 		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test meta query.
+	 */
+	function test_meta_query() {
+		$this->setup_posts();
+
+		// Fake post thumbnails for post 1 and 3
+		add_post_meta( $this->posts[1], '_thumbnail_id' , 22 ); // fake attachment ID's
+		add_post_meta( $this->posts[3], '_thumbnail_id' , 33 );
+
+		// add meta value for meta query filter to post 3
+		add_post_meta( $this->posts[3], 'meta_key' , 'meta_value' );
+
+		$args = array(
+			'post_thumbnail' => true,
+			'fields'         => 'ids',
+			'taxonomies'     => $this->taxonomies,
+		);
+
+		// Adds meta_query array( 'key' => 'meta_key', 'value' => 'meta_value');
+		add_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'meta_query_callback' ), 10, 4 );
+
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
+		$this->assertEquals( array( $this->posts[3] ), $rel_post0 );
 	}
 
 	/**

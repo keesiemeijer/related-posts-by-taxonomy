@@ -21,6 +21,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_query_args' ), 10, 4 );
 		remove_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_wp_rest_api_args', array( $this, 'return_first_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'meta_query_callback' ), 10, 4 );
 	}
 
 	/**
@@ -559,6 +560,28 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$args       = array( 'post_thumbnail' => true, 'fields' => 'ids' );
 		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test meta query filter.
+	 */
+	function test_meta_query() {
+		$this->setup_posts();
+
+		// Fake post thumbnails for post 1 and 3
+		add_post_meta( $this->posts[1], '_thumbnail_id' , 22 ); // fake attachment ID's
+		add_post_meta( $this->posts[3], '_thumbnail_id' , 33 );
+
+		// add meta value for meta query filter to post 3
+		add_post_meta( $this->posts[3], 'meta_key' , 'meta_value' );
+
+		$args = array( 'post_thumbnail' => true, 'fields' => 'ids' );
+
+		// Adds meta_query array( 'key' => 'meta_key', 'value' => 'meta_value');
+		add_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'meta_query_callback' ), 10, 4 );
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[3] ), $rel_post0 );
 	}
 
 	/**
