@@ -235,16 +235,51 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	return $terms;
 }
 
+function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
+	 $related_posts = is_array($related_posts) ? $related_posts : array();
+
+	if ( ! ( isset( $rpbt_args['type'] ) && is_valid_settings_type( $rpbt_args['type'] ) ) ) {
+		return '';
 	}
 
+	/* make sure all defaults are present */
+	$rpbt_args = array_merge( km_rpbt_get_default_settings( $rpbt_args['type'] ), $rpbt_args );
 
+	/* get the template depending on the format  */
+	$template = km_rpbt_get_template( $rpbt_args['format'], $rpbt_args['type'] );
 
+	if ( ! $template ) {
+		return '';
 	}
 
+	if ( $rpbt_args['title'] ) {
+		$rpbt_args['title'] = $rpbt_args['before_title'] . $rpbt_args['title'] . $rpbt_args['after_title'];
 	}
 
+	global $post; // Used for setup_postdata() in templates.
+
+	/* public template variables (back-compat) */
+	$image_size = $rpbt_args['image_size']; // deprecated in version 0.3.
+	$columns    = absint( $rpbt_args['columns'] ); // deprecated in version 0.3.
+
+	ob_start();
+	require $template;
+	$output = ob_get_clean();
+	$output = trim( $output );
+	wp_reset_postdata(); // Clean up global $post variable.
+
+	$before = "before_{$rpbt_args['type']}";
+	$after  = "after_{$rpbt_args['type']}";
+	
+	$html = '';
+	if ( $output ) {
+		$html =  isset( $rpbt_args[$before] ) ? $rpbt_args[$before]  . "\n" : '';
+		$html .= trim( $rpbt_args['title'] ) . "\n";
+		$html .= $output . "\n";
+		$html .=  isset( $rpbt_args[$after] ) ? $rpbt_args[$after]  . "\n" : '';
 	}
 
+	return trim( $html );
 }
 
 /**
