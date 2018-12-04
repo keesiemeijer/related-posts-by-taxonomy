@@ -149,21 +149,19 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		return $settings;
 	}
 
-	$rest_api_type = ( 'wp_rest_api' === $type ) ? $type : '';
-
-	// wp_rest_api settings are the same as a shortcode.
-	$type = $rest_api_type ? 'shortcode' : $type;
+	$markup_types = array( 'shortcode', 'wp_rest_api' );
 
 	// Custom settings for the shortcode and rest api types.
-	if ( 'shortcode' === $type ) {
-		$shortcode_args = array(
-			'before_shortcode' => '<div class="rpbt_shortcode">',
-			'after_shortcode'  => '</div>',
+	if ( in_array( $type, $markup_types ) ) {
+		$markup_args = array(
+			// back compat: double quoted class attribute
+			"before_{$type}" => '<div class="rpbt_' . $type . '">',
+			"after_{$type}"  => '</div>',
 			'before_title'     => '<h3>',
 			'after_title'      => '</h3>',
 		);
 
-		$settings = array_merge( $settings, $shortcode_args );
+		$settings = array_merge( $settings, $markup_args );
 	}
 
 	// Custom settings for the widget.
@@ -172,13 +170,7 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		$settings['singular_template'] = false;
 	}
 
-	// Custom settings for the WP rest API.
-	if ( $rest_api_type ) {
-		$settings['before_shortcode'] = "<div class=\"rpbt_{$rest_api_type}\">";
-		$settings['after_shortcode']  = '</div>';
-	}
-
-	$settings['type'] = $rest_api_type ? $rest_api_type : $type;
+	$settings['type'] = $type;
 
 	return $settings;
 }
@@ -236,7 +228,7 @@ function km_rpbt_sanitize_args( $args ) {
  * Validate arguments in common with all plugin features.
  *
  * @since 2.5.2
- * 
+ *
  * @param array  $args Array with common arguments.
  * @param string $type Type of plugin feature arguments.
  * @return array Validated arguments.

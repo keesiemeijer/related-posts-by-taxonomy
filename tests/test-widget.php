@@ -1,6 +1,8 @@
 <?php
 /**
  * Tests for the widget in /includes/widget.php
+ *
+ * @group Widget
  */
 class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
@@ -240,7 +242,8 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
 		// expected related posts are post 1,2,3
 		$expected = <<<EOF
-<section><h2>Related Posts</h2>
+<section>
+<h2>Related Posts</h2>
 <ul>
 <li>
 <a href="{$permalinks[1]}">{$_posts[1]->post_title}</a>
@@ -291,14 +294,15 @@ EOF;
 		$permalinks = array_map( 'get_permalink', $ids );
 		$date       = array();
 		$datetime   = array();
-		foreach($_posts as $post) {
+		foreach ( $_posts as $post ) {
 			$date[] = get_the_date( '', $post );
 			$datetime[] = get_the_date( DATE_W3C, $post );
 		}
 
 		// expected related posts are post 1,2,3
 		$expected = <<<EOF
-<section><h2>Related Posts</h2>
+<section>
+<h2>Related Posts</h2>
 <ul>
 <li>
 <a href="{$permalinks[1]}">{$_posts[1]->post_title}</a> <time class="rpbt-post-date" datetime="{$datetime[1]}">{$date[1]}</time>
@@ -339,7 +343,7 @@ EOF;
 
 		$instance = array( 'post_id' => $posts[0], 'show_date' => true );
 		$widget->_set( 2 );
-		$widget->form($instance);
+		$widget->form( $instance );
 		$output = ob_get_clean();
 
 		$pieces = array(
@@ -357,7 +361,7 @@ EOF;
 			'post_id',
 		);
 
-		foreach ($pieces as $class) {
+		foreach ( $pieces as $class ) {
 			$this->assertContains( 'class="rpbt_' . $class . '"', $output );
 		}
 	}

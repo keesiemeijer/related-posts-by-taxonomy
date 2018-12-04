@@ -236,7 +236,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 }
 
 function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
-	 $related_posts = is_array($related_posts) ? $related_posts : array();
+	$related_posts = is_array( $related_posts ) ? $related_posts : array();
 
 	if ( ! ( isset( $rpbt_args['type'] ) && is_valid_settings_type( $rpbt_args['type'] ) ) ) {
 		return '';
@@ -270,13 +270,13 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 
 	$before = "before_{$rpbt_args['type']}";
 	$after  = "after_{$rpbt_args['type']}";
-	
+
 	$html = '';
 	if ( $output ) {
-		$html =  isset( $rpbt_args[$before] ) ? $rpbt_args[$before]  . "\n" : '';
+		$html =  isset( $rpbt_args[ $before ] ) ? $rpbt_args[ $before ]  . "\n" : '';
 		$html .= trim( $rpbt_args['title'] ) . "\n";
 		$html .= $output . "\n";
-		$html .=  isset( $rpbt_args[$after] ) ? $rpbt_args[$after]  . "\n" : '';
+		$html .=  isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ]  . "\n" : '';
 	}
 
 	return trim( $html );
