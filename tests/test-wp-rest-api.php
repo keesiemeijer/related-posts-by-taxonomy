@@ -306,7 +306,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$posts = $this->posts;
 
 		$args = array( 'post_types' => array( 'rel_cpt', 'post' ), 'fields' => 'ids' );
-		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], false, $args );
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
 
 		// Should default to query in all taxonomies
 		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
@@ -338,7 +338,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 		//Empty taxonomy should default to all taxonomies.
 		$fail4 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
-		$this->assertNotEmpty( $fail4, 'empty string' );
+		$this->assertNotEmpty( $fail4, 'no taxonomies' );
 
 		// Nonexistent taxonomy.
 		$fail3 = $this->rest_related_posts_by_taxonomy( $posts[0], 'not a taxonomy', $args );
