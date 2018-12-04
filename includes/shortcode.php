@@ -75,17 +75,38 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 		return '';
 	}
 
-	// This function can be used by other features to display related posts.
-	$type = isset( $atts['type'] ) ? $atts['type'] : 'shortcode';
-	if ( ! is_valid_settings_type( $type ) || ! km_rpbt_plugin_supports( $type ) ) {
+	if ( ! km_rpbt_plugin_supports( 'shortcode' ) ) {
 		$recursing = false;
 		return '';
 	}
 
-	// Filter and validate shortcode arguments.
-	$atts = km_rpbt_filter_arguments( $atts, $type );
+	$defaults = km_rpbt_get_default_settings( 'shortcode' );
+
+	/**
+	 * Filter default shortcode attributes.
+	 *
+	 * @since 0.2.1
+	 *
+	 * @param array $defaults See $defaults above
+	 */
+	$defaults = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
+
+	/* Can also be filtered in WordPress > 3.5 (hook: shortcode_atts_related_posts_by_tax) */
+	$atts = shortcode_atts( (array) $defaults, $atts, 'related_posts_by_tax' );
+
+	/* Validates atts. Sets the post type and post id if not set in filters above */
+	$validated_args = km_rpbt_validate_shortcode_atts( (array) $atts );
+
+	/**
+	 * Filter shortcode attributes.
+	 *
+	 * @param array $atts See $defaults above
+	 */
+	$atts = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $validated_args );
+	$atts = array_merge( $validated_args, (array) $atts );
 
 	/* Un-filterable arguments */
+	$atts['type'] = 'shortcode';
 	$atts['fields'] = '';
 
 	// Get the related posts from database or cache.
@@ -96,7 +117,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 	 * Set by the related_posts_by_taxonomy_shortcode_hide_empty filter.
 	 * Default true.
 	 */
-	$hide_empty = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
+	$hide_empty = (bool) km_rpbt_plugin_supports( 'shortcode_hide_empty' );
 
 	$shortcode = '';
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
@@ -108,7 +129,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 	 *
 	 * @param string Display type, widget or shortcode.
 	 */
-	do_action( 'related_posts_by_taxonomy_after_display', $type );
+	do_action( 'related_posts_by_taxonomy_after_display', 'shortcode' );
 
 	$recursing = false;
 
@@ -117,6 +138,9 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 
 /**
  * Returns shortcode output.
+ * Validate shortcode arguments.
+ *
+ * Converts boolean strings to real booleans.
  *
  * @see km_rpbt_related_posts_by_taxonomy_shortcode()
  *
@@ -126,6 +150,10 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
  *                             See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
  *                             information on accepted arguments.
  * @return string Shortcode output.
+ * @param array $atts Array with shortcode arguments.
+ *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                    information on accepted arguments.
+ * @return array Array with validated shortcode arguments.
  */
 function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 
@@ -148,12 +176,20 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 	/* public template variables (back-compat) */
 	$image_size = $rpbt_args['image_size']; // deprecated in version 0.3.
 	$columns    = absint( $rpbt_args['columns'] ); // deprecated in version 0.3.
+function km_rpbt_validate_shortcode_atts( $atts ) {
+	$defaults = km_rpbt_get_default_settings( 'shortcode' );
+	$atts     = km_rpbt_validate_args( $atts, 'shortcode' );
 
 	ob_start();
 	require $template;
 	$output = ob_get_clean();
 	$output = trim( $output );
 	wp_reset_postdata(); // Clean up global $post variable.
+	// Convert (strings) to booleans or use defaults.
+	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
+	$atts['link_caption'] = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
+	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
+	$atts['show_date']    = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
 
 	$shortcode = '';
 	if ( $output ) {
@@ -161,7 +197,10 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
 		$shortcode .= trim( $rpbt_args['title'] ) . "\n";
 		$shortcode .= $output . "\n";
 		$shortcode .= $rpbt_args['after_shortcode'];
+	if ( 'regular_order' !== $atts['include_self'] ) {
+		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
 	}
 
 	return trim( $shortcode );
+	return km_rpbt_validate_booleans( $atts, $defaults );
 }
