@@ -90,9 +90,6 @@ function km_rpbt_block_editor_assets() {
 	);
 }
 
-// After the plugin is set up
-add_action( 'wp_loaded', 'km_rpbt_register_block_type', 15 );
-
 /**
  * Registers the render callback for the editor block.
  *

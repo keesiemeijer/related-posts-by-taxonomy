@@ -75,9 +75,6 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		// The Shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
 
-		// Ads the related posts editor block.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/editor-block.php';
-
 		// loads the different templates used for the widget and shortcode.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-loader.php';
 

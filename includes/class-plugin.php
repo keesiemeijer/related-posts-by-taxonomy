@@ -35,6 +35,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 			add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
 			add_action( 'wp_loaded', array( $this, 'cache_init' ) );
 			add_action( 'wp_loaded', array( $this, 'debug_init' ) );
+			add_action( 'wp_loaded', array( $this, 'editor_block_init'), 15 );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		}
 
@@ -77,6 +78,18 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 			if ( km_rpbt_plugin_supports( 'widget' ) ) {
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-widget.php';
 				register_widget( 'Related_Posts_By_Taxonomy' );
+			}
+		}
+
+		/**
+		 * Set up the editor block feature.
+		 *
+		 * @since 2.5.0
+		 */
+		public function editor_block_init() {
+			if ( km_rpbt_plugin_supports( 'editor_block' ) ) {
+				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/editor-block.php';
+				km_rpbt_register_block_type();
 			}
 		}
 

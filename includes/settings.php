@@ -152,7 +152,7 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		return $settings;
 	}
 
-	$markup_types = array( 'shortcode', 'wp_rest_api' );
+	$markup_types = array( 'shortcode', 'wp_rest_api', 'editor_block' );
 
 	// Custom settings for the shortcode and rest api types.
 	if ( in_array( $type, $markup_types ) ) {
