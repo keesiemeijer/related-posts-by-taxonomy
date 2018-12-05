@@ -235,6 +235,96 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	return $terms;
 }
 
+/**
+ * Related posts feature html.
+ *
+ * @since  2.5.2
+ * @param string $type                Type of feature.
+ * @param array  $args                See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                                    information on accepted arguments.
+ * @param mixed  $validation_callback Callback function for argument validation.
+ * @return string feature html or empty string.
+ */
+function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
+
+	/* for filter recursion (infinite loop) */
+	static $recursing = false;
+
+	if ( ! $recursing ) {
+		$recursing = true;
+	} else {
+		return '';
+	}
+
+	if ( ! ( is_valid_settings_type( $type ) && km_rpbt_plugin_supports( $type ) ) ) {
+		$recursing = false;
+		return '';
+	}
+
+	$settings = km_rpbt_get_default_settings( $type );
+
+	/**
+	 * Filter default feature attributes.
+	 *
+	 * @since 0.2.1
+	 *
+	 * @param array $defaults See $defaults above
+	 */
+	$defaults = apply_filters( "related_posts_by_taxonomy_{$type}_defaults", $settings );
+	$defaults = array_merge( $settings, (array) $defaults );
+
+	$filter_type = 'args';
+	if ( 'shortcode' === $type ) {
+		// Back compat
+		$args        = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
+		$filter_type = 'atts';
+	}
+
+	$args = array_merge( $defaults, (array) $args );
+	$args['type'] = $type;
+
+	if ( ! empty( $validation_callback ) ) {
+		$args = call_user_func( $validation_callback, $args );
+	}
+
+	/**
+	 * Filter feature attributes.
+	 *
+	 * @param array $args See $defaults above
+	 */
+	$args = apply_filters( "related_posts_by_taxonomy_{$type}_{$filter_type}", $args );
+	$args = array_merge( $defaults, (array) $args );
+
+	/* Un-filterable arguments */
+	$args['type'] = $type;
+	$args['fields'] = '';
+
+	// Get the related posts from database or cache.
+	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
+
+	/*
+	 * Whether to hide the feature if no related posts are found.
+	 * Default true.
+	 */
+	$hide_empty = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
+
+	$html = '';
+	if ( ! $hide_empty || ! empty( $related_posts ) ) {
+		$html = km_rpbt_get_related_posts_html( $related_posts, $args );
+	}
+
+	/**
+	 * Fires after the related posts are displayed.
+	 *
+	 * @param string Display type, widget or shortcode.
+	 */
+	do_action( 'related_posts_by_taxonomy_after_display', $type );
+
+	$recursing = false;
+
+	return $html;
+}
+
 function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 	$related_posts = is_array( $related_posts ) ? $related_posts : array();
 
