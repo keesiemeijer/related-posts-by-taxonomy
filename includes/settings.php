@@ -152,24 +152,19 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		return $settings;
 	}
 
-	$rest_type = '';
-	if ( ( 'wp_rest_api' === $type ) || ( 'editor_block' === $type ) ) {
-		$rest_type = $type;
-	}
-	
-	// wp_rest_api settings are the same as a shortcode.
-	$type = $rest_type ? 'shortcode' : $type;
+	$markup_types = array( 'shortcode', 'wp_rest_api' );
 
 	// Custom settings for the shortcode and rest api types.
-	if ( 'shortcode' === $type ) {
-		$shortcode_args = array(
-			'before_shortcode' => '<div class="rpbt_shortcode">',
-			'after_shortcode'  => '</div>',
+	if ( in_array( $type, $markup_types ) ) {
+		$markup_args = array(
+			// back compat: double quoted class attribute
+			"before_{$type}" => '<div class="rpbt_' . $type . '">',
+			"after_{$type}"  => '</div>',
 			'before_title'     => '<h3>',
 			'after_title'      => '</h3>',
 		);
 
-		$settings = array_merge( $settings, $shortcode_args );
+		$settings = array_merge( $settings, $markup_args );
 	}
 
 	// Custom settings for the widget.
@@ -178,13 +173,7 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		$settings['singular_template'] = false;
 	}
 
-	// Custom settings for the WP rest API.
-	if ( $rest_type ) {
-		$settings['before_shortcode'] = "<div class=\"rpbt_{$rest_type}\">";
-		$settings['after_shortcode']  = '</div>';
-	}
-
-	$settings['type'] = $rest_type ? $rest_type : $type;
+	$settings['type'] = $type;
 
 	return $settings;
 }
@@ -242,7 +231,7 @@ function km_rpbt_sanitize_args( $args ) {
  * Validate arguments in common with all plugin features.
  *
  * @since 2.5.2
- * 
+ *
  * @param array  $args Array with common arguments.
  * @param string $type Type of plugin feature arguments.
  * @return array Validated arguments.
@@ -273,83 +262,6 @@ function km_rpbt_validate_args( $args, $type ) {
 
 function km_rpbt_validate_editor_block_args( $args ) {
 	return km_rpbt_validate_args($args, 'editor_block');
-}
-
-/**
- * Validate shortcode arguments.
- *
- * Converts boolean strings to real booleans.
- *
- * @see km_rpbt_related_posts_by_taxonomy_shortcode()
- *
- * @since 2.1
- * @param array $atts Array with shortcode arguments.
- *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
- *                    information on accepted arguments.
- * @return array Array with validated shortcode arguments.
- */
-function km_rpbt_validate_shortcode_atts( $atts ) {
-	$defaults = km_rpbt_get_default_settings( 'shortcode' );
-	$atts     = km_rpbt_validate_args( $atts, 'shortcode' );
-
-	// Convert (strings) to booleans or use defaults.
-	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
-	$atts['link_caption'] = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
-	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
-	$atts['show_date']    = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
-
-	if ( 'regular_order' !== $atts['include_self'] ) {
-		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
-	}
-
-	return km_rpbt_validate_booleans( $atts, $defaults );
-}
-
-/**
- * Validate WP Rest API arguments.
- *
- * The post type of the current post is used if not provided.
- * Adds 'invalid_tax' to the arguments if none of the request taxonomies were valid.
- * Adds 'invalid_post_type' to the arguments if none of the request post_types were valid.
- *
- * @since 2.5.2
- * @param array $atts Array with WP Rest API arguments.
- *                    See km_rpbt_get_related_posts() for for more
- *                    information on accepted arguments.
- * @return array Array with validated WP Rest API arguments.
- */
-function km_rpbt_validate_wp_rest_api_args( $args ) {
-	$defaults = km_rpbt_get_default_settings( 'wp_rest_api' );
-
-	/* make sure all defaults are present */
-	$args = array_merge( $defaults, $args );
-
-	// Set post_thumbnail argument depending on format.
-	if ( 'thumbnails' === $args['format'] ) {
-		$args['post_thumbnail'] = true;
-	}
-
-	// Check taxonomies.
-	$taxonomies         = ! empty( $args['taxonomies'] );
-	$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
-	if ( $taxonomies && ! $args['taxonomies'] ) {
-		$args['invalid_tax'] = true;
-	}
-
-	// Check post types
-	$post_types = ! empty( $args['post_types'] );
-
-	// Default to the post type from the current post if no post types are in the request.
-	if ( ! $post_types ) {
-		$args['post_types'] = get_post_type( $args['post_id'] );
-	}
-
-	$args['post_types'] = km_rpbt_get_post_types( $args['post_types'] );
-	if ( $post_types && ! $args['post_types'] ) {
-		$args['invalid_post_type'] = true;
-	}
-
-	return $args;
 }
 
 /**

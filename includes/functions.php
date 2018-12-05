@@ -113,15 +113,14 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	if ( ! $post_id ) {
 		return array();
 	}
+	// Sanitize arguments.
+	$args = km_rpbt_sanitize_args( $args );
 
 	// Check if any taxonomies are used for the query.
 	$taxonomies = isset( $args['taxonomies'] ) ? $args['taxonomies'] : '';
 	if ( ! $taxonomies ) {
 		$args['taxonomies'] = km_rpbt_get_public_taxonomies();
 	}
-
-	// Sanitize arguments.
-	$args = km_rpbt_sanitize_args( $args );
 
 	// Set post_id the same as used for the $post_id parameter.
 	$args['post_id'] = $post_id;
@@ -236,67 +235,51 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	return $terms;
 }
 
-/**
- * Filter plugin feature arguments.
- *
- * Filter the km_rpbt_get_related_posts() function arguments called in
- * the widget, shortcode, rest API and cache.
- * 
- * Note: All arguments are filterable except the `$type` argument.
- *
- * @since 2.5.2
- *
- * @param array  $args Array with arguments.
- * @param string $type Type of plugin feature arguments.
- * @return array Filtered plugin feature arguments.
- */
-function km_rpbt_filter_arguments( $args, $type ) {
-	if ( ! is_valid_settings_type( $type ) ) {
-		return $args;
+function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
+	$related_posts = is_array( $related_posts ) ? $related_posts : array();
+
+	if ( ! ( isset( $rpbt_args['type'] ) && is_valid_settings_type( $rpbt_args['type'] ) ) ) {
+		return '';
 	}
 
-	$defaults  = km_rpbt_get_default_settings( $type );
-	$args_type = 'shortcode' === $type ? 'atts' : 'args';
+	/* make sure all defaults are present */
+	$rpbt_args = array_merge( km_rpbt_get_default_settings( $rpbt_args['type'] ), $rpbt_args );
 
-	if ( 'widget' !== $type ) {
+	/* get the template depending on the format  */
+	$template = km_rpbt_get_template( $rpbt_args['format'], $rpbt_args['type'] );
 
-		/**
-		 * Filter default arguments.
-		 *
-		 * @since 0.2.1
-		 *
-		 * @param array $defaults See $defaults above
-		 */
-		$defaults = apply_filters( "related_posts_by_taxonddomy_{$type}_defaults", $defaults );
-		$args     = array_merge( $defaults, (array) $args );
+	if ( ! $template ) {
+		return '';
 	}
 
-	if('shortcode' === $type) {
-		// Shortcode attributes are filterable with the shortcode_atts_related_posts_by_tax filter
-		$args = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
+	if ( $rpbt_args['title'] ) {
+		$rpbt_args['title'] = $rpbt_args['before_title'] . $rpbt_args['title'] . $rpbt_args['after_title'];
 	}
 
-	if ( function_exists( "km_rpbt_validate_{$type}_{$args_type}" ) ) {
-		$args = call_user_func( "km_rpbt_validate_{$type}_{$args_type}", $args );
-		$args = array_merge( $defaults, (array) $args );
+	global $post; // Used for setup_postdata() in templates.
+
+	/* public template variables (back-compat) */
+	$image_size = $rpbt_args['image_size']; // deprecated in version 0.3.
+	$columns    = absint( $rpbt_args['columns'] ); // deprecated in version 0.3.
+
+	ob_start();
+	require $template;
+	$output = ob_get_clean();
+	$output = trim( $output );
+	wp_reset_postdata(); // Clean up global $post variable.
+
+	$before = "before_{$rpbt_args['type']}";
+	$after  = "after_{$rpbt_args['type']}";
+
+	$html = '';
+	if ( $output ) {
+		$html =  isset( $rpbt_args[ $before ] ) ? $rpbt_args[ $before ]  . "\n" : '';
+		$html .= trim( $rpbt_args['title'] ) . "\n";
+		$html .= $output . "\n";
+		$html .=  isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ]  . "\n" : '';
 	}
 
-	// Unfilterable argument.
-	$args['type'] = $type;
-
-	/**
-	 * Filter (validated) arguments of a plugin feature.
-	 *
-	 * @since  2.3.0
-	 *
-	 * @param array $args Arguments.
-	 */
-	$args = apply_filters( "related_posts_by_taxonomy_{$type}_{$args_type}", $args );
-
-	// Unfilterable argument.
-	$args['type'] = $type;
-
-	return array_merge( $defaults, (array) $args );
+	return trim( $html );
 }
 
 /**

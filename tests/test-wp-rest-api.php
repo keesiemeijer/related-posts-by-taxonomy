@@ -1,6 +1,8 @@
 <?php
 /**
  * Tests for the WordPress REST API in wp-rest-api.php
+ *
+ * @group Rest_API
  */
 class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
@@ -19,6 +21,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_query_args' ), 10, 4 );
 		remove_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_wp_rest_api_args', array( $this, 'return_first_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'meta_query_callback' ), 10, 4 );
 	}
 
 	/**
@@ -151,6 +154,49 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		sort( $data );
 
 		$this->assertEquals( $expected, $data );
+	}
+
+	/**
+	 * Test success response for rest request.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_wp_rest_api_success_response_rendered() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+		//$request->set_param( 'fields', 'ids' );
+
+		$response = rest_do_request( $request );
+		// get post ids array and permalinks array
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $this->posts,
+				'order' => 'post__in',
+			)
+		);
+		$permalinks = array_map( 'get_permalink', $this->posts );
+		$data       = $response->get_data();
+
+		$expected = <<<EOF
+<div class="rpbt_wp_rest_api">
+<h3>Related Posts</h3>
+<ul>
+<li>
+<a href="{$permalinks[1]}">{$_posts[1]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[2]}">{$_posts[2]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[3]}">{$_posts[3]->post_title}</a>
+</li>
+</ul>
+</div>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $data['rendered'] ) );
 	}
 
 	/**
@@ -303,7 +349,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$posts = $this->posts;
 
 		$args = array( 'post_types' => array( 'rel_cpt', 'post' ), 'fields' => 'ids' );
-		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], false, $args );
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
 
 		// Should default to query in all taxonomies
 		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
@@ -311,6 +357,8 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test invalid function arguments.
+	 *
+	 * @group fails
 	 *
 	 * @requires function WP_REST_Controller::register_routes
 	 */
@@ -332,19 +380,19 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$fail2 = $this->rest_related_posts_by_taxonomy( 9999999999, $taxonomies, $args );
 		$this->assertSame( 'rest_post_invalid_id', $fail2, 'Non existant post ID' );
 
-		// Nonexistent taxonomy.
-		$fail3 = $this->rest_related_posts_by_taxonomy( $posts[0], 'not a taxonomy', $args );
-		$this->assertSame( $fail3, 'rest_post_invalid_parameters', 'Non existant taxonomy' );
-
 		//Empty taxonomy should default to all taxonomies.
 		$fail4 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
-		$this->assertNotEmpty( $fail4, 'empty string' );
+		$this->assertNotEmpty( $fail4, 'no taxonomies' );
+
+		// Nonexistent taxonomy.
+		$fail3 = $this->rest_related_posts_by_taxonomy( $posts[0], 'not a taxonomy', $args );
+		$this->assertEmpty( $fail3, 'Non existant taxonomy' );
 
 		// Nonexistent post type.
 		$args['post_types'] = 'not a post type';
 		// Non existant post_type.
 		$fail5 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
-		$this->assertSame( $fail5, 'rest_post_invalid_parameters', 'Non existant taxonomy' );
+		$this->assertEmpty( $fail5, 'Non existant post type' );
 	}
 
 	/**
@@ -556,6 +604,28 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$args       = array( 'post_thumbnail' => true, 'fields' => 'ids' );
 		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test meta query filter.
+	 */
+	function test_meta_query() {
+		$this->setup_posts();
+
+		// Fake post thumbnails for post 1 and 3
+		add_post_meta( $this->posts[1], '_thumbnail_id' , 22 ); // fake attachment ID's
+		add_post_meta( $this->posts[3], '_thumbnail_id' , 33 );
+
+		// add meta value for meta query filter to post 3
+		add_post_meta( $this->posts[3], 'meta_key' , 'meta_value' );
+
+		$args = array( 'post_thumbnail' => true, 'fields' => 'ids' );
+
+		// Adds meta_query array( 'key' => 'meta_key', 'value' => 'meta_value');
+		add_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'meta_query_callback' ), 10, 4 );
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[3] ), $rel_post0 );
 	}
 
 	/**

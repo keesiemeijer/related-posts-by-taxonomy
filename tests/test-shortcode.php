@@ -287,7 +287,7 @@ EOF;
 		$permalinks = array_map( 'get_permalink', $ids );
 		$date       = array();
 		$datetime   = array();
-		foreach($posts as $post) {
+		foreach ( $posts as $post ) {
 			$date[] = get_the_date( '', $post );
 			$datetime[] = get_the_date( DATE_W3C, $post );
 		}

@@ -1,6 +1,8 @@
 <?php
 /**
  * Tests for dependencies and various plugin functions
+ *
+ * @group Misc
  */
 class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 
@@ -60,6 +62,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 * @expectedDeprecated km_rpbt_related_posts_by_taxonomy
 	 * @expectedDeprecated km_rpbt_related_posts_by_taxonomy_validate_ids
 	 * @expectedDeprecated km_rpbt_related_posts_by_taxonomy_template
+	 * @expectedDeprecated km_rpbt_shortcode_output
 	 * @expectedDeprecated km_rpbt_shortcode_get_related_posts
 	 * @expectedDeprecated km_rpbt_related_posts_by_taxonomy_widget
 	 * @expectedDeprecated km_rpbt_get_related_post_title_link
@@ -92,7 +95,6 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$settings            = km_rpbt_get_default_settings( 'shortcode' );
 		$settings['post_id'] = $posts[0];
 		$sc_validate         = km_rpbt_validate_shortcode_atts( $settings );
-		$sc_output           = km_rpbt_shortcode_output( $_posts, $sc_validate );
 		$post_types          = km_rpbt_get_post_types( 'post,page' );
 		$taxonomies          = km_rpbt_get_taxonomies( $taxonomies );
 		$taxonomies2         = km_rpbt_get_public_taxonomies();
@@ -114,6 +116,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$id2        = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
 		$template   = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );
 		$rel_posts2 = km_rpbt_shortcode_get_related_posts( $posts[0], $taxonomies, $args );
+		$sc_output  = km_rpbt_shortcode_output( $_posts, $sc_validate );
 		$link       = km_rpbt_get_related_post_title_link( $_posts[0], true );
 		$sc_args    = km_rpbt_get_shortcode_atts();
 		$_args      = km_rpbt_get_default_args();
