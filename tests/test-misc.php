@@ -75,7 +75,11 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$_posts       = get_posts();
 		$args         =  array( 'fields' => 'ids' );
 		$taxonomies   = array( 'category', 'post_tag' );
-		unregister_block_type('related-posts-by-taxonomy/related-posts-block');
+
+		// Plugin editor block was already registered.
+		if( function_exists('unregister_block_type') ){
+			unregister_block_type('related-posts-by-taxonomy/related-posts-block');
+		}
 
 		ob_start();
 
