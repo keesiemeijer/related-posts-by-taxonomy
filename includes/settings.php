@@ -62,6 +62,7 @@ function km_rpbt_get_plugin_supports() {
 		'display_cache_log'    => false,
 		'wp_rest_api'          => false,
 		'debug'                => false,
+		'ajax_query'           => false,
 	);
 
 	/**
@@ -147,17 +148,17 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		'caption'        => 'post_title',
 		'post_class'     => '',
 
-			// back compat: double quoted class attribute
-			"before_{$type}" => '<div class="rpbt_' . $type . '">',
-			"after_{$type}"  => '</div>',
-			'before_title'     => '<h3>',
-			'after_title'      => '</h3>',
-		);
+		// back compat: double quoted class attribute
+		"before_{$type}" => '<div class="rpbt_' . $type . '">',
+		"after_{$type}"  => '</div>',
+		'before_title'          => '<h3>',
+		'after_title'           => '</h3>',
+	);
 
 	$settings = array_merge( $defaults, $settings );
 
 	if ( 'widget' === $type ) {
-	// Custom settings for the widget.
+		// Custom settings for the widget.
 		$settings['random']            = false;
 		$settings['singular_template'] = false;
 	}

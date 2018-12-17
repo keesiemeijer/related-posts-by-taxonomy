@@ -18,6 +18,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 	 * - cache
 	 * - debug
 	 * - WP Rest API
+	 * - ajax query
+	 *
 	 * @since 2.5.0
 	 */
 	class Related_Posts_By_Taxonomy_Plugin {
@@ -36,6 +38,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 			add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
 			add_action( 'wp_loaded', array( $this, 'cache_init' ) );
 			add_action( 'wp_loaded', array( $this, 'debug_init' ) );
+			add_action( 'wp_loaded', array( $this, 'ajax_query_init' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		}
 
@@ -114,6 +117,19 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 				$rest_api->register_routes();
 			}
 		}
+
+		/**
+		 * Set up the ajax query feature.
+		 *
+		 * @since 2.5.2
+		 */
+		public function ajax_query_init() {
+			if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-ajax-query.php';
+				$rest_api = new Related_Posts_By_Taxonomy_Ajax_Query();
+			}
+		}
+
 	} // end class
 
 } // class exists

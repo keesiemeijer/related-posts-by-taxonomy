@@ -47,9 +47,11 @@ function km_rpbt_plugin_supports( $type ) {
 	 * - cache
 	 * - display_cache_log
 	 * - wp_rest_api
+	 * - ajax_query
 	 * - debug
 	 *
 	 * @since 2.5.0
+	 *
 	 * @param bool $bool Add support if true. Default false
 	 */
 	return apply_filters( "related_posts_by_taxonomy_{$type}", (bool) $supports[ $type ] );
@@ -256,15 +258,15 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	$settings = km_rpbt_get_default_settings( $type );
 	$defaults = $settings;
 	if ( 'widget' !== $type ) {
-	/**
-	 * Filter default feature attributes.
-	 *
-	 * @since 0.2.1
-	 *
-	 * @param array $defaults See $defaults above
-	 */
-	$defaults = apply_filters( "related_posts_by_taxonomy_{$type}_defaults", $settings );
-	$defaults = array_merge( $settings, (array) $defaults );
+		/**
+		 * Filter default feature attributes.
+		 *
+		 * @since 0.2.1
+		 *
+		 * @param array $defaults See $defaults above
+		 */
+		$defaults = apply_filters( "related_posts_by_taxonomy_{$type}_defaults", $settings );
+		$defaults = array_merge( $settings, (array) $defaults );
 	}
 
 	$filter_type = 'args';
@@ -294,6 +296,10 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	/* Un-filterable arguments */
 	$args['type'] = $type;
 	$args['fields'] = '';
+
+	if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+		return km_rpbt_get_related_posts_ajax_html( $args );
+	}
 
 	// Get the related posts from database or cache.
 	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
@@ -377,6 +383,35 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 
 	$recursing = false;
 	return trim( $html );
+}
+
+/**
+ * Get the related posts html for an Ajax query.
+ *
+ * Returns an emty HTML div with arguments added to the `data-rpbt_args` attribute.
+ * The data attribute is used by Javascript to query
+ * related posts with Ajax after the page is loaded.
+ *
+ * @since 2.5.2
+ * @param array $args See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                    information on accepted arguments.
+ * @return string Related posts HTML div with data arguments.
+ */
+function km_rpbt_get_related_posts_ajax_html( $args ) {
+	$type     = km_rpbt_get_settings_type( $args );
+	$defaults = km_rpbt_get_default_settings( $type );
+	$args     = array_merge( $defaults, $args );
+
+	// Remove default values to keep the HTML data attribute small.
+	foreach ( $defaults as $key => $value ) {
+		if ( array_key_exists( $key, $args ) && ( $value === $args[ $key ] ) ) {
+			unset( $args[ $key ] );
+		}
+	}
+
+	$args['type'] = $type;
+	$data         = htmlspecialchars( json_encode( $args ), ENT_QUOTES, 'UTF-8' );
+	return "<div class='rpbt_related_posts_ajax' data-rpbt_args='{$data}' style='display: none;'></div>";
 }
 
 /**

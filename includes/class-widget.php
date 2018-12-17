@@ -115,6 +115,11 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$args['fields'] = '';
 		$args['title'] = apply_filters( 'widget_title', $args['title'], $args, $this->id_base );
 
+		if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+			echo km_rpbt_get_related_posts_ajax_html( $args );
+			return;
+		}
+
 		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
 
 		$hide_empty = (bool) km_rpbt_plugin_supports( 'widget_hide_empty' );
@@ -146,7 +151,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 *
 	 * @deprecated 2.5.2 Use km_rpbt_get_related_posts_html() instead.
 	 *
-	 * @param array $related_posts    Array with related post objects.
+	 * @param array $related_posts Array with related post objects.
 	 * @param array $args          Widget arguments.
 	 * @param array $widget_args   Widget display arguments.
 	 * @return void
@@ -190,7 +195,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$i['posts_per_page'] = $posts_per_page ? $posts_per_page : 5;
 		}
 
-		if (  empty( $i['post_types'] ) ) {
+		if ( empty( $i['post_types'] ) ) {
 			$i['post_types']['post'] = 'on';
 		}
 
