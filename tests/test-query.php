@@ -321,7 +321,7 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$term_id2 = wp_set_post_terms ( $this->posts[2], (int) $terms[1], 'ctax', true );
 		$args['terms'][] = $term_id2[0];
 
-		// Post two has more terms in common now
+		// Post 2 has more terms in common now
 		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[2], $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
@@ -451,6 +451,7 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		// Adds meta_query array( 'key' => 'meta_key', 'value' => 'meta_value');
 		add_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'meta_query_callback' ), 10, 4 );
 
+		// Post 3 is related and is the only posts with post meta key `meta_key`
 		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[3] ), $rel_post0 );
 	}

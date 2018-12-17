@@ -2,6 +2,7 @@
 /**
  * Tests for the km_rpbt_query_related_posts() function in functions.php.
  *
+ * @group TemplateTags
  */
 class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 
@@ -9,6 +10,7 @@ class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 		remove_filter( 'use_default_gallery_style', '__return_false', 99 );
 		remove_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 4 );
 		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
+		remove_filter( 'related_posts_by_taxonomy_the_permalink', array( $this, 'the_permalink' ) , 10, 3 );
 	}
 
 	function setup_cache() {
@@ -140,22 +142,27 @@ EOF;
 		$this->assertSame( 'class otherclass', $classes );
 	}
 
-	function post_class( $classes, $post, $args, $index ) {
-		$classes[] = 'someclass';
-		return $classes;
+	/**
+	 * Test getting the link for a related post without global post
+	 * used in the templates
+	 */
+	function test_rpbt_get_post_link_empty_global_post() {
+		unset( $GLOBALS['post'] );
+		$link2 = km_rpbt_get_post_link();
+		$this->assertEmpty( $link2 );
 	}
 
 	/**
-	 * Test getting the link for a related post title
+	 * Test getting the link for a related post from the global post
 	 * used in the templates
 	 */
 	function test_rpbt_get_post_link_global_post() {
+		$posts = $this->create_posts();
+		$posts = get_posts();
+		$GLOBALS['post'] = $posts[0];
+
 		$link2 = km_rpbt_get_post_link();
-		if ( $GLOBALS['post'] ) {
-			$this->assertNotEmpty( $link2 );
-		} else {
-			$this->assertEmpty( $link2 );
-		}
+		$this->assertNotEmpty( $link2 );
 	}
 
 	/**
@@ -187,9 +194,8 @@ EOF;
 	}
 
 	/**
-	 * Test getting the link for a related post title
+	 * Test getting the link with a post date
 	 * used in the templates
-	 *
 	 */
 	function test_km_rpbt_get_post_link_with_date_output() {
 		$posts = $this->create_posts();
@@ -212,7 +218,23 @@ EOF;
 	}
 
 	/**
-	 * Test getting the link for a related post title
+	 * Test filtering the link for a related post title
+	 * used in the templates
+	 */
+	function test_km_rpbt_the_permalink_filter() {
+		$posts = $this->create_posts();
+		$posts = get_posts();
+
+		add_filter( 'related_posts_by_taxonomy_the_permalink', array( $this, 'the_permalink' ) , 10, 3 );
+
+		$link      = km_rpbt_get_post_link( $posts[0] );
+		$permalink = get_permalink( $posts[0] );
+		$expected  = '<a href="' . $permalink . '?filtered=true">' . $posts[0]->post_title . '</a>';
+		$this->assertSame( $expected, $link );
+	}
+
+	/**
+	 * Test getting the link with deprecated parameter
 	 * used in the templates
 	 */
 	function test_km_rpbt_get_post_link_output_deprecated_parameter_title_attr() {
@@ -223,5 +245,20 @@ EOF;
 		$link      = km_rpbt_get_post_link( $posts[0], true );
 		$expected  = '<a href="' . $permalink . '" title="' . $posts[0]->post_title . '">' . $posts[0]->post_title . '</a>';
 		$this->assertSame( $expected, $link );
+	}
+
+	/**
+	 * callback for related_posts_by_taxonomy_post_class filter.
+	 */
+	function post_class( $classes, $post, $args, $index ) {
+		$classes[] = 'someclass';
+		return $classes;
+	}
+
+	/**
+	 * callback for related_posts_by_taxonomy_the_permalink filter.
+	 */
+	function the_permalink( $permalink, $post, $args ) {
+		return $permalink . '?filtered=true';
 	}
 }

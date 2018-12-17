@@ -1,6 +1,8 @@
 <?php
 /**
  * Tests for the widget in /includes/widget.php
+ *
+ * @group Cache
  */
 class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
@@ -59,9 +61,10 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 	 *
 	 * @depends test_cache_setup
 	 */
-	function test_cache_filter_display_cache_log() {
+	function test_cache_settings() {
 		$this->setup_cache();
 		$this->assertFalse( $this->plugin->cache->cache['display_log']  );
+		$this->assertFalse( $this->plugin->cache->cache['flush_manually']  );
 	}
 
 	/**
@@ -156,7 +159,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$posts        = $create_posts['posts'];
 
 		$taxonomies = array( 'post_tag' );
-		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, array('fields' => 'ids') );
+		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, array( 'fields' => 'ids' ) );
 
 		$args = array( 'taxonomies' => $taxonomies, 'post_id' => $posts[1], 'fields' => 'ids' );
 		$related = $this->plugin->cache->get_related_posts( $args );
