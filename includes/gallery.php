@@ -240,7 +240,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		/**
 		 * Filter the related posts gallery item CSS classes.
 		 *
-		 * @since
+		 * @since 1.0.0
 		 *
 		 * @param string $classes Classes used for a gallery item.
 		 * @param object $related Related post object
