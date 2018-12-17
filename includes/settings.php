@@ -110,18 +110,6 @@ function km_rpbt_get_query_vars() {
  * @return array|false Array with default settings for a feature.
  */
 function km_rpbt_get_default_settings( $type = '' ) {
-	$valid_type = is_valid_settings_type( $type );
-
-	// Cache settings
-	if ( $valid_type && ( 'cache' === $type ) ) {
-		$settings = array(
-			'expiration'     => DAY_IN_SECONDS * 5, // Five days.
-			'flush_manually' => false,
-			'display_log'    => km_rpbt_plugin_supports( 'display_cache_log' ),
-		);
-
-		return $settings;
-	}
 
 	// Default related posts query vars.
 	$defaults = km_rpbt_get_query_vars();

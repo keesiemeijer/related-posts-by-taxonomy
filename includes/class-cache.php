@@ -118,7 +118,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array Array with cache arguments.
 		 */
 		private function get_cache_settings() {
-			$settings = km_rpbt_get_default_settings( 'cache' );
+			$settings = array(
+				'expiration'     => DAY_IN_SECONDS * 5, // Five days.
+				'flush_manually' => false,
+				'display_log'    => km_rpbt_plugin_supports( 'display_cache_log' ),
+			);
 
 			return apply_filters( 'related_posts_by_taxonomy_cache_args', $settings );
 		}
