@@ -338,6 +338,7 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 		return '';
 	}
 
+	$rpbt_args['type'] = km_rpbt_get_settings_type( $rpbt_args );
 	$rpbt_args = array_merge( km_rpbt_get_default_settings( $rpbt_args['type'] ), $rpbt_args );
 
 	/* get the template depending on the format  */

@@ -28,6 +28,21 @@ function km_rpbt_is_valid_settings_type( $type ) {
 }
 
 /**
+ * Get the feature type from arguments.
+ *
+ * @since  2.5.2
+ *
+ * @param array $args Arguments.
+ * @return string Feature type.
+ */
+function km_rpbt_get_settings_type( $args ) {
+	if ( isset( $args['type'] ) && km_rpbt_is_valid_settings_type( $args['type'] ) ) {
+		return $args['type'];
+	}
+	return '';
+}
+
+/**
  * Get the features this plugin supports.
  *
  * Use the {@see related_posts_by_taxonomy_supports} filter to activate and
