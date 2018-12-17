@@ -237,9 +237,10 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 }
 
 /**
- * Related posts feature html.
+ * Related posts display HTML for a plugin feature
  *
  * @since  2.5.2
+ *
  * @param string $type                Type of feature.
  * @param array  $args                See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
  *                                    information on accepted arguments.
@@ -253,7 +254,8 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	}
 
 	$settings = km_rpbt_get_default_settings( $type );
-
+	$defaults = $settings;
+	if ( 'widget' !== $type ) {
 	/**
 	 * Filter default feature attributes.
 	 *
@@ -263,6 +265,7 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	 */
 	$defaults = apply_filters( "related_posts_by_taxonomy_{$type}_defaults", $settings );
 	$defaults = array_merge( $settings, (array) $defaults );
+	}
 
 	$filter_type = 'args';
 	if ( 'shortcode' === $type ) {
@@ -295,10 +298,6 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	// Get the related posts from database or cache.
 	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
 
-	/*
-	 * Whether to hide the feature if no related posts are found.
-	 * Default true.
-	 */
 	$hide_empty = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
 
 	$html = '';
@@ -310,6 +309,7 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	 * Fires after the related posts are displayed.
 	 *
 	 * @since  1.0.0
+	 *
 	 * @param string Display type, widget or shortcode.
 	 */
 	do_action( 'related_posts_by_taxonomy_after_display', $type );
@@ -317,10 +317,18 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	return $html;
 }
 
+/**
+ * Get the related posts HTML.
+ *
+ * @since  2.5.2
+ *
+ * @param array $related_posts Array with related post objects.
+ * @param array $args          See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                             information on accepted arguments.
+ * @return string Related posts HTML
+ */
 function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
-	$related_posts = is_array( $related_posts ) ? $related_posts : array();
 
-	if ( ! ( isset( $rpbt_args['type'] ) && is_valid_settings_type( $rpbt_args['type'] ) ) ) {
 	static $recursing = false;
 
 	/* Check for filter recursion (infinite loop) */
@@ -330,12 +338,10 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 		return '';
 	}
 
-	/* make sure all defaults are present */
 	$rpbt_args = array_merge( km_rpbt_get_default_settings( $rpbt_args['type'] ), $rpbt_args );
 
 	/* get the template depending on the format  */
 	$template = km_rpbt_get_template( $rpbt_args['format'], $rpbt_args['type'] );
-
 	if ( ! $template ) {
 		$recursing = false;
 		return '';
