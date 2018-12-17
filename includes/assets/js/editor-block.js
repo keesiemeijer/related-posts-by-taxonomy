@@ -5483,6 +5483,7 @@ var RelatedPostsBlock = function (_Component) {
 			var shortcodeAttr = Object.assign({}, attributes);
 			shortcodeAttr['post_id'] = postID;
 			shortcodeAttr['terms'] = editorData.termIDs.join(',');
+			// shortcodeAttr['is_editor'] = true; 
 
 			if (!shortcodeAttr['terms'].length && -1 !== editorData.taxonomyNames.indexOf('category')) {
 				// Use default category if this post supports the 'category' taxonomy and no terms are selected.

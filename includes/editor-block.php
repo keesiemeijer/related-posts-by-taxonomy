@@ -58,7 +58,7 @@ function km_rpbt_block_editor_assets() {
 	wp_enqueue_script(
 		'rpbt-related-posts-block', // Handle.
 		RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . "includes/assets/js/editor-block{$debug}.js",
-		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-data','wp-editor', 'wp-components' )
+		array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-data', 'wp-editor', 'wp-components' )
 	);
 
 	// Styles.
@@ -69,9 +69,9 @@ function km_rpbt_block_editor_assets() {
 	);
 
 	$order = array(
-		'DESC' => __('Most terms in common', 'related-posts-by-taxonomy'),
-		'ASC'  => __('Least terms in common', 'related-posts-by-taxonomy'),
-		'RAND' => __('Randomly', 'related-posts-by-taxonomy'),
+		'DESC' => __( 'Most terms in common', 'related-posts-by-taxonomy' ),
+		'ASC'  => __( 'Least terms in common', 'related-posts-by-taxonomy' ),
+		'RAND' => __( 'Randomly', 'related-posts-by-taxonomy' ),
 	);
 
 	wp_localize_script( 'rpbt-related-posts-block', 'km_rpbt_plugin_data',
@@ -169,5 +169,5 @@ function km_rpbt_render_block_related_post( $args ) {
 	// Set the type for the argument filters in the shortcode.
 	$args['type'] = 'editor_block';
 
-	return km_rpbt_related_posts_by_taxonomy_shortcode( $args );
+	return km_rpbt_get_feature_html( 'editor_block', $args, 'km_rpbt_validate_args' );
 }
