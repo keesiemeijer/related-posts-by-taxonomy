@@ -89,13 +89,14 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$_args               = km_rpbt_get_query_vars();
 		$_args['taxonomies'] = $taxonomies;
 		$sanitize            = km_rpbt_sanitize_args( $_args );
-		$html                = km_rpbt_get_related_posts_ajax_html( $_args );
+		$html                = km_rpbt_get_related_posts_html( $rel_posts3, $_args );
 		$html_ajax           = km_rpbt_get_related_posts_ajax_html( $_args );
 		$gallery             = km_rpbt_related_posts_by_taxonomy_gallery( array( 'id' => $posts[0] ), array() );
 		$widget              = km_rpbt_related_posts_by_taxonomy_widget();
 		$shortcode           = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
 		$settings            = km_rpbt_get_default_settings( 'shortcode' );
 		$valid_settings      = km_rpbt_is_valid_settings_type( 'lala' );
+		$get_type            = km_rpbt_get_settings_type($settings);
 		$settings['post_id'] = $posts[0];
 		$feature_html        = km_rpbt_get_feature_html( 'shortcode', $settings );
 		$sc_validate         = km_rpbt_validate_shortcode_atts( $settings );
