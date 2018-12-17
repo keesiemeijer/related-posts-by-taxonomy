@@ -189,6 +189,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$expected               = km_rpbt_get_default_settings( 'widget' );
 		$expected['post_types'] = array( 'post' ); // set in the widget as default
 		$expected['post_id']    = false; // not in the loop
+		$expected = array_merge( $expected, $args );
 
 		$this->assertEquals( $expected, $this->arg );
 		$this->arg = null;

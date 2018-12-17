@@ -1,6 +1,8 @@
 <?php
 /**
  * Tests for the km_rpbt_query_related_posts() function in functions.php.
+ *
+ * @group Settings
  */
 class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 
@@ -99,7 +101,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
-	 * Test sanitizing arguments.
+	 * Test sanitizing arguments in a string.
 	 *
 	 */
 	function test_km_rpbt_sanitize_args_string() {
@@ -119,6 +121,31 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 		ksort( $sanitized_args );
 
 		$this->assertEquals( $expected, $sanitized_args );
+	}
+
+	/**
+	 * Test if related_posts is used as type if non valid type was provided.
+	 */
+	function test_km_rpbt_get_default_settings_wrong_type() {
+		$defaults = km_rpbt_get_default_settings( 'no_settings_type' );
+		$this->assertTrue( array_key_exists( 'before_related_posts', $defaults ) );
+		$this->assertSame( 'related_posts', $defaults['type'] );
+	}
+
+	/**
+	 * Test if specific widget setting exist
+	 */
+	function test_km_rpbt_get_default_settings_widget() {
+		$defaults = km_rpbt_get_default_settings( 'widget' );
+		$this->assertTrue( array_key_exists( 'random', $defaults ) );
+	}
+
+	/**
+	 * Test if post_types is empty for defaults
+	 */
+	function test_km_rpbt_get_default_settings_post_type() {
+		$defaults = km_rpbt_get_default_settings( 'shortcode' );
+		$this->assertEmpty( $defaults['post_types'] );
 	}
 
 	/**

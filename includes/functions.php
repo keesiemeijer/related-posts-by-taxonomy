@@ -47,7 +47,10 @@ function km_rpbt_plugin_supports( $type ) {
 	 * - cache
 	 * - display_cache_log
 	 * - wp_rest_api
+	 * - ajax_query
 	 * - debug
+	 *
+	 * @since 2.5.0
 	 *
 	 * @param bool $bool Add support if true. Default false
 	 */
@@ -235,20 +238,119 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	return $terms;
 }
 
-function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
-	$related_posts = is_array( $related_posts ) ? $related_posts : array();
+/**
+ * Related posts display HTML for a plugin feature
+ *
+ * @since  2.5.2
+ *
+ * @param string $type                Type of feature.
+ * @param array  $args                See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                                    information on accepted arguments.
+ * @param mixed  $validation_callback Callback function for argument validation.
+ * @return string feature html or empty string.
+ */
+function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 
-	if ( ! ( isset( $rpbt_args['type'] ) && is_valid_settings_type( $rpbt_args['type'] ) ) ) {
+	if ( ! ( km_rpbt_is_valid_settings_type( $type ) && km_rpbt_plugin_supports( $type ) ) ) {
 		return '';
 	}
 
-	/* make sure all defaults are present */
+	$settings = km_rpbt_get_default_settings( $type );
+	$defaults = $settings;
+	if ( 'widget' !== $type ) {
+		/**
+		 * Filter default feature attributes.
+		 *
+		 * @since 0.2.1
+		 *
+		 * @param array $defaults See $defaults above
+		 */
+		$defaults = apply_filters( "related_posts_by_taxonomy_{$type}_defaults", $settings );
+		$defaults = array_merge( $settings, (array) $defaults );
+	}
+
+	$filter_type = 'args';
+	if ( 'shortcode' === $type ) {
+		// Back compat
+		$args        = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
+		$filter_type = 'atts';
+	}
+
+	$args = array_merge( $defaults, (array) $args );
+	$args['type'] = $type;
+
+	if ( ! empty( $validation_callback ) ) {
+		$args = call_user_func( $validation_callback, $args );
+	}
+
+	/**
+	 * Filter validated feature arguments.
+	 *
+	 * @since  2.5.2
+	 *
+	 * @param array $args See $defaults above
+	 */
+	$args = apply_filters( "related_posts_by_taxonomy_{$type}_{$filter_type}", $args );
+	$args = array_merge( $defaults, (array) $args );
+
+	/* Un-filterable arguments */
+	$args['type'] = $type;
+	$args['fields'] = '';
+
+	if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+		return km_rpbt_get_related_posts_ajax_html( $args );
+	}
+
+	// Get the related posts from database or cache.
+	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
+
+	$hide_empty = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
+
+	$html = '';
+	if ( ! $hide_empty || ! empty( $related_posts ) ) {
+		$html = km_rpbt_get_related_posts_html( $related_posts, $args );
+	}
+
+	/**
+	 * Fires after the related posts are displayed.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param string Display type, widget or shortcode.
+	 */
+	do_action( 'related_posts_by_taxonomy_after_display', $type );
+
+	return $html;
+}
+
+/**
+ * Get the related posts HTML.
+ *
+ * @since  2.5.2
+ *
+ * @param array $related_posts Array with related post objects.
+ * @param array $args          See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                             information on accepted arguments.
+ * @return string Related posts HTML
+ */
+function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
+
+	static $recursing = false;
+
+	/* Check for filter recursion (infinite loop) */
+	if ( ! $recursing ) {
+		$recursing = true;
+	} else {
+		return '';
+	}
+
+	$rpbt_args['type'] = km_rpbt_get_settings_type( $rpbt_args );
 	$rpbt_args = array_merge( km_rpbt_get_default_settings( $rpbt_args['type'] ), $rpbt_args );
 
 	/* get the template depending on the format  */
 	$template = km_rpbt_get_template( $rpbt_args['format'], $rpbt_args['type'] );
-
 	if ( ! $template ) {
+		$recursing = false;
 		return '';
 	}
 
@@ -279,7 +381,37 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 		$html .=  isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ]  . "\n" : '';
 	}
 
+	$recursing = false;
 	return trim( $html );
+}
+
+/**
+ * Get the related posts html for an Ajax query.
+ *
+ * Returns an emty HTML div with arguments added to the `data-rpbt_args` attribute.
+ * The data attribute is used by Javascript to query
+ * related posts with Ajax after the page is loaded.
+ *
+ * @since 2.5.2
+ * @param array $args See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                    information on accepted arguments.
+ * @return string Related posts HTML div with data arguments.
+ */
+function km_rpbt_get_related_posts_ajax_html( $args ) {
+	$type     = km_rpbt_get_settings_type( $args );
+	$defaults = km_rpbt_get_default_settings( $type );
+	$args     = array_merge( $defaults, $args );
+
+	// Remove default values to keep the HTML data attribute small.
+	foreach ( $defaults as $key => $value ) {
+		if ( array_key_exists( $key, $args ) && ( $value === $args[ $key ] ) ) {
+			unset( $args[ $key ] );
+		}
+	}
+
+	$args['type'] = $type;
+	$data         = htmlspecialchars( json_encode( $args ), ENT_QUOTES, 'UTF-8' );
+	return "<div class='rpbt_related_posts_ajax' data-rpbt_args='{$data}' style='display: none;'></div>";
 }
 
 /**
@@ -350,7 +482,9 @@ function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
 }
 
 /**
- * Checks if the cache class is loaded
+ * Checks if the cache class is loaded.
+ *
+ * @since  2.5.0
  *
  * @param object $plugin Related_Posts_By_Taxonomy_Cache object. Default null.
  * @return bool True if the cache class is loaded.

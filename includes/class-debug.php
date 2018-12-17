@@ -16,6 +16,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 	 *
 	 * Adds links for debugging shortcodes and widget.
 	 * Displays debug information (to admins) in the footer of a website.
+	 *
+	 * @since 2.0.0
 	 */
 	class Related_Posts_By_Taxonomy_Debug {
 
@@ -64,12 +66,17 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$this->cache   = km_rpbt_is_cache_loaded();
 
 			// Adds debug link before the widget title.
+			add_action( 'wp_footer', array( $this, 'wp_footer' ), 99 );
 			add_filter( 'dynamic_sidebar_params', array( $this, 'widget_params' ), 99 );
 
 			// Get widget and shortcode args.
 			// Adds a filter to wp_get_object_terms.
 			add_filter( 'related_posts_by_taxonomy_widget_args',    array( $this, 'debug_start' ), 99, 2 );
 			add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'debug_start' ), 99, 2 );
+
+			if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+				return;
+			}
 
 			// Get posts_clauses.
 			add_filter( 'related_posts_by_taxonomy_posts_clauses', array( $this, 'posts_clauses' ), 99, 4 );
@@ -86,7 +93,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			add_action( 'related_posts_by_taxonomy_after_display', array( $this, 'after_display' ) );
 
 			// Display debug results in footer.
-			add_action( 'wp_footer', array( $this, 'wp_footer' ), 99 );
 		}
 
 		/**
@@ -120,6 +126,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			if ( $this->cache ) {
 				$this->check_cache( $args );
+			}
+
+			if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+				return $args;
 			}
 
 			// Gets current post terms, taxonomies and post ID.
@@ -197,8 +207,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		function debug_link( $type = 'widget' ) {
 
 			$counter = ( 'widget' === $type ) ? ++$this->widget_counter : ++$this->shortcode_counter;
-
-			$this->debug['debug_id'] = 'rpbt-' . $type . '-debug-' . $counter;
+			if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+				$this->debug['debug_id'] = 'rpbt-debug-notice';
+			} else {
+				$this->debug['debug_id'] = 'rpbt-' . $type . '-debug-' . $counter;
+			}
 			$this->debug['debug_link'] = '(<a href="#' . $this->debug['debug_id'] . '">Debug ' . ucfirst( $type ) . '</a>)';
 
 			return $this->debug['debug_link'];
@@ -500,7 +513,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				}
 				echo '<p>';
 			} else {
-				echo '<p><pre>' . $this->get_header() . "\n\nNo widget or shortcode found to debug on this page</pre></p>";
+				$message = '<p><pre id="rpbt-debug-empty">' . $this->get_header() . "\n\nNo widget or shortcode found to debug on this page</pre></p>";
+				if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+					$message = '<p><pre id="rpbt-debug-notice">' . $this->get_header( 'Debug Notice' ) . "\n\nPlease disable the ajax_query feature to debug widgets and shortcodes</pre></p>";
+				}
+				echo $message;
 			}
 		}
 

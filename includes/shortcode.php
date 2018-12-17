@@ -65,81 +65,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return string Related posts html or empty string.
  */
 function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
-
-	/* for filter recursion (infinite loop) */
-	static $recursing = false;
-
-	if ( ! $recursing ) {
-		$recursing = true;
-	} else {
-		return '';
-	}
-
-	if ( ! km_rpbt_plugin_supports( 'shortcode' ) ) {
-		$recursing = false;
-		return '';
-	}
-
-	$defaults = km_rpbt_get_default_settings( 'shortcode' );
-
-	/**
-	 * Filter default shortcode attributes.
-	 *
-	 * @since 0.2.1
-	 *
-	 * @param array $defaults See $defaults above
-	 */
-	$defaults = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
-
-	/* Can also be filtered in WordPress > 3.5 (hook: shortcode_atts_related_posts_by_tax) */
-	$atts = shortcode_atts( (array) $defaults, $atts, 'related_posts_by_tax' );
-
-	/* Validates atts. Sets the post type and post id if not set in filters above */
-	$validated_args = km_rpbt_validate_shortcode_atts( (array) $atts );
-
-	/**
-	 * Filter shortcode attributes.
-	 *
-	 * @param array $atts See $defaults above
-	 */
-	$atts = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $validated_args );
-	$atts = array_merge( $validated_args, (array) $atts );
-
-	/* Un-filterable arguments */
+	// Empty string is returned if no atts were added in the shortcode
+	$atts = is_array( $atts ) ? $atts : array();
 	$atts['type'] = 'shortcode';
-	$atts['fields'] = '';
 
-	// Get the related posts from database or cache.
-	$related_posts = km_rpbt_get_related_posts( $atts['post_id'], $atts );
+	// Validation callback function to validate shortcode attributes.
+	$callback = 'km_rpbt_validate_shortcode_atts';
 
-	/*
-	 * Whether to hide the shortcode if no related posts are found.
-	 * Set by the related_posts_by_taxonomy_shortcode_hide_empty filter.
-	 * Default true.
-	 */
-	$hide_empty = (bool) km_rpbt_plugin_supports( 'shortcode_hide_empty' );
-
-	$shortcode = '';
-	if ( ! $hide_empty || ! empty( $related_posts ) ) {
-		$shortcode = km_rpbt_get_related_posts_html( $related_posts, $atts );
-	}
-
-	/**
-	 * Fires after the related posts are displayed by the widget or shortcode.
-	 *
-	 * @param string Display type, widget or shortcode.
-	 */
-	do_action( 'related_posts_by_taxonomy_after_display', 'shortcode' );
-
-	$recursing = false;
-
-	return $shortcode;
-} // end km_rpbt_related_posts_by_taxonomy_shortcode()
+	return km_rpbt_get_feature_html( 'shortcode', $atts, $callback );
+}
 
 /**
  * Validate shortcode arguments.
  *
- * Converts boolean strings to real booleans.
+ * Converts string booleans to real booleans.
  *
  * @see km_rpbt_related_posts_by_taxonomy_shortcode()
  *
@@ -162,6 +101,7 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	if ( 'regular_order' !== $atts['include_self'] ) {
 		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
 	}
+
 
 	return km_rpbt_validate_booleans( $atts, $defaults );
 }

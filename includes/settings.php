@@ -24,8 +24,23 @@ function km_rpbt_get_setting_types() {
  * @param string $type Plugin feature settings type.
  * @return boolean       True if it's valid settings type.
  */
-function is_valid_settings_type( $type ) {
+function km_rpbt_is_valid_settings_type( $type ) {
 	return is_string( $type ) && in_array( $type, km_rpbt_get_setting_types() );
+}
+
+/**
+ * Get the feature type from arguments.
+ *
+ * @since  2.5.2
+ *
+ * @param array $args Arguments.
+ * @return string Feature type.
+ */
+function km_rpbt_get_settings_type( $args ) {
+	if ( isset( $args['type'] ) && km_rpbt_is_valid_settings_type( $args['type'] ) ) {
+		return $args['type'];
+	}
+	return '';
 }
 
 /**
@@ -50,6 +65,7 @@ function km_rpbt_get_plugin_supports() {
 		'display_cache_log'    => false,
 		'wp_rest_api'          => false,
 		'debug'                => false,
+		'ajax_query'           => false,
 	);
 
 	/**
@@ -113,18 +129,8 @@ function km_rpbt_get_query_vars() {
  * @return array|false Array with default settings for a feature.
  */
 function km_rpbt_get_default_settings( $type = '' ) {
-	$valid_type = is_valid_settings_type( $type );
-
-	// Cache settings
-	if ( $valid_type && ( 'cache' === $type ) ) {
-		$settings = array(
-			'expiration'     => DAY_IN_SECONDS * 5, // Five days.
-			'flush_manually' => false,
-			'display_log'    => km_rpbt_plugin_supports( 'display_cache_log' ),
-		);
-
-		return $settings;
-	}
+	$valid_type = km_rpbt_is_valid_settings_type( $type );
+	$type = $valid_type ? $type : 'related_posts';
 
 	// Default related posts query vars.
 	$defaults = km_rpbt_get_query_vars();
@@ -144,31 +150,18 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		'show_date'      => false,
 		'caption'        => 'post_title',
 		'post_class'     => '',
+
+		// back compat: double quoted class attribute
+		"before_{$type}" => '<div class="rpbt_' . $type . '">',
+		"after_{$type}"  => '</div>',
+		'before_title'          => '<h3>',
+		'after_title'           => '</h3>',
 	);
 
 	$settings = array_merge( $defaults, $settings );
 
-	if ( ! $valid_type ) {
-		return $settings;
-	}
-
-	$markup_types = array( 'shortcode', 'wp_rest_api', 'editor_block' );
-
-	// Custom settings for the shortcode and rest api types.
-	if ( in_array( $type, $markup_types ) ) {
-		$markup_args = array(
-			// back compat: double quoted class attribute
-			"before_{$type}" => '<div class="rpbt_' . $type . '">',
-			"after_{$type}"  => '</div>',
-			'before_title'     => '<h3>',
-			'after_title'      => '</h3>',
-		);
-
-		$settings = array_merge( $settings, $markup_args );
-	}
-
-	// Custom settings for the widget.
-	if ( ( 'widget' === $type ) ) {
+	if ( 'widget' === $type ) {
+		// Custom settings for the widget.
 		$settings['random']            = false;
 		$settings['singular_template'] = false;
 	}

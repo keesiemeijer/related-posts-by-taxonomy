@@ -1,21 +1,24 @@
 <?php
 /**
  * Tests for the plugin supports.
+ *
+ * @group Supports
  */
 class KM_RPBT_Plugin_Supports_Tests extends KM_RPBT_UnitTestCase {
 
 	function test_default_supports() {
 		$expected = array(
-			'widget'                   => true,
-			'shortcode'                => true,
-			'shortcode_hide_empty'     => true,
-			'widget_hide_empty'        => true,
-			'editor_block'             => true,
-			'editor_block_preview'     => true,
-			'cache'                    => false,
-			'display_cache_log'        => false,
-			'wp_rest_api'              => false,
-			'debug'                    => false,
+			'widget'               => true,
+			'shortcode'            => true,
+			'shortcode_hide_empty' => true,
+			'widget_hide_empty'    => true,
+			'editor_block'         => true,
+			'editor_block_preview' => true,
+			'cache'                => false,
+			'display_cache_log'    => false,
+			'wp_rest_api'          => false,
+			'debug'                => false,
+			'ajax_query'           => false,
 		);
 
 		$this->assertEquals( $expected, km_rpbt_get_plugin_supports() );
@@ -61,6 +64,10 @@ class KM_RPBT_Plugin_Supports_Tests extends KM_RPBT_UnitTestCase {
 
 	function test_widget_hide_empty_support() {
 		$this->assertTrue( km_rpbt_plugin_supports( 'widget_hide_empty' ) );
+	}
+
+	function test_ajax_query_support() {
+		$this->assertFalse( km_rpbt_plugin_supports( 'ajax_query' ) );
 	}
 
 }

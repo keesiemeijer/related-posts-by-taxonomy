@@ -151,7 +151,6 @@ function km_rpbt_post_link( $post = null, $args = array() ) {
  * @return string Related post link HTML.
  */
 function km_rpbt_get_post_link( $post = null, $args = array() ) {
-
 	$post = get_post( $post );
 	if ( ! $post ) {
 		return '';
@@ -211,6 +210,8 @@ function km_rpbt_get_permalink( $post = null, $args = '' ) {
 
 	/**
 	 * Filter the permalink used for related posts.
+	 *
+	 * @since  2.5.1
 	 *
 	 * @param string Permalink.
 	 */

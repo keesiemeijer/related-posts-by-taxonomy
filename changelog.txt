@@ -1,3 +1,11 @@
+= 2.5.2 =
+* Enhancement
+    * Ajax query (opt in feature).
+		* Does the query for related posts after the page is loaded.
+		* Speeds up perceived page load time.
+	* Meta query filter
+		* Allows you to query related posts by post meta.
+
 = 2.5.1 =
 * Enhancement
     * Add ability to show the post date after the post title
