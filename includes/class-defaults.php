@@ -19,6 +19,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 	 * - default and registered image sizes
 	 * - allowed formats
 	 * - cache instance (if feature is activated)
+	 *
+	 * @since 0.2.1
 	 */
 	class Related_Posts_By_Taxonomy_Defaults {
 

@@ -49,6 +49,7 @@ function km_rpbt_plugin_supports( $type ) {
 	 * - wp_rest_api
 	 * - debug
 	 *
+	 * @since 2.5.0
 	 * @param bool $bool Add support if true. Default false
 	 */
 	return apply_filters( "related_posts_by_taxonomy_{$type}", (bool) $supports[ $type ] );
@@ -288,7 +289,9 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	}
 
 	/**
-	 * Filter feature attributes.
+	 * Filter validated feature arguments.
+	 *
+	 * @since  2.5.2
 	 *
 	 * @param array $args See $defaults above
 	 */
@@ -316,6 +319,7 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	/**
 	 * Fires after the related posts are displayed.
 	 *
+	 * @since  1.0.0
 	 * @param string Display type, widget or shortcode.
 	 */
 	do_action( 'related_posts_by_taxonomy_after_display', $type );
@@ -440,7 +444,9 @@ function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
 }
 
 /**
- * Checks if the cache class is loaded
+ * Checks if the cache class is loaded.
+ *
+ * @since  2.5.0
  *
  * @param object $plugin Related_Posts_By_Taxonomy_Cache object. Default null.
  * @return bool True if the cache class is loaded.

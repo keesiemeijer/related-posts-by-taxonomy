@@ -18,6 +18,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 	 * - cache
 	 * - debug
 	 * - WP Rest API
+	 * @since 2.5.0
 	 */
 	class Related_Posts_By_Taxonomy_Plugin {
 
@@ -97,7 +98,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 		/**
 		 * Set up the WordPress REST API feature.
 		 *
-		 * @since 2.3.0
+		 * @since 2.5.0
 		 */
 		public function rest_api_init() {
 

@@ -49,6 +49,8 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 	 * Initialize plugin.
 	 *
 	 * Includes all plugin files and initializes plugin.
+	 *
+	 * @since  0.1
 	 */
 	function related_posts_by_taxonomy_init() {
 

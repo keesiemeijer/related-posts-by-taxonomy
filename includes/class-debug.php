@@ -16,6 +16,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 	 *
 	 * Adds links for debugging shortcodes and widget.
 	 * Displays debug information (to admins) in the footer of a website.
+	 *
+	 * @since 2.0.0
 	 */
 	class Related_Posts_By_Taxonomy_Debug {
 
