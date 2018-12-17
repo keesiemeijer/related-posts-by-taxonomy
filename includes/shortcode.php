@@ -65,10 +65,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return string Related posts html or empty string.
  */
 function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
-	// Validation function to call for the $atts.
-	$validation_callback = 'km_rpbt_validate_shortcode_atts';
+	// Empty string is returned if no atts were added in the shortcode
+	$atts = is_array( $atts ) ? $atts : array();
+	$atts['type'] = 'shortcode';
 
-	return km_rpbt_get_feature_html( 'shortcode', $atts, $validation_callback );
+	// Validation callback function to validate shortcode attributes.
+	$callback = 'km_rpbt_validate_shortcode_atts';
+
+	return km_rpbt_get_feature_html( 'shortcode', $atts, $callback );
 }
 
 /**
