@@ -257,8 +257,8 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 		return '';
 	}
 
-	if ( ! ( is_valid_settings_type( $type ) && km_rpbt_plugin_supports( $type ) ) ) {
 		$recursing = false;
+	if ( ! ( km_rpbt_is_valid_settings_type( $type ) && km_rpbt_plugin_supports( $type ) ) ) {
 		return '';
 	}
 

@@ -23,7 +23,7 @@ function km_rpbt_get_setting_types() {
  * @param string $type Plugin feature settings type.
  * @return boolean       True if it's valid settings type.
  */
-function is_valid_settings_type( $type ) {
+function km_rpbt_is_valid_settings_type( $type ) {
 	return is_string( $type ) && in_array( $type, km_rpbt_get_setting_types() );
 }
 
