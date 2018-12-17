@@ -248,16 +248,6 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
  */
 function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 
-	/* for filter recursion (infinite loop) */
-	static $recursing = false;
-
-	if ( ! $recursing ) {
-		$recursing = true;
-	} else {
-		return '';
-	}
-
-		$recursing = false;
 	if ( ! ( km_rpbt_is_valid_settings_type( $type ) && km_rpbt_plugin_supports( $type ) ) ) {
 		return '';
 	}
@@ -324,8 +314,6 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	 */
 	do_action( 'related_posts_by_taxonomy_after_display', $type );
 
-	$recursing = false;
-
 	return $html;
 }
 
@@ -333,6 +321,12 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 	$related_posts = is_array( $related_posts ) ? $related_posts : array();
 
 	if ( ! ( isset( $rpbt_args['type'] ) && is_valid_settings_type( $rpbt_args['type'] ) ) ) {
+	static $recursing = false;
+
+	/* Check for filter recursion (infinite loop) */
+	if ( ! $recursing ) {
+		$recursing = true;
+	} else {
 		return '';
 	}
 
@@ -343,6 +337,7 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 	$template = km_rpbt_get_template( $rpbt_args['format'], $rpbt_args['type'] );
 
 	if ( ! $template ) {
+		$recursing = false;
 		return '';
 	}
 
@@ -373,6 +368,7 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 		$html .=  isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ]  . "\n" : '';
 	}
 
+	$recursing = false;
 	return trim( $html );
 }
 
