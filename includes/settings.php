@@ -125,6 +125,8 @@ function km_rpbt_get_query_vars() {
  * @return array|false Array with default settings for a feature.
  */
 function km_rpbt_get_default_settings( $type = '' ) {
+	$valid_type = km_rpbt_is_valid_settings_type( $type );
+	$type = $valid_type ? $type : 'related_posts';
 
 	// Default related posts query vars.
 	$defaults = km_rpbt_get_query_vars();
@@ -144,19 +146,7 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		'show_date'      => false,
 		'caption'        => 'post_title',
 		'post_class'     => '',
-	);
 
-	$settings = array_merge( $defaults, $settings );
-
-	if ( ! $valid_type ) {
-		return $settings;
-	}
-
-	$markup_types = array( 'shortcode', 'wp_rest_api' );
-
-	// Custom settings for the shortcode and rest api types.
-	if ( in_array( $type, $markup_types ) ) {
-		$markup_args = array(
 			// back compat: double quoted class attribute
 			"before_{$type}" => '<div class="rpbt_' . $type . '">',
 			"after_{$type}"  => '</div>',
@@ -164,11 +154,10 @@ function km_rpbt_get_default_settings( $type = '' ) {
 			'after_title'      => '</h3>',
 		);
 
-		$settings = array_merge( $settings, $markup_args );
-	}
+	$settings = array_merge( $defaults, $settings );
 
+	if ( 'widget' === $type ) {
 	// Custom settings for the widget.
-	if ( ( 'widget' === $type ) ) {
 		$settings['random']            = false;
 		$settings['singular_template'] = false;
 	}
