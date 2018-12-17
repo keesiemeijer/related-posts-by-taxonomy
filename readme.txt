@@ -131,6 +131,14 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.5.2 =
+* Enhancement
+    * Ajax query (opt in feature).
+		* Does the query for related posts after the page is loaded.
+		* Speeds up perceived page load time.
+	* Meta query filter
+		* Allows you to query related posts by post meta.
+
 = 2.5.1 =
 * Enhancement
     * Add ability to show the post date after the post title
@@ -170,13 +178,6 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 	* Add filter pre_related_posts to override the related posts query.
 * Bug fixes
 	* Fix duplicate gallery IDs breaking the column layout of WordPress galleries. Props: @sonamel
-
-= 2.3.1 =
-
-* Enhancement
-	* Add support to disable the shortcode or widget for this plugin
-	* Add support to update all plugin settings with one filter.
-
 
 For older changelog versions see the changelog.txt file
 
