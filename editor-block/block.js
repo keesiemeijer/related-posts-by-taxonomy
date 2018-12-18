@@ -19,6 +19,7 @@ import './editor.scss'
 import { getPluginData } from './data/data';
 import PostsPanel from './components/posts-panel';
 import ImagePanel from './components/image-panel';
+import RestRequest from './components/RestRequest';
 
 let instances = 0;
 
@@ -160,8 +161,9 @@ export class RelatedPostsBlock extends Component {
 				{inspectorControls}
 				<Disabled>
 					<div className={className}>
-					<ServerSideRender
+					<RestRequest
 						block="related-posts-by-taxonomy/related-posts-block"
+						postID={postID}
 						attributes={ shortcodeAttr }
 					/>
 					</div>

@@ -53,10 +53,8 @@ $block-class: wp-block-related-posts-by-taxonomy-related-posts-block;
 	}
 }
 
-.gutenberg .#{$block-class} {
-	ul {
-		padding-left: 2.5em;
-	}
+.block-editor .#{$block-class} {
+	
 
 	.rpbt-post-date {
 		display: block;
@@ -88,11 +86,7 @@ $block-class: wp-block-related-posts-by-taxonomy-related-posts-block;
 	padding-top: 16px;
 }
 
-body.rtl .gutenberg .#{$block-class} {
-	ul {
-		padding-right: 2.5em;
-	}
-
+body.rtl .block-editor .#{$block-class} {
 	.components-placeholder__fieldset {
 		.instructions ul {
 			text-align: right;
