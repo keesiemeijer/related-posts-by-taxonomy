@@ -297,7 +297,7 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	$args['type'] = $type;
 	$args['fields'] = '';
 
-	if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+	if ( ! defined('REST_REQUEST') && km_rpbt_plugin_supports( 'ajax_query' ) ) {
 		return km_rpbt_get_related_posts_ajax_html( $args );
 	}
 
