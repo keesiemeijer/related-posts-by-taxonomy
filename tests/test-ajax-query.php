@@ -11,6 +11,18 @@ class KM_RPBT_Query_Ajax_Tests extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
+	 * Test km_rpbt_get_related_posts_ajax_html().
+	 */
+	function test_get_related_posts_ajax_html() {
+		$args = km_rpbt_get_default_settings( 'shortcode' );
+		$args['format'] = 'thumbnails';
+		$ajax_html = km_rpbt_get_related_posts_ajax_html( $args );
+		$this->assertContains( "class='rpbt_related_posts_ajax'", $ajax_html );
+		$this->assertContains( ',&quot;type&quot;:&quot;shortcode&quot;', $ajax_html );
+		$this->assertContains( '&quot;format&quot;:&quot;thumbnails&quot;', $ajax_html );
+	}
+
+	/**
 	 * Test ajax output for the shortcode.
 	 */
 	function test_shortcode_output_ajax() {

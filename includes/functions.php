@@ -250,7 +250,6 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
  * @return string feature html or empty string.
  */
 function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
-
 	if ( ! ( km_rpbt_is_valid_settings_type( $type ) && km_rpbt_plugin_supports( $type ) ) ) {
 		return '';
 	}
@@ -334,7 +333,6 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
  * @return string Related posts HTML
  */
 function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
-
 	static $recursing = false;
 
 	/* Check for filter recursion (infinite loop) */

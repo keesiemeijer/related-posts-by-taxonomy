@@ -19,6 +19,7 @@
 		[ "transform-react-jsx", {
 			"pragma": "wp.element.createElement"
 		} ],
-		["lodash"]
+		["lodash"],
+		["transform-object-rest-spread"]
 	]
 }

@@ -102,6 +102,5 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
 	}
 
-
 	return km_rpbt_validate_booleans( $atts, $defaults );
 }
