@@ -18,7 +18,7 @@ function km_rpbt_get_setting_types() {
 /**
  * Check if the type is a valid settings type
  *
- * @since 2.5.2
+ * @since 2.6.0
  *
  * @param string $type Plugin feature settings type.
  * @return boolean       True if it's valid settings type.
@@ -30,7 +30,7 @@ function km_rpbt_is_valid_settings_type( $type ) {
 /**
  * Get the feature type from arguments.
  *
- * @since  2.5.2
+ * @since  2.6.0
  *
  * @param array $args Arguments.
  * @return string Feature type.
@@ -220,7 +220,7 @@ function km_rpbt_sanitize_args( $args ) {
 /**
  * Validate arguments in common with all plugin features.
  *
- * @since 2.5.2
+ * @since 2.6.0
  *
  * @param array  $args Array with common arguments.
  * @param string $type Type of plugin feature arguments.

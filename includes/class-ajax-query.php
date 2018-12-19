@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * This feature allows you to query related posts
  * after the page has loaded.
  *
- * @since 2.5.2
+ * @since 2.6.0
  */
 class Related_Posts_By_Taxonomy_Ajax_Query {
 
@@ -23,7 +23,7 @@ class Related_Posts_By_Taxonomy_Ajax_Query {
 	 * Initialization
 	 *
 	 * @access public
-	 * @since 2.5.2
+	 * @since 2.6.0
 	 */
 	public function init() {
 
@@ -38,7 +38,7 @@ class Related_Posts_By_Taxonomy_Ajax_Query {
 	 * Enqueues scripts and styles.
 	 *
 	 * @access public
-	 * @since 2.5.2
+	 * @since 2.6.0
 	 */
 	public function scripts_and_styles() {
 		wp_register_script( 'rpbt-ajax-query', RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . 'includes/assets/js/ajax-query.js', array( 'jquery' ), false, true );
@@ -55,7 +55,7 @@ class Related_Posts_By_Taxonomy_Ajax_Query {
 	 * Handles AJAX updates.
 	 *
 	 * @access public
-	 * @since 2.5.2
+	 * @since 2.6.0
 	 *
 	 * @return string JSON data
 	 */

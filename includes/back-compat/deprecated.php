@@ -28,7 +28,7 @@ function km_rpbt_get_shortcode_atts() {
  *
  * @see km_rpbt_related_posts_by_taxonomy_shortcode()
  *
- * @deprecated 2.5.2 Use km_rpbt_get_related_posts_html() instead.
+ * @deprecated 2.6.0 Use km_rpbt_get_related_posts_html() instead.
  *
  * @since 2.1
  * @param array $related_posts Array with related post objects.
@@ -38,7 +38,7 @@ function km_rpbt_get_shortcode_atts() {
  * @return string Shortcode output.
  */
 function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
-	_deprecated_function( __FUNCTION__, '2.5.2', 'km_rpbt_get_related_posts_html()' );
+	_deprecated_function( __FUNCTION__, '2.6.0', 'km_rpbt_get_related_posts_html()' );
 
 	return km_rpbt_get_related_posts_html( $related_posts, $rpbt_args );
 }

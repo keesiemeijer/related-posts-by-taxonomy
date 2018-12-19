@@ -2,8 +2,8 @@
 Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.1
-Tested up to: 4.9
-Stable tag: 2.5.2-alpha
+Tested up to: 5.0
+Stable tag: 2.6.0-alpha
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -131,7 +131,7 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
-= 2.5.2 =
+= 2.6.0 =
 * Enhancement
     * Ajax query (opt in feature).
 		* Does the query for related posts after the page is loaded.

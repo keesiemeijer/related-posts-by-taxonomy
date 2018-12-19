@@ -149,7 +149,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	/**
 	 * Widget output
 	 *
-	 * @deprecated 2.5.2 Use km_rpbt_get_related_posts_html() instead.
+	 * @deprecated 2.6.0 Use km_rpbt_get_related_posts_html() instead.
 	 *
 	 * @param array $related_posts Array with related post objects.
 	 * @param array $args          Widget arguments.
@@ -157,7 +157,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * @return void
 	 */
 	function widget_output( $related_posts, $args, $widget_args ) {
-		_deprecated_function( __FUNCTION__, '2.5.2', 'km_rpbt_get_related_posts_html()' );
+		_deprecated_function( __FUNCTION__, '2.6.0', 'km_rpbt_get_related_posts_html()' );
 		echo km_rpbt_get_related_posts_html( $related_posts, $args );
 	}
 

@@ -143,7 +143,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	/**
 	 * Validate WP Rest API arguments.
 	 *
-	 * @since 2.5.2
+	 * @since 2.6.0
 	 * @param array $atts Array with WP Rest API arguments.
 	 *                    See km_rpbt_get_related_posts() for for more
 	 *                    information on accepted arguments.

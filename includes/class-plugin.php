@@ -121,7 +121,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 		/**
 		 * Set up the ajax query feature.
 		 *
-		 * @since 2.5.2
+		 * @since 2.6.0
 		 */
 		public function ajax_query_init() {
 			if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {

@@ -1,7 +1,7 @@
 /**
  * Ajax query for related posts
  * 
- * @since 2.5.2
+ * @since 2.6.0
  */
 
 (function($) {
