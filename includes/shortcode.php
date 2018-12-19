@@ -90,7 +90,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
  */
 function km_rpbt_validate_shortcode_atts( $atts ) {
 	$defaults = km_rpbt_get_default_settings( 'shortcode' );
-	$atts     = km_rpbt_validate_args( $atts, 'shortcode' );
+	$atts     = km_rpbt_validate_args( $atts );
 
 	// Convert (strings) to booleans or use defaults.
 	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
@@ -101,7 +101,6 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	if ( 'regular_order' !== $atts['include_self'] ) {
 		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
 	}
-
 
 	return km_rpbt_validate_booleans( $atts, $defaults );
 }
