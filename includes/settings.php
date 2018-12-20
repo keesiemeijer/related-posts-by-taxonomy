@@ -13,7 +13,6 @@ function km_rpbt_get_setting_types() {
 		'shortcode',
 		'widget',
 		'wp_rest_api',
-		'cache',
 	);
 }
 
