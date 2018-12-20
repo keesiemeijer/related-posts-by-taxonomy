@@ -132,7 +132,8 @@ function km_rpbt_get_query_vars() {
  */
 function km_rpbt_get_default_settings( $type = '' ) {
 	$valid_type = km_rpbt_is_valid_settings_type( $type );
-	$type = $valid_type ? $type : 'related_posts';
+	$type       = $valid_type ? $type : '';
+	$selector   = $type ? $type : 'related_posts';
 
 	// Default related posts query vars.
 	$defaults = km_rpbt_get_query_vars();
@@ -154,10 +155,10 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		'post_class'     => '',
 
 		// back compat: double quoted class attribute
-		"before_{$type}" => '<div class="rpbt_' . $type . '">',
-		"after_{$type}"  => '</div>',
-		'before_title'          => '<h3>',
-		'after_title'           => '</h3>',
+		"before_{$selector}" => '<div class="rpbt_' . $selector . '">',
+		"after_{$selector}"  => '</div>',
+		'before_title'       => '<h3>',
+		'after_title'        => '</h3>',
 	);
 
 	$settings = array_merge( $defaults, $settings );
