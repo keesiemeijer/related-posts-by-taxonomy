@@ -28,14 +28,20 @@ Plugin features:
 * Search for related posts in single or multiple **taxonomies** and **post types**.
 * **Exclude** or **include** terms and posts.
 * **Limit the search** of related posts by date or number.
-* Use your own **HTML templates** for display of the related posts.
-* Use the **WordPress REST API** to get related posts. (opt-in feature)
-* Use a persistent cache layer for the related posts. (opt-in feature)
-* Use **plugin functions** in your theme templates to display related posts yourself.
-* Use Filters to **change the default behavior** of the plugin. 
 * Extensive **[plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/)**.
 * Highly Adjustable!
 * Follows WordPress coding standards and plugin best practices.
+
+For the following features you need to be somewhat familiar with WordPress hooks. The [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/) has many examples to help you along.
+
+Extended features:
+
+* Use your own **HTML templates** for display of the related posts.
+* Use the **WordPress REST API** to get related posts. (opt-in feature)
+* Use a persistent cache layer for the related posts. (opt-in feature)
+* Query for related posts after the page has loaded. (opt-in feature)
+* Use **plugin functions** in your theme templates to display related posts yourself.
+* Use Filters to **change the default behavior** of the plugin. 
 
 Follow this plugin on [GitHub](https://github.com/keesiemeijer/related-posts-by-taxonomy).
 
@@ -134,10 +140,12 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 = 2.6.0 =
 * Enhancement
     * Ajax query (opt in feature).
-		* Does the query for related posts after the page is loaded.
-		* Speeds up perceived page load time.
+		* Does the query for related posts after the page is loaded
+		* Speeds up perceived page load time
+		* Recommended for related posts below the fold.
 	* Meta query filter
-		* Allows you to query related posts by post meta.
+		* Allows you to query related posts by post meta
+	* Prepare introducing the related posts (Gutenberg) editor block feature
 
 = 2.5.1 =
 * Enhancement
@@ -182,5 +190,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.5.1 =
-With this update you can add the post date after post titles. (see changelog for more changes) 
+= 2.6.0 =
+This upgrade adds a new Ajax query feature and meta query filter. See the change log.
