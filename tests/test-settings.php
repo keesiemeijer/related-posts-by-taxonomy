@@ -129,7 +129,10 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 	function test_km_rpbt_get_default_settings_wrong_type() {
 		$defaults = km_rpbt_get_default_settings( 'no_settings_type' );
 		$this->assertTrue( array_key_exists( 'before_related_posts', $defaults ) );
-		$this->assertSame( 'related_posts', $defaults['type'] );
+
+		$html = '<div class="rpbt_related_posts">';
+		$this->assertSame( $html, $defaults['before_related_posts'] );
+		$this->assertSame( '', $defaults['type'] );
 	}
 
 	/**
