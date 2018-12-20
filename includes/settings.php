@@ -1,6 +1,8 @@
 <?php
 /**
- * Plugin feature setting types.
+ * Valid plugin feature setting types.
+ *
+ * Feature types that return or display related posts.
  *
  * @since  2.5.0
  *
@@ -16,7 +18,7 @@ function km_rpbt_get_setting_types() {
 }
 
 /**
- * Check if the type is a valid settings type
+ * Check if a type is a valid plugin setting type.
  *
  * @since 2.6.0
  *
@@ -28,12 +30,13 @@ function km_rpbt_is_valid_settings_type( $type ) {
 }
 
 /**
- * Get the feature type from arguments.
+ * Get the type from feature arguments.
  *
  * @since  2.6.0
  *
  * @param array $args Arguments.
- * @return string Feature type.
+ * @return string Feature type or empty string if no valid 
+ *                settings type was found in the arguments.
  */
 function km_rpbt_get_settings_type( $args ) {
 	if ( isset( $args['type'] ) && km_rpbt_is_valid_settings_type( $args['type'] ) ) {
@@ -46,7 +49,7 @@ function km_rpbt_get_settings_type( $args ) {
  * Get the features this plugin supports.
  *
  * Use the {@see related_posts_by_taxonomy_supports} filter to activate and
- * deactivate features in one go.
+ * deactivate features with one filter.
  *
  * @since  2.3.1
  *
@@ -68,7 +71,7 @@ function km_rpbt_get_plugin_supports() {
 	/**
 	 * Filter plugin features.
 	 *
-	 * Supported features:
+	 * Supported plugin features:
 	 *
 	 * - widget
 	 * - shortcode
@@ -80,6 +83,7 @@ function km_rpbt_get_plugin_supports() {
 	 * - display_cache_log
 	 * - wp_rest_api
 	 * - debug
+	 * - ajax_query
 	 *
 	 * @since 2.3.1
 	 *
@@ -95,6 +99,8 @@ function km_rpbt_get_plugin_supports() {
  *
  * @since 2.5.0
  *
+ * @see km_rpbt_query_related_posts()
+ *
  * @return array Array with default query vars.
  */
 function km_rpbt_get_query_vars() {
@@ -102,17 +108,17 @@ function km_rpbt_get_query_vars() {
 		'post_types'     => 'post',
 		'posts_per_page' => 5,
 		'order'          => 'DESC',
+		'orderby'        => 'post_date',
 		'fields'         => '',
+		'terms'          => '',
+		'include_terms'  => '',
+		'exclude_terms'  => '',
+		'related'        => true,
+		'exclude_posts'  => '',
 		'limit_posts'    => -1,
 		'limit_year'     => '',
 		'limit_month'    => '',
-		'orderby'        => 'post_date',
-		'terms'          => '',
-		'exclude_terms'  => '',
-		'include_terms'  => '',
-		'exclude_posts'  => '',
 		'post_thumbnail' => false,
-		'related'        => true,
 		'public_only'    => false,
 		'include_self'   => false,
 	);
@@ -178,7 +184,6 @@ function km_rpbt_get_default_settings( $type = '' ) {
  * @return array Array with sanitized arguments.
  */
 function km_rpbt_sanitize_args( $args ) {
-
 	$defaults = km_rpbt_get_query_vars();
 	$args     = wp_parse_args( $args, $defaults );
 
@@ -261,7 +266,6 @@ function km_rpbt_validate_args( $args ) {
  * @return array Array with postive integers
  */
 function km_rpbt_validate_ids( $ids ) {
-
 	if ( ! is_array( $ids ) ) {
 		/* allow positive integers, 0 and commas only */
 		$ids = preg_replace( '/[^0-9,]/', '', (string) $ids );
@@ -278,7 +282,7 @@ function km_rpbt_validate_ids( $ids ) {
 /**
  * Validate a boolean value
  *
- * Returns true for true, 1, "1", "true", "on", "yes". Everything else return false.
+ * Returns true for true, "true", 1, "1", "on", "yes". Everything else return false.
  *
  * @since 2.5.1
  *

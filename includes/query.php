@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param int          $post_id    The post id to get related posts for.
  * @param array|string $taxonomies The taxonomies to use for the related posts query. default 'category'.
  * @param string|array $args       {
- *     Optional. Arguments to get related posts.
+ *     Optional. Query variables to get related posts.
  *
  *     @type string|array   $post_types       Post types to use for related posts query. Array or comma separated
  *                                            list of post type names. Default 'post'.

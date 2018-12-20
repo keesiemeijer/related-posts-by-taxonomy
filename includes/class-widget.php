@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class to display related posts with a widget.
+ * The related posts widget.
  *
  * @since 0.1
  */
@@ -69,7 +69,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * @param array $args        The settings for the particular instance of the widget.
 	 */
 	function widget( $widget_args, $args ) {
-
 		if ( ! $this->plugin ) {
 			return '';
 		}
@@ -169,7 +168,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * @param array $old_instance Old settings.
 	 */
 	function update( $new_instance, $old_instance ) {
-
 		$i = $old_instance;
 
 		// Sanitation.
@@ -343,10 +341,11 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * Provides back compatiblity for **upgading** from version 0.2.1.
 	 * The variable taxonomy changed to taxonomies in version 0.2.2.
 	 *
-	 * @param array $i Widget instance.
+	 * @param array $instance Widget instance.
 	 * @return array Widget instance.
 	 */
-	function back_compat_settings( $i ) {
+	function back_compat_settings( $instance ) {
+		$i = $instance;
 
 		if ( ! $i ) {
 			return $i;

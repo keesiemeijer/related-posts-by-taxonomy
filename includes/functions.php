@@ -22,6 +22,9 @@ function km_rpbt_plugin() {
 /**
  * Check if the plugin supports a feature.
  *
+ * See the {@see 'related_posts_by_taxonomy_supports'} filter which
+ * features are supported by default and which are opt-in
+ *
  * @since  2.5.0
  *
  * @param string $type Type of feature.
@@ -60,11 +63,10 @@ function km_rpbt_plugin_supports( $type ) {
 /**
  * Get related posts from the database or cache.
  *
- * Used by the widget, shortcode, and rest api.
+ * Used by the widget, shortcode, ajax query and rest api.
  *
- * If the cache feature of this plugin is activated it tries to get the
- * related posts from the cache first. If not found in the cache they will be
- * cached before returning related posts
+ * If the cache is activated it tries to get the related posts from the cache first.
+ * If not found in the cache they will be cached before returning related posts
  *
  * If taxonomies are not set in the arguments it queries for
  * related posts in all public taxonomies.
@@ -239,7 +241,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 }
 
 /**
- * Related posts display HTML for a plugin feature
+ * Related posts feature HTML.
  *
  * @since  2.6.0
  *
@@ -302,7 +304,6 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 
 	// Get the related posts from database or cache.
 	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
-
 	$hide_empty = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
 
 	$html = '';
@@ -471,7 +472,6 @@ function km_rpbt_get_public_taxonomies() {
  * @return array       Array with unique array values
  */
 function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
-
 	if ( ! is_array( $value ) ) {
 		$value = explode( ',', (string) $value );
 	}
@@ -495,7 +495,7 @@ function km_rpbt_is_cache_loaded() {
 /**
  * Public function to cache related posts.
  *
- * The opt-in cache feature needs to be activated to cache posts.
+ * The opt-in cache feature needs to be activated (with a filter) to cache posts.
  *
  * @since 2.1
  * @since  2.5.0 Use empty string as default value for $taxonomies parameter.
