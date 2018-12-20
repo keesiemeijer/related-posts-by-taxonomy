@@ -251,7 +251,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
  * @param mixed  $validation_callback Callback function for argument validation.
  * @return string feature html or empty string.
  */
-function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
+function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback = '' ) {
 	if ( ! ( km_rpbt_is_valid_settings_type( $type ) && km_rpbt_plugin_supports( $type ) ) ) {
 		return '';
 	}
@@ -277,7 +277,7 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 		$filter_type = 'atts';
 	}
 
-	$args = array_merge( $defaults, (array) $args );
+	$args         = array_merge( $defaults, (array) $args );
 	$args['type'] = $type;
 
 	if ( ! empty( $validation_callback ) ) {
@@ -295,7 +295,7 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	$args = array_merge( $defaults, (array) $args );
 
 	/* Un-filterable arguments */
-	$args['type'] = $type;
+	$args['type']   = $type;
 	$args['fields'] = '';
 
 	if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
@@ -304,7 +304,7 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 
 	// Get the related posts from database or cache.
 	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
-	$hide_empty = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
+	$hide_empty    = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
 
 	$html = '';
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
@@ -326,7 +326,7 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 /**
  * Get the related posts HTML.
  *
- * @since  2.6.0
+ * @since 2.6.0
  *
  * @param array $related_posts Array with related post objects.
  * @param array $args          See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
