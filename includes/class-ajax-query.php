@@ -72,7 +72,7 @@ class Related_Posts_By_Taxonomy_Ajax_Query {
 		$args     = array_merge( $defaults, $args );
 
 		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
-		$hide_empty = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
+		$hide_empty    = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
 
 		$html = '';
 		if ( ! $hide_empty || ! empty( $related_posts ) ) {
