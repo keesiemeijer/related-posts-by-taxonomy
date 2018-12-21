@@ -265,8 +265,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @since 2.2.2
 		 * @since 2.5.0 Moved logic to km_rpbt_get_default_settings().
 		 *
-		 * @param tring $type Type of settings. Choose from 'widget', 'shortcode', 'wp_rest_api' or 'all'.
-		 * @return string ype of settings. Values can be 'shortcode' or 'widget'
+		 * @see km_rpbt_get_default_settings()
+		 *
+		 * @param string $type Type of settings. Choose from 'widget', 'shortcode', 'wp_rest_api'.
+		 * @return array Default feature type settings.
 		 */
 		public function get_default_settings( $type = '' ) {
 			return km_rpbt_get_default_settings( $type );
@@ -277,6 +279,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 *
 		 * @since 2.3.1
 		 * @since 2.5.0 Moved logic to a km_rpbt_get_plugin_supports().
+		 *
+		 * @see km_rpbt_get_plugin_supports()
 		 *
 		 * @return Array Array with plugin support types
 		 */
@@ -289,6 +293,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 *
 		 * @since 2.3.0
 		 * @since 2.5.0 Moved logic to km_rpbt_plugin_supports().
+		 *
+		 * @see km_rpbt_plugin_supports()
 		 *
 		 * @param string $type Type of support ('cache', 'wp_rest_api', etc.).
 		 * @return bool True if set to true with a filter. Default false.

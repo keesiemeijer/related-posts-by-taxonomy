@@ -126,9 +126,12 @@ function km_rpbt_get_query_vars() {
 /**
  * Returns the default settings for a plugin feature.
  *
+ * @see km_rpbt_get_setting_types()
+ *
  * @since 2.2.2
- * @param string $type Type of feature settings. Accepts 'shortcode', 'widget, 'wp_rest_api', 'cache'.
- * @return array|false Array with default settings for a feature.
+ * @param string $type Type of feature settings. See km_rpbt_get_setting_types() for the
+ *                     setting types that are supported.
+ * @return array Array with default settings for a feature.
  */
 function km_rpbt_get_default_settings( $type = '' ) {
 	$valid_type = km_rpbt_is_valid_settings_type( $type );
