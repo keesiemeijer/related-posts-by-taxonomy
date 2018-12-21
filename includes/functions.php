@@ -267,7 +267,8 @@ function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback 
 		 *
 		 * @since 0.2.1
 		 *
-		 * @param array $defaults See $defaults above
+		 * @param array $defaults Default feature arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
+		 *                        for more information about default feature arguments.
 		 */
 		$defaults = apply_filters( "related_posts_by_taxonomy_{$type}_defaults", $settings );
 		$defaults = array_merge( $settings, (array) $defaults );
@@ -297,7 +298,8 @@ function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback 
 	 *
 	 * @since  2.6.0
 	 *
-	 * @param array $args See $defaults above
+	 * @param array $args Feature arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
+	 *                    for more information about feature arguments.
 	 */
 	$args = apply_filters( "related_posts_by_taxonomy_{$type}_{$args_type}", $args );
 	$args = array_merge( $defaults, (array) $args );

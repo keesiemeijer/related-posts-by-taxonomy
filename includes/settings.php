@@ -1,8 +1,12 @@
 <?php
 /**
- * Valid plugin feature setting types.
+ * Get plugin feature setting types.
  *
- * Feature types that return or display related posts.
+ * Returns feature types that return or display related posts.
+ *
+ * - shortcode
+ * - widget
+ * - wp_rest_api
  *
  * @since  2.5.0
  *
@@ -29,13 +33,12 @@ function km_rpbt_is_valid_settings_type( $type ) {
 }
 
 /**
- * Get the type from feature arguments.
+ * Get the type of feature from arguments.
  *
  * @since  2.6.0
  *
  * @param array $args Arguments.
- * @return string Feature type or empty string if no valid
- *                settings type was found in the arguments.
+ * @return string Feature type or empty string if no valid settings type was found in the arguments.
  */
 function km_rpbt_get_settings_type( $args ) {
 	if ( isset( $args['type'] ) && km_rpbt_is_valid_settings_type( $args['type'] ) ) {

@@ -143,7 +143,7 @@ function km_rpbt_post_title_link( $post, $title_attr = false ) {
  * Get the related $post link.
  *
  * @since 2.4.0
- * @since deprecated 2.5.0 Use km_rpbt_get_post_link() instead.
+ * @deprecated 2.5.0 Use km_rpbt_get_post_link() instead.
  *
  * @param object $post       Post object.
  * @param bool   $title_attr Whether to use a title attribute in the link. Default false.

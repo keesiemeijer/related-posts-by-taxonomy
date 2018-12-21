@@ -87,7 +87,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 *
 	 * @since  2.3.0
 	 *
-	 * @param array $args    Request arguments. See km_rpbt_get_related_posts() for
+	 * @param array $args    Request arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
 	 *                       for more information on accepted arguments.
 	 * @param int   $post_id Post ID.
 	 * @return array Filtered request arguments.
@@ -101,7 +101,8 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param array $defaults See $defaults above
+		 * @param array $defaults See km_rpbt_related_posts_by_taxonomy_shortcode() for
+		 *                        for more information about default arguments.
 		 */
 		$defaults = apply_filters( "related_posts_by_taxonomy_wp_rest_api_defaults", $defaults );
 		$args     = array_merge( $defaults, (array) $args );
