@@ -228,6 +228,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		 * @since 0.3
 		 *
 		 * @param string $post_thumbnail Html image tag or empty string.
+		 * @param array  $attributes     Image attributes.
 		 * @param object $related        Related post object
 		 * @param array  $args           Function arguments.
 		 */

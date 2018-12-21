@@ -34,7 +34,7 @@ function km_rpbt_is_valid_settings_type( $type ) {
  * @since  2.6.0
  *
  * @param array $args Arguments.
- * @return string Feature type or empty string if no valid 
+ * @return string Feature type or empty string if no valid
  *                settings type was found in the arguments.
  */
 function km_rpbt_get_settings_type( $args ) {

@@ -262,6 +262,9 @@ function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback 
 		/**
 		 * Filter default feature attributes.
 		 *
+		 * The dynamic portion of the hook name, `$type`, refers to
+		 * the feature: widget, shortcode or wp_rest_api.
+		 *
 		 * @since 0.2.1
 		 *
 		 * @param array $defaults See $defaults above
@@ -270,11 +273,11 @@ function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback 
 		$defaults = array_merge( $settings, (array) $defaults );
 	}
 
-	$filter_type = 'args';
+	$args_type = 'args';
 	if ( 'shortcode' === $type ) {
 		// Back compat
 		$args        = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
-		$filter_type = 'atts';
+		$args_type = 'atts';
 	}
 
 	$args         = array_merge( $defaults, (array) $args );
@@ -287,11 +290,16 @@ function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback 
 	/**
 	 * Filter validated feature arguments.
 	 *
+	 * The dynamic portion of the hook name, `$type`, refers to
+	 * the feature widget, shortcode or wp_rest_api.
+	 * The dynamic portion of the hook name, `$args_type`, refers to
+	 * the argument type. For the shortcode it's 'atts'. Default 'args'.
+	 *
 	 * @since  2.6.0
 	 *
 	 * @param array $args See $defaults above
 	 */
-	$args = apply_filters( "related_posts_by_taxonomy_{$type}_{$filter_type}", $args );
+	$args = apply_filters( "related_posts_by_taxonomy_{$type}_{$args_type}", $args );
 	$args = array_merge( $defaults, (array) $args );
 
 	/* Un-filterable arguments */
