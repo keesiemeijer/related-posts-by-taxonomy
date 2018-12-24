@@ -39,7 +39,7 @@ Extended features:
 * Use your own **HTML templates** for display of the related posts.
 * Use the **WordPress REST API** to get related posts. (opt-in feature)
 * Use a persistent cache layer for the related posts. (opt-in feature)
-* Lazy load related posts after the page has loaded (with Ajax). (opt-in feature)
+* Load related posts after the whole page has loaded (with Ajax). (opt-in feature)
 * Use **plugin functions** in your theme templates to display related posts yourself.
 * Use Filters to **change the default behavior** of the plugin. 
 
