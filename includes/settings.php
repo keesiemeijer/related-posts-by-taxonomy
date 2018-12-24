@@ -67,7 +67,7 @@ function km_rpbt_get_plugin_supports() {
 		'display_cache_log'    => false,
 		'wp_rest_api'          => false,
 		'debug'                => false,
-		'ajax_query'           => false,
+		'lazy_loading'         => false,
 	);
 
 	/**
@@ -85,7 +85,7 @@ function km_rpbt_get_plugin_supports() {
 	 * - display_cache_log
 	 * - wp_rest_api
 	 * - debug
-	 * - ajax_query
+	 * - lazy_loading
 	 *
 	 * @since 2.3.1
 	 *

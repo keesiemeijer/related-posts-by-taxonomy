@@ -114,7 +114,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$args['fields'] = '';
 		$args['title'] = apply_filters( 'widget_title', $args['title'], $args, $this->id_base );
 
-		if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+		if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
 			echo km_rpbt_get_related_posts_ajax_html( $args );
 			return;
 		}

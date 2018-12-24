@@ -18,7 +18,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 	 * - cache
 	 * - debug
 	 * - WP Rest API
-	 * - ajax query
+	 * - lazy loading
 	 *
 	 * @since 2.5.0
 	 */
@@ -38,7 +38,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 			add_action( 'rest_api_init', array( $this, 'rest_api_init' ) );
 			add_action( 'wp_loaded', array( $this, 'cache_init' ) );
 			add_action( 'wp_loaded', array( $this, 'debug_init' ) );
-			add_action( 'wp_loaded', array( $this, 'ajax_query_init' ) );
+			add_action( 'wp_loaded', array( $this, 'lazy_loading_init' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		}
 
@@ -119,14 +119,14 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 		}
 
 		/**
-		 * Set up the ajax query feature.
+		 * Set up the lazy loading feature.
 		 *
 		 * @since 2.6.0
 		 */
-		public function ajax_query_init() {
-			if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
-				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-ajax-query.php';
-				$rest_api = new Related_Posts_By_Taxonomy_Ajax_Query();
+		public function lazy_loading_init() {
+			if (  km_rpbt_plugin_supports( 'lazy_loading' ) ) {
+				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-lazy-loading.php';
+				$rest_api = new Related_Posts_By_Taxonomy_Lazy_Loading();
 			}
 		}
 

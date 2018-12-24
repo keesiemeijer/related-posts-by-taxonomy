@@ -74,7 +74,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			add_filter( 'related_posts_by_taxonomy_widget_args',    array( $this, 'debug_start' ), 99, 2 );
 			add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'debug_start' ), 99, 2 );
 
-			if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+			if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
 				return;
 			}
 
@@ -128,7 +128,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				$this->check_cache( $args );
 			}
 
-			if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+			if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
 				return $args;
 			}
 
@@ -207,7 +207,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		function debug_link( $type = 'widget' ) {
 
 			$counter = ( 'widget' === $type ) ? ++$this->widget_counter : ++$this->shortcode_counter;
-			if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+			if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
 				$this->debug['debug_id'] = 'rpbt-debug-notice';
 			} else {
 				$this->debug['debug_id'] = 'rpbt-' . $type . '-debug-' . $counter;
@@ -514,8 +514,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				echo '<p>';
 			} else {
 				$message = '<p><pre id="rpbt-debug-empty">' . $this->get_header() . "\n\nNo widget or shortcode found to debug on this page</pre></p>";
-				if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
-					$message = '<p><pre id="rpbt-debug-notice">' . $this->get_header( 'Debug Notice' ) . "\n\nPlease disable the ajax_query feature to debug widgets and shortcodes</pre></p>";
+				if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
+					$message = '<p><pre id="rpbt-debug-notice">' . $this->get_header( 'Debug Notice' ) . "\n\nPlease disable the lazy_loading feature to debug widgets and shortcodes</pre></p>";
 				}
 				echo $message;
 			}

@@ -50,7 +50,7 @@ function km_rpbt_plugin_supports( $type ) {
 	 * - cache
 	 * - display_cache_log
 	 * - wp_rest_api
-	 * - ajax_query
+	 * - lazy_loading
 	 * - debug
 	 *
 	 * @since 2.5.0
@@ -63,7 +63,7 @@ function km_rpbt_plugin_supports( $type ) {
 /**
  * Get related posts from the database or cache.
  *
- * Used by the widget, shortcode, ajax query and rest api.
+ * Used by the widget, shortcode and rest api.
  *
  * If the cache is activated it tries to get the related posts from the cache first.
  * If not found in the cache they will be cached before returning related posts
@@ -308,7 +308,7 @@ function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback 
 	$args['type']   = $type;
 	$args['fields'] = '';
 
-	if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
+	if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
 		return km_rpbt_get_related_posts_ajax_html( $args );
 	}
 
@@ -395,21 +395,64 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 }
 
 /**
- * Get the related posts html for an Ajax query.
+ * Get the related posts HTML for the lazy loading ajax query.
  *
- * Returns an emty HTML div with arguments added to the `data-rpbt_args` attribute.
+ * Returns HTML with arguments added to a `data` attribute.
  * The data attribute is used by Javascript to query
  * related posts with Ajax after the page is loaded.
  *
+ * The HTML can be filtered with the {@see 'related_posts_by_taxonomy_ajax_content_html'} and
+ * {@see related_posts_by_taxonomy_ajax_html} filters.
+ *
  * @since 2.6.0
- * @param array $args See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
- *                    information on accepted arguments.
+ * @param array $args See km_rpbt_related_posts_by_taxonomy_shortcode() arguments.
  * @return string Related posts HTML div with data arguments.
  */
 function km_rpbt_get_related_posts_ajax_html( $args ) {
 	$type     = km_rpbt_get_settings_type( $args );
 	$defaults = km_rpbt_get_default_settings( $type );
 	$args     = array_merge( $defaults, $args );
+
+	$title = '';
+	if ( isset( $args['title'] ) && $args['title'] ) {
+		$title = trim( $args['before_title'] . $args['title'] . $args['after_title'] );
+	}
+
+	$before = "before_{$args['type']}";
+	$after  = "after_{$args['type']}";
+
+	$content = "<span class='rpbt-screen-reader-text'>";
+	$content .= __( 'Loading related posts', 'related-posts-by-taxonomy' );
+	$content .= "</span>\n";
+
+	/**
+	 * Filter the inner content of the ajax html.
+	 *
+	 * @since  2.6.0
+	 *
+	 * @param string $content Inner html Content HTML.
+	 * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() arguments.
+	 */
+	$content = apply_filters( 'related_posts_by_taxonomy_ajax_content_html', $content, $args );
+
+	$html =  isset( $args[ $before ] ) ? $args[ $before ]  . "\n" : '';
+	$html .= "<div class='rpbt-lazy-loading-title'>\n";
+	$html .= $title . "\n";
+	$html .= "</div>\n";
+	$html .= "<div class='rpbt-lazy-loading-content'>\n";
+	$html .= $content;
+	$html .= "</div>\n";
+	$html .=  isset( $args[ $after ] ) ? $args[ $after ]  . "\n" : '';
+
+	/**
+	 * Filter lazy loading ajax HTML.
+	 *
+	 * @since  2.6.0
+	 *
+	 * @param string $content Lazy loading HTML.
+	 * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() arguments.
+	 */
+	$html = apply_filters( 'related_posts_by_taxonomy_ajax_html', $html, $args );
 
 	// Remove default values to keep the HTML data attribute small.
 	foreach ( $defaults as $key => $value ) {
@@ -418,9 +461,12 @@ function km_rpbt_get_related_posts_ajax_html( $args ) {
 		}
 	}
 
+	// Add type back
 	$args['type'] = $type;
 	$data         = htmlspecialchars( json_encode( $args ), ENT_QUOTES, 'UTF-8' );
-	return "<div class='rpbt_related_posts_ajax' data-rpbt_args='{$data}' style='display: none;'></div>";
+	$data_html    = "<div class='rpbt-related-posts-lazy-loading' data-rpbt_args='{$data}'>\n";
+
+	return $data_html . $html . "</div>\n";
 }
 
 /**

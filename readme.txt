@@ -29,8 +29,8 @@ Plugin features:
 * **Exclude** or **include** terms and posts.
 * **Limit the search** of related posts by date or number.
 * Extensive **[plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/)**.
-* Highly Adjustable!
 * Follows WordPress coding standards and plugin best practices.
+* Highly Adjustable!
 
 For the following features you need to be somewhat familiar with WordPress hooks. The [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/) has many examples to help you along.
 
@@ -39,7 +39,7 @@ Extended features:
 * Use your own **HTML templates** for display of the related posts.
 * Use the **WordPress REST API** to get related posts. (opt-in feature)
 * Use a persistent cache layer for the related posts. (opt-in feature)
-* Query for related posts after the page has loaded. (opt-in feature)
+* Lazy load related posts after the page has loaded (with Ajax). (opt-in feature)
 * Use **plugin functions** in your theme templates to display related posts yourself.
 * Use Filters to **change the default behavior** of the plugin. 
 
@@ -139,9 +139,9 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 == Changelog ==
 = 2.6.0 =
 * Enhancement
-    * Ajax query (opt in feature).
-		* Does the query for related posts after the page is loaded
+    * Lazy loading (opt in feature).
 		* Speeds up perceived page load time
+		* Does the query for related posts (with Ajax) after the page is loaded
 		* Recommended for related posts below the fold.
 	* Meta query filter
 		* Allows you to query related posts by post meta
@@ -191,4 +191,4 @@ For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
 = 2.6.0 =
-This upgrade adds a new Ajax query feature and meta query filter. See the change log.
+This upgrade introduces the lazy loading feature and meta query filter. See the change log.

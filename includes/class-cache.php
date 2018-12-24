@@ -594,8 +594,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			if ( empty( $this->cache_log ) ) {
 				$message = 'This page has no related posts';
-				if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
-					$message = "Disable the ajax_query feature to see the cache log";
+				if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
+					$message = "Disable the lazy_loading feature to see the cache log";
 				}
 				$this->cache_log[] = $message;
 			}
