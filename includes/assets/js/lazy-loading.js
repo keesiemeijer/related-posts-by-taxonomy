@@ -5,7 +5,7 @@
  */
 
 (function($) {
-	if (typeof rpbt_ajax_query === 'undefined') {
+	if (typeof rpbt_lazy_loading === 'undefined') {
 		return;
 	}
 
@@ -14,19 +14,19 @@
 	$(document).ready(function() {
 
 		/**
-		 * Updates te related posts ajax div.
+		 * Update container with related posts.
 		 */
-		$('.rpbt_related_posts_ajax').each(function() {
+		$('.rpbt-related-posts-lazy-loading').each(function() {
 			var elem = $(this);
-			var args = $(this).data('rpbt_args');
+			var args = $(this).data('rpbt_args') || {};
 
 			var data = {
-				action: "rpbt_ajax_query",
-				nonce: rpbt_ajax_query.nonce,
+				action: "rpbt_lazy_loading",
+				nonce: rpbt_lazy_loading.nonce,
 				args: args
 			};
 
-			$.post(rpbt_ajax_query.ajaxurl, data)
+			$.post(rpbt_lazy_loading.ajaxurl, data)
 				.done(function(response) {
 					var success = response.hasOwnProperty('success');
 					var data = response.hasOwnProperty('data');

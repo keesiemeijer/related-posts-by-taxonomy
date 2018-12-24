@@ -8,11 +8,11 @@ class KM_RPBT_Ajax_Tests extends KM_RPBT_Ajax_UnitTestCase {
 
 	function setup_ajax() {
 		// Activate ajax_query
-		add_filter( 'related_posts_by_taxonomy_ajax_query', '__return_true' );
+		add_filter( 'related_posts_by_taxonomy_lazy_loading', '__return_true' );
 
 		// Setup plugin with ajax_query activated.
 		$ajax = new Related_Posts_By_Taxonomy_Plugin();
-		$ajax->ajax_query_init();
+		$ajax->lazy_loading_init();
 	}
 
 	function get_args( $post_id, $type = 'shortcode' ) {
@@ -59,12 +59,12 @@ class KM_RPBT_Ajax_Tests extends KM_RPBT_Ajax_UnitTestCase {
 </ul>
 </div>
 EOF;
-		$_POST['nonce'] = wp_create_nonce( 'rpbt_ajax_query_nonce' );
+		$_POST['nonce'] = wp_create_nonce( 'rpbt_lazy_loading_nonce' );
 		$_POST['args']  = $this->get_args( $create_posts['posts'][0] );
 
 		// Make the request
 		try {
-			$this->_handleAjax( 'rpbt_ajax_query' );
+			$this->_handleAjax( 'rpbt_lazy_loading' );
 		} catch ( WPAjaxDieContinueException $e ) {
 		}
 

@@ -6,14 +6,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Query related posts with Ajax.
- *
- * This feature allows you to query related posts
- * after the page has loaded.
+ * Lazy loading feature
+ * 
+ * Query related posts after the page has loaded (with Ajax).
  *
  * @since 2.6.0
  */
-class Related_Posts_By_Taxonomy_Ajax_Query {
+class Related_Posts_By_Taxonomy_Lazy_Loading {
 
 	public function __construct() {
 		$this->init();
@@ -27,8 +26,8 @@ class Related_Posts_By_Taxonomy_Ajax_Query {
 	 */
 	public function init() {
 
-		add_action( 'wp_ajax_rpbt_ajax_query',  array( $this, 'query_ajax' ) );
-		add_action( "wp_ajax_nopriv_rpbt_ajax_query",  array( $this, 'query_ajax' ) );
+		add_action( 'wp_ajax_rpbt_lazy_loading',  array( $this, 'lazy_loading_query' ) );
+		add_action( "wp_ajax_nopriv_rpbt_lazy_loading",  array( $this, 'lazy_loading_query' ) );
 
 		// Enqueue scripts and styles.
 		add_action( 'wp_enqueue_scripts', array( $this, 'scripts_and_styles' ), 11 );
@@ -41,26 +40,27 @@ class Related_Posts_By_Taxonomy_Ajax_Query {
 	 * @since 2.6.0
 	 */
 	public function scripts_and_styles() {
-		wp_register_script( 'rpbt-ajax-query', RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . 'includes/assets/js/ajax-query.js', array( 'jquery' ), false, true );
-		wp_localize_script( 'rpbt-ajax-query', 'rpbt_ajax_query', array(
+		wp_register_script( 'rpbt-lazy-loading', RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . 'includes/assets/js/lazy-loading.js', array( 'jquery' ), false, true );
+		wp_localize_script( 'rpbt-lazy-loading', 'rpbt_lazy_loading', array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'rpbt_ajax_query_nonce' ),
+				'nonce'   => wp_create_nonce( 'rpbt_lazy_loading_nonce' ),
+				'loading' => __('Loading...', 'related-posts-by-taxonomy' ),
 			)
 		);
 
-		wp_enqueue_script( 'rpbt-ajax-query' );
+		wp_enqueue_script( 'rpbt-lazy-loading' );
 	}
 
 	/**
-	 * Handles AJAX updates.
+	 * Handles AJAX updates for the lazy loading feature.
 	 *
 	 * @access public
 	 * @since 2.6.0
 	 *
 	 * @return string JSON data
 	 */
-	public function query_ajax() {
-		check_ajax_referer( 'rpbt_ajax_query_nonce', 'nonce' );
+	public function lazy_loading_query() {
+		check_ajax_referer( 'rpbt_lazy_loading_nonce', 'nonce' );
 
 		if ( ! ( isset( $_POST['args'] ) && $_POST['args'] ) ) {
 			wp_send_json_error();
