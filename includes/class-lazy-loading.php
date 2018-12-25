@@ -25,7 +25,7 @@ class Related_Posts_By_Taxonomy_Lazy_Loading {
 	 * @since 2.6.0
 	 */
 	public function init() {
-
+		// ajax actions
 		add_action( 'wp_ajax_rpbt_lazy_loading',  array( $this, 'lazy_loading_query' ) );
 		add_action( "wp_ajax_nopriv_rpbt_lazy_loading",  array( $this, 'lazy_loading_query' ) );
 

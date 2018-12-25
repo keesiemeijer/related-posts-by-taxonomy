@@ -40,6 +40,8 @@
 						if (response.data.length) {
 							// console.log('INSERT', args.post_id);
 							elem.replaceWith(response.data);
+						} else {
+							elem.remove();
 						}
 					} else {
 						console.log(error + 'failed request ');

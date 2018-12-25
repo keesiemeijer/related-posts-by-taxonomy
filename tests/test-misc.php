@@ -90,7 +90,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$_args['taxonomies'] = $taxonomies;
 		$sanitize            = km_rpbt_sanitize_args( $_args );
 		$html                = km_rpbt_get_related_posts_html( $rel_posts3, $_args );
-		$html_ajax           = km_rpbt_get_related_posts_ajax_html( $_args );
+		$html_ajax           = km_rpbt_get_lazy_loading_html( $_args );
 		$gallery             = km_rpbt_related_posts_by_taxonomy_gallery( array( 'id' => $posts[0] ), array() );
 		$widget              = km_rpbt_related_posts_by_taxonomy_widget();
 		$shortcode           = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );

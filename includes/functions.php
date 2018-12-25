@@ -30,23 +30,23 @@ function km_rpbt_plugin() {
  * @param string $type Type of feature.
  * @return bool True if the feature is supported.
  */
-function km_rpbt_plugin_supports( $type ) {
+function km_rpbt_plugin_supports( $feature ) {
 	$supports = km_rpbt_get_plugin_supports();
 
-	if ( ! in_array( $type , array_keys( $supports ) ) ) {
+	if ( ! in_array( $feature , array_keys( $supports ) ) ) {
 		return false;
 	}
 
 	/**
 	 * Filter whether to support a plugin feature.
 	 *
-	 * The dynamic portion of the hook name, `$type`, refers to the
+	 * The dynamic portion of the hook name, `$feature`, refers to the
 	 * type of support.
 	 *
 	 * - widget
+	 * - widget_hide_empty
 	 * - shortcode
 	 * - shortcode_hide_empty
-	 * - widget_hide_empty
 	 * - cache
 	 * - display_cache_log
 	 * - wp_rest_api
@@ -57,7 +57,7 @@ function km_rpbt_plugin_supports( $type ) {
 	 *
 	 * @param bool $bool Add support if true. Default false
 	 */
-	return apply_filters( "related_posts_by_taxonomy_{$type}", (bool) $supports[ $type ] );
+	return apply_filters( "related_posts_by_taxonomy_{$feature}", (bool) $supports[ $feature ] );
 }
 
 /**
@@ -309,7 +309,7 @@ function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback 
 	$args['fields'] = '';
 
 	if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
-		return km_rpbt_get_related_posts_ajax_html( $args );
+		return km_rpbt_get_lazy_loading_html( $args );
 	}
 
 	// Get the related posts from database or cache.
@@ -395,64 +395,35 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 }
 
 /**
- * Get the related posts HTML for the lazy loading ajax query.
+ * Get the HTML for the lazy loading feature.
  *
- * Returns HTML with arguments added to a `data` attribute.
+ * Returns a HTML div with the (widget or shortcode ) arguments added to
+ * the `data-rpbt_args` HTML attribute.
+ *
  * The data attribute is used by Javascript to query
  * related posts with Ajax after the page is loaded.
  *
- * The HTML can be filtered with the {@see 'related_posts_by_taxonomy_ajax_content_html'} and
- * {@see related_posts_by_taxonomy_ajax_html} filters.
+ * The HTML can be filtered with the {@see 'related_posts_by_taxonomy_lazy_loading_html'} filter.
  *
  * @since 2.6.0
  * @param array $args See km_rpbt_related_posts_by_taxonomy_shortcode() arguments.
  * @return string Related posts HTML div with data arguments.
  */
-function km_rpbt_get_related_posts_ajax_html( $args ) {
+function km_rpbt_get_lazy_loading_html( $args ) {
 	$type     = km_rpbt_get_settings_type( $args );
 	$defaults = km_rpbt_get_default_settings( $type );
 	$args     = array_merge( $defaults, $args );
 
-	$title = '';
-	if ( isset( $args['title'] ) && $args['title'] ) {
-		$title = trim( $args['before_title'] . $args['title'] . $args['after_title'] );
-	}
-
-	$before = "before_{$args['type']}";
-	$after  = "after_{$args['type']}";
-
-	$content = "<span class='rpbt-screen-reader-text'>";
-	$content .= __( 'Loading related posts', 'related-posts-by-taxonomy' );
-	$content .= "</span>\n";
-
 	/**
-	 * Filter the inner content of the ajax html.
+	 * Filter placeholder HTML while loading posts with the lazy loading feature.
 	 *
 	 * @since  2.6.0
 	 *
-	 * @param string $content Inner html Content HTML.
+	 * @param string $content HTML that will be displayed while loading posts. Default empty string.
 	 * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() arguments.
 	 */
-	$content = apply_filters( 'related_posts_by_taxonomy_ajax_content_html', $content, $args );
-
-	$html =  isset( $args[ $before ] ) ? $args[ $before ]  . "\n" : '';
-	$html .= "<div class='rpbt-lazy-loading-title'>\n";
-	$html .= $title . "\n";
-	$html .= "</div>\n";
-	$html .= "<div class='rpbt-lazy-loading-content'>\n";
-	$html .= $content;
-	$html .= "</div>\n";
-	$html .=  isset( $args[ $after ] ) ? $args[ $after ]  . "\n" : '';
-
-	/**
-	 * Filter lazy loading ajax HTML.
-	 *
-	 * @since  2.6.0
-	 *
-	 * @param string $content Lazy loading HTML.
-	 * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() arguments.
-	 */
-	$html = apply_filters( 'related_posts_by_taxonomy_ajax_html', $html, $args );
+	$html = apply_filters( 'related_posts_by_taxonomy_lazy_loading_html', '', $args );
+	$html = is_string( $html ) ? $html : '';
 
 	// Remove default values to keep the HTML data attribute small.
 	foreach ( $defaults as $key => $value ) {
