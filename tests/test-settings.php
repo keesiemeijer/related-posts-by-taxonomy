@@ -24,6 +24,10 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'public_only'    => false,
 			'include_self'   => false,
 			'terms'          => array(),
+			'meta_key'       => '',
+			'meta_value'     => '',
+			'meta_compare'   => '',
+			'meta_type'      => '',
 		);
 	}
 
@@ -48,6 +52,10 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'public_only'    => false,
 			'include_self'   => false,
 			'terms'          => '',
+			'meta_key'       => '',
+			'meta_value'     => '',
+			'meta_compare'   => '',
+			'meta_type'      => '',
 		);
 
 		$args = km_rpbt_get_query_vars();
@@ -69,6 +77,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'orderby'        => '',
 			'exclude_terms'  => array( 1, 2, 3 ),
 			'related'        => false,
+			'meta_key'       => '',
 		);
 
 		$expected = array_merge( $expected, $sanitized );
@@ -90,6 +99,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'public_only'    => array(),
 			'include_self'   => 'no',
 			'terms'          => 'term-a,term-b,',
+			'meta_key'       => false,
 		);
 
 		$sanitized_args = km_rpbt_sanitize_args( $args );
@@ -111,10 +121,11 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'fields'         => 'ids',
 			'public_only'    => true,
 			'terms'          => array( 1, 2, 3 ),
+			'meta_key'       => 'false'
 		);
 		$expected = array_merge( $expected, $sanitized );
 
-		$args = 'posts_per_page=3&fields=ids&public_only=true&terms=1,2,2,false,3';
+		$args = 'posts_per_page=3&fields=ids&public_only=true&terms=1,2,2,false,3&meta_key=false';
 		$sanitized_args = km_rpbt_sanitize_args( $args );
 
 		ksort( $expected );

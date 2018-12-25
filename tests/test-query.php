@@ -14,6 +14,7 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 	function tearDown() {
 		parent::tearDown();
 		remove_filter( 'related_posts_by_taxonomy_posts_orderby', array( $this, 'return_first_argument' ), 10, 4 );
+		remove_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'meta_query_callback' ), 10, 4 );
 	}
 
@@ -411,6 +412,49 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
+	 * Test meta query arguments.
+	 */
+	function test_meta_query() {
+		$this->setup_posts();
+
+		// add meta value for meta query argument
+		add_post_meta( $this->posts[3], 'meta_key' , 'meta_value' );
+
+		$args = array(
+			'fields'     => 'ids',
+			'taxonomies' => $this->taxonomies,
+			'meta_key'   => 'meta_key',
+			'meta_value' => 'meta_value',
+		);
+
+		add_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'return_first_argument' ) );
+
+		// Post 3 is related and is the only posts with post meta key `meta_key`
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
+		$this->assertEquals( array( $this->posts[3] ), $rel_post0 );
+		$this->assertSame( 'AND', $this->arg['relation'] );
+		$this->arg = null;
+	}
+
+	/**
+	 * Test meta query without assigning meta to posts.
+	 */
+	function test_meta_query_with_no_meta_assigned() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		$args = array(
+			'fields'         => 'ids',
+			'taxonomies'     => $this->taxonomies,
+			'meta_key'       => 'meta_key',
+		);
+
+		// test post 0
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
+		$this->assertEmpty( $rel_post0 );
+	}
+
+	/**
 	 * Test post_thumbnail function argument.
 	 */
 	function test_post_thumbnail() {
@@ -430,9 +474,31 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
-	 * Test meta query.
+	 * Test post_thumbnail with meta function argument.
 	 */
-	function test_meta_query() {
+	function test_post_thumbnail_and_meta() {
+		$this->setup_posts();
+
+		// Fake post thumbnails for post 1 and 3
+		add_post_meta( $this->posts[1], '_thumbnail_id' , 22 ); // fake attachment ID's
+		add_post_meta( $this->posts[3], '_thumbnail_id' , 33 );
+		add_post_meta( $this->posts[3], 'meta_key' , 'meta_value' );
+
+		$args       = array(
+			'post_thumbnail' => true,
+			'fields'         => 'ids',
+			'taxonomies'     => $this->taxonomies,
+			'meta_key'       => 'meta_key',
+			'meta_value'     => 'meta_value',
+		);
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
+		$this->assertEquals( array( $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test meta query filter.
+	 */
+	function test_meta_query_filter() {
 		$this->setup_posts();
 
 		// Fake post thumbnails for post 1 and 3

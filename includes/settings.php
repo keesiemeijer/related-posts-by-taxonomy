@@ -123,6 +123,10 @@ function km_rpbt_get_query_vars() {
 		'post_thumbnail' => false,
 		'public_only'    => false,
 		'include_self'   => false,
+		'meta_key'       => '',
+		'meta_value'     => '',
+		'meta_compare'   => '',
+		'meta_type'      => '',
 	);
 }
 
@@ -208,9 +212,13 @@ function km_rpbt_sanitize_args( $args ) {
 	}
 
 	// Strings.
-	$args['fields']  = is_string( $args['fields'] ) ? $args['fields'] : '';
-	$args['orderby'] = is_string( $args['orderby'] ) ? $args['orderby'] : '';
-	$args['order']   = is_string( $args['order'] ) ? $args['order'] : '';
+	$args['fields']       = is_string( $args['fields'] ) ? $args['fields'] : '';
+	$args['orderby']      = is_string( $args['orderby'] ) ? $args['orderby'] : '';
+	$args['order']        = is_string( $args['order'] ) ? $args['order'] : '';
+	$args['meta_key']     = is_string( $args['meta_key'] ) ? $args['meta_key'] : '';
+	$args['meta_value']   = is_string( $args['meta_value'] ) ? $args['meta_value'] : '';
+	$args['meta_compare'] = is_string( $args['meta_compare'] ) ? $args['meta_compare'] : '';
+	$args['meta_type']    = is_string( $args['meta_type'] ) ? $args['meta_type'] : '';
 
 	// Integers.
 	$args['limit_year']     = absint( $args['limit_year'] );

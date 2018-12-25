@@ -187,7 +187,15 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		$order_by_sql .= "$wpdb->posts.$orderby";
 	}
 
-	$meta_query = array();
+	$meta_query = new WP_Meta_Query();
+	$meta_query->parse_query_vars( $args );
+	$meta_query = is_array( $meta_query->queries ) ? $meta_query->queries : array();
+
+	// Default to AND.
+	if( isset( $meta_query['relation'] ) ) {
+		$meta_query['relation'] = 'AND';
+	}
+
 	if ( $args['post_thumbnail'] ) {
 		$meta_query[] = array( 'key' => '_thumbnail_id' );
 	}

@@ -57,6 +57,42 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
+	 * Test WP_Meta_Query::parse_query_vars()
+	 */
+	function test_wp_meta_query_without_key_and_value() {
+		$meta_query_obj = new WP_Meta_Query();
+		$args = array(
+			'meta_value' => '',
+			'meta_key' => '',
+			'meta_compare' => '>',
+			'meta_type'    => 'NUMERIC'
+		);
+		$meta_query_obj->parse_query_vars( $args );
+
+		$this->assertTrue( is_array( $meta_query_obj->queries ) );
+		$this->assertEmpty( $meta_query_obj->queries );
+	}
+
+	/**
+	 * Test WP_Meta_Query::parse_query_vars()
+	 */
+	function test_wp_meta_query_with_meta_key() {
+		$meta_query_obj = new WP_Meta_Query();
+		$args = array(
+			'meta_key' => 'my_key',
+		);
+		$meta_query_obj->parse_query_vars( $args );
+		$expected = array(
+			array(
+				'key' => 'my_key',
+			),
+			'relation' => 'OR',
+		);
+
+		$this->assertSame( $expected, $meta_query_obj->queries );
+	}
+
+	/**
 	 * Tests for functions that should not output anything.
 	 *
 	 * @expectedDeprecated km_rpbt_related_posts_by_taxonomy
@@ -96,7 +132,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$shortcode           = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
 		$settings            = km_rpbt_get_default_settings( 'shortcode' );
 		$valid_settings      = km_rpbt_is_valid_settings_type( 'lala' );
-		$get_type            = km_rpbt_get_settings_type($settings);
+		$get_type            = km_rpbt_get_settings_type( $settings );
 		$settings['post_id'] = $posts[0];
 		$feature_html        = km_rpbt_get_feature_html( 'shortcode', $settings );
 		$sc_validate         = km_rpbt_validate_shortcode_atts( $settings );
