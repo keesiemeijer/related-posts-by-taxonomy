@@ -216,7 +216,6 @@ function km_rpbt_sanitize_args( $args ) {
 	$args['orderby']      = is_string( $args['orderby'] ) ? $args['orderby'] : '';
 	$args['order']        = is_string( $args['order'] ) ? $args['order'] : '';
 	$args['meta_key']     = is_string( $args['meta_key'] ) ? $args['meta_key'] : '';
-	$args['meta_value']   = is_string( $args['meta_value'] ) ? $args['meta_value'] : '';
 	$args['meta_compare'] = is_string( $args['meta_compare'] ) ? $args['meta_compare'] : '';
 	$args['meta_type']    = is_string( $args['meta_type'] ) ? $args['meta_type'] : '';
 
