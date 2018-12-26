@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Related Posts By Taxonomy 2.6.0-alpha\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2018-12-19 15:50:08+00:00\n"
+"POT-Creation-Date: 2018-12-26 17:10:39+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -125,6 +125,10 @@ msgstr ""
 msgid "Post thumbnails"
 msgstr ""
 
+#: includes/class-lazy-loading.php:47
+msgid "Loading..."
+msgstr ""
+
 #: includes/class-rest-api.php:39
 msgid "Unique identifier for the object."
 msgstr ""
@@ -133,31 +137,31 @@ msgstr ""
 msgid "Invalid post ID."
 msgstr ""
 
-#: includes/class-rest-api.php:268
+#: includes/class-rest-api.php:269
 msgid "The related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:276
+#: includes/class-rest-api.php:277
 msgid "Number of related terms in common with the post."
 msgstr ""
 
-#: includes/class-rest-api.php:284
+#: includes/class-rest-api.php:285
 msgid "The Post ID to get related posts for."
 msgstr ""
 
-#: includes/class-rest-api.php:289
+#: includes/class-rest-api.php:290
 msgid "Post types used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:297
+#: includes/class-rest-api.php:298
 msgid "Taxonomies used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:305
+#: includes/class-rest-api.php:306
 msgid "Related term ids used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:313
+#: includes/class-rest-api.php:314
 msgid "Rendered related posts HTML"
 msgstr ""
 
@@ -169,7 +173,7 @@ msgstr ""
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/settings.php:142
+#: includes/settings.php:158
 msgid "Related Posts"
 msgstr ""
 

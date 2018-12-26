@@ -42,6 +42,22 @@ module.exports = function( grunt ) {
 			}
 		},
 
+		uglify: {
+			options: {
+				banner: '/*\n' +
+					' * ' + '<%= pkg.name %>\n' +
+					' * ' + 'v<%= pkg.version %>\n' +
+					' * ' + '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
+					' **/\n'
+			},
+
+			target: {
+				files: {
+					'includes/assets/js/lazy-loading.min.js': [ 'includes/assets/js/lazy-loading.js' ]
+				}
+			}
+		},
+
 		// Clean up build directory
 		clean: {
 			main: [ 'build/<%= pkg.name %>' ],
@@ -145,7 +161,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'travis', [ 'githash', 'replace:replace_branch' ] );
 
 	// Creates build
-	grunt.registerTask( 'build', [ 'clean:main', 'version', 'makepot', 'travis', 'copy:main' ] );
+	grunt.registerTask( 'build', [ 'clean:main', 'uglify', 'version', 'makepot', 'travis', 'copy:main' ] );
 
 	// Removes ALL development files in the root directory
 	// !!! be careful with this

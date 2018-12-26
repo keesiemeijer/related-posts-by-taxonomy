@@ -40,7 +40,8 @@ class Related_Posts_By_Taxonomy_Lazy_Loading {
 	 * @since 2.6.0
 	 */
 	public function scripts_and_styles() {
-		wp_register_script( 'rpbt-lazy-loading', RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . 'includes/assets/js/lazy-loading.js', array( 'jquery' ), false, true );
+		$debug = defined( 'WP_DEBUG') && WP_DEBUG ? '' : '.min';
+		wp_register_script( 'rpbt-lazy-loading', RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . "includes/assets/js/lazy-loading{$debug}.js", array( 'jquery' ), false, true );
 		wp_localize_script( 'rpbt-lazy-loading', 'rpbt_lazy_loading', array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'rpbt_lazy_loading_nonce' ),
