@@ -33,7 +33,7 @@ function km_rpbt_plugin() {
 function km_rpbt_plugin_supports( $feature ) {
 	$supports = km_rpbt_get_plugin_supports();
 
-	if ( ! in_array( $feature , array_keys( $supports ) ) ) {
+	if ( ! in_array( $feature, array_keys( $supports ) ) ) {
 		return false;
 	}
 

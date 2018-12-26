@@ -175,7 +175,6 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$item_output = '';
 
 	foreach ( (array) $related_posts as $related ) {
-
 		$caption       = '';
 		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
 		$title         = apply_filters( 'the_title', $related->post_title, $related->ID );
