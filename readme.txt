@@ -25,8 +25,9 @@ Plugin features:
 * Display related posts as **post thumbnails**, links, excerpts or full posts.
 * **Small Footprint**. Doesn't slow down your site!
 * Automatic display of related posts after the post content.
-* Search for related posts in single or multiple **taxonomies** and **post types**.
 * **Exclude** or **include** terms and posts.
+* Search for related posts in single or multiple **taxonomies** and **post types**.
+* Search for related posts with post meta.
 * **Limit the search** of related posts by date or number.
 * Extensive **[plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/)**.
 * Follows WordPress coding standards and plugin best practices.
@@ -76,6 +77,10 @@ Attributes for the shortcode are:
 * `limit_posts`
 * `limit_year`
 * `limit_month`
+* `meta_key`
+* `meta_value`
+* `meta_compare`
+* `meta_type`
 * `related`
 * `public_only`
 * `include_self`
@@ -143,8 +148,9 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 		* Speeds up perceived page load time
 		* Does the query for related posts (with Ajax) after the page is loaded
 		* Recommended for related posts below the fold.
-	* Meta query filter
-		* Allows you to query related posts by post meta
+	* Meta query
+		* Allows you to query related posts with post meta
+		* Add the meta query in the shortcode or with a filter
 	* Prepare introducing the related posts (Gutenberg) editor block feature
 
 = 2.5.1 =
