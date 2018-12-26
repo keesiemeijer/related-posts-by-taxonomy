@@ -58,6 +58,8 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test WP_Meta_Query::parse_query_vars()
+	 *
+	 * Used for the meta query in km_rpbt_query_related_posts()
 	 */
 	function test_wp_meta_query_without_key_and_value() {
 		$meta_query_obj = new WP_Meta_Query();
@@ -69,12 +71,13 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		);
 		$meta_query_obj->parse_query_vars( $args );
 
-		$this->assertTrue( is_array( $meta_query_obj->queries ) );
-		$this->assertEmpty( $meta_query_obj->queries );
+		$this->assertTrue( is_array( $meta_query_obj->queries ) && empty( $meta_query_obj->queries ) );
 	}
 
 	/**
 	 * Test WP_Meta_Query::parse_query_vars()
+	 *
+	 * Used for the meta query in km_rpbt_query_related_posts()
 	 */
 	function test_wp_meta_query_with_meta_key() {
 		$meta_query_obj = new WP_Meta_Query();
@@ -90,6 +93,33 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		);
 
 		$this->assertSame( $expected, $meta_query_obj->queries );
+	}
+
+	/**
+	 * Test WP_Meta_Query::parse_query_vars()
+	 *
+	 * Used for the meta query in km_rpbt_query_related_posts()
+	 */
+	function test_wp_meta_query_with_meta_value_array() {
+		$meta_query_obj = new WP_Meta_Query();
+		$args = array(
+			'meta_key'     => 'my_key',
+			'meta_value'   => array( 10, 20 ),
+			'meta_type'    => 'numeric',
+			'meta_compare' => 'BETWEEN',
+		);
+		$meta_query_obj->parse_query_vars( $args );
+		$expected = array(
+			array(
+				'key'     => 'my_key',
+				'value'   => array( 10, 20 ),
+				'type'    => 'numeric',
+				'compare' => 'BETWEEN',
+			),
+			'relation' => 'OR',
+		);
+
+		$this->assertEquals( $expected, $meta_query_obj->queries );
 	}
 
 	/**
@@ -127,7 +157,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$sanitize            = km_rpbt_sanitize_args( $_args );
 		$html                = km_rpbt_get_related_posts_html( $rel_posts3, $_args );
 		$html_ajax           = km_rpbt_get_lazy_loading_html( $_args );
-		$gallery             = km_rpbt_related_posts_by_taxonomy_gallery( array( 'id' => $posts[0] ), array() );
+		$gallery             = km_rpbt_related_posts_by_taxonomy_gallery( array( 'id' => $posts[0] ), $rel_posts3 );
 		$widget              = km_rpbt_related_posts_by_taxonomy_widget();
 		$shortcode           = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
 		$settings            = km_rpbt_get_default_settings( 'shortcode' );
@@ -148,6 +178,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$classes3            = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );
 		$classes4            = km_rpbt_post_class();
 		$link                = km_rpbt_get_post_link( $_posts[0], true );
+		$link2               = km_rpbt_get_permalink( $_posts[0] );
 
 		// Deprecated functions
 		$rel_posts4 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );

@@ -78,6 +78,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'exclude_terms'  => array( 1, 2, 3 ),
 			'related'        => false,
 			'meta_key'       => '',
+			'meta_value'     => array( 10, 20 ),
 		);
 
 		$expected = array_merge( $expected, $sanitized );
@@ -100,6 +101,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'include_self'   => 'no',
 			'terms'          => 'term-a,term-b,',
 			'meta_key'       => false,
+			'meta_value'     => array( 10, 20 ), // mixed value not sanitized
 		);
 
 		$sanitized_args = km_rpbt_sanitize_args( $args );
