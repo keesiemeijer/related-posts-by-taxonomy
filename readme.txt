@@ -33,7 +33,7 @@ Plugin features:
 * Follows WordPress coding standards and plugin best practices.
 * Highly Adjustable!
 
-For the following features you need to be somewhat familiar with WordPress hooks. The [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/) has many examples to help you along.
+For the following features you need to be somewhat familiar with WordPress [hooks](https://developer.wordpress.org/plugins/hooks/). The [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/) has many examples to help you along.
 
 Extended features:
 
