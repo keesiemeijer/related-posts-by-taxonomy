@@ -51,6 +51,7 @@
 			'caption'      => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
 			'link_caption' => $rpbt_args['link_caption'], // Link caption to post
 			'show_date'    => $rpbt_args['show_date'], // Show post date
+			'type'         => $rpbt_args['type'], // type widget or shortcode
 		);
 
 		// Plugin function to display the galllery in /includes/functions-thumbnail.php
