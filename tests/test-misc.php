@@ -42,7 +42,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test if default WordPress taxonomies exist.
 	 */
-	function test_get_post_taxonomies() {
+	function test_wp_get_object_taxonomies() {
 		$this->assertEquals( array( 'category', 'post_tag', 'post_format' ), get_object_taxonomies( 'post' ) );
 	}
 
@@ -51,9 +51,29 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 *
 	 * Used in the km_rpbt_query_related_posts() function to replace 'post_type = 'post' with 'post_type IN ( ... )
 	 */
-	function test_get_posts_by_author_sql() {
+	function test_wp_get_posts_by_author_sql() {
 		$where  = get_posts_by_author_sql( 'post' );
 		$this->assertTrue( (bool) preg_match( "/post_type = 'post'/", $where ) );
+	}
+
+	/**
+	 * Test get_meta_sql()
+	 *
+	 * Used for the meta query in km_rpbt_query_related_posts()
+	 */
+	function test_wp_get_meta_sql_value_comma_separated_string_to_array() {
+		$meta_query_obj = new WP_Meta_Query();
+		$meta_query = array(
+			array(
+				'key'       => 'my_key',
+				'value'     => '10,20', // string (e.g. shortcode value)
+				'compare'   => 'BETWEEN',
+				'meta_type' => 'NUMERIC'
+			)
+		);
+		global $wpdb;
+		$meta_sql = get_meta_sql( $meta_query, 'post', $wpdb->posts, 'ID' );
+		$this->assertTrue( ( false !== strpos( $meta_sql['where'], "postmeta.meta_value BETWEEN '10' AND '20'" ) ) );
 	}
 
 	/**
@@ -61,16 +81,11 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 *
 	 * Used for the meta query in km_rpbt_query_related_posts()
 	 */
-	function test_wp_meta_query_without_key_and_value() {
+	function test_wp_meta_query_parse_query_vars_empty_string() {
 		$meta_query_obj = new WP_Meta_Query();
-		$args = array(
-			'meta_value' => '',
-			'meta_key' => '',
-			'meta_compare' => '>',
-			'meta_type'    => 'NUMERIC'
-		);
-		$meta_query_obj->parse_query_vars( $args );
+		$meta_query_obj->parse_query_vars( '' );
 
+		// should return empty array
 		$this->assertTrue( is_array( $meta_query_obj->queries ) && empty( $meta_query_obj->queries ) );
 	}
 
@@ -79,7 +94,22 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 *
 	 * Used for the meta query in km_rpbt_query_related_posts()
 	 */
-	function test_wp_meta_query_with_meta_key() {
+	function test_wp_meta_query_parse_query_vars_default_settings() {
+		$meta_query_obj = new WP_Meta_Query();
+		$args = km_rpbt_get_default_settings( 'shortcode' );
+		$this->assertTrue( array_key_exists( 'meta_key', $args ) );
+		$meta_query_obj->parse_query_vars( $args );
+
+		// should return empty array
+		$this->assertTrue( is_array( $meta_query_obj->queries ) && empty( $meta_query_obj->queries ) );
+	}
+
+	/**
+	 * Test WP_Meta_Query::parse_query_vars()
+	 *
+	 * Used for the meta query in km_rpbt_query_related_posts()
+	 */
+	function test_wp_meta_query_parse_query_vars_with_meta_key() {
 		$meta_query_obj = new WP_Meta_Query();
 		$args = array(
 			'meta_key' => 'my_key',
@@ -93,33 +123,6 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		);
 
 		$this->assertSame( $expected, $meta_query_obj->queries );
-	}
-
-	/**
-	 * Test WP_Meta_Query::parse_query_vars()
-	 *
-	 * Used for the meta query in km_rpbt_query_related_posts()
-	 */
-	function test_wp_meta_query_with_meta_value_array() {
-		$meta_query_obj = new WP_Meta_Query();
-		$args = array(
-			'meta_key'     => 'my_key',
-			'meta_value'   => array( 10, 20 ),
-			'meta_type'    => 'numeric',
-			'meta_compare' => 'BETWEEN',
-		);
-		$meta_query_obj->parse_query_vars( $args );
-		$expected = array(
-			array(
-				'key'     => 'my_key',
-				'value'   => array( 10, 20 ),
-				'type'    => 'numeric',
-				'compare' => 'BETWEEN',
-			),
-			'relation' => 'OR',
-		);
-
-		$this->assertEquals( $expected, $meta_query_obj->queries );
 	}
 
 	/**
