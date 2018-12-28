@@ -150,8 +150,9 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 		* Recommended for related posts below the fold.
 	* Meta query
 		* Allows you to query related posts with post meta
-		* Add the meta query in the shortcode or with a filter
-	* Prepare introducing the related posts (Gutenberg) editor block feature
+		* Add meta arguments in the shortcode
+		* Use a filter to query by meta for the widget or complex meta queries.
+	* Preparing the plugin for the (Gutenberg) editor block feature
 
 = 2.5.1 =
 * Enhancement
@@ -197,4 +198,4 @@ For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
 = 2.6.0 =
-This upgrade introduces the lazy loading feature and meta query filter. See the change log.
+This upgrade introduces a lazy loading feature and new meta query arguments (and filter). See the change log.
