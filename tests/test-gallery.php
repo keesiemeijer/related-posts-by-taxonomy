@@ -1,7 +1,8 @@
 <?php
-
 /**
- * Tests for gallery in functions-thumbnail.php
+ * Tests for gallery in gallery.php
+ * 
+ * @group Gallery
  */
 class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 

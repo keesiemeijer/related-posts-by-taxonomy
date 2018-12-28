@@ -2,7 +2,7 @@
 /**
  * Tests for the html for a ajax query
  *
- * @group AjaxQuery
+ * @group LazyLoading
  */
 class KM_RPBT_Query_Ajax_Tests extends KM_RPBT_UnitTestCase {
 
@@ -13,7 +13,7 @@ class KM_RPBT_Query_Ajax_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test km_rpbt_get_lazy_loading_html().
 	 */
-	function test_get_related_posts_ajax_html() {
+	function test_get_related_posts_lazy_loading_html() {
 		$args = km_rpbt_get_default_settings( 'shortcode' );
 		$args['format'] = 'thumbnails';
 		$ajax_html = km_rpbt_get_lazy_loading_html( $args );
@@ -25,7 +25,7 @@ class KM_RPBT_Query_Ajax_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test ajax output for the shortcode.
 	 */
-	function test_shortcode_output_ajax() {
+	function test_shortcode_lazy_loading_html() {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
@@ -46,7 +46,7 @@ EOF;
 	/**
 	 * Test ajax html output for the widget.
 	 */
-	function test_rpbt_widget_output_ajax() {
+	function test_rpbt_widget_lazy_loading_html() {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
