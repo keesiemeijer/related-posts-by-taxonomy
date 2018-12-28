@@ -77,11 +77,9 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	 * @param array $args Function arguments.
 	 */
 	$filtered_args = apply_filters( 'related_posts_by_taxonomy_gallery', $args );
-
 	$args = array_merge( $defaults, (array) $filtered_args );
 
 	$id = intval( $args['id'] );
-
 	if ( is_feed() ) {
 		$args['type'] = 'rpbt_gallery_feed';
 		$output = "\n";

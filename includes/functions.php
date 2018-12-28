@@ -108,6 +108,18 @@ function km_rpbt_plugin_supports( $feature ) {
  *     @type string|boolean $include_self     Whether to include the current post in the related posts results. The included
  *                                            post is ordered at the top. Use 'regular_order' to include the current post ordered by
  *                                            terms in common. Default false (exclude current post).
+ *     @type string         $post_class       Class for the related post items. Default empty.
+ *     @type string         $meta_key         Meta key.
+ *     @type string         $meta_value       Meta value.
+ *     @type string         $meta_compare     MySQL operator used for comparing the $meta_value. Accepts '=',
+ *                                            '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE',
+ *                                            'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN', 'REGEXP',
+ *                                            'NOT REGEXP', 'RLIKE', 'EXISTS' or 'NOT EXISTS'.
+ *                                            Default is 'IN' when `$meta_value` is an array, '=' otherwise.
+ *     @type string         $meta_type        MySQL data type that the meta_value column will be CAST to for
+ *                                            comparisons. Accepts 'NUMERIC', 'BINARY', 'CHAR', 'DATE',
+ *                                            'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', or 'UNSIGNED'.
+ *                                            Default is 'CHAR'.
  * }
  * @return array Array with related post objects.
  */
@@ -263,7 +275,7 @@ function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback 
 		 * Filter default feature attributes.
 		 *
 		 * The dynamic portion of the hook name, `$type`, refers to
-		 * the feature: widget, shortcode or wp_rest_api.
+		 * the widget, shortcode or wp_rest_api feature.
 		 *
 		 * @since 0.2.1
 		 *
@@ -292,9 +304,10 @@ function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback 
 	 * Filter validated feature arguments.
 	 *
 	 * The dynamic portion of the hook name, `$type`, refers to
-	 * the feature widget, shortcode or wp_rest_api.
+	 * the widget, shortcode or wp_rest_api feature.
 	 * The dynamic portion of the hook name, `$args_type`, refers to
-	 * the argument type. For the shortcode it's 'atts'. Default 'args'.
+	 * the argument type. For the shortcode it's 'atts' for all
+	 * other features it's args'.
 	 *
 	 * @since  2.6.0
 	 *

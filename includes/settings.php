@@ -51,7 +51,7 @@ function km_rpbt_get_settings_type( $args ) {
  * Get the features this plugin supports.
  *
  * Use the {@see related_posts_by_taxonomy_supports} filter to activate and
- * deactivate features with one filter.
+ * deactivate plugin features with one filter, for convenience.
  *
  * @since  2.3.1
  *
@@ -71,7 +71,7 @@ function km_rpbt_get_plugin_supports() {
 	);
 
 	/**
-	 * Filter plugin features.
+	 * Filter all supported plugin features at once, for convenience.
 	 *
 	 * Supported plugin features:
 	 *
@@ -84,8 +84,8 @@ function km_rpbt_get_plugin_supports() {
 	 * - cache
 	 * - display_cache_log
 	 * - wp_rest_api
-	 * - debug
 	 * - lazy_loading
+	 * - debug
 	 *
 	 * @since 2.3.1
 	 *
@@ -218,6 +218,7 @@ function km_rpbt_sanitize_args( $args ) {
 	$args['meta_key']     = is_string( $args['meta_key'] ) ? $args['meta_key'] : '';
 	$args['meta_compare'] = is_string( $args['meta_compare'] ) ? $args['meta_compare'] : '';
 	$args['meta_type']    = is_string( $args['meta_type'] ) ? $args['meta_type'] : '';
+	// Note: meta_value is sanitized by WordPress (mixed value).
 
 	// Integers.
 	$args['limit_year']     = absint( $args['limit_year'] );
