@@ -45,6 +45,10 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 			)
 		);
 
+		if( is_multisite() ) {
+			grant_super_admin( $user_id );
+		}
+
 		wp_set_current_user( $user_id );
 
 		// Setup plugin with debug activated.
@@ -74,7 +78,6 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertSame( $term_names, $terms_used );
 	}
 
-
 	function test_debug_query() {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
@@ -88,7 +91,7 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 
 		global $wpdb;
 		$this->assertNotEmpty($wpdb->prefix);
-		
+
 		// Prefix should not be in query.
 		$query = $debug['related posts query'];
 		$this->assertTrue( false === strrpos( $query, $wpdb->prefix ) );
