@@ -257,68 +257,24 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
  *
  * @since  2.6.0
  *
- * @param string $type                Type of feature.
+ * @param string $feature             Type of feature.
  * @param array  $args                See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
  *                                    information on accepted arguments.
- * @param mixed  $validation_callback Callback function for argument validation.
  * @return string feature html or empty string.
  */
-function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback = '' ) {
-	if ( ! ( km_rpbt_is_valid_settings_type( $type ) && km_rpbt_plugin_supports( $type ) ) ) {
+function km_rpbt_get_feature_html( $feature, $args = array() ) {
+	$feature_support = km_rpbt_plugin_supports( $feature );
+	$feature_type    = km_rpbt_is_valid_settings_type( $feature );
+	$args['type']    = $feature;
+
+	if ( ! ( $feature_type && $feature_support ) ) {
 		return '';
 	}
 
-	$settings = km_rpbt_get_default_settings( $type );
-	$defaults = $settings;
-	if ( 'widget' !== $type ) {
-		/**
-		 * Filter default feature attributes.
-		 *
-		 * The dynamic portion of the hook name, `$type`, refers to
-		 * the widget, shortcode or wp_rest_api feature.
-		 *
-		 * @since 0.2.1
-		 *
-		 * @param array $defaults Default feature arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
-		 *                        for more information about default feature arguments.
-		 */
-		$defaults = apply_filters( "related_posts_by_taxonomy_{$type}_defaults", $settings );
-		$defaults = array_merge( $settings, (array) $defaults );
-	}
+	$defaults = km_rpbt_get_default_settings( $feature );
+	$args     = array_merge( $defaults, $args );
 
-	$args_type = 'args';
-	if ( 'shortcode' === $type ) {
-		// Back compat
-		$args        = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
-		$args_type = 'atts';
-	}
-
-	$args         = array_merge( $defaults, (array) $args );
-	$args['type'] = $type;
-
-	if ( ! empty( $validation_callback ) ) {
-		$args = call_user_func( $validation_callback, $args );
-	}
-
-	/**
-	 * Filter validated feature arguments.
-	 *
-	 * The dynamic portion of the hook name, `$type`, refers to
-	 * the widget, shortcode or wp_rest_api feature.
-	 * The dynamic portion of the hook name, `$args_type`, refers to
-	 * the argument type. For the shortcode it's 'atts' for all
-	 * other features it's args'.
-	 *
-	 * @since  2.6.0
-	 *
-	 * @param array $args Feature arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
-	 *                    for more information about feature arguments.
-	 */
-	$args = apply_filters( "related_posts_by_taxonomy_{$type}_{$args_type}", $args );
-	$args = array_merge( $defaults, (array) $args );
-
-	/* Un-filterable arguments */
-	$args['type']   = $type;
+	// Restricted
 	$args['fields'] = '';
 
 	if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
@@ -327,7 +283,7 @@ function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback 
 
 	// Get the related posts from database or cache.
 	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
-	$hide_empty    = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
+	$hide_empty    = (bool) km_rpbt_plugin_supports( "{$feature}_hide_empty" );
 
 	$html = '';
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
@@ -341,7 +297,7 @@ function km_rpbt_get_feature_html( $type, $args = array(), $validation_callback 
 	 *
 	 * @param string Display type, widget or shortcode.
 	 */
-	do_action( 'related_posts_by_taxonomy_after_display', $type );
+	do_action( 'related_posts_by_taxonomy_after_display', $feature );
 
 	return $html;
 }

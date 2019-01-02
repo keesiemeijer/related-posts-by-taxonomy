@@ -109,26 +109,12 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $args, $widget_args );
 		$args = array_merge( $args, (array) $filter );
 
-		/* Not filterable */
-		$args['type'] = 'widget';
-		$args['fields'] = '';
 		$args['title'] = apply_filters( 'widget_title', $args['title'], $args, $this->id_base );
 
-		if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
-			echo km_rpbt_get_lazy_loading_html( $args );
-			return;
-		}
+		/* Not filterable */
+		$args['type'] = 'widget';
 
-		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
-
-		$hide_empty = (bool) km_rpbt_plugin_supports( 'widget_hide_empty' );
-
-		if ( ! $hide_empty || ! empty( $related_posts ) ) {
-			echo km_rpbt_get_related_posts_html( $related_posts, $args );
-		}
-
-		/** This action is documented in includes/functions.php */
-		do_action( 'related_posts_by_taxonomy_after_display', 'widget' );
+		echo km_rpbt_get_feature_html( 'widget', $args );
 	}
 
 	/**

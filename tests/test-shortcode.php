@@ -261,7 +261,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 EOF;
 
 		ob_start();
-		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '"]' );
+		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '" fields="ids"]' );
 		$shortcode = ob_get_clean();
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );
@@ -272,7 +272,6 @@ EOF;
 	 *
 	 */
 	function test_shortcode_output_with_date() {
-
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 

@@ -225,6 +225,8 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 			'after_widget'  => '</section>',
 			'before_title'  => '<h2>',
 			'after_title'   => '</h2>',
+			// Check if fields is set to empty string
+			'fields'        => 'ids',
 		);
 
 		$instance = array( 'post_id' => $posts[0] );

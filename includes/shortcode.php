@@ -75,15 +75,46 @@ if ( ! defined( 'ABSPATH' ) ) {
  * }
  * @return string Related posts html or empty string.
  */
-function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
-	// Empty string is returned if no atts were added in the shortcode
-	$atts = is_array( $atts ) ? $atts : array();
-	$atts['type'] = 'shortcode';
+function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
+	// Empty string is returned if no args were added in the shortcode
+	$args = is_array( $args ) ? $args : array();
 
-	// Validation callback function to validate shortcode attributes.
-	$callback = 'km_rpbt_validate_shortcode_atts';
+	$settings = km_rpbt_get_default_settings( 'shortcode' );
 
-	return km_rpbt_get_feature_html( 'shortcode', $atts, $callback );
+	/**
+	 * Filter default feature attributes.
+	 *
+	 * The dynamic portion of the hook name, `$type`, refers to
+	 * the widget, shortcode or wp_rest_api feature.
+	 *
+	 * @since 0.2.1
+	 *
+	 * @param array $defaults Default feature arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
+	 *                        for more information about default feature arguments.
+	 */
+	$defaults = apply_filters( "related_posts_by_taxonomy_shortcode_defaults", $settings );
+	$defaults = array_merge( $settings, (array) $defaults );
+
+	// Filter args with hook shortcode_atts_related_posts_by_tax.
+	$args         = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
+
+	$args['type']    = 'shortcode';
+	$args = km_rpbt_validate_shortcode_atts( $args );
+
+	/**
+	 * Filter validated shortcode arguments.
+	 *
+	 * @since  0.1
+	 *
+	 * @param array $args Shortcode arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
+	 *                    for more information about feature arguments.
+	 */
+	$args = apply_filters( "related_posts_by_taxonomy_shortcode_atts", $args );
+	$args = array_merge( $defaults, (array) $args );
+
+	$args['type']    = 'shortcode';
+
+	return km_rpbt_get_feature_html( 'shortcode', $args );
 }
 
 /**
