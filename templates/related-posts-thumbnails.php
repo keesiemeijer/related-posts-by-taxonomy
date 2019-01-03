@@ -15,14 +15,14 @@
  *
  * The following variables are available:
  *
- * @var array  $related_posts Array with full related posts objects or empty array.
- * @var array  $rpbt_args     Array with widget or shortcode arguments.
+ * @var array $related_posts Array with related post objects or related post IDs.
+ *                           Empty array if no related posts are found.
+ * @var array $rpbt_args     Array with widget or shortcode arguments.
  *
  * deprecated (since version 0.3)
  * @var string $image_size    Image size. (deprecated - use $rpbt_args['image_size'] instead)
  * @var string $columns       Columns.    (deprecated - use $rpbt_args['columns'] instead)
  */
-
 ?>
 
 <?php

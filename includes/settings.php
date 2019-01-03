@@ -68,6 +68,7 @@ function km_rpbt_get_plugin_supports() {
 		'wp_rest_api'          => false,
 		'debug'                => false,
 		'lazy_loading'         => false,
+		'id_query'             => false,
 	);
 
 	/**

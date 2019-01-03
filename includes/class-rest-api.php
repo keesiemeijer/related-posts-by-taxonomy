@@ -215,10 +215,9 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		// Check if none, or valid (registered) post types and taxonomies are provided in the request.
 		if ( ! $cancel_query ) {
 			$related_posts = $this->get_related_posts( $args );
-
-			$fields   = strtolower( $args['fields'] );
-			if ( $related_posts && ! in_array( $fields, array( 'ids', 'names', 'slugs' ) ) ) {
-				// Render posts if the query was for post objects.
+			$fields = trim( strtolower( $args['fields'] ) );
+			if ( $related_posts && ( empty( $fields ) || ( 'ids' === $fields ) ) ) {
+				// Render posts if the query was for post objects or post IDs.
 				$rendered = km_rpbt_get_related_posts_html( $related_posts, $args );
 			}
 

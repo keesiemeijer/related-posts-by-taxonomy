@@ -17,6 +17,7 @@ class KM_RPBT_Plugin_Supports_Tests extends KM_RPBT_UnitTestCase {
 			'wp_rest_api'          => false,
 			'debug'                => false,
 			'lazy_loading'         => false,
+			'id_query'             => false,
 		);
 
 		$this->assertEquals( $expected, km_rpbt_get_plugin_supports() );
@@ -58,4 +59,7 @@ class KM_RPBT_Plugin_Supports_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertFalse( km_rpbt_plugin_supports( 'lazy_loading' ) );
 	}
 
+	function test_id_query_support() {
+		$this->assertFalse( km_rpbt_plugin_supports( 'id_query' ) );
+	}
 }

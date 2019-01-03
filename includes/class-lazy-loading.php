@@ -72,6 +72,9 @@ class Related_Posts_By_Taxonomy_Lazy_Loading {
 		$defaults = km_rpbt_get_default_settings( $type );
 		$args     = array_merge( $defaults, $args );
 
+		$id_query       = km_rpbt_plugin_supports( 'id_query' ) || ( 'ids' === $args['fields'] );
+		$args['fields'] = $id_query ? 'ids' : '';
+
 		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
 		$hide_empty    = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
 

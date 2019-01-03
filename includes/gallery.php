@@ -86,6 +86,10 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		$args['type'] = 'rpbt_gallery_feed';
 		$output = "\n";
 		foreach ( (array) $related_posts as $related ) {
+			$related = is_object($related) ? $related : get_post( $related );
+			if( ! $related ) {
+				continue;
+			}
 
 			$thumbnail_id = get_post_thumbnail_id( $related->ID );
 			$thumbnail    = wp_get_attachment_image( $thumbnail_id, $args['size'] );
@@ -175,6 +179,11 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$item_output = '';
 
 	foreach ( (array) $related_posts as $related ) {
+		$related = is_object($related) ? $related : get_post( $related );
+		if( ! $related ) {
+			continue;
+		}
+
 		$caption       = '';
 		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
 		$title         = apply_filters( 'the_title', $related->post_title, $related->ID );

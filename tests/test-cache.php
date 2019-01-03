@@ -13,6 +13,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 	function tearDown() {
 		// use tearDown for WP < 4.0
 		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
+		remove_filter( 'related_posts_by_taxonomy_id_query', '__return_true' );
 	}
 
 	function setup_cache() {
@@ -159,15 +160,61 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$posts        = $create_posts['posts'];
 
 		$taxonomies = array( 'post_tag' );
-		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, array( 'fields' => 'ids' ) );
 
 		$args = array( 'taxonomies' => $taxonomies, 'post_id' => $posts[1], 'fields' => 'ids' );
+		$related = $this->plugin->cache->get_related_posts( $args );
+
+		// Check if related posts are cached
+		$log = sprintf( 'Post ID %d - caching posts...', $posts[1] );
+
+		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not cached' );
+
+		// Returns post IDs.
+		$this->assertEquals( array( $posts[0], $posts[2], $posts[3] ), $related );
+	}
+
+	function test_manually_cache_related_posts_by_names_field() {
+		$this->setup_cache();
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		$_posts     = get_posts( array( 'posts__in' => $this->posts, 'order' => 'post__in' ) );
+		$post_names = wp_list_pluck( $_posts, 'post_title' );
+
+		$taxonomies = array( 'post_tag' );
+		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, array( 'fields' => 'names' ) );
+
+		$args = array( 'taxonomies' => $taxonomies, 'post_id' => $posts[1], 'fields' => 'names' );
 		$related = $this->plugin->cache->get_related_posts( $args );
 
 		// Check if related posts are from the cache
 		$log = sprintf( 'Post ID %d - cache exists', $posts[1] );
 		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not found in cache' );
 
+		// Returns post IDs.
+		$this->assertEquals( array( $post_names[0], $post_names[2], $post_names[3] ), $related );
+	}
+
+	/**
+	 *
+	 */
+	function test_cache_id_query() {
+		$this->setup_cache();
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		add_filter( 'related_posts_by_taxonomy_id_query', '__return_true' );
+
+		$args = array( 'taxonomies' => 'post_tag', 'post_id' => $posts[1], 'fields' => '' );
+		$related = $this->plugin->cache->get_related_posts( $args );
+
+		// Check if related posts were cached
+		$log = sprintf( 'Post ID %d - caching posts...', $posts[1] );
+		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not cached' );
+
+		// Returns post IDs instead of post objects.
 		$this->assertEquals( array( $posts[0], $posts[2], $posts[3] ), $related );
 	}
 

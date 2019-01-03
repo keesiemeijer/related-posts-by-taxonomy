@@ -166,10 +166,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$this->setup_posts();
 		$posts = $this->posts;
 
-		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
-		//$request->set_param( 'fields', 'ids' );
-
-		$response = rest_do_request( $request );
 		// get post ids array and permalinks array
 		$_posts     = get_posts(
 			array(
@@ -177,8 +173,16 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 				'order' => 'post__in',
 			)
 		);
+
 		$permalinks = array_map( 'get_permalink', $this->posts );
-		$data       = $response->get_data();
+
+		$request  = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+		$response = rest_do_request( $request );
+		$data     = $response->get_data();
+
+		$expected = array( $this->posts[1], $this->posts[2], $this->posts[3] );
+		$post_ids = wp_list_pluck( $data['posts'], 'ID' );
+		$this->assertEquals( $expected, $post_ids );
 
 		$expected = <<<EOF
 <div class="rpbt_wp_rest_api">
@@ -198,6 +202,81 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $data['rendered'] ) );
+	}
+
+	/**
+	 * Test success response for rest request.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_wp_rest_api_success_response_rendered_field_ids() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		// get post ids array and permalinks array
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $this->posts,
+				'order' => 'post__in',
+			)
+		);
+		$permalinks = array_map( 'get_permalink', $this->posts );
+
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+		$request->set_param( 'fields', 'ids' );
+		$response = rest_do_request( $request );
+		$data       = $response->get_data();
+
+		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $data['posts'] );
+
+		$expected = <<<EOF
+<div class="rpbt_wp_rest_api">
+<h3>Related Posts</h3>
+<ul>
+<li>
+<a href="{$permalinks[1]}">{$_posts[1]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[2]}">{$_posts[2]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[3]}">{$_posts[3]->post_title}</a>
+</li>
+</ul>
+</div>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $data['rendered'] ) );
+	}
+
+	/**
+	 * Test success response for rest request.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_wp_rest_api_success_response_rendered_field_names() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		// get post ids array and permalinks array
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $this->posts,
+				'order' => 'post__in',
+			)
+		);
+
+		$post_names = wp_list_pluck( $_posts, 'post_title' );
+
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+		$request->set_param( 'fields', 'names' );
+		$response = rest_do_request( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( array( $post_names[1],$post_names[2], $post_names[3] ), $data['posts'] );
+
+		// Not rendered if fields is names
+		$this->assertSame( '', $data['rendered'] );
 	}
 
 	/**

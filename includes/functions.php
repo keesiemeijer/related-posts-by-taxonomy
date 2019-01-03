@@ -51,6 +51,7 @@ function km_rpbt_plugin_supports( $feature ) {
 	 * - display_cache_log
 	 * - wp_rest_api
 	 * - lazy_loading
+	 * - id_query
 	 * - debug
 	 *
 	 * @since 2.5.0
@@ -257,8 +258,8 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
  *
  * @since  2.6.0
  *
- * @param string $feature             Type of feature.
- * @param array  $args                See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ * @param string $feature Type of feature.
+ * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
  *                                    information on accepted arguments.
  * @return string feature html or empty string.
  */
@@ -274,8 +275,9 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
 	$defaults = km_rpbt_get_default_settings( $feature );
 	$args     = array_merge( $defaults, $args );
 
-	// Restricted
-	$args['fields'] = '';
+	// Query for post objects or post ids.
+	$id_query = km_rpbt_plugin_supports( 'id_query' ) || ( 'ids' === $args['fields'] );
+	$args['fields'] = $id_query ? 'ids' : '';
 
 	if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
 		return km_rpbt_get_lazy_loading_html( $args );
@@ -283,8 +285,8 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
 
 	// Get the related posts from database or cache.
 	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
-	$hide_empty    = (bool) km_rpbt_plugin_supports( "{$feature}_hide_empty" );
-
+	$hide_empty    = km_rpbt_plugin_supports( "{$feature}_hide_empty" );
+	
 	$html = '';
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
 		$html = km_rpbt_get_related_posts_html( $related_posts, $args );
