@@ -151,7 +151,8 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 	* Meta query
 		* Allows you to query related posts with post meta
 		* Add meta arguments in the shortcode
-		* Use a filter to query by meta for the widget or complex meta queries.
+		* Use a filter to query by meta for the widget or complex meta queries
+	* Detect if post type Page has taxonomies
 	* Preparing the plugin for the (Gutenberg) editor block feature
 
 = 2.5.1 =
