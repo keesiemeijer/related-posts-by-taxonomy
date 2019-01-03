@@ -123,8 +123,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		public function _setup() {
 			$this->all_tax     = 'all'; // All taxonomies.
 			$this->default_tax = array( 'category' => __( 'Category', 'related-posts-by-taxonomy' ) );
-			$this->post_types  = $this->get_post_types();
 			$this->taxonomies  = $this->get_taxonomies();
+			$this->post_types  = $this->get_post_types();
 			$this->image_sizes = $this->get_image_sizes();
 			$this->formats     = $this->get_formats();
 		}
@@ -141,16 +141,31 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			$post_types_obj = get_post_types( array( 'public' => true, '_builtin' => false ), 'objects', 'and' );
 
 			$post_types_obj = array( 'post' => get_post_type_object( 'post' ) ) + $post_types_obj;
-
 			foreach ( (array) $post_types_obj as $key => $value ) {
-				$post_types[ $key ] = esc_attr( $value->labels->menu_name );
+				if ( $this->has_taxonomies( $key ) ) {
+					$post_types[ $key ] = esc_attr( $value->labels->menu_name );
+				}
 			}
 
+			if ( $this->has_taxonomies( 'page' ) ) {
+				// Post type page has taxonomies.
+				$page = get_post_type_object( 'page' );
+				$post_types['page'] = esc_attr( $page->labels->menu_name );
+			}
+
+			// Default to post.
 			if ( empty( $post_types ) ) {
 				$post_types = array( 'post' => __( 'Post', 'related-posts-by-taxonomy' ) );
 			}
 
 			return $post_types;
+		}
+
+		public function has_taxonomies( $post_type ) {
+			$taxonomies = get_object_taxonomies( $post_type, 'object' );
+			$taxonomies = wp_filter_object_list( $taxonomies, array( 'public' => true ), 'AND' );
+
+			return (bool) ! empty( $taxonomies );
 		}
 
 		/**
