@@ -144,15 +144,19 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 == Changelog ==
 = 2.6.0 =
 * Enhancement
-    * Lazy loading (opt in feature).
-		* Speeds up perceived page load time
-		* Does the query for related posts (with Ajax) after the page is loaded
-		* Recommended for related posts below the fold.
 	* Meta query
 		* Allows you to query related posts with post meta
-		* Add meta arguments in the shortcode
-		* Use a filter to query by meta for the widget or complex meta queries
-	* Detect if post type Page has taxonomies
+		* Use meta arguments in the shortcode
+		* Use a filter for the widget or for complex meta queries
+	* ID query
+		* Allow queries for post IDs only. (for the related posts in the widget and shortcode templates)
+		* Speeds up the related posts query. (not activated by default because of back compatibility)
+		* Please read the documentation about query optimization before using this feature
+    * Lazy loading (opt in feature).
+		* Speeds up perceived page load time for very large sites
+		* Does the query for related posts (with Ajax) after the page is loaded
+		* Recommended for related posts below the fold.
+	* Detect post type Page taxonomies
 	* Preparing the plugin for the (Gutenberg) editor block feature
 
 = 2.5.1 =
@@ -199,4 +203,4 @@ For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
 = 2.6.0 =
-This upgrade introduces a lazy loading feature and new meta query arguments (and filter). See the change log.
+This upgrade introduces new meta query arguments (and filter). Other features: Faster query and lazy loading. See the change log.
