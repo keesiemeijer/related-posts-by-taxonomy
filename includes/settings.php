@@ -90,7 +90,7 @@ function km_rpbt_get_plugin_supports() {
 	 *
 	 * @since 2.3.1
 	 *
-	 * @param array $support Array with all supported and opt-in plugin features.
+	 * @param array $supports Array with all supported and opt-in plugin features.
 	 */
 	$plugin = apply_filters( 'related_posts_by_taxonomy_supports', $supports );
 

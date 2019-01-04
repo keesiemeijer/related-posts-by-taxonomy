@@ -54,7 +54,7 @@
 			'type'         => $rpbt_args['type'], // type widget or shortcode
 		);
 
-		// Plugin function to display the galllery in /includes/functions-thumbnail.php
+		// Plugin function to display the galllery in /includes/gallery.php
 		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts );
 	?>
 

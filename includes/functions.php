@@ -267,6 +267,7 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
 	$feature_support = km_rpbt_plugin_supports( $feature );
 	$feature_type    = km_rpbt_is_valid_settings_type( $feature );
 	$args['type']    = $feature;
+	$html            = '';
 
 	if ( ! ( $feature_type && $feature_support ) ) {
 		return '';
@@ -287,7 +288,6 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
 	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
 	$hide_empty    = km_rpbt_plugin_supports( "{$feature}_hide_empty" );
 	
-	$html = '';
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
 		$html = km_rpbt_get_related_posts_html( $related_posts, $args );
 	}

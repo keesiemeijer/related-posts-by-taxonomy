@@ -180,7 +180,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			$id_query = km_rpbt_plugin_supports( 'id_query' ) || ( 'ids' === $args['fields'] );
 			if ( $id_query ) {
-				// Return post IDs.
+				// The query was for post IDs
 				return $posts;
 			}
 
@@ -293,7 +293,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array Array with related post objects.
 		 */
 		private function get_cache( $args, $cache ) {
-
 			if ( ! isset( $cache['ids'] ) ) {
 				return array();
 			}
@@ -399,7 +398,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array      Array with sanitized widget or shortcode arguments.
 		 */
 		public function sanitize_cache_args( $args ) {
-
 			$defaults   = $this->default_args;
 			$cache_args = wp_parse_args( $args, $defaults );
 
@@ -421,7 +419,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array      Sorted arguments.
 		 */
 		public function order_cache_args( $args ) {
-
 			foreach ( $args as $key => $value ) {
 				if ( is_array( $args[ $key ] ) ) {
 					sort( $args[ $key ] );
@@ -596,7 +593,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return void.
 		 */
 		public function display_cache_log( $wp_admin_bar ) {
-
 			if ( is_admin() || ! is_super_admin() ) {
 				return;
 			}

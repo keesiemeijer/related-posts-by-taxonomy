@@ -96,9 +96,9 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
 	$defaults = array_merge( $settings, (array) $defaults );
 
 	// Filter args with hook shortcode_atts_related_posts_by_tax.
-	$args         = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
+	$args = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
 
-	$args['type']    = 'shortcode';
+	$args['type'] = 'shortcode';
 	$args = km_rpbt_validate_shortcode_atts( $args );
 
 	/**
@@ -112,7 +112,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
 	$args = apply_filters( "related_posts_by_taxonomy_shortcode_atts", $args );
 	$args = array_merge( $defaults, (array) $args );
 
-	$args['type']    = 'shortcode';
+	$args['type'] = 'shortcode';
 
 	return km_rpbt_get_feature_html( 'shortcode', $args );
 }
