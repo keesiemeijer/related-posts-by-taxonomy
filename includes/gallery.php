@@ -86,8 +86,8 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		$args['type'] = 'rpbt_gallery_feed';
 		$output = "\n";
 		foreach ( (array) $related_posts as $related ) {
-			$related = is_object($related) ? $related : get_post( $related );
-			if( ! $related ) {
+			$related = is_object( $related ) ? $related : get_post( $related );
+			if ( ! isset( $related->ID, $related->post_title ) ) {
 				continue;
 			}
 
@@ -179,8 +179,8 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$item_output = '';
 
 	foreach ( (array) $related_posts as $related ) {
-		$related = is_object($related) ? $related : get_post( $related );
-		if( ! $related ) {
+		$related = is_object( $related ) ? $related : get_post( $related );
+		if ( ! isset( $related->ID, $related->post_title ) ) {
 			continue;
 		}
 
