@@ -427,8 +427,23 @@ EOF;
 		$this->arg = null;
 	}
 
+	function test_shortcode_fields() {
+		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
+
+		do_shortcode( '[related_posts_by_tax]' );
+		$this->assertSame( '', $this->arg['fields'] );
+		$this->arg = null;
+
+		do_shortcode( '[related_posts_by_tax fields="ids"]' );
+		$this->assertSame( 'ids', $this->arg['fields'] );
+		$this->arg = null;
+
+		do_shortcode( '[related_posts_by_tax fields="names"]' );
+		$this->assertSame( '', $this->arg['fields'] );
+		$this->arg = null;
+	}
+
 	function override_related_posts( $related_posts, $args ) {
 		return get_posts( 'post_type=cpt' );
 	}
-
 }

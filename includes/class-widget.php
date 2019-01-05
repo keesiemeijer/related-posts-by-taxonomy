@@ -98,6 +98,9 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$args['post_thumbnail'] = true;
 		}
 
+		// Get allowed fields for use in templates
+		$args['fields'] = km_rpbt_get_template_fields( $args );
+
 		/**
 		 * Filter widget arguments.
 		 *

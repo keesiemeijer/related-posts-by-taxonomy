@@ -276,9 +276,8 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
 	$defaults = km_rpbt_get_default_settings( $feature );
 	$args     = array_merge( $defaults, $args );
 
-	// Query for post objects or post ids.
-	$id_query = km_rpbt_plugin_supports( 'id_query' ) || ( 'ids' === $args['fields'] );
-	$args['fields'] = $id_query ? 'ids' : '';
+	// Get allowed fields for use in templates
+	$args['fields'] = km_rpbt_get_template_fields( $args );
 
 	if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
 		return km_rpbt_get_lazy_loading_html( $args );
@@ -287,7 +286,7 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
 	// Get the related posts from database or cache.
 	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
 	$hide_empty    = km_rpbt_plugin_supports( "{$feature}_hide_empty" );
-	
+
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
 		$html = km_rpbt_get_related_posts_html( $related_posts, $args );
 	}

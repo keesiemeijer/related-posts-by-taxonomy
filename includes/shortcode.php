@@ -134,6 +134,9 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	$defaults = km_rpbt_get_default_settings( 'shortcode' );
 	$atts     = km_rpbt_validate_args( $atts );
 
+	// Get allowed fields for use in templates
+	$atts['fields'] = km_rpbt_get_template_fields( $atts );
+
 	// Convert (strings) to booleans or use defaults.
 	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
 	$atts['link_caption'] = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;

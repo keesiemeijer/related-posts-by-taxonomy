@@ -178,8 +178,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				$posts = $this->set_cache( $args );
 			}
 
-			$id_query = km_rpbt_plugin_supports( 'id_query' ) || ( 'ids' === $args['fields'] );
-			if ( $id_query ) {
+			if ( 'ids' === km_rpbt_get_template_fields( $args ) ) {
 				// The query was for post IDs
 				return $posts;
 			}
@@ -229,12 +228,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array Array with related post objects that are cached.
 		 */
 		private function set_cache( $args ) {
-			$query_args    = $args;
-			$key           = $this->get_post_meta_key( $args );
-			$cache         = array( 'ids' => array(), 'args' => array() );
-			$id_query      = km_rpbt_plugin_supports( 'id_query' ) || ( 'ids' === $query_args['fields'] );
+			$query_args = $args;
+			$key        = $this->get_post_meta_key( $args );
+			$cache      = array( 'ids' => array(), 'args' => array() );
 
-			$query_args['fields'] = $id_query ? 'ids' : '';
+			$query_args['fields'] = km_rpbt_get_template_fields( $query_args );
 
 			// Restricted query arguments.
 			unset( $query_args['taxonomies'], $query_args['post_id'] );
@@ -329,8 +327,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				'update_post_meta_cache' => false,
 			);
 
-			$id_query = km_rpbt_plugin_supports( 'id_query' ) || ( 'ids' === $args['fields'] );
-			if ( $id_query ) {
+			$fields = km_rpbt_get_template_fields( $args['fields'] );
+			if ( 'ids' === $fields ) {
 				$wp_query_args['fields'] = 'ids';
 			}
 
@@ -343,7 +341,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 
 			if ( ! empty( $posts ) ) {
-				if ( ! $id_query ) {
+				if ( '' === $fields ) {
 					// Add defaults back to the found posts.
 					foreach ( $posts as $key => $post ) {
 						if ( isset( $post->ID ) && isset( $cache['ids'][ $post->ID ] ) ) {

@@ -48,6 +48,22 @@ function km_rpbt_get_settings_type( $args ) {
 }
 
 /**
+ * Get the allowed fields arguments for use in templates.
+ *
+ * Only fields '' or 'ids' are allowed for use in templates.
+ *
+ * @since 2.6.0
+ *
+ * @param array $args Arguments to get the fields from.
+ * @return string Arguments with fields argument set to '' or 'ids'.
+ */
+function km_rpbt_get_template_fields( $args ) {
+	$fields   = isset( $args['fields'] ) ? $args['fields'] : '';
+	$id_query = km_rpbt_plugin_supports( 'id_query' ) || ( 'ids' === $fields );
+	return $id_query ? 'ids' : '';
+}
+
+/**
  * Get the features this plugin supports.
  *
  * Use the {@see related_posts_by_taxonomy_supports} filter to activate and
