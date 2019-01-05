@@ -50,7 +50,8 @@ function km_rpbt_get_settings_type( $args ) {
 /**
  * Get the allowed fields arguments for use in templates.
  *
- * Only fields '' or 'ids' are allowed for use in templates.
+ * Fields '' or 'ids' are allowed for use in templates.
+ * The query for related posts returns post objects or ids with these fields.
  *
  * @since 2.6.0
  *
@@ -64,10 +65,10 @@ function km_rpbt_get_template_fields( $args ) {
 }
 
 /**
- * Get the features this plugin supports.
+ * Get all the features this plugin supports.
  *
- * Use the {@see related_posts_by_taxonomy_supports} filter to activate and
- * deactivate plugin features with one filter, for convenience.
+ * See the {@see related_posts_by_taxonomy_supports} filter for the
+ * supported and opt-in features.
  *
  * @since  2.3.1
  *
@@ -82,9 +83,9 @@ function km_rpbt_get_plugin_supports() {
 		'cache'                => false,
 		'display_cache_log'    => false,
 		'wp_rest_api'          => false,
-		'debug'                => false,
-		'lazy_loading'         => false,
 		'id_query'             => false,
+		'lazy_loading'         => false,
+		'debug'                => false,
 	);
 
 	/**
@@ -98,9 +99,11 @@ function km_rpbt_get_plugin_supports() {
 	 * - widget_hide_empty
 	 *
 	 * Opt-in features
+	 *
 	 * - cache
 	 * - display_cache_log
 	 * - wp_rest_api
+	 * - id_query
 	 * - lazy_loading
 	 * - debug
 	 *

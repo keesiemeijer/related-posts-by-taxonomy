@@ -50,8 +50,8 @@ function km_rpbt_plugin_supports( $feature ) {
 	 * - cache
 	 * - display_cache_log
 	 * - wp_rest_api
-	 * - lazy_loading
 	 * - id_query
+	 * - lazy_loading
 	 * - debug
 	 *
 	 * @since 2.5.0
