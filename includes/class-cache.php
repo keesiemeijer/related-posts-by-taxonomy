@@ -14,6 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 	/**
 	 * Class to manage the persistent cache feature.
+	 *
+	 * @since  2.0.0
 	 */
 	class Related_Posts_By_Taxonomy_Cache {
 
@@ -116,7 +118,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array Array with cache arguments.
 		 */
 		private function get_cache_settings() {
-			$settings = km_rpbt_get_default_settings( 'cache' );
+			$settings = array(
+				'expiration'     => DAY_IN_SECONDS * 5, // Five days.
+				'flush_manually' => false,
+				'display_log'    => km_rpbt_plugin_supports( 'display_cache_log' ),
+			);
 
 			return apply_filters( 'related_posts_by_taxonomy_cache_args', $settings );
 		}
@@ -155,7 +161,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 
 			// Get cached post ids from meta.
-			$cache = $this->get_post_meta( $args );
+			$cache      = $this->get_post_meta( $args );
 
 			if ( isset( $cache['ids'] ) ) {
 
@@ -172,18 +178,21 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				$posts = $this->set_cache( $args );
 			}
 
-			$fields = isset( $args['fields'] ) ? (string) $args['fields'] : '';
+			if ( 'ids' === km_rpbt_get_template_fields( $args ) ) {
+				// The query was for post IDs
+				return $posts;
+			}
 
 			$allowed_fields = array(
-				'ids' => 'ID',
+				'ids'   => 'ID',
 				'names' => 'post_title',
 				'slugs' => 'post_name',
 			);
 
 			if ( $posts ) {
-				if ( in_array( $fields, array_keys( $allowed_fields ) ) ) {
+				if ( in_array( $args['fields'], array_keys( $allowed_fields ) ) ) {
 					/* Get the field used in the query */
-					$posts = wp_list_pluck( $posts, $allowed_fields[ $fields ] );
+					$posts = wp_list_pluck( $posts, $allowed_fields[ $args['fields'] ] );
 				} else {
 					$posts = km_rpbt_add_post_classes( $posts, $args );
 				}
@@ -219,13 +228,14 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array Array with related post objects that are cached.
 		 */
 		private function set_cache( $args ) {
+			$query_args = $args;
+			$key        = $this->get_post_meta_key( $args );
+			$cache      = array( 'ids' => array(), 'args' => array() );
 
-			$query_args    = $args;
-			$key           = $this->get_post_meta_key( $args );
-			$cache         = array( 'ids' => array(), 'args' => array() );
+			$query_args['fields'] = km_rpbt_get_template_fields( $query_args );
 
 			// Restricted query arguments.
-			unset( $query_args['taxonomies'], $query_args['post_id'], $query_args['fields'] );
+			unset( $query_args['taxonomies'], $query_args['post_id'] );
 
 			/** This filter is documented in includes/functions.php */
 			$posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $args );
@@ -244,11 +254,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// Create the array with cached post ids
 			// and add the related term count.
 			foreach ( $posts as $post ) {
-				if ( ! isset( $post->ID ) ) {
-					continue;
-				}
-
-				$cache['ids'][ $post->ID ] = isset( $post->termcount ) ? $post->termcount : 0;
+				$post_id = isset( $post->ID ) ? $post->ID : $post;
+				$cache['ids'][ $post_id ] = isset( $post->termcount ) ? $post->termcount : 0;
 			}
 
 			// Add the properties used in the related_posts_by_taxonomy filter.
@@ -284,7 +291,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array Array with related post objects.
 		 */
 		private function get_cache( $args, $cache ) {
-
 			if ( ! isset( $cache['ids'] ) ) {
 				return array();
 			}
@@ -307,6 +313,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// set the query arguments for the related_posts_by_taxonomy filter.
 			$query_args                  = $args;
 			$query_args['related_terms'] = $cache_args['related_terms'];
+			$query_args['termcount']     = array();
 
 			// Restricted query arguments.
 			unset( $query_args['taxonomies'], $query_args['post_id'] );
@@ -320,6 +327,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				'update_post_meta_cache' => false,
 			);
 
+			$fields = km_rpbt_get_template_fields( $args['fields'] );
+			if ( 'ids' === $fields ) {
+				$wp_query_args['fields'] = 'ids';
+			}
+
 			/** This filter is documented in includes/functions.php */
 			$posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $args );
 
@@ -329,18 +341,18 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 
 			if ( ! empty( $posts ) ) {
-				$query_args['termcount'] = array();
+				if ( '' === $fields ) {
+					// Add defaults back to the found posts.
+					foreach ( $posts as $key => $post ) {
+						if ( isset( $post->ID ) && isset( $cache['ids'][ $post->ID ] ) ) {
+							$posts[ $key ]->termcount  = $cache['ids'][ $post->ID ];
+							$query_args['termcount'][] = $cache['ids'][ $post->ID ];
+						}
 
-				// Add defaults back to the found posts.
-				foreach ( $posts as $key => $post ) {
-					if ( isset( $post->ID ) && isset( $cache['ids'][ $post->ID ] ) ) {
-						$posts[ $key ]->termcount  = $cache['ids'][ $post->ID ];
-						$query_args['termcount'][] = $cache['ids'][ $post->ID ];
+						$posts[ $key ]->rpbt_current    = $args['post_id'];
+						$posts[ $key ]->rpbt_post_class = '';
+						$posts[ $key ]->rpbt_type       = isset( $args['type'] ) ? $args['type'] : '';
 					}
-
-					$posts[ $key ]->rpbt_current    = $args['post_id'];
-					$posts[ $key ]->rpbt_post_class = '';
-					$posts[ $key ]->rpbt_type       = isset( $args['type'] ) ? $args['type'] : '';
 				}
 
 				$this->cache_log[] = sprintf( 'Post ID %d - cache exists', $args['post_id'] );
@@ -384,7 +396,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array      Array with sanitized widget or shortcode arguments.
 		 */
 		public function sanitize_cache_args( $args ) {
-
 			$defaults   = $this->default_args;
 			$cache_args = wp_parse_args( $args, $defaults );
 
@@ -406,7 +417,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array      Sorted arguments.
 		 */
 		public function order_cache_args( $args ) {
-
 			foreach ( $args as $key => $value ) {
 				if ( is_array( $args[ $key ] ) ) {
 					sort( $args[ $key ] );
@@ -581,13 +591,16 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return void.
 		 */
 		public function display_cache_log( $wp_admin_bar ) {
-
 			if ( is_admin() || ! is_super_admin() ) {
 				return;
 			}
 
 			if ( empty( $this->cache_log ) ) {
-				$this->cache_log[] = 'This page has no related posts';
+				$message = 'This page has no related posts';
+				if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
+					$message = "Disable the lazy_loading feature to see the cache log";
+				}
+				$this->cache_log[] = $message;
 			}
 
 			array_unshift( $this->cache_log, 'Related Posts Cache' );

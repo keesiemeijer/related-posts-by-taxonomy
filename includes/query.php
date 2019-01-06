@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param int          $post_id    The post id to get related posts for.
  * @param array|string $taxonomies The taxonomies to use for the related posts query. default 'category'.
  * @param string|array $args       {
- *     Optional. Arguments to get related posts.
+ *     Optional. Query variables to get related posts.
  *
  *     @type string|array   $post_types       Post types to use for related posts query. Array or comma separated
  *                                            list of post type names. Default 'post'.
@@ -46,21 +46,42 @@ if ( ! defined( 'ABSPATH' ) ) {
  *     @type string|boolean $include_self     Whether to include the current post in the related posts results. The included
  *                                            post is ordered at the top. Use 'regular_order' to include the current post ordered by
  *                                            terms in common. Default false (exclude current post).
+ *     @type string         $meta_key         Meta key.
+ *     @type string         $meta_value       Meta value.
+ *     @type string         $meta_compare     MySQL operator used for comparing the $meta_value. Accepts '=',
+ *                                            '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE',
+ *                                            'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN', 'REGEXP',
+ *                                            'NOT REGEXP', 'RLIKE', 'EXISTS' or 'NOT EXISTS'.
+ *                                            Default is 'IN' when `$meta_value` is an array, '=' otherwise.
+ *     @type string         $meta_type        MySQL data type that the meta_value column will be CAST to for
+ *                                            comparisons. Accepts 'NUMERIC', 'BINARY', 'CHAR', 'DATE',
+ *                                            'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', or 'UNSIGNED'.
+ *                                            Default is 'CHAR'.
  * }
  * @return array Array with post objects. Empty array if no related posts found.
  */
 function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args = '' ) {
 	global $wpdb;
 
-	// Get valid taxonomies.
+	$post_id    = absint( $post_id );
 	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
+	$args       = km_rpbt_sanitize_args( $args );
+	$related    = $args['related'];
 
-	if ( ! absint( $post_id ) || empty( $taxonomies ) ) {
+	// Check if this is a query for unrelated terms.
+	$unrelated_terms = ! $related && $args['terms'];
+
+	if ( ! $post_id || ( ! $unrelated_terms && empty( $taxonomies ) ) ) {
+		// Invalid post ID or invalid taxonomies
 		return array();
 	}
 
-	$args  = km_rpbt_sanitize_args( $args );
-	$terms = km_rpbt_get_terms( $post_id, $taxonomies, $args );
+	if ( ! $unrelated_terms ) {
+		$terms = km_rpbt_get_terms( $post_id, $taxonomies, $args );
+	} else {
+		$terms   = $args['terms'];
+		$related = true;
+	}
 
 	if ( empty( $terms ) ) {
 		return array();
@@ -68,11 +89,6 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 
 	$args['related_terms'] = $terms;
 	$args['termcount']     = array();
-
-	$related = $args['related'];
-	if ( ! $related && $args['terms'] ) {
-		$related = true;
-	}
 
 	// Term ids sql.
 	if ( count( $terms ) > 1 ) {
@@ -182,14 +198,24 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		$order_by_sql .= "$wpdb->posts.$orderby";
 	}
 
-	// Post thumbnail sql.
-	$meta_join_sql = $meta_where_sql = '';
+	$meta_query = new WP_Meta_Query();
+	$meta_query->parse_query_vars( $args );
+	$meta_query = is_array( $meta_query->queries ) ? $meta_query->queries : array();
+
+	// Default to AND.
+	if( isset( $meta_query['relation'] ) ) {
+		$meta_query['relation'] = 'AND';
+	}
+
 	if ( $args['post_thumbnail'] ) {
-		$meta_query = array(
-			array(
-				'key' => '_thumbnail_id',
-			),
-		);
+		$meta_query[] = array( 'key' => '_thumbnail_id' );
+	}
+
+	$meta_query = apply_filters( 'related_posts_by_taxonomy_posts_meta_query', $meta_query, $post_id, $taxonomies, $args );
+	$meta_query = is_array( $meta_query ) ? $meta_query : array();
+
+	$meta_join_sql = $meta_where_sql = '';
+	if ( ! empty( $meta_query ) ) {
 		$meta = get_meta_sql( $meta_query, 'post', $wpdb->posts, 'ID' );
 		$meta_join_sql = ( isset( $meta['join'] ) && $meta['join'] ) ? $meta['join'] : '';
 		$meta_where_sql = ( isset( $meta['where'] ) && $meta['where'] ) ? $meta['where'] : '';

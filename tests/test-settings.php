@@ -1,8 +1,20 @@
 <?php
 /**
- * Tests for the km_rpbt_query_related_posts() function in functions.php.
+ * Tests for the settings in settings.php.
+ *
+ * @group Settings
  */
 class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
+
+	function tearDown() {
+		// use tearDown for WP < 4.0
+		remove_filter( 'related_posts_by_taxonomy_id_query', '__return_true' );
+		remove_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_first_argument' ) );
+
+
+		parent::tearDown();
+	}
 
 	function get_default_sanitized_args() {
 		return array(
@@ -22,6 +34,10 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'public_only'    => false,
 			'include_self'   => false,
 			'terms'          => array(),
+			'meta_key'       => '',
+			'meta_value'     => '',
+			'meta_compare'   => '',
+			'meta_type'      => '',
 		);
 	}
 
@@ -46,6 +62,10 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'public_only'    => false,
 			'include_self'   => false,
 			'terms'          => '',
+			'meta_key'       => '',
+			'meta_value'     => '',
+			'meta_compare'   => '',
+			'meta_type'      => '',
 		);
 
 		$args = km_rpbt_get_query_vars();
@@ -67,6 +87,8 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'orderby'        => '',
 			'exclude_terms'  => array( 1, 2, 3 ),
 			'related'        => false,
+			'meta_key'       => '',
+			'meta_value'     => array( 10, 20 ),
 		);
 
 		$expected = array_merge( $expected, $sanitized );
@@ -88,6 +110,8 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'public_only'    => array(),
 			'include_self'   => 'no',
 			'terms'          => 'term-a,term-b,',
+			'meta_key'       => false,
+			'meta_value'     => array( 10, 20 ), // mixed value not sanitized
 		);
 
 		$sanitized_args = km_rpbt_sanitize_args( $args );
@@ -99,7 +123,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
-	 * Test sanitizing arguments.
+	 * Test sanitizing arguments in a string.
 	 *
 	 */
 	function test_km_rpbt_sanitize_args_string() {
@@ -109,16 +133,75 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 			'fields'         => 'ids',
 			'public_only'    => true,
 			'terms'          => array( 1, 2, 3 ),
+			'meta_key'       => 'false'
 		);
 		$expected = array_merge( $expected, $sanitized );
 
-		$args = 'posts_per_page=3&fields=ids&public_only=true&terms=1,2,2,false,3';
+		$args = 'posts_per_page=3&fields=ids&public_only=true&terms=1,2,2,false,3&meta_key=false';
 		$sanitized_args = km_rpbt_sanitize_args( $args );
 
 		ksort( $expected );
 		ksort( $sanitized_args );
 
 		$this->assertEquals( $expected, $sanitized_args );
+	}
+
+	/**
+	 * Test if related_posts is used as type if non valid type was provided.
+	 */
+	function test_km_rpbt_get_default_settings_wrong_type() {
+		$defaults = km_rpbt_get_default_settings( 'no_settings_type' );
+		$this->assertTrue( array_key_exists( 'before_related_posts', $defaults ) );
+
+		$html = '<div class="rpbt_related_posts">';
+		$this->assertSame( $html, $defaults['before_related_posts'] );
+		$this->assertSame( '', $defaults['type'] );
+	}
+
+	/**
+	 * Test if specific widget setting exist
+	 */
+	function test_km_rpbt_get_default_settings_widget() {
+		$defaults = km_rpbt_get_default_settings( 'widget' );
+		$this->assertTrue( array_key_exists( 'random', $defaults ) );
+	}
+
+	/**
+	 * Test if post_types is empty for defaults
+	 */
+	function test_km_rpbt_get_default_settings_post_type() {
+		$defaults = km_rpbt_get_default_settings( 'shortcode' );
+		$this->assertEmpty( $defaults['post_types'] );
+	}
+
+	function test_id_query_shortcode() {
+		add_filter( 'related_posts_by_taxonomy_id_query', '__return_true' );
+		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
+
+		do_shortcode( '[related_posts_by_tax]' );
+		$this->assertSame('ids', $this->arg['fields']);
+		$this->arg = null;
+	}
+
+	function test_id_query_widget() {
+		add_filter( 'related_posts_by_taxonomy_id_query', '__return_true' );
+		add_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_first_argument' ) );
+		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+
+		// run the widget
+		ob_start();
+		$args = array(
+			'before_widget' => '<section>',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2>',
+			'after_title'   => '</h2>',
+		);
+
+		$widget->widget( $args, array() );
+		$output = ob_get_clean();
+		$this->assertSame('ids', $this->arg['fields']);
+
+		$this->arg = null;
 	}
 
 	/**

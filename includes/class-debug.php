@@ -16,6 +16,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 	 *
 	 * Adds links for debugging shortcodes and widget.
 	 * Displays debug information (to admins) in the footer of a website.
+	 *
+	 * @since 2.0.0
 	 */
 	class Related_Posts_By_Taxonomy_Debug {
 
@@ -63,35 +65,44 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$this->plugin  = km_rpbt_plugin();
 			$this->cache   = km_rpbt_is_cache_loaded();
 
-			// Adds debug link before the widget title.
+			// Display debug results in footer.
+			add_action( 'wp_footer', array( $this, 'wp_footer' ), 99 );
+
+			// Add debug link before the widget title.
 			add_filter( 'dynamic_sidebar_params', array( $this, 'widget_params' ), 99 );
 
 			// Get widget and shortcode args.
-			// Adds a filter to wp_get_object_terms.
 			add_filter( 'related_posts_by_taxonomy_widget_args',    array( $this, 'debug_start' ), 99, 2 );
 			add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'debug_start' ), 99, 2 );
 
-			// Get posts_clauses.
-			add_filter( 'related_posts_by_taxonomy_posts_clauses', array( $this, 'posts_clauses' ), 99, 4 );
+			// Bail, the page has already loaded when using lazy loading.
+			if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
+				return;
+			}
 
 			// Show widget and shortcode even if no posts were found.
-			// Removes the filter added to the wp_get_object_terms hook.
 			add_filter( 'related_posts_by_taxonomy_widget_hide_empty',    array( $this, 'hide_empty' ), 99 );
 			add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'hide_empty' ), 99 );
+
+			// Get current post terms, taxonomies and post ID.
+			add_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'pre_related_posts' ), 99, 2 );
+
+			// Get query and related terms.
+			add_filter( 'related_posts_by_taxonomy_posts_clauses', array( $this, 'posts_clauses' ), 99, 4 );
+
+			// Get Related posts
+			add_filter( 'related_posts_by_taxonomy', array( $this, 'posts_found' ) );
 
 			// Get the requested template.
 			add_filter( 'related_posts_by_taxonomy_template', array( $this, 'get_template' ), 99, 2 );
 
 			// Store the results.
 			add_action( 'related_posts_by_taxonomy_after_display', array( $this, 'after_display' ) );
-
-			// Display debug results in footer.
-			add_action( 'wp_footer', array( $this, 'wp_footer' ), 99 );
 		}
 
 		/**
-		 * Starts debugging at the arguments hook for widged and shortcode.
-		 * Adds filter to wp_get_object_terms.
+		 * Starts debugging at the arguments hook for widget and shortcode.
+		 * Adds debug link to shortcode
 		 *
 		 * @since 2.0.0
 		 *
@@ -117,13 +128,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				$args['before_shortcode']      = '<div class="rpbt_shortcode">' . $this->debug_link( 'shortcode' ) . '<br/>';
 				$args['after_shortcode']       = '</div>';
 			}
-
-			if ( $this->cache ) {
-				$this->check_cache( $args );
-			}
-
-			// Gets current post terms, taxonomies and post ID.
-			add_filter( 'wp_get_object_terms', array( $this, 'object_terms' ), 99, 4 );
 
 			return $args;
 		}
@@ -173,7 +177,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return array Array with widget parameters.
 		 */
 		function widget_params( $params ) {
-
 			if ( ! isset( $params[0]['widget_id'] ) ) {
 				return $params;
 			}
@@ -195,10 +198,13 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return string Link to debug information,
 		 */
 		function debug_link( $type = 'widget' ) {
-
 			$counter = ( 'widget' === $type ) ? ++$this->widget_counter : ++$this->shortcode_counter;
 
-			$this->debug['debug_id'] = 'rpbt-' . $type . '-debug-' . $counter;
+			if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
+				$this->debug['debug_id'] = 'rpbt-debug-notice';
+			} else {
+				$this->debug['debug_id'] = 'rpbt-' . $type . '-debug-' . $counter;
+			}
 			$this->debug['debug_link'] = '(<a href="#' . $this->debug['debug_id'] . '">Debug ' . ucfirst( $type ) . '</a>)';
 
 			return $this->debug['debug_link'];
@@ -206,17 +212,29 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 		/**
 		 * Gets debug information
-		 * Callback function for filter wp_get_object_terms.
+		 * Callback function for filter related_posts_by_taxonomy_pre_related_posts.
 		 *
-		 * @since 2.0.0
-		 * @return array Array term objects.
+		 * @since 2.6.0
 		 */
-		function object_terms( $terms, $object_ids, $taxonomies, $args ) {
-			$this->debug['current post id']                   = $object_ids;
-			$this->debug['taxonomies used for related query'] = $taxonomies;
-			$this->debug['terms found for current post']      = $this->get_terms_names( $terms );
+		function pre_related_posts( $posts, $args ) {
+			$args       = km_rpbt_sanitize_args( $args );
+			$post_id    = $args['post_id'];
+			$taxonomies = $args['taxonomies'];
+			$related    = $args['related'];
 
-			return $terms;
+			$terms = get_terms( array( 'fields' => 'names', 'object_ids' => array( $post_id ) ) );
+			$terms = ! is_wp_error( $terms ) ? $terms : array();
+
+			$taxonomies = ! $related && $args['terms'] ? 'No taxonomies used in query (unrelated terms)' : $taxonomies;
+			$taxonomies = is_array( $taxonomies ) ? implode( ', ', $taxonomies ) : $taxonomies;
+
+			$this->debug['current post id'] = $post_id;
+			$this->debug['taxonomies used for query'] = $taxonomies;
+			$this->debug['terms found for current post'] = implode( ', ', $terms );
+
+			if ( $this->cache ) {
+				$this->check_cache( $args );
+			}
 		}
 
 		/**
@@ -227,9 +245,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return false.
 		 */
 		function hide_empty() {
-			// Remove filter after related posts are retrieved from the database.
-			remove_filter( 'wp_get_object_terms', array( $this, 'object_terms' ), 99, 4 );
-
 			// Always show the widget or shortcode.
 			return false;
 		}
@@ -260,15 +275,13 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			$term_names = $this->get_terms_names( $args['related_terms'] );
 
-			$this->debug['terms used for related query'] = $term_names;
+			$this->debug['terms used for query'] = $term_names;
 
 			unset( $args['related_terms'] );
 
 			$defaults = km_rpbt_get_query_vars();
 			$this->debug['function args'] = array_intersect_key( $args , $defaults );
 			$this->debug['related posts query'] = $query;
-
-			add_filter( 'related_posts_by_taxonomy', array( $this, 'posts_found' ) );
 
 			return $pieces;
 		}
@@ -281,7 +294,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return array Array with with post objects.
 		 */
 		function posts_found( $results ) {
-
 			if ( ! empty( $results ) ) {
 				if ( isset( $results[0]->ID ) ) {
 					$post_ids = wp_list_pluck( $results, 'ID' );
@@ -391,6 +403,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return array Array with supported plugin features.
 		 */
 		function get_supports() {
+			// Remove filters before calling km_rpbt_get_plugin_supports().
 			remove_filter( 'related_posts_by_taxonomy_widget_hide_empty',    array( $this, 'hide_empty' ), 99 );
 			remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'hide_empty' ), 99 );
 
@@ -406,13 +419,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Displays the results in the footer
 		 */
 		function wp_footer() {
-
 			$seperator = str_repeat( "-", 43 ) . "\n";
 
 			$order = array(
 				'type', 'cache', 'current post id', 'terms found for current post',
-				'taxonomies used for related query', 'cached taxonomies',
-				'terms used for related query', 'cached terms',
+				'taxonomies used for query', 'cached taxonomies',
+				'terms used for query', 'cached terms',
 				'related post ids found', 'cached post ids',
 				'widget args', 'shortcode args', 'function args',
 				'related posts query',
@@ -465,23 +477,27 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 					unset( $debug_arr['type'] );
 
 					if ( $this->cache ) {
-						unset( $debug_arr['related post ids found'] );
-						unset( $debug_arr['terms used for related query'] );
-						unset( $debug_arr['terms found for current post'] );
-						unset( $debug_arr['taxonomies used for related query'] );
-						unset( $debug_arr['related posts query'] );
+						if ( $debug_arr['cache'] === 'current post is not yet cached' ) {
+							unset( $debug_arr['cached taxonomies'] );
+							unset( $debug_arr['cached terms'] );
+							unset( $debug_arr['cached post ids'] );
+						} else {
+							unset( $debug_arr['taxonomies used for query'] );
+							unset( $debug_arr['terms used for query'] );
+							unset( $debug_arr['related post ids found'] );
+							unset( $debug_arr['related posts query'] );
+						}
 					} else {
 						unset( $debug_arr['cache'] );
 						unset( $debug_arr['cached post ids'] );
 						unset( $debug_arr['cached terms'] );
 						unset( $debug_arr['cached taxonomies'] );
-						unset( $debug_arr['related posts cache query'] );
 					}
 
 					foreach ( $debug_arr as $key => $value ) {
 						$title = $key;
 						if ( 'function args' === $title ) {
-							$title = 'Arguments used to get related posts';
+							$title = 'Related posts query arguments';
 						}
 
 						echo $title . ":\n\n";
@@ -500,7 +516,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				}
 				echo '<p>';
 			} else {
-				echo '<p><pre>' . $this->get_header() . "\n\nNo widget or shortcode found to debug on this page</pre></p>";
+				$message = '<p><pre id="rpbt-debug-empty">' . $this->get_header() . "\n\nNo widget or shortcode found to debug on this page</pre></p>";
+				if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
+					$message = '<p><pre id="rpbt-debug-notice">' . $this->get_header( 'Debug Notice' ) . "\n\nPlease disable the lazy_loading feature to debug widgets and shortcodes</pre></p>";
+				}
+				echo $message;
 			}
 		}
 

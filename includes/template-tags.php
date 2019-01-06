@@ -138,7 +138,7 @@ function km_rpbt_post_link( $post = null, $args = array() ) {
 }
 
 /**
- * Gets a related post link.
+ * Get the related post link HTML.
  *
  * The post date is appended depending on the `$show_date` value in the arguments.
  *
@@ -151,7 +151,6 @@ function km_rpbt_post_link( $post = null, $args = array() ) {
  * @return string Related post link HTML.
  */
 function km_rpbt_get_post_link( $post = null, $args = array() ) {
-
 	$post = get_post( $post );
 	if ( ! $post ) {
 		return '';
@@ -184,7 +183,14 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 		$link = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . '</a>';
 		$link .= $args['show_date'] ? ' ' . km_rpbt_get_post_date( $post ) : '';
 	}
-
+	/**
+	 * Filter related post link HTML.
+	 *
+	 * @since  2.4.0
+	 * @param string $link Related post link HTML.
+	 * @param Object $post Post object.
+	 * @param array  $attr Link attributes.
+	 */
 	return apply_filters( 'related_posts_by_taxonomy_post_link', $link, $post, compact( 'title', 'permalink, $args' ) );
 }
 
@@ -212,6 +218,8 @@ function km_rpbt_get_permalink( $post = null, $args = '' ) {
 	/**
 	 * Filter the permalink used for related posts.
 	 *
+	 * @since  2.5.1
+	 *
 	 * @param string Permalink.
 	 */
 	return apply_filters( 'related_posts_by_taxonomy_the_permalink', $permalink, $post, $args );
@@ -219,7 +227,7 @@ function km_rpbt_get_permalink( $post = null, $args = '' ) {
 
 
 /**
- * Get the related post date.
+ * Get the related post date HTML.
  *
  * @since 2.5.1
  *

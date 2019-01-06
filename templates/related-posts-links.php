@@ -15,7 +15,8 @@
  *
  * The following variables are available:
  *
- * @var array $related_posts Array with related posts objects or empty array.
+ * @var array $related_posts Array with related post objects or related post IDs.
+ *                           Empty array if no related posts are found.
  * @var array $rpbt_args     Widget or shortcode arguments.
  */
 

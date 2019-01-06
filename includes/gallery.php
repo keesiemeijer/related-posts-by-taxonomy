@@ -33,7 +33,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *                                       a custom string. Default 'post_title'
  *     @type boolean      $link_caption  Whether to link the caption to the related post. Default false.
  *     @type string       $gallery_class Default class for the gallery. Default 'gallery'.
- *     @type string       $type          Gallery type. Default gallery type 'rpbt_gallery'.
+ *     @type string       $gallery_type  Gallery type. Default gallery type 'rpbt_gallery'.
+ *     @type string       $type          Feature type. (shortcode, widget, wp_rest_api)
  * }
  * @param array $related_posts Array with related post objects that have a post thumbnail.
  * @return string HTML string of a gallery.
@@ -63,7 +64,8 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		'caption'       => 'post_title', // Use 'post_title', 'post_excerpt', 'attachment_caption', attachment_alt, or a custom string.
 		'link_caption'  => false,
 		'gallery_class' => 'gallery',
-		'type'          => 'rpbt_gallery',
+		'gallery_type'  => 'rpbt_gallery',
+		'type'          => '',
 	);
 
 	/* Can be filtered in WordPress > 3.5 (hook: shortcode_atts_gallery) */
@@ -77,15 +79,17 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	 * @param array $args Function arguments.
 	 */
 	$filtered_args = apply_filters( 'related_posts_by_taxonomy_gallery', $args );
-
-	$args = array_merge( $defaults, (array) $filtered_args );
+	$args          = array_merge( $defaults, (array) $filtered_args );
 
 	$id = intval( $args['id'] );
-
 	if ( is_feed() ) {
 		$args['type'] = 'rpbt_gallery_feed';
 		$output = "\n";
 		foreach ( (array) $related_posts as $related ) {
+			$related = is_object( $related ) ? $related : get_post( $related );
+			if ( ! isset( $related->ID, $related->post_title ) ) {
+				continue;
+			}
 
 			$thumbnail_id = get_post_thumbnail_id( $related->ID );
 			$thumbnail    = wp_get_attachment_image( $thumbnail_id, $args['size'] );
@@ -175,6 +179,10 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$item_output = '';
 
 	foreach ( (array) $related_posts as $related ) {
+		$related = is_object( $related ) ? $related : get_post( $related );
+		if ( ! isset( $related->ID, $related->post_title ) ) {
+			continue;
+		}
 
 		$caption       = '';
 		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
@@ -228,6 +236,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		 * @since 0.3
 		 *
 		 * @param string $post_thumbnail Html image tag or empty string.
+		 * @param array  $attributes     Image attributes.
 		 * @param object $related        Related post object
 		 * @param array  $args           Function arguments.
 		 */
@@ -240,7 +249,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		/**
 		 * Filter the related posts gallery item CSS classes.
 		 *
-		 * @since
+		 * @since 1.0.0
 		 *
 		 * @param string $classes Classes used for a gallery item.
 		 * @param object $related Related post object

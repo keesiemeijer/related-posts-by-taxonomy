@@ -61,136 +61,66 @@ if ( ! defined( 'ABSPATH' ) ) {
  *                                            post is ordered at the top. Use 'regular_order' to include the current post ordered by
  *                                            terms in common. Default false (exclude current post).
  *     @type string         $post_class       Add a class to the related post items. Default empty.
+ *     @type string         $meta_key         Meta key.
+ *     @type string|array   $meta_value       Meta value.
+ *     @type string         $meta_compare     MySQL operator used for comparing the $meta_value. Accepts '=',
+ *                                            '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE',
+ *                                            'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN', 'REGEXP',
+ *                                            'NOT REGEXP', 'RLIKE', 'EXISTS' or 'NOT EXISTS'.
+ *                                            Default is 'IN' when `$meta_value` is an array, '=' otherwise.
+ *     @type string         $meta_type        MySQL data type that the meta_value column will be CAST to for
+ *                                            comparisons. Accepts 'NUMERIC', 'BINARY', 'CHAR', 'DATE',
+ *                                            'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', or 'UNSIGNED'.
+ *                                            Default is 'CHAR'.
  * }
  * @return string Related posts html or empty string.
  */
-function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
+function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
+	// Empty string is returned if no args were added in the shortcode
+	$args = is_array( $args ) ? $args : array();
 
-	/* for filter recursion (infinite loop) */
-	static $recursing = false;
-
-	if ( ! $recursing ) {
-		$recursing = true;
-	} else {
-		return '';
-	}
-
-	if ( ! km_rpbt_plugin_supports( 'shortcode' ) ) {
-		$recursing = false;
-		return '';
-	}
-
-	$defaults = km_rpbt_get_default_settings( 'shortcode' );
+	$settings = km_rpbt_get_default_settings( 'shortcode' );
 
 	/**
-	 * Filter default shortcode attributes.
+	 * Filter default feature attributes.
+	 *
+	 * The dynamic portion of the hook name, `$type`, refers to
+	 * the widget, shortcode or wp_rest_api feature.
 	 *
 	 * @since 0.2.1
 	 *
-	 * @param array $defaults See $defaults above
+	 * @param array $defaults Default feature arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
+	 *                        for more information about default feature arguments.
 	 */
-	$defaults = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $defaults );
+	$defaults = apply_filters( "related_posts_by_taxonomy_shortcode_defaults", $settings );
+	$defaults = array_merge( $settings, (array) $defaults );
 
-	/* Can also be filtered in WordPress > 3.5 (hook: shortcode_atts_related_posts_by_tax) */
-	$atts = shortcode_atts( (array) $defaults, $atts, 'related_posts_by_tax' );
+	// Filter args with hook shortcode_atts_related_posts_by_tax.
+	$args = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
 
-	/* Validates atts. Sets the post type and post id if not set in filters above */
-	$validated_args = km_rpbt_validate_shortcode_atts( (array) $atts );
+	$args['type'] = 'shortcode';
+	$args = km_rpbt_validate_shortcode_atts( $args );
 
 	/**
-	 * Filter shortcode attributes.
+	 * Filter validated shortcode arguments.
 	 *
-	 * @param array $atts See $defaults above
-	 */
-	$atts = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $validated_args );
-	$atts = array_merge( $validated_args, (array) $atts );
-
-	/* Un-filterable arguments */
-	$atts['type'] = 'shortcode';
-	$atts['fields'] = '';
-
-	// Get the related posts from database or cache.
-	$related_posts = km_rpbt_get_related_posts( $atts['post_id'], $atts );
-
-	/*
-	 * Whether to hide the shortcode if no related posts are found.
-	 * Set by the related_posts_by_taxonomy_shortcode_hide_empty filter.
-	 * Default true.
-	 */
-	$hide_empty = (bool) km_rpbt_plugin_supports( 'shortcode_hide_empty' );
-
-	$shortcode = '';
-	if ( ! $hide_empty || ! empty( $related_posts ) ) {
-		$shortcode = km_rpbt_shortcode_output( $related_posts, $atts );
-	}
-
-	/**
-	 * Fires after the related posts are displayed by the widget or shortcode.
+	 * @since  0.1
 	 *
-	 * @param string Display type, widget or shortcode.
+	 * @param array $args Shortcode arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
+	 *                    for more information about feature arguments.
 	 */
-	do_action( 'related_posts_by_taxonomy_after_display', 'shortcode' );
+	$args = apply_filters( "related_posts_by_taxonomy_shortcode_atts", $args );
+	$args = array_merge( $defaults, (array) $args );
 
-	$recursing = false;
+	$args['type'] = 'shortcode';
 
-	return $shortcode;
-} // end km_rpbt_related_posts_by_taxonomy_shortcode()
-
-/**
- * Returns shortcode output.
- *
- * @see km_rpbt_related_posts_by_taxonomy_shortcode()
- *
- * @since 2.1
- * @param array $related_posts Array with related post objects.
- * @param array $rpbt_args     Shortcode arguments.
- *                             See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
- *                             information on accepted arguments.
- * @return string Shortcode output.
- */
-function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
-
-	/* make sure all defaults are present */
-	$rpbt_args = array_merge( km_rpbt_get_default_settings( $rpbt_args['type'] ), $rpbt_args );
-
-	/* get the template depending on the format  */
-	$template = km_rpbt_get_template( $rpbt_args['format'], $rpbt_args['type'] );
-
-	if ( ! $template ) {
-		return '';
-	}
-
-	if ( $rpbt_args['title'] ) {
-		$rpbt_args['title'] = $rpbt_args['before_title'] . $rpbt_args['title'] . $rpbt_args['after_title'];
-	}
-
-	global $post; // Used for setup_postdata() in templates.
-
-	/* public template variables (back-compat) */
-	$image_size = $rpbt_args['image_size']; // deprecated in version 0.3.
-	$columns    = absint( $rpbt_args['columns'] ); // deprecated in version 0.3.
-
-	ob_start();
-	require $template;
-	$output = ob_get_clean();
-	$output = trim( $output );
-	wp_reset_postdata(); // Clean up global $post variable.
-
-	$shortcode = '';
-	if ( $output ) {
-		$shortcode = $rpbt_args['before_shortcode'] . "\n" ;
-		$shortcode .= trim( $rpbt_args['title'] ) . "\n";
-		$shortcode .= $output . "\n";
-		$shortcode .= $rpbt_args['after_shortcode'];
-	}
-
-	return trim( $shortcode );
+	return km_rpbt_get_feature_html( 'shortcode', $args );
 }
 
 /**
  * Validate shortcode arguments.
  *
- * The post type and post id of the current post is used if not provided.
+ * Converts string booleans to real booleans.
  *
  * @see km_rpbt_related_posts_by_taxonomy_shortcode()
  *
@@ -202,27 +132,10 @@ function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
  */
 function km_rpbt_validate_shortcode_atts( $atts ) {
 	$defaults = km_rpbt_get_default_settings( 'shortcode' );
+	$atts     = km_rpbt_validate_args( $atts );
 
-	/* make sure all defaults are present */
-	$atts = array_merge( $defaults, $atts );
-
-	// Default to shortcode.
-	$atts['type']  = 'shortcode';
-	$atts['title'] = trim( $atts['title'] );
-
-	if ( '' === trim( $atts['post_id'] ) ) {
-		$atts['post_id'] = get_the_ID();
-	}
-
-	/* If no post type is set use the post type of the current post (new default since 0.3) */
-	if ( empty( $atts['post_types'] ) ) {
-		$post_type = get_post_type( $atts['post_id'] );
-		$atts['post_types'] = $post_type ? array( $post_type ) : array( 'post' );
-	}
-
-	if ( 'thumbnails' === $atts['format'] ) {
-		$atts['post_thumbnail'] = true;
-	}
+	// Get allowed fields for use in templates
+	$atts['fields'] = km_rpbt_get_template_fields( $atts );
 
 	// Convert (strings) to booleans or use defaults.
 	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
@@ -234,7 +147,5 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
 	}
 
-	$atts = km_rpbt_validate_booleans( $atts, $defaults );
-
-	return $atts;
+	return km_rpbt_validate_booleans( $atts, $defaults );
 }

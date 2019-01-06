@@ -133,6 +133,15 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return  $results;
 	}
 
+	function meta_query_callback( $meta_query, $post_id, $taxonomies, $args ) {
+		$meta_query[] = array(
+			'key' => 'meta_key',
+			'value' => 'meta_value',
+		);
+		return $meta_query;
+	}
+
+
 	function cache_log_contains( $string ) {
 		$plugin = km_rpbt_plugin();
 		foreach ( $plugin->cache->cache_log as $log ) {

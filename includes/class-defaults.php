@@ -19,6 +19,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 	 * - default and registered image sizes
 	 * - allowed formats
 	 * - cache instance (if feature is activated)
+	 *
+	 * @since 0.2.1
 	 */
 	class Related_Posts_By_Taxonomy_Defaults {
 
@@ -121,8 +123,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		public function _setup() {
 			$this->all_tax     = 'all'; // All taxonomies.
 			$this->default_tax = array( 'category' => __( 'Category', 'related-posts-by-taxonomy' ) );
-			$this->post_types  = $this->get_post_types();
 			$this->taxonomies  = $this->get_taxonomies();
+			$this->post_types  = $this->get_post_types();
 			$this->image_sizes = $this->get_image_sizes();
 			$this->formats     = $this->get_formats();
 		}
@@ -139,16 +141,31 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 			$post_types_obj = get_post_types( array( 'public' => true, '_builtin' => false ), 'objects', 'and' );
 
 			$post_types_obj = array( 'post' => get_post_type_object( 'post' ) ) + $post_types_obj;
-
 			foreach ( (array) $post_types_obj as $key => $value ) {
-				$post_types[ $key ] = esc_attr( $value->labels->menu_name );
+				if ( $this->has_taxonomies( $key ) ) {
+					$post_types[ $key ] = esc_attr( $value->labels->menu_name );
+				}
 			}
 
+			if ( $this->has_taxonomies( 'page' ) ) {
+				// Post type page has taxonomies.
+				$page = get_post_type_object( 'page' );
+				$post_types['page'] = esc_attr( $page->labels->menu_name );
+			}
+
+			// Default to post.
 			if ( empty( $post_types ) ) {
 				$post_types = array( 'post' => __( 'Post', 'related-posts-by-taxonomy' ) );
 			}
 
 			return $post_types;
+		}
+
+		public function has_taxonomies( $post_type ) {
+			$taxonomies = get_object_taxonomies( $post_type, 'object' );
+			$taxonomies = wp_filter_object_list( $taxonomies, array( 'public' => true ), 'AND' );
+
+			return (bool) ! empty( $taxonomies );
 		}
 
 		/**
@@ -263,8 +280,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @since 2.2.2
 		 * @since 2.5.0 Moved logic to km_rpbt_get_default_settings().
 		 *
-		 * @param tring $type Type of settings. Choose from 'widget', 'shortcode', 'wp_rest_api' or 'all'.
-		 * @return string ype of settings. Values can be 'shortcode' or 'widget'
+		 * @see km_rpbt_get_default_settings()
+		 *
+		 * @param string $type Type of settings. Choose from 'widget', 'shortcode', 'wp_rest_api'.
+		 * @return array Default feature type settings.
 		 */
 		public function get_default_settings( $type = '' ) {
 			return km_rpbt_get_default_settings( $type );
@@ -275,6 +294,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 *
 		 * @since 2.3.1
 		 * @since 2.5.0 Moved logic to a km_rpbt_get_plugin_supports().
+		 *
+		 * @see km_rpbt_get_plugin_supports()
 		 *
 		 * @return Array Array with plugin support types
 		 */
@@ -287,6 +308,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 *
 		 * @since 2.3.0
 		 * @since 2.5.0 Moved logic to km_rpbt_plugin_supports().
+		 *
+		 * @see km_rpbt_plugin_supports()
 		 *
 		 * @param string $type Type of support ('cache', 'wp_rest_api', etc.).
 		 * @return bool True if set to true with a filter. Default false.

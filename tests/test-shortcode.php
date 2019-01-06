@@ -261,7 +261,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 EOF;
 
 		ob_start();
-		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '"]' );
+		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '" fields="ids"]' );
 		$shortcode = ob_get_clean();
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );
@@ -272,7 +272,6 @@ EOF;
 	 *
 	 */
 	function test_shortcode_output_with_date() {
-
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
@@ -287,7 +286,7 @@ EOF;
 		$permalinks = array_map( 'get_permalink', $ids );
 		$date       = array();
 		$datetime   = array();
-		foreach($posts as $post) {
+		foreach ( $posts as $post ) {
 			$date[] = get_the_date( '', $post );
 			$datetime[] = get_the_date( DATE_W3C, $post );
 		}
@@ -428,8 +427,23 @@ EOF;
 		$this->arg = null;
 	}
 
+	function test_shortcode_fields() {
+		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
+
+		do_shortcode( '[related_posts_by_tax]' );
+		$this->assertSame( '', $this->arg['fields'] );
+		$this->arg = null;
+
+		do_shortcode( '[related_posts_by_tax fields="ids"]' );
+		$this->assertSame( 'ids', $this->arg['fields'] );
+		$this->arg = null;
+
+		do_shortcode( '[related_posts_by_tax fields="names"]' );
+		$this->assertSame( '', $this->arg['fields'] );
+		$this->arg = null;
+	}
+
 	function override_related_posts( $related_posts, $args ) {
 		return get_posts( 'post_type=cpt' );
 	}
-
 }

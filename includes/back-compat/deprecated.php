@@ -24,17 +24,36 @@ function km_rpbt_get_shortcode_atts() {
 }
 
 /**
+ * Returns shortcode output.
+ *
+ * @see km_rpbt_related_posts_by_taxonomy_shortcode()
+ *
+ * @deprecated 2.6.0 Use km_rpbt_get_related_posts_html() instead.
+ *
+ * @since 2.1
+ * @param array $related_posts Array with related post objects.
+ * @param array $rpbt_args     Shortcode arguments.
+ *                             See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                             information on accepted arguments.
+ * @return string Shortcode output.
+ */
+function km_rpbt_shortcode_output( $related_posts, $rpbt_args ) {
+	_deprecated_function( __FUNCTION__, '2.6.0', 'km_rpbt_get_related_posts_html()' );
+
+	return km_rpbt_get_related_posts_html( $related_posts, $rpbt_args );
+}
+/**
  * Get the related posts used by the shortcode.
  *
  * @since 2.3.2
- * @since 2.5.0 Deprecated
+ * @deprecated 2.5.0 Use km_rpbt_get_related_posts() instead.
  *
  * @param array  $rpbt_args Widget arguments.
  * @param object $cache_obj This plugins cache object. Default null.
  * @return array Array with related post objects.
  */
 function km_rpbt_shortcode_get_related_posts( $rpbt_args, $cache_obj = null ) {
-	_deprecated_function( __FUNCTION__, '2.4.0', 'km_rpbt_get_related_posts()' );
+	_deprecated_function( __FUNCTION__, '2.5.0', 'km_rpbt_get_related_posts()' );
 	return km_rpbt_get_related_posts( $rpbt_args );
 }
 
@@ -42,7 +61,7 @@ function km_rpbt_shortcode_get_related_posts( $rpbt_args, $cache_obj = null ) {
  * Gets related posts by taxonomy.
  *
  * @since 0.1
- * @since 2.5.0 Deprecated
+ * @deprecated 2.5.0 Use km_rpbt_query_related_posts() instead.
  *
  * @global object       $wpdb
  *
@@ -61,7 +80,7 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
  * Returns default arguments.
  *
  * @since 2.1
- * @since 2.5.0 Deprecated
+ * @deprecated 2.5.0 Use km_rpbt_get_query_vars() instead.
  *
  * @return array Array with default arguments.
  */
@@ -76,7 +95,7 @@ function km_rpbt_get_default_args() {
  * Checks if ids is a comma separated string or an array with ids.
  *
  * @since 0.2
- * @since 2.5.0 Deprecated
+ * @deprecated 2.5.0 Use km_rpbt_validate_ids() instead.
  *
  * @param string|array $ids Comma separated list or array with ids.
  * @return array Array with postive integers
@@ -91,7 +110,7 @@ function km_rpbt_related_posts_by_taxonomy_validate_ids( $ids ) {
  * Gets the template used for display of related posts
  *
  * @since 0.1
- * @since 2.5.0 Deprecated
+ * @deprecated 2.5.0 Use km_rpbt_get_template() instead.
  *
  * Used by widget and shortcode
  *
@@ -109,7 +128,7 @@ function km_rpbt_related_posts_by_taxonomy_template( $format = false, $type = fa
  * Display of the related post link.
  *
  * @since 2.4.0
- * @since 2.5.0 Deprecated
+ * @deprecated 2.5.0 Use km_rpbt_post_link() instead.
  *
  * @param object $post       Post object.
  * @param bool   $title_attr Whether to use a title attribute in the link. Default false.
@@ -124,7 +143,7 @@ function km_rpbt_post_title_link( $post, $title_attr = false ) {
  * Get the related $post link.
  *
  * @since 2.4.0
- * @since 2.5.0 Deprecated
+ * @deprecated 2.5.0 Use km_rpbt_get_post_link() instead.
  *
  * @param object $post       Post object.
  * @param bool   $title_attr Whether to use a title attribute in the link. Default false.
@@ -140,7 +159,7 @@ function km_rpbt_get_related_post_title_link( $post, $title_attr = false ) {
  * Registers the related posts by taxonomy widget.
  *
  * @since 0.1
- * @since 2.5.0 Deprecated
+ * @deprecated 2.5.0 Use Related_Posts_By_Taxonomy_Plugin::widget_init() instead.
  */
 function km_rpbt_related_posts_by_taxonomy_widget() {
 	_deprecated_function( __FUNCTION__, '2.5.0', 'Related_Posts_By_Taxonomy_Plugin::widget_init()' );
