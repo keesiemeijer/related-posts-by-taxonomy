@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since  2.4.0
  *
  * @param object       $post Post object.
- * @param string|array $args String of classes to add to the post classes or feature arguments. Default empty string.
+ * @param array|string $args Widget or shortcode arguments or string with post classes.
  */
 function km_rpbt_post_class( $post = null, $args = '' ) {
 	$classes = km_rpbt_get_post_classes( $post, $args );
@@ -31,7 +31,7 @@ function km_rpbt_post_class( $post = null, $args = '' ) {
  * @since  2.4.0
  *
  * @param object       $post Post object.
- * @param string|array $args String of classes to add to the post classes or feature arguments. Default empty string.
+ * @param array|string $args Widget or shortcode arguments or string with post classes.
  * @return string Post classes string.
  */
 function km_rpbt_get_post_classes( $post = null, $args = '' ) {
@@ -44,6 +44,7 @@ function km_rpbt_get_post_classes( $post = null, $args = '' ) {
 	// Backward compatibility PHP < 5.4 needs check is_array() for isset().
 	$is_args    = is_array( $args ) && isset( $args['post_class'] );
 	$post_class = $is_args ? $args['post_class'] : $args;
+
 	if ( is_string( $post_class ) && $post_class ) {
 		$classes .= ' ' . $post_class;
 	}
@@ -51,7 +52,7 @@ function km_rpbt_get_post_classes( $post = null, $args = '' ) {
 	$classes = km_rpbt_sanitize_classes( $classes );
 	$classes = explode( ' ', $classes );
 
-	// Backwards compatibility
+	// Backwards compatibility for filter
 	$index = 0;
 
 	/**
@@ -59,9 +60,10 @@ function km_rpbt_get_post_classes( $post = null, $args = '' ) {
 	 *
 	 * @since 2.4.0
 	 *
-	 * @param array  $classes Array with post classes.
-	 * @param object $post    Current related post object.
-	 * @param array  $args    Widget or shortcode arguments.
+	 * @param array        $classes Array with post classes.
+	 * @param object       $post    Current related post object.
+	 * @param array|string $args    Widget or shortcode arguments or string with post classes.
+	 * @param int          $index   Deprecated. Default 0
 	 */
 	$classes = apply_filters( 'related_posts_by_taxonomy_post_class', $classes, $post, $args, $index );
 

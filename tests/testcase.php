@@ -188,8 +188,6 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 	function setup_gallery() {
 		$posts        = $this->create_posts();
 		$related_post = get_post( $posts[0] );
-		//$related_post = km_rpbt_add_post_classes( array( $related_post ) );
-		//$related_post = $related_post[0];
 		$permalink    = get_permalink( $related_post->ID );
 
 		// Adds a fake image <img>, otherwhise the function will return nothing.
