@@ -137,6 +137,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 * @expectedDeprecated km_rpbt_get_related_post_title_link
 	 * @expectedDeprecated km_rpbt_get_shortcode_atts
 	 * @expectedDeprecated km_rpbt_get_default_args
+	 * @expectedDeprecated km_rpbt_add_post_classes
 	 */
 	function test_empty_output() {
 		$create_posts = $this->create_posts_with_terms();
@@ -178,12 +179,12 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$ids                 = km_rpbt_validate_ids( '1,2,1,string' );
 		$classes1            = km_rpbt_get_post_classes( $_posts[0], 'add-this-class' );
 		$classes2            = km_rpbt_sanitize_classes( $classes1 );
-		$classes3            = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );
 		$classes4            = km_rpbt_post_class();
 		$link                = km_rpbt_get_post_link( $_posts[0], true );
 		$link2               = km_rpbt_get_permalink( $_posts[0] );
 
 		// Deprecated functions
+		$classes3   = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );
 		$rel_posts4 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
 		$id2        = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
 		$template   = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );

@@ -8,7 +8,7 @@ class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 
 	function tearDown() {
 		remove_filter( 'use_default_gallery_style', '__return_false', 99 );
-		remove_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 4 );
+		remove_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 3 );
 		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
 		remove_filter( 'related_posts_by_taxonomy_the_permalink', array( $this, 'the_permalink' ) , 10, 3 );
 	}
@@ -82,7 +82,7 @@ EOF;
 		$taxonomies = array( 'post_tag' );
 		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies );
 
-		add_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 4 );
+		add_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 3 );
 		$args = array( 'taxonomies' => $taxonomies, 'post_id' => $posts[1] );
 		$related = $plugin->cache->get_related_posts( $args );
 
@@ -91,14 +91,13 @@ EOF;
 		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not found in cache' );
 
 		$this->assertTrue( isset( $related[0]->rpbt_post_class ), 'property not found' );
-		$this->assertEquals( 'someclass', $related[0]->rpbt_post_class );
 	}
 
 	/**
 	 * Test output from gallery with post class added by a filter.
 	 */
 	function test_shortcode_no_gallery_style_post_class() {
-		add_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 4 );
+		add_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 3 );
 		$gallery_args = $this->setup_gallery();
 		extract( $gallery_args );
 
@@ -110,7 +109,7 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='someclass gallery-item'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item someclass'>
 <dt class='gallery-icon '>
 <a href='{$permalink}' title='{$related_post->post_title}'><img></a>
 </dt>
@@ -250,7 +249,7 @@ EOF;
 	/**
 	 * callback for related_posts_by_taxonomy_post_class filter.
 	 */
-	function post_class( $classes, $post, $args, $index ) {
+	function post_class( $classes, $post, $args ) {
 		$classes[] = 'someclass';
 		return $classes;
 	}

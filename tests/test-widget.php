@@ -267,7 +267,7 @@ EOF;
 	/**
 	 * Test output from widget.
 	 */
-	function test_rpbt_widget_output_show_date() {
+	function test_rpbt_widget_output_show_date_and_post_class() {
 
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
@@ -282,7 +282,7 @@ EOF;
 			'after_title'   => '</h2>',
 		);
 
-		$instance = array( 'post_id' => $posts[0], 'show_date' => true );
+		$instance = array( 'post_id' => $posts[0], 'show_date' => true, 'post_class' => 'my-class' );
 		$widget->_set( 2 );
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
@@ -307,13 +307,13 @@ EOF;
 <section>
 <h2>Related Posts</h2>
 <ul>
-<li>
+<li class="my-class">
 <a href="{$permalinks[1]}">{$_posts[1]->post_title}</a> <time class="rpbt-post-date" datetime="{$datetime[1]}">{$date[1]}</time>
 </li>
-<li>
+<li class="my-class">
 <a href="{$permalinks[2]}">{$_posts[2]->post_title}</a> <time class="rpbt-post-date" datetime="{$datetime[2]}">{$date[2]}</time>
 </li>
-<li>
+<li class="my-class">
 <a href="{$permalinks[3]}">{$_posts[3]->post_title}</a> <time class="rpbt-post-date" datetime="{$datetime[3]}">{$date[3]}</time>
 </li>
 </ul>

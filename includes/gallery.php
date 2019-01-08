@@ -65,6 +65,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		'link_caption'  => false,
 		'gallery_class' => 'gallery',
 		'gallery_type'  => 'rpbt_gallery',
+		'post_class'    => '',
 		'type'          => '',
 	);
 
@@ -249,15 +250,20 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		/**
 		 * Filter the related posts gallery item CSS classes.
 		 *
+		 * Use this filter to remove the `gallery-item` class if you need to.
+		 *
 		 * @since 1.0.0
 		 *
-		 * @param string $classes Classes used for a gallery item.
+		 * @param string $classes Classes used for a gallery item. Default 'gallery-item'
 		 * @param object $related Related post object
-		 * @param array  $args    Function arguments.
+		 * @param array  $args    Gallery arguments.
 		 */
 		$itemclass  = apply_filters( 'related_posts_by_taxonomy_gallery_item_class', 'gallery-item', $related, $args );
-		$itemclass  = km_rpbt_get_post_classes( $related, $itemclass );
-		$image_meta = wp_get_attachment_metadata( $thumbnail_id );
+		$itemclass .= is_string( $args['post_class'] ) ? ' ' . $args['post_class'] : '';
+
+		$args['post_class'] = trim( $itemclass );
+		$itemclass          = km_rpbt_get_post_classes( $related, $args );
+		$image_meta         = wp_get_attachment_metadata( $thumbnail_id );
 
 		$orientation = '';
 		if ( isset( $image_meta['height'], $image_meta['width'] ) ) {
