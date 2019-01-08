@@ -36,7 +36,7 @@
 			// In this loop you can use WordPress functions to display the related posts.
 		?>
 
-		<div<?php km_rpbt_post_class( $post ); ?>>
+		<div<?php km_rpbt_post_class( $post, $rpbt_args ); ?>>
 			<?php km_rpbt_post_link( $post, $rpbt_args ); ?>
 			<?php the_content(); ?>
 		</div>

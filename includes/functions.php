@@ -173,8 +173,6 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 		$related_posts = km_rpbt_query_related_posts( $args['post_id'], $args['taxonomies'], $query_args );
 	}
 
-	$related_posts = km_rpbt_add_post_classes( $related_posts, $args );
-
 	return $related_posts;
 }
 

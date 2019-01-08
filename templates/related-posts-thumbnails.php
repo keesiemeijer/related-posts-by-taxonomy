@@ -51,6 +51,7 @@
 			'caption'      => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
 			'link_caption' => $rpbt_args['link_caption'], // Link caption to post
 			'show_date'    => $rpbt_args['show_date'], // Show post date
+			'post_class'   => $rpbt_args['post_class'], // CSS classes string
 			'type'         => $rpbt_args['type'], // type widget or shortcode
 		);
 

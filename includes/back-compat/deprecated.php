@@ -166,3 +166,38 @@ function km_rpbt_related_posts_by_taxonomy_widget() {
 	$widget = new Related_Posts_By_Taxonomy_Plugin();
 	$widget->widget_init();
 }
+
+/**
+ * Add CSS classes to (related) post objects.
+ *
+ * This function is used after retrieving the related posts from the database or cache.
+ *
+ * Use the {@see 'related_posts_by_taxonomy_post_class'} filter to add post classes on a
+ * post per post basis
+ *
+ * @since  2.4.0
+ * @deprecated 2.6.0
+ *
+ * @param array        $related_posts Array with (related) post objects.
+ * @param array|string $args          Widget or shortcode arguments.
+ *                                    See km_rpbt_get_related_posts() for for more
+ *                                    information on accepted arguments.
+ * @return array Array with related post objects with classes added.
+ */
+function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
+	_deprecated_function( __FUNCTION__, '2.6.0' );
+
+	if ( ! is_array( $related_posts ) ) {
+		return $related_posts;
+	}
+
+	foreach ( array_values( $related_posts ) as $index => $post ) {
+		if ( ! is_object( $post ) ) {
+			continue;
+		}
+
+		$related_posts[ $index ]->rpbt_post_class = km_rpbt_get_post_classes( $post, $args );
+	}
+
+	return $related_posts;
+}

@@ -189,13 +189,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				'slugs' => 'post_name',
 			);
 
-			if ( $posts ) {
-				if ( in_array( $args['fields'], array_keys( $allowed_fields ) ) ) {
-					/* Get the field used in the query */
-					$posts = wp_list_pluck( $posts, $allowed_fields[ $args['fields'] ] );
-				} else {
-					$posts = km_rpbt_add_post_classes( $posts, $args );
-				}
+			if ( $posts && in_array( $args['fields'], array_keys( $allowed_fields ) ) ) {
+				/* Get the field used in the query */
+				$posts = wp_list_pluck( $posts, $allowed_fields[ $args['fields'] ] );
 			}
 
 			return $posts;
