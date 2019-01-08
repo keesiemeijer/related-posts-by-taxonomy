@@ -41,7 +41,9 @@ function km_rpbt_get_post_classes( $post = null, $args = '' ) {
 		$classes = $post->rpbt_post_class;
 	}
 
-	$post_class = isset( $args['post_class'] ) ? $args['post_class'] : $args;
+	// Backward compatibility PHP < 5.4 needs check is_array() for isset().
+	$is_args    = is_array( $args ) && isset( $args['post_class'] );
+	$post_class = $is_args ? $args['post_class'] : $args;
 	if ( is_string( $post_class ) && $post_class ) {
 		$classes .= ' ' . $post_class;
 	}
