@@ -1,7 +1,7 @@
 {
-  "main.css": "/related-posts-by-taxonomy/static/css/main.c2b80561.chunk.css",
-  "main.js": "/related-posts-by-taxonomy/static/js/main.bb2afbc9.chunk.js",
-  "main.js.map": "/related-posts-by-taxonomy/static/js/main.bb2afbc9.chunk.js.map",
+  "main.css": "/related-posts-by-taxonomy/static/css/main.63364b0c.chunk.css",
+  "main.js": "/related-posts-by-taxonomy/static/js/main.54795140.chunk.js",
+  "main.js.map": "/related-posts-by-taxonomy/static/js/main.54795140.chunk.js.map",
   "static/js/1.3fe1c296.chunk.js": "/related-posts-by-taxonomy/static/js/1.3fe1c296.chunk.js",
   "static/js/1.3fe1c296.chunk.js.map": "/related-posts-by-taxonomy/static/js/1.3fe1c296.chunk.js.map",
   "static/js/2.bba7adff.chunk.js": "/related-posts-by-taxonomy/static/js/2.bba7adff.chunk.js",
@@ -50,8 +50,8 @@
   "static/js/23.6379cc80.chunk.js.map": "/related-posts-by-taxonomy/static/js/23.6379cc80.chunk.js.map",
   "runtime~main.js": "/related-posts-by-taxonomy/static/js/runtime~main.66c5b42f.js",
   "runtime~main.js.map": "/related-posts-by-taxonomy/static/js/runtime~main.66c5b42f.js.map",
-  "static/css/main.c2b80561.chunk.css.map": "/related-posts-by-taxonomy/static/css/main.c2b80561.chunk.css.map",
+  "static/css/main.63364b0c.chunk.css.map": "/related-posts-by-taxonomy/static/css/main.63364b0c.chunk.css.map",
   "index.html": "/related-posts-by-taxonomy/index.html",
-  "precache-manifest.26d42f31de3557678d114f64c8ea68c2.js": "/related-posts-by-taxonomy/precache-manifest.26d42f31de3557678d114f64c8ea68c2.js",
+  "precache-manifest.d8242c88a243bbc549542299455d89fd.js": "/related-posts-by-taxonomy/precache-manifest.d8242c88a243bbc549542299455d89fd.js",
   "service-worker.js": "/related-posts-by-taxonomy/service-worker.js"
 }
