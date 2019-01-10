@@ -166,8 +166,34 @@ function km_rpbt_render_block_related_post( $args ) {
 		return '';
 	}
 
-	// Set the type for the argument filters in the shortcode.
+	$settings = km_rpbt_get_default_settings( 'editor_block' );
+
+	/**
+	 * Filter default editor block attributes.
+	 *
+	 * @since 0.2.1
+	 *
+	 * @param array $defaults Default editor block arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
+	 *                        for more information about default editor block arguments.
+	 */
+	$defaults = apply_filters( "related_posts_by_taxonomy_editor_block_defaults", $settings );
+	$defaults = array_merge( $settings, (array) $defaults );
+
+	$args['type'] = 'editor_block';
+	$args         = km_rpbt_validate_args( $args );
+
+	/**
+	 * Filter validated editor block arguments.
+	 *
+	 * @since  0.1
+	 *
+	 * @param array $args editor block arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
+	 *                    for more information about editor block arguments.
+	 */
+	$args = apply_filters( "related_posts_by_taxonomy_editor_block_args", $args );
+	$args = array_merge( $defaults, (array) $args );
+
 	$args['type'] = 'editor_block';
 
-	return km_rpbt_get_feature_html( 'editor_block', $args, 'km_rpbt_validate_args' );
+	return km_rpbt_get_feature_html( 'editor_block', $args );
 }
