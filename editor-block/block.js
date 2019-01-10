@@ -78,7 +78,7 @@ export class RelatedPostsBlock extends Component {
 
 	render() {
 		const { attributes, setAttributes, editorData, postType, postID } = this.props;
-		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption, show_date, order } = attributes;
+		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption, show_date, order, fields } = attributes;
 		const titleID = 'inspector-text-control-' + this.instanceId;
 		const className = classnames(this.props.className, { 'rpbt-html5-gallery': ('thumbnails' === format) && this.html5Gallery });
 
@@ -89,7 +89,6 @@ export class RelatedPostsBlock extends Component {
 		let shortcodeAttr = Object.assign({}, attributes);
 		shortcodeAttr['post_id'] = postID;
 		shortcodeAttr['terms'] = editorData.termIDs.join(',');
-		// shortcodeAttr['is_editor'] = true; 
 
 		if (!shortcodeAttr['terms'].length && (-1 !== editorData.taxonomyNames.indexOf('category'))) {
 			// Use default category if this post supports the 'category' taxonomy and no terms are selected.

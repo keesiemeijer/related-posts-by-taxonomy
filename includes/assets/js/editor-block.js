@@ -5679,7 +5679,8 @@ var RelatedPostsBlock = function (_Component) {
 			    columns = attributes.columns,
 			    link_caption = attributes.link_caption,
 			    show_date = attributes.show_date,
-			    order = attributes.order;
+			    order = attributes.order,
+			    fields = attributes.fields;
 
 			var titleID = 'inspector-text-control-' + this.instanceId;
 			var className = __WEBPACK_IMPORTED_MODULE_2_classnames___default()(this.props.className, { 'rpbt-html5-gallery': 'thumbnails' === format && this.html5Gallery });
@@ -5691,7 +5692,6 @@ var RelatedPostsBlock = function (_Component) {
 			var shortcodeAttr = Object.assign({}, attributes);
 			shortcodeAttr['post_id'] = postID;
 			shortcodeAttr['terms'] = editorData.termIDs.join(',');
-			// shortcodeAttr['is_editor'] = true; 
 
 			if (!shortcodeAttr['terms'].length && -1 !== editorData.taxonomyNames.indexOf('category')) {
 				// Use default category if this post supports the 'category' taxonomy and no terms are selected.
