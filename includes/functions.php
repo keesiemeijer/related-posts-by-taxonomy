@@ -22,49 +22,52 @@ function km_rpbt_plugin() {
 /**
  * Check if the plugin supports a feature.
  *
+ * See the {@see 'related_posts_by_taxonomy_supports'} filter which
+ * features are supported by default and which are opt-in
+ *
  * @since  2.5.0
  *
  * @param string $type Type of feature.
  * @return bool True if the feature is supported.
  */
-function km_rpbt_plugin_supports( $type ) {
+function km_rpbt_plugin_supports( $feature ) {
 	$supports = km_rpbt_get_plugin_supports();
 
-	if ( ! in_array( $type , array_keys( $supports ) ) ) {
+	if ( ! in_array( $feature, array_keys( $supports ) ) ) {
 		return false;
 	}
 
 	/**
 	 * Filter whether to support a plugin feature.
 	 *
-	 * The dynamic portion of the hook name, `$type`, refers to the
+	 * The dynamic portion of the hook name, `$feature`, refers to the
 	 * type of support.
 	 *
 	 * - widget
+	 * - widget_hide_empty
 	 * - shortcode
 	 * - shortcode_hide_empty
-	 * - widget_hide_empty
 	 * - cache
 	 * - display_cache_log
 	 * - wp_rest_api
-	 * - ajax_query
+	 * - id_query
+	 * - lazy_loading
 	 * - debug
 	 *
 	 * @since 2.5.0
 	 *
 	 * @param bool $bool Add support if true. Default false
 	 */
-	return apply_filters( "related_posts_by_taxonomy_{$type}", (bool) $supports[ $type ] );
+	return apply_filters( "related_posts_by_taxonomy_{$feature}", (bool) $supports[ $feature ] );
 }
 
 /**
  * Get related posts from the database or cache.
  *
- * Used by the widget, shortcode, and rest api.
+ * Used by the widget, shortcode and rest api.
  *
- * If the cache feature of this plugin is activated it tries to get the
- * related posts from the cache first. If not found in the cache they will be
- * cached before returning related posts
+ * If the cache is activated it tries to get the related posts from the cache first.
+ * If not found in the cache they will be cached before returning related posts
  *
  * If taxonomies are not set in the arguments it queries for
  * related posts in all public taxonomies.
@@ -106,6 +109,18 @@ function km_rpbt_plugin_supports( $type ) {
  *     @type string|boolean $include_self     Whether to include the current post in the related posts results. The included
  *                                            post is ordered at the top. Use 'regular_order' to include the current post ordered by
  *                                            terms in common. Default false (exclude current post).
+ *     @type string         $post_class       Class for the related post items. Default empty.
+ *     @type string         $meta_key         Meta key.
+ *     @type string         $meta_value       Meta value.
+ *     @type string         $meta_compare     MySQL operator used for comparing the $meta_value. Accepts '=',
+ *                                            '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE',
+ *                                            'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN', 'REGEXP',
+ *                                            'NOT REGEXP', 'RLIKE', 'EXISTS' or 'NOT EXISTS'.
+ *                                            Default is 'IN' when `$meta_value` is an array, '=' otherwise.
+ *     @type string         $meta_type        MySQL data type that the meta_value column will be CAST to for
+ *                                            comparisons. Accepts 'NUMERIC', 'BINARY', 'CHAR', 'DATE',
+ *                                            'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', or 'UNSIGNED'.
+ *                                            Default is 'CHAR'.
  * }
  * @return array Array with related post objects.
  */
@@ -157,8 +172,6 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 		/* get related posts */
 		$related_posts = km_rpbt_query_related_posts( $args['post_id'], $args['taxonomies'], $query_args );
 	}
-
-	$related_posts = km_rpbt_add_post_classes( $related_posts, $args );
 
 	return $related_posts;
 }
@@ -239,73 +252,39 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 }
 
 /**
- * Related posts display HTML for a plugin feature
+ * Related posts feature HTML.
  *
- * @since  2.5.2
+ * @since  2.6.0
  *
- * @param string $type                Type of feature.
- * @param array  $args                See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ * @param string $feature Type of feature.
+ * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
  *                                    information on accepted arguments.
- * @param mixed  $validation_callback Callback function for argument validation.
  * @return string feature html or empty string.
  */
-function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
-	if ( ! ( km_rpbt_is_valid_settings_type( $type ) && km_rpbt_plugin_supports( $type ) ) ) {
+function km_rpbt_get_feature_html( $feature, $args = array() ) {
+	$feature_support = km_rpbt_plugin_supports( $feature );
+	$feature_type    = km_rpbt_is_valid_settings_type( $feature );
+	$args['type']    = $feature;
+	$html            = '';
+
+	if ( ! ( $feature_type && $feature_support ) ) {
 		return '';
 	}
 
-	$settings = km_rpbt_get_default_settings( $type );
-	$defaults = $settings;
-	if ( 'widget' !== $type ) {
-		/**
-		 * Filter default feature attributes.
-		 *
-		 * @since 0.2.1
-		 *
-		 * @param array $defaults See $defaults above
-		 */
-		$defaults = apply_filters( "related_posts_by_taxonomy_{$type}_defaults", $settings );
-		$defaults = array_merge( $settings, (array) $defaults );
-	}
+	$defaults = km_rpbt_get_default_settings( $feature );
+	$args     = array_merge( $defaults, $args );
 
-	$filter_type = 'args';
-	if ( 'shortcode' === $type ) {
-		// Back compat
-		$args        = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
-		$filter_type = 'atts';
-	}
+	// Get allowed fields for use in templates
+	$args['fields'] = km_rpbt_get_template_fields( $args );
 
-	$args = array_merge( $defaults, (array) $args );
-	$args['type'] = $type;
-
-	if ( ! empty( $validation_callback ) ) {
-		$args = call_user_func( $validation_callback, $args );
-	}
-
-	/**
-	 * Filter validated feature arguments.
-	 *
-	 * @since  2.5.2
-	 *
-	 * @param array $args See $defaults above
-	 */
-	$args = apply_filters( "related_posts_by_taxonomy_{$type}_{$filter_type}", $args );
-	$args = array_merge( $defaults, (array) $args );
-
-	/* Un-filterable arguments */
-	$args['type'] = $type;
-	$args['fields'] = '';
-
-	if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
-		return km_rpbt_get_related_posts_ajax_html( $args );
+	if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
+		return km_rpbt_get_lazy_loading_html( $args );
 	}
 
 	// Get the related posts from database or cache.
 	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
+	$hide_empty    = km_rpbt_plugin_supports( "{$feature}_hide_empty" );
 
-	$hide_empty = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
-
-	$html = '';
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
 		$html = km_rpbt_get_related_posts_html( $related_posts, $args );
 	}
@@ -317,7 +296,7 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 	 *
 	 * @param string Display type, widget or shortcode.
 	 */
-	do_action( 'related_posts_by_taxonomy_after_display', $type );
+	do_action( 'related_posts_by_taxonomy_after_display', $feature );
 
 	return $html;
 }
@@ -325,7 +304,7 @@ function km_rpbt_get_feature_html( $type, $args, $validation_callback = '' ) {
 /**
  * Get the related posts HTML.
  *
- * @since  2.5.2
+ * @since 2.6.0
  *
  * @param array $related_posts Array with related post objects.
  * @param array $args          See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
@@ -384,21 +363,35 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 }
 
 /**
- * Get the related posts html for an Ajax query.
+ * Get the HTML for the lazy loading feature.
  *
- * Returns an emty HTML div with arguments added to the `data-rpbt_args` attribute.
+ * Returns a HTML div with the (widget or shortcode ) arguments added to
+ * the `data-rpbt_args` HTML attribute.
+ *
  * The data attribute is used by Javascript to query
  * related posts with Ajax after the page is loaded.
  *
- * @since 2.5.2
- * @param array $args See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
- *                    information on accepted arguments.
+ * The HTML can be filtered with the {@see 'related_posts_by_taxonomy_lazy_loading_html'} filter.
+ *
+ * @since 2.6.0
+ * @param array $args See km_rpbt_related_posts_by_taxonomy_shortcode() arguments.
  * @return string Related posts HTML div with data arguments.
  */
-function km_rpbt_get_related_posts_ajax_html( $args ) {
+function km_rpbt_get_lazy_loading_html( $args ) {
 	$type     = km_rpbt_get_settings_type( $args );
 	$defaults = km_rpbt_get_default_settings( $type );
 	$args     = array_merge( $defaults, $args );
+
+	/**
+	 * Filter placeholder HTML while loading posts with the lazy loading feature.
+	 *
+	 * @since  2.6.0
+	 *
+	 * @param string $content HTML that will be displayed while loading posts. Default empty string.
+	 * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() arguments.
+	 */
+	$html = apply_filters( 'related_posts_by_taxonomy_lazy_loading_html', '', $args );
+	$html = is_string( $html ) ? $html : '';
 
 	// Remove default values to keep the HTML data attribute small.
 	foreach ( $defaults as $key => $value ) {
@@ -407,9 +400,12 @@ function km_rpbt_get_related_posts_ajax_html( $args ) {
 		}
 	}
 
+	// Add type back
 	$args['type'] = $type;
 	$data         = htmlspecialchars( json_encode( $args ), ENT_QUOTES, 'UTF-8' );
-	return "<div class='rpbt_related_posts_ajax' data-rpbt_args='{$data}' style='display: none;'></div>";
+	$data_html    = "<div class='rpbt-related-posts-lazy-loading' data-rpbt_args='{$data}'>\n";
+
+	return $data_html . $html . "</div>\n";
 }
 
 /**
@@ -471,7 +467,6 @@ function km_rpbt_get_public_taxonomies() {
  * @return array       Array with unique array values
  */
 function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
-
 	if ( ! is_array( $value ) ) {
 		$value = explode( ',', (string) $value );
 	}
@@ -495,7 +490,7 @@ function km_rpbt_is_cache_loaded() {
 /**
  * Public function to cache related posts.
  *
- * The opt-in cache feature needs to be activated to cache posts.
+ * The opt-in cache feature needs to be activated (with a filter) to cache posts.
  *
  * @since 2.1
  * @since  2.5.0 Use empty string as default value for $taxonomies parameter.

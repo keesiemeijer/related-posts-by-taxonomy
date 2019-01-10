@@ -15,10 +15,10 @@
  *
  * The following variables are available:
  *
- * @var array $related_posts Array with related posts objects or empty array.
+ * @var array $related_posts Array with related post objects or related post IDs.
+ *                           Empty array if no related posts are found.
  * @var array $rpbt_args     Widget or shortcode arguments.
  */
-
 ?>
 
 <?php
@@ -35,7 +35,7 @@
 			// In this loop you can use WordPress functions to display the related posts.
 		?>
 
-		<div<?php km_rpbt_post_class( $post ); ?>>
+		<div<?php km_rpbt_post_class( $post, $rpbt_args ); ?>>
 			<?php km_rpbt_post_link( $post, $rpbt_args ); ?>
 			<?php the_excerpt(); ?>
 		</div>

@@ -61,18 +61,60 @@ if ( ! defined( 'ABSPATH' ) ) {
  *                                            post is ordered at the top. Use 'regular_order' to include the current post ordered by
  *                                            terms in common. Default false (exclude current post).
  *     @type string         $post_class       Add a class to the related post items. Default empty.
+ *     @type string         $meta_key         Meta key.
+ *     @type string|array   $meta_value       Meta value.
+ *     @type string         $meta_compare     MySQL operator used for comparing the $meta_value. Accepts '=',
+ *                                            '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE',
+ *                                            'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN', 'REGEXP',
+ *                                            'NOT REGEXP', 'RLIKE', 'EXISTS' or 'NOT EXISTS'.
+ *                                            Default is 'IN' when `$meta_value` is an array, '=' otherwise.
+ *     @type string         $meta_type        MySQL data type that the meta_value column will be CAST to for
+ *                                            comparisons. Accepts 'NUMERIC', 'BINARY', 'CHAR', 'DATE',
+ *                                            'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', or 'UNSIGNED'.
+ *                                            Default is 'CHAR'.
  * }
  * @return string Related posts html or empty string.
  */
-function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
-	// Empty string is returned if no atts were added in the shortcode
-	$atts = is_array( $atts ) ? $atts : array();
-	$atts['type'] = 'shortcode';
+function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
+	// Empty string is returned if no args were added in the shortcode
+	$args = is_array( $args ) ? $args : array();
 
-	// Validation callback function to validate shortcode attributes.
-	$callback = 'km_rpbt_validate_shortcode_atts';
+	$settings = km_rpbt_get_default_settings( 'shortcode' );
 
-	return km_rpbt_get_feature_html( 'shortcode', $atts, $callback );
+	/**
+	 * Filter default feature attributes.
+	 *
+	 * The dynamic portion of the hook name, `$type`, refers to
+	 * the widget, shortcode or wp_rest_api feature.
+	 *
+	 * @since 0.2.1
+	 *
+	 * @param array $defaults Default feature arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
+	 *                        for more information about default feature arguments.
+	 */
+	$defaults = apply_filters( "related_posts_by_taxonomy_shortcode_defaults", $settings );
+	$defaults = array_merge( $settings, (array) $defaults );
+
+	// Filter args with hook shortcode_atts_related_posts_by_tax.
+	$args = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
+
+	$args['type'] = 'shortcode';
+	$args = km_rpbt_validate_shortcode_atts( $args );
+
+	/**
+	 * Filter validated shortcode arguments.
+	 *
+	 * @since  0.1
+	 *
+	 * @param array $args Shortcode arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
+	 *                    for more information about feature arguments.
+	 */
+	$args = apply_filters( "related_posts_by_taxonomy_shortcode_atts", $args );
+	$args = array_merge( $defaults, (array) $args );
+
+	$args['type'] = 'shortcode';
+
+	return km_rpbt_get_feature_html( 'shortcode', $args );
 }
 
 /**
@@ -91,6 +133,9 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $atts ) {
 function km_rpbt_validate_shortcode_atts( $atts ) {
 	$defaults = km_rpbt_get_default_settings( 'shortcode' );
 	$atts     = km_rpbt_validate_args( $atts );
+
+	// Get allowed fields for use in templates
+	$atts['fields'] = km_rpbt_get_template_fields( $atts );
 
 	// Convert (strings) to booleans or use defaults.
 	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;

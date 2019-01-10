@@ -2,8 +2,8 @@
 Contributors: keesiemeijer
 Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.1
-Tested up to: 4.9
-Stable tag: 2.5.2-alpha
+Tested up to: 5.0
+Stable tag: 2.6.1-alpha
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,17 +25,24 @@ Plugin features:
 * Display related posts as **post thumbnails**, links, excerpts or full posts.
 * **Small Footprint**. Doesn't slow down your site!
 * Automatic display of related posts after the post content.
-* Search for related posts in single or multiple **taxonomies** and **post types**.
 * **Exclude** or **include** terms and posts.
+* Search for related posts in single or multiple **taxonomies** and **post types**.
+* Search for related posts with post meta.
 * **Limit the search** of related posts by date or number.
+* Extensive **[plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/)**.
+* Follows WordPress coding standards and plugin best practices.
+* Highly Adjustable!
+
+For the following features you need to be somewhat familiar with WordPress [hooks](https://developer.wordpress.org/plugins/hooks/). The [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/) has many examples to help you along.
+
+Extended features:
+
 * Use your own **HTML templates** for display of the related posts.
 * Use the **WordPress REST API** to get related posts. (opt-in feature)
 * Use a persistent cache layer for the related posts. (opt-in feature)
+* Load related posts after the whole page has loaded (with Ajax). (opt-in feature)
 * Use **plugin functions** in your theme templates to display related posts yourself.
 * Use Filters to **change the default behavior** of the plugin. 
-* Extensive **[plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/)**.
-* Highly Adjustable!
-* Follows WordPress coding standards and plugin best practices.
 
 Follow this plugin on [GitHub](https://github.com/keesiemeijer/related-posts-by-taxonomy).
 
@@ -70,6 +77,10 @@ Attributes for the shortcode are:
 * `limit_posts`
 * `limit_year`
 * `limit_month`
+* `meta_key`
+* `meta_value`
+* `meta_compare`
+* `meta_type`
 * `related`
 * `public_only`
 * `include_self`
@@ -131,13 +142,22 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
-= 2.5.2 =
+= 2.6.0 =
 * Enhancement
-    * Ajax query (opt in feature).
-		* Does the query for related posts after the page is loaded.
-		* Speeds up perceived page load time.
-	* Meta query filter
-		* Allows you to query related posts by post meta.
+	* Meta query
+		* Allows you to query related posts with post meta
+		* Use meta arguments in the shortcode
+		* Use a filter for the widget or for complex meta queries
+	* ID query
+		* Allow queries for post IDs only. (for the related posts in the widget and shortcode templates)
+		* Speeds up the related posts query. (not activated by default because of back compatibility)
+		* Please read the documentation about query optimization before using this feature
+    * Lazy loading (opt in feature).
+		* Speeds up perceived page load time for very large sites
+		* Does the query for related posts (with Ajax) after the page is loaded
+		* Recommended for related posts below the fold.
+	* Detect post type Page taxonomies
+	* Preparing the plugin for the (Gutenberg) editor block feature
 
 = 2.5.1 =
 * Enhancement
@@ -182,5 +202,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.5.1 =
-With this update you can add the post date after post titles. (see changelog for more changes) 
+= 2.6.0 =
+This upgrade introduces new meta query arguments (and filter). Other features: Faster query and lazy loading. See the change log.

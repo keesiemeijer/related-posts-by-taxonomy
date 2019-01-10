@@ -21,6 +21,7 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_query_args' ), 10, 4 );
 		remove_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_wp_rest_api_args', array( $this, 'return_first_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'meta_query_callback' ), 10, 4 );
 	}
 
@@ -165,10 +166,6 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 		$this->setup_posts();
 		$posts = $this->posts;
 
-		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
-		//$request->set_param( 'fields', 'ids' );
-
-		$response = rest_do_request( $request );
 		// get post ids array and permalinks array
 		$_posts     = get_posts(
 			array(
@@ -176,8 +173,16 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 				'order' => 'post__in',
 			)
 		);
+
 		$permalinks = array_map( 'get_permalink', $this->posts );
-		$data       = $response->get_data();
+
+		$request  = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+		$response = rest_do_request( $request );
+		$data     = $response->get_data();
+
+		$expected = array( $this->posts[1], $this->posts[2], $this->posts[3] );
+		$post_ids = wp_list_pluck( $data['posts'], 'ID' );
+		$this->assertEquals( $expected, $post_ids );
 
 		$expected = <<<EOF
 <div class="rpbt_wp_rest_api">
@@ -197,6 +202,81 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $data['rendered'] ) );
+	}
+
+	/**
+	 * Test success response for rest request.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_wp_rest_api_success_response_rendered_field_ids() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		// get post ids array and permalinks array
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $this->posts,
+				'order' => 'post__in',
+			)
+		);
+		$permalinks = array_map( 'get_permalink', $this->posts );
+
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+		$request->set_param( 'fields', 'ids' );
+		$response = rest_do_request( $request );
+		$data       = $response->get_data();
+
+		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $data['posts'] );
+
+		$expected = <<<EOF
+<div class="rpbt_wp_rest_api">
+<h3>Related Posts</h3>
+<ul>
+<li>
+<a href="{$permalinks[1]}">{$_posts[1]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[2]}">{$_posts[2]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[3]}">{$_posts[3]->post_title}</a>
+</li>
+</ul>
+</div>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $data['rendered'] ) );
+	}
+
+	/**
+	 * Test success response for rest request.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_wp_rest_api_success_response_rendered_field_names() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		// get post ids array and permalinks array
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $this->posts,
+				'order' => 'post__in',
+			)
+		);
+
+		$post_names = wp_list_pluck( $_posts, 'post_title' );
+
+		$request = new WP_REST_Request( 'GET', '/related-posts-by-taxonomy/v1/posts/' . $posts[0] );
+		$request->set_param( 'fields', 'names' );
+		$response = rest_do_request( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( array( $post_names[1],$post_names[2], $post_names[3] ), $data['posts'] );
+
+		// Not rendered if fields is names
+		$this->assertSame( '', $data['rendered'] );
 	}
 
 	/**
@@ -590,6 +670,47 @@ EOF;
 	}
 
 	/**
+	 * Test meta query arguments.
+	 */
+	function test_meta_query() {
+		$this->setup_posts();
+
+		// add meta value for meta query argument
+		add_post_meta( $this->posts[3], 'meta_key' , 'meta_value' );
+
+		$args = array(
+			'fields'     => 'ids',
+			'meta_key'   => 'meta_key',
+			'meta_value' => 'meta_value',
+		);
+
+		add_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'return_first_argument' ) );
+
+		// Post 3 is related and is the only posts with post meta key `meta_key`
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies,  $args );
+		$this->assertEquals( array( $this->posts[3] ), $rel_post0 );
+		$this->assertSame( 'AND', $this->arg['relation'] );
+		$this->arg = null;
+	}
+
+	/**
+	 * Test meta query without assigning meta to posts.
+	 */
+	function test_meta_query_with_no_meta_assigned() {
+		$this->setup_posts();
+		$posts = $this->posts;
+
+		$args = array(
+			'fields'         => 'ids',
+			'meta_key'       => 'meta_key',
+		);
+
+		// test post 0
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], $this->taxonomies, $args );
+		$this->assertEmpty( $rel_post0 );
+	}
+
+	/**
 	 * Test post_thumbnail function argument.
 	 *
 	 * @requires function WP_REST_Controller::register_routes
@@ -607,9 +728,30 @@ EOF;
 	}
 
 	/**
+	 * Test post_thumbnail with meta function argument.
+	 */
+	function test_post_thumbnail_and_meta() {
+		$this->setup_posts();
+
+		// Fake post thumbnails for post 1 and 3
+		add_post_meta( $this->posts[1], '_thumbnail_id' , 22 ); // fake attachment ID's
+		add_post_meta( $this->posts[3], '_thumbnail_id' , 33 );
+		add_post_meta( $this->posts[3], 'meta_key' , 'meta_value' );
+
+		$args       = array(
+			'post_thumbnail' => true,
+			'fields'         => 'ids',
+			'meta_key'       => 'meta_key',
+			'meta_value'     => 'meta_value',
+		);
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
 	 * Test meta query filter.
 	 */
-	function test_meta_query() {
+	function test_meta_query_filter() {
 		$this->setup_posts();
 
 		// Fake post thumbnails for post 1 and 3

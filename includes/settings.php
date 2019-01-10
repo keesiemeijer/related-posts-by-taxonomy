@@ -1,6 +1,12 @@
 <?php
 /**
- * Plugin feature setting types.
+ * Get plugin feature setting types.
+ *
+ * Returns feature types that return or display related posts.
+ *
+ * - shortcode
+ * - widget
+ * - wp_rest_api
  *
  * @since  2.5.0
  *
@@ -11,15 +17,14 @@ function km_rpbt_get_setting_types() {
 		'shortcode',
 		'widget',
 		'wp_rest_api',
-		'cache',
 		'editor_block',
 	);
 }
 
 /**
- * Check if the type is a valid settings type
+ * Check if a type is a valid plugin setting type.
  *
- * @since 2.5.2
+ * @since 2.6.0
  *
  * @param string $type Plugin feature settings type.
  * @return boolean       True if it's valid settings type.
@@ -29,12 +34,12 @@ function km_rpbt_is_valid_settings_type( $type ) {
 }
 
 /**
- * Get the feature type from arguments.
+ * Get the type of feature from arguments.
  *
- * @since  2.5.2
+ * @since  2.6.0
  *
  * @param array $args Arguments.
- * @return string Feature type.
+ * @return string Feature type or empty string if no valid settings type was found in the arguments.
  */
 function km_rpbt_get_settings_type( $args ) {
 	if ( isset( $args['type'] ) && km_rpbt_is_valid_settings_type( $args['type'] ) ) {
@@ -44,10 +49,27 @@ function km_rpbt_get_settings_type( $args ) {
 }
 
 /**
- * Get the features this plugin supports.
+ * Get the allowed fields arguments for use in templates.
  *
- * Use the {@see related_posts_by_taxonomy_supports} filter to activate and
- * deactivate features in one go.
+ * Fields '' or 'ids' are allowed for use in templates.
+ * The query for related posts returns post objects or ids with these fields.
+ *
+ * @since 2.6.0
+ *
+ * @param array $args Arguments to get the fields from.
+ * @return string Arguments with fields argument set to '' or 'ids'.
+ */
+function km_rpbt_get_template_fields( $args ) {
+	$fields   = isset( $args['fields'] ) ? $args['fields'] : '';
+	$id_query = km_rpbt_plugin_supports( 'id_query' ) || ( 'ids' === $fields );
+	return $id_query ? 'ids' : '';
+}
+
+/**
+ * Get all the features this plugin supports.
+ *
+ * See the {@see related_posts_by_taxonomy_supports} filter for the
+ * supported and opt-in features.
  *
  * @since  2.3.1
  *
@@ -64,14 +86,15 @@ function km_rpbt_get_plugin_supports() {
 		'cache'                => false,
 		'display_cache_log'    => false,
 		'wp_rest_api'          => false,
+		'id_query'             => false,
+		'lazy_loading'         => false,
 		'debug'                => false,
-		'ajax_query'           => false,
 	);
 
 	/**
-	 * Filter plugin features.
+	 * Filter all supported plugin features at once, for convenience.
 	 *
-	 * Supported features:
+	 * Supported plugin features:
 	 *
 	 * - widget
 	 * - shortcode
@@ -79,14 +102,17 @@ function km_rpbt_get_plugin_supports() {
 	 * - widget_hide_empty
 	 *
 	 * Opt-in features
+	 *
 	 * - cache
 	 * - display_cache_log
 	 * - wp_rest_api
+	 * - id_query
+	 * - lazy_loading
 	 * - debug
 	 *
 	 * @since 2.3.1
 	 *
-	 * @param array $support Array with all supported and opt-in plugin features.
+	 * @param array $supports Array with all supported and opt-in plugin features.
 	 */
 	$plugin = apply_filters( 'related_posts_by_taxonomy_supports', $supports );
 
@@ -98,6 +124,8 @@ function km_rpbt_get_plugin_supports() {
  *
  * @since 2.5.0
  *
+ * @see km_rpbt_query_related_posts()
+ *
  * @return array Array with default query vars.
  */
 function km_rpbt_get_query_vars() {
@@ -105,32 +133,40 @@ function km_rpbt_get_query_vars() {
 		'post_types'     => 'post',
 		'posts_per_page' => 5,
 		'order'          => 'DESC',
+		'orderby'        => 'post_date',
 		'fields'         => '',
+		'terms'          => '',
+		'include_terms'  => '',
+		'exclude_terms'  => '',
+		'related'        => true,
+		'exclude_posts'  => '',
 		'limit_posts'    => -1,
 		'limit_year'     => '',
 		'limit_month'    => '',
-		'orderby'        => 'post_date',
-		'terms'          => '',
-		'exclude_terms'  => '',
-		'include_terms'  => '',
-		'exclude_posts'  => '',
 		'post_thumbnail' => false,
-		'related'        => true,
 		'public_only'    => false,
 		'include_self'   => false,
+		'meta_key'       => '',
+		'meta_value'     => '',
+		'meta_compare'   => '',
+		'meta_type'      => '',
 	);
 }
 
 /**
  * Returns the default settings for a plugin feature.
  *
+ * @see km_rpbt_get_setting_types()
+ *
  * @since 2.2.2
- * @param string $type Type of feature settings. Accepts 'shortcode', 'widget, 'wp_rest_api', 'cache'.
- * @return array|false Array with default settings for a feature.
+ * @param string $type Type of feature settings. See km_rpbt_get_setting_types() for the
+ *                     setting types that are supported.
+ * @return array Array with default settings for a feature.
  */
 function km_rpbt_get_default_settings( $type = '' ) {
 	$valid_type = km_rpbt_is_valid_settings_type( $type );
-	$type = $valid_type ? $type : 'related_posts';
+	$type       = $valid_type ? $type : '';
+	$selector   = $type ? $type : 'related_posts';
 
 	// Default related posts query vars.
 	$defaults = km_rpbt_get_query_vars();
@@ -152,10 +188,10 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		'post_class'     => '',
 
 		// back compat: double quoted class attribute
-		"before_{$type}" => '<div class="rpbt_' . $type . '">',
-		"after_{$type}"  => '</div>',
-		'before_title'          => '<h3>',
-		'after_title'           => '</h3>',
+		"before_{$selector}" => '<div class="rpbt_' . $selector . '">',
+		"after_{$selector}"  => '</div>',
+		'before_title'       => '<h3>',
+		'after_title'        => '</h3>',
 	);
 
 	$settings = array_merge( $defaults, $settings );
@@ -181,7 +217,6 @@ function km_rpbt_get_default_settings( $type = '' ) {
  * @return array Array with sanitized arguments.
  */
 function km_rpbt_sanitize_args( $args ) {
-
 	$defaults = km_rpbt_get_query_vars();
 	$args     = wp_parse_args( $args, $defaults );
 
@@ -200,9 +235,13 @@ function km_rpbt_sanitize_args( $args ) {
 	}
 
 	// Strings.
-	$args['fields']  = is_string( $args['fields'] ) ? $args['fields'] : '';
-	$args['orderby'] = is_string( $args['orderby'] ) ? $args['orderby'] : '';
-	$args['order']   = is_string( $args['order'] ) ? $args['order'] : '';
+	$args['fields']       = is_string( $args['fields'] ) ? $args['fields'] : '';
+	$args['orderby']      = is_string( $args['orderby'] ) ? $args['orderby'] : '';
+	$args['order']        = is_string( $args['order'] ) ? $args['order'] : '';
+	$args['meta_key']     = is_string( $args['meta_key'] ) ? $args['meta_key'] : '';
+	$args['meta_compare'] = is_string( $args['meta_compare'] ) ? $args['meta_compare'] : '';
+	$args['meta_type']    = is_string( $args['meta_type'] ) ? $args['meta_type'] : '';
+	// Note: meta_value is sanitized by WordPress (mixed value).
 
 	// Integers.
 	$args['limit_year']     = absint( $args['limit_year'] );
@@ -223,7 +262,7 @@ function km_rpbt_sanitize_args( $args ) {
 /**
  * Validate arguments in common with all plugin features.
  *
- * @since 2.5.2
+ * @since 2.6.0
  *
  * @param array  $args Array with common arguments.
  * @param string $type Type of plugin feature arguments.
@@ -268,7 +307,6 @@ function km_rpbt_validate_editor_block_args( $args ) {
  * @return array Array with postive integers
  */
 function km_rpbt_validate_ids( $ids ) {
-
 	if ( ! is_array( $ids ) ) {
 		/* allow positive integers, 0 and commas only */
 		$ids = preg_replace( '/[^0-9,]/', '', (string) $ids );
@@ -285,7 +323,7 @@ function km_rpbt_validate_ids( $ids ) {
 /**
  * Validate a boolean value
  *
- * Returns true for true, 1, "1", "true", "on", "yes". Everything else return false.
+ * Returns true for true, "true", 1, "1", "on", "yes". Everything else return false.
  *
  * @since 2.5.1
  *

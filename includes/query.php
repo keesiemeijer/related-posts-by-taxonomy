@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param int          $post_id    The post id to get related posts for.
  * @param array|string $taxonomies The taxonomies to use for the related posts query. default 'category'.
  * @param string|array $args       {
- *     Optional. Arguments to get related posts.
+ *     Optional. Query variables to get related posts.
  *
  *     @type string|array   $post_types       Post types to use for related posts query. Array or comma separated
  *                                            list of post type names. Default 'post'.
@@ -46,6 +46,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  *     @type string|boolean $include_self     Whether to include the current post in the related posts results. The included
  *                                            post is ordered at the top. Use 'regular_order' to include the current post ordered by
  *                                            terms in common. Default false (exclude current post).
+ *     @type string         $meta_key         Meta key.
+ *     @type string         $meta_value       Meta value.
+ *     @type string         $meta_compare     MySQL operator used for comparing the $meta_value. Accepts '=',
+ *                                            '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE',
+ *                                            'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN', 'REGEXP',
+ *                                            'NOT REGEXP', 'RLIKE', 'EXISTS' or 'NOT EXISTS'.
+ *                                            Default is 'IN' when `$meta_value` is an array, '=' otherwise.
+ *     @type string         $meta_type        MySQL data type that the meta_value column will be CAST to for
+ *                                            comparisons. Accepts 'NUMERIC', 'BINARY', 'CHAR', 'DATE',
+ *                                            'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', or 'UNSIGNED'.
+ *                                            Default is 'CHAR'.
  * }
  * @return array Array with post objects. Empty array if no related posts found.
  */
@@ -187,7 +198,15 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		$order_by_sql .= "$wpdb->posts.$orderby";
 	}
 
-	$meta_query = array();
+	$meta_query = new WP_Meta_Query();
+	$meta_query->parse_query_vars( $args );
+	$meta_query = is_array( $meta_query->queries ) ? $meta_query->queries : array();
+
+	// Default to AND.
+	if( isset( $meta_query['relation'] ) ) {
+		$meta_query['relation'] = 'AND';
+	}
+
 	if ( $args['post_thumbnail'] ) {
 		$meta_query[] = array( 'key' => '_thumbnail_id' );
 	}

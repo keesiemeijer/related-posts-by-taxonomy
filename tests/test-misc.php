@@ -42,7 +42,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test if default WordPress taxonomies exist.
 	 */
-	function test_get_post_taxonomies() {
+	function test_wp_get_object_taxonomies() {
 		$this->assertEquals( array( 'category', 'post_tag', 'post_format' ), get_object_taxonomies( 'post' ) );
 	}
 
@@ -51,9 +51,78 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 *
 	 * Used in the km_rpbt_query_related_posts() function to replace 'post_type = 'post' with 'post_type IN ( ... )
 	 */
-	function test_get_posts_by_author_sql() {
+	function test_wp_get_posts_by_author_sql() {
 		$where  = get_posts_by_author_sql( 'post' );
 		$this->assertTrue( (bool) preg_match( "/post_type = 'post'/", $where ) );
+	}
+
+	/**
+	 * Test get_meta_sql()
+	 *
+	 * Used for the meta query in km_rpbt_query_related_posts()
+	 */
+	function test_wp_get_meta_sql_value_comma_separated_string_to_array() {
+		$meta_query_obj = new WP_Meta_Query();
+		$meta_query = array(
+			array(
+				'key'       => 'my_key',
+				'value'     => '10,20', // string (e.g. shortcode value)
+				'compare'   => 'BETWEEN',
+				'meta_type' => 'NUMERIC'
+			)
+		);
+		global $wpdb;
+		$meta_sql = get_meta_sql( $meta_query, 'post', $wpdb->posts, 'ID' );
+		$this->assertTrue( ( false !== strpos( $meta_sql['where'], "postmeta.meta_value BETWEEN '10' AND '20'" ) ) );
+	}
+
+	/**
+	 * Test WP_Meta_Query::parse_query_vars()
+	 *
+	 * Used for the meta query in km_rpbt_query_related_posts()
+	 */
+	function test_wp_meta_query_parse_query_vars_empty_string() {
+		$meta_query_obj = new WP_Meta_Query();
+		$meta_query_obj->parse_query_vars( '' );
+
+		// should return empty array
+		$this->assertTrue( is_array( $meta_query_obj->queries ) && empty( $meta_query_obj->queries ) );
+	}
+
+	/**
+	 * Test WP_Meta_Query::parse_query_vars()
+	 *
+	 * Used for the meta query in km_rpbt_query_related_posts()
+	 */
+	function test_wp_meta_query_parse_query_vars_default_settings() {
+		$meta_query_obj = new WP_Meta_Query();
+		$args = km_rpbt_get_default_settings( 'shortcode' );
+		$this->assertTrue( array_key_exists( 'meta_key', $args ) );
+		$meta_query_obj->parse_query_vars( $args );
+
+		// should return empty array
+		$this->assertTrue( is_array( $meta_query_obj->queries ) && empty( $meta_query_obj->queries ) );
+	}
+
+	/**
+	 * Test WP_Meta_Query::parse_query_vars()
+	 *
+	 * Used for the meta query in km_rpbt_query_related_posts()
+	 */
+	function test_wp_meta_query_parse_query_vars_with_meta_key() {
+		$meta_query_obj = new WP_Meta_Query();
+		$args = array(
+			'meta_key' => 'my_key',
+		);
+		$meta_query_obj->parse_query_vars( $args );
+		$expected = array(
+			array(
+				'key' => 'my_key',
+			),
+			'relation' => 'OR',
+		);
+
+		$this->assertSame( $expected, $meta_query_obj->queries );
 	}
 
 	/**
@@ -68,6 +137,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 * @expectedDeprecated km_rpbt_get_related_post_title_link
 	 * @expectedDeprecated km_rpbt_get_shortcode_atts
 	 * @expectedDeprecated km_rpbt_get_default_args
+	 * @expectedDeprecated km_rpbt_add_post_classes
 	 */
 	function test_empty_output() {
 		$create_posts = $this->create_posts_with_terms();
@@ -95,13 +165,13 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$_args['taxonomies'] = $taxonomies;
 		$sanitize            = km_rpbt_sanitize_args( $_args );
 		$html                = km_rpbt_get_related_posts_html( $rel_posts3, $_args );
-		$html_ajax           = km_rpbt_get_related_posts_ajax_html( $_args );
-		$gallery             = km_rpbt_related_posts_by_taxonomy_gallery( array( 'id' => $posts[0] ), array() );
+		$html_ajax           = km_rpbt_get_lazy_loading_html( $_args );
+		$gallery             = km_rpbt_related_posts_by_taxonomy_gallery( array( 'id' => $posts[0] ), $rel_posts3 );
 		$widget              = km_rpbt_related_posts_by_taxonomy_widget();
 		$shortcode           = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
 		$settings            = km_rpbt_get_default_settings( 'shortcode' );
 		$valid_settings      = km_rpbt_is_valid_settings_type( 'lala' );
-		$get_type            = km_rpbt_get_settings_type($settings);
+		$get_type            = km_rpbt_get_settings_type( $settings );
 		$settings['post_id'] = $posts[0];
 		$feature_html        = km_rpbt_get_feature_html( 'shortcode', $settings );
 		$sc_validate         = km_rpbt_validate_shortcode_atts( $settings );
@@ -114,14 +184,15 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$ids                 = km_rpbt_validate_ids( '1,2,1,string' );
 		$classes1            = km_rpbt_get_post_classes( $_posts[0], 'add-this-class' );
 		$classes2            = km_rpbt_sanitize_classes( $classes1 );
-		$classes3            = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );
 		$classes4            = km_rpbt_post_class();
 		$assets              = km_rpbt_block_editor_assets();
 		$register            = km_rpbt_register_block_type();
 		$render              = km_rpbt_render_block_related_post( array() );
 		$link                = km_rpbt_get_post_link( $_posts[0], true );
+		$link2               = km_rpbt_get_permalink( $_posts[0] );
 
 		// Deprecated functions
+		$classes3   = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );
 		$rel_posts4 = km_rpbt_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
 		$id2        = km_rpbt_related_posts_by_taxonomy_validate_ids( '1,2,1,string' );
 		$template   = km_rpbt_related_posts_by_taxonomy_template( 'excerpts' );

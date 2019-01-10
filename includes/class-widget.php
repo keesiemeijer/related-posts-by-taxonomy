@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class to display related posts with a widget.
+ * The related posts widget.
  *
  * @since 0.1
  */
@@ -69,7 +69,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * @param array $args        The settings for the particular instance of the widget.
 	 */
 	function widget( $widget_args, $args ) {
-
 		if ( ! $this->plugin ) {
 			return '';
 		}
@@ -99,6 +98,9 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$args['post_thumbnail'] = true;
 		}
 
+		// Get allowed fields for use in templates
+		$args['fields'] = km_rpbt_get_template_fields( $args );
+
 		/**
 		 * Filter widget arguments.
 		 *
@@ -110,26 +112,12 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $args, $widget_args );
 		$args = array_merge( $args, (array) $filter );
 
-		/* Not filterable */
-		$args['type'] = 'widget';
-		$args['fields'] = '';
 		$args['title'] = apply_filters( 'widget_title', $args['title'], $args, $this->id_base );
 
-		if ( km_rpbt_plugin_supports( 'ajax_query' ) ) {
-			echo km_rpbt_get_related_posts_ajax_html( $args );
-			return;
-		}
+		/* Not filterable */
+		$args['type'] = 'widget';
 
-		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
-
-		$hide_empty = (bool) km_rpbt_plugin_supports( 'widget_hide_empty' );
-
-		if ( ! $hide_empty || ! empty( $related_posts ) ) {
-			echo km_rpbt_get_related_posts_html( $related_posts, $args );
-		}
-
-		/** This action is documented in includes/functions.php */
-		do_action( 'related_posts_by_taxonomy_after_display', 'widget' );
+		echo km_rpbt_get_feature_html( 'widget', $args );
 	}
 
 	/**
@@ -149,7 +137,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	/**
 	 * Widget output
 	 *
-	 * @deprecated 2.5.2 Use km_rpbt_get_related_posts_html() instead.
+	 * @deprecated 2.6.0 Use km_rpbt_get_related_posts_html() instead.
 	 *
 	 * @param array $related_posts Array with related post objects.
 	 * @param array $args          Widget arguments.
@@ -157,7 +145,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * @return void
 	 */
 	function widget_output( $related_posts, $args, $widget_args ) {
-		_deprecated_function( __FUNCTION__, '2.5.2', 'km_rpbt_get_related_posts_html()' );
+		_deprecated_function( __FUNCTION__, '2.6.0', 'km_rpbt_get_related_posts_html()' );
 		echo km_rpbt_get_related_posts_html( $related_posts, $args );
 	}
 
@@ -169,7 +157,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * @param array $old_instance Old settings.
 	 */
 	function update( $new_instance, $old_instance ) {
-
 		$i = $old_instance;
 
 		// Sanitation.
@@ -343,10 +330,11 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * Provides back compatiblity for **upgading** from version 0.2.1.
 	 * The variable taxonomy changed to taxonomies in version 0.2.2.
 	 *
-	 * @param array $i Widget instance.
+	 * @param array $instance Widget instance.
 	 * @return array Widget instance.
 	 */
-	function back_compat_settings( $i ) {
+	function back_compat_settings( $instance ) {
+		$i = $instance;
 
 		if ( ! $i ) {
 			return $i;

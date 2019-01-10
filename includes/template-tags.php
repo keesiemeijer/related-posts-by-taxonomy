@@ -12,11 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since  2.4.0
  *
- * @param object $post  Post object.
- * @param string $class String of classes to add to the post classes. Default empty string.
+ * @param object       $post Post object.
+ * @param array|string $args Widget or shortcode arguments or string with post classes.
  */
-function km_rpbt_post_class( $post = null, $class = '' ) {
-	$classes = km_rpbt_get_post_classes( $post, $class );
+function km_rpbt_post_class( $post = null, $args = '' ) {
+	$classes = km_rpbt_get_post_classes( $post, $args );
 
 	if ( $classes ) {
 		echo ' class="' . $classes . '"';
@@ -30,22 +30,44 @@ function km_rpbt_post_class( $post = null, $class = '' ) {
  *
  * @since  2.4.0
  *
- * @param object $post  Post object.
- * @param string $class Space separated string of classes to add to the post classes.
- *                      Default empty string.
+ * @param object       $post Post object.
+ * @param array|string $args Widget or shortcode arguments or string with post classes.
  * @return string Post classes string.
  */
-function km_rpbt_get_post_classes( $post = null, $class = '' ) {
+function km_rpbt_get_post_classes( $post = null, $args = '' ) {
 	$classes = '';
+
 	if ( isset( $post->rpbt_post_class ) && is_string( $post->rpbt_post_class ) ) {
 		$classes = $post->rpbt_post_class;
 	}
 
-	if ( is_string( $class ) ) {
-		$classes .= ' ' . $class;
+	// Backward compatibility PHP < 5.4 needs check is_array() for isset().
+	$is_args    = is_array( $args ) && isset( $args['post_class'] );
+	$post_class = $is_args ? $args['post_class'] : $args;
+
+	if ( is_string( $post_class ) && $post_class ) {
+		$classes .= ' ' . $post_class;
 	}
 
-	return km_rpbt_sanitize_classes( $classes );
+	$classes = km_rpbt_sanitize_classes( $classes );
+	$classes = explode( ' ', $classes );
+
+	// Backwards compatibility for filter
+	$index = 0;
+
+	/**
+	 * Filter CSS classes used in related posts display templates.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @param array        $classes Array with post classes.
+	 * @param object       $post    Current related post object.
+	 * @param array|string $args    Widget or shortcode arguments or string with post classes.
+	 * @param int          $index   Deprecated. Default 0
+	 */
+	$classes = apply_filters( 'related_posts_by_taxonomy_post_class', $classes, $post, $args, $index );
+
+	return km_rpbt_sanitize_classes( implode( ' ', $classes ) );
 }
 
 /**
@@ -70,59 +92,6 @@ function km_rpbt_sanitize_classes( $classes ) {
 }
 
 /**
- * Add CSS classes to (related) post objects.
- *
- * This function is used after retrieving the related posts from the database or cache.
- *
- * Use the {@see 'related_posts_by_taxonomy_post_class'} filter to add post classes on a
- * post per post basis
- *
- * @since  2.4.0
- *
- * @param array        $related_posts Array with (related) post objects.
- * @param array|string $args          Widget or shortcode arguments.
- *                                    See km_rpbt_get_related_posts() for for more
- *                                    information on accepted arguments.
- * @return array Array with related post objects with classes added.
- */
-function km_rpbt_add_post_classes( $related_posts, $args = '' ) {
-	if ( ! is_array( $related_posts ) ) {
-		return $related_posts;
-	}
-
-	foreach ( array_values( $related_posts ) as $index => $post ) {
-		if ( ! is_object( $post ) ) {
-			continue;
-		}
-
-		$add_classes = '';
-		if ( isset( $args['post_class'] ) ) {
-			$add_classes = $args['post_class'];
-		}
-
-		$classes = km_rpbt_get_post_classes( $post, $add_classes );
-		$classes = explode( ' ', $classes );
-
-		/**
-		 * Filter CSS classes used in related posts display templates.
-		 *
-		 * @since 2.4.0
-		 *
-		 * @param array  $classes Array with post classes.
-		 * @param object $post    Current related post object.
-		 * @param array  $args    Widget or shortcode arguments.
-		 * @param int    $index   Index position of related post. Starts at 0.
-		 */
-		$classes = apply_filters( 'related_posts_by_taxonomy_post_class', $classes, $post, $args, $index );
-		$classes = km_rpbt_sanitize_classes( implode( ' ', $classes ) );
-
-		$related_posts[ $index ]->rpbt_post_class = $classes;
-	}
-
-	return $related_posts;
-}
-
-/**
  * Display of the related post link.
  *
  * Used in the templates for displaying related posts.
@@ -138,7 +107,7 @@ function km_rpbt_post_link( $post = null, $args = array() ) {
 }
 
 /**
- * Gets a related post link.
+ * Get the related post link HTML.
  *
  * The post date is appended depending on the `$show_date` value in the arguments.
  *
@@ -162,7 +131,9 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 		'type'       => '',
 	);
 
+	// Backwards compatibility
 	$args = is_bool( $args ) ? array( 'title_attr' => $args ) : $args;
+
 	$args = wp_parse_args( $args, $defaults );
 	$args = km_rpbt_validate_booleans( $args, $defaults );
 
@@ -183,7 +154,14 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 		$link = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . '</a>';
 		$link .= $args['show_date'] ? ' ' . km_rpbt_get_post_date( $post ) : '';
 	}
-
+	/**
+	 * Filter related post link HTML.
+	 *
+	 * @since  2.4.0
+	 * @param string $link Related post link HTML.
+	 * @param Object $post Post object.
+	 * @param array  $attr Link attributes.
+	 */
 	return apply_filters( 'related_posts_by_taxonomy_post_link', $link, $post, compact( 'title', 'permalink, $args' ) );
 }
 
@@ -220,7 +198,7 @@ function km_rpbt_get_permalink( $post = null, $args = '' ) {
 
 
 /**
- * Get the related post date.
+ * Get the related post date HTML.
  *
  * @since 2.5.1
  *

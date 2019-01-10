@@ -87,7 +87,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 *
 	 * @since  2.3.0
 	 *
-	 * @param array $args    Request arguments. See km_rpbt_get_related_posts() for
+	 * @param array $args    Request arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
 	 *                       for more information on accepted arguments.
 	 * @param int   $post_id Post ID.
 	 * @return array Filtered request arguments.
@@ -101,7 +101,8 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param array $defaults See $defaults above
+		 * @param array $defaults See km_rpbt_related_posts_by_taxonomy_shortcode() for
+		 *                        for more information about default arguments.
 		 */
 		$defaults = apply_filters( "related_posts_by_taxonomy_wp_rest_api_defaults", $defaults );
 		$args     = array_merge( $defaults, (array) $args );
@@ -143,7 +144,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	/**
 	 * Validate WP Rest API arguments.
 	 *
-	 * @since 2.5.2
+	 * @since 2.6.0
 	 * @param array $atts Array with WP Rest API arguments.
 	 *                    See km_rpbt_get_related_posts() for for more
 	 *                    information on accepted arguments.
@@ -214,10 +215,9 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		// Check if none, or valid (registered) post types and taxonomies are provided in the request.
 		if ( ! $cancel_query ) {
 			$related_posts = $this->get_related_posts( $args );
-
-			$fields   = strtolower( $args['fields'] );
-			if ( $related_posts && ! in_array( $fields, array( 'ids', 'names', 'slugs' ) ) ) {
-				// Render posts if the query was for post objects.
+			$fields = trim( strtolower( $args['fields'] ) );
+			if ( $related_posts && ( empty( $fields ) || ( 'ids' === $fields ) ) ) {
+				// Render posts if the query was for post objects or post IDs.
 				$rendered = km_rpbt_get_related_posts_html( $related_posts, $args );
 			}
 
