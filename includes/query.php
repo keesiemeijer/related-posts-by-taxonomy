@@ -66,25 +66,17 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$post_id    = absint( $post_id );
 	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
 	$args       = km_rpbt_sanitize_args( $args );
+	$terms      = km_rpbt_get_terms( $post_id, $taxonomies, $args );
 	$related    = $args['related'];
 
-	// Check if this is a query for unrelated terms.
-	$unrelated_terms = ! $related && $args['terms'];
-
-	if ( ! $post_id || ( ! $unrelated_terms && empty( $taxonomies ) ) ) {
-		// Invalid post ID or invalid taxonomies
+	if ( ! $post_id || empty( $terms ) ) {
+		// Invalid post ID, invalid taxonomies, or no terms found.
 		return array();
 	}
 
-	if ( ! $unrelated_terms ) {
-		$terms = km_rpbt_get_terms( $post_id, $taxonomies, $args );
-	} else {
-		$terms   = $args['terms'];
+	if ( ! $related && $args['terms'] ) {
+		// Default to true.
 		$related = true;
-	}
-
-	if ( empty( $terms ) ) {
-		return array();
 	}
 
 	$args['related_terms'] = $terms;

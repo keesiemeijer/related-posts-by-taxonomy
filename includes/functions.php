@@ -178,7 +178,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 }
 
 /**
- * Get the terms from a post or from included terms.
+ * Get the terms from a post or arguments.
  *
  * @since  2.5.0
  *
@@ -201,13 +201,27 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
  * @return array Array with term ids.
  */
 function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
-	$terms = array();
-	$args  = km_rpbt_sanitize_args( $args );
+	$terms      = array();
+	$post_id    = absint( $post_id );
+	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
+	$args       = km_rpbt_sanitize_args( $args );
 
 	if ( $args['terms'] ) {
 
+		// Unrelated terms.
 		if ( ! $args['related'] ) {
 			return $args['terms'];
+		}
+
+		// Taxonomies are needed for filtering related terms.
+		if ( empty( $taxonomies ) ) {
+
+			/*
+			 * Bail because get_terms() below returns:
+			 * - all terms if taxonomies is an empty array.
+			 * - an empty array if taxonomies is an empty string.
+			 */
+			return array();
 		}
 
 		$term_args = array(
@@ -216,24 +230,23 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 			'fields'   => 'ids',
 		);
 
-		// Filter out terms not assigned to the taxonomies
+		// Filter out terms not belonging to the taxonomies
 		$terms = get_terms( $term_args );
 
+		// Error for invalid $taxonomies.
 		return ! is_wp_error( $terms ) ? $terms : array();
 	}
 
 	if ( ! $args['related'] && ! empty( $args['include_terms'] ) ) {
-		// Not related, use included term ids as is.
+		// Unrelated terms, use included term ids as is.
 		$terms = $args['include_terms'];
 	} else {
 
-		// Post terms.
-		$terms = wp_get_object_terms(
-			$post_id, $taxonomies, array(
-				'fields' => 'ids',
-			)
-		);
+		// Get post terms.
+		$terms = wp_get_object_terms( $post_id, $taxonomies, array( 'fields' => 'ids', ) );
 
+		// Error for invalid $taxonomies.
+		// Empty array if there are no post terms, wrong $post_id, or empty $taxonomies.
 		if ( is_wp_error( $terms ) || empty( $terms ) ) {
 			return array();
 		}

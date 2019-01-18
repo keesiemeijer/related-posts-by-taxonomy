@@ -273,7 +273,7 @@ EOF;
 		$response = rest_do_request( $request );
 		$data     = $response->get_data();
 
-		$this->assertEquals( array( $post_names[1],$post_names[2], $post_names[3] ), $data['posts'] );
+		$this->assertEquals( array( $post_names[1], $post_names[2], $post_names[3] ), $data['posts'] );
 
 		// Not rendered if fields is names
 		$this->assertSame( '', $data['rendered'] );
@@ -460,19 +460,18 @@ EOF;
 		$fail2 = $this->rest_related_posts_by_taxonomy( 9999999999, $taxonomies, $args );
 		$this->assertSame( 'rest_post_invalid_id', $fail2, 'Non existant post ID' );
 
-		//Empty taxonomy should default to all taxonomies.
+		// PEmpty taxonomy should default to all taxonomies.
 		$fail4 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
 		$this->assertNotEmpty( $fail4, 'no taxonomies' );
 
-		// Nonexistent taxonomy.
+		// Ivalid taxonomy.
 		$fail3 = $this->rest_related_posts_by_taxonomy( $posts[0], 'not a taxonomy', $args );
-		$this->assertEmpty( $fail3, 'Non existant taxonomy' );
+		$this->assertEmpty( $fail3, 'Invalid taxonomy' );
 
-		// Nonexistent post type.
+		// Invalid post type.
 		$args['post_types'] = 'not a post type';
-		// Non existant post_type.
 		$fail5 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
-		$this->assertEmpty( $fail5, 'Non existant post type' );
+		$this->assertEmpty( $fail5, 'Invalid post type' );
 	}
 
 	/**
@@ -538,18 +537,98 @@ EOF;
 
 	/**
 	 * Test terms argument.
-	 *
-	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related_posts_by_terms() {
 		$this->setup_posts();
 		$args = array(
-			'terms' => array( $this->tax_2_terms[3] ),
-			'related'       => false,
-			'fields'        => 'ids',
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
 		);
 
 		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument.
+	 */
+	function test_related_posts_by_terms_invalid_term_id() {
+		$this->setup_posts();
+		$invalid_id = $this->get_highest_term_id() + 1;
+
+		$args = array(
+			'terms'      => array( $invalid_id ),
+			'fields'     => 'ids',
+			'related'    => false,
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEmpty(  $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument.
+	 */
+	function test_related_posts_by_terms_empty_taxonomies() {
+		$this->setup_posts();
+		$args = array(
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], '', $args );
+
+		// No taxonomies defaults to all taxonomies
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument.
+	 */
+	function test_related_posts_by_terms_no_taxonomies_unrelated() {
+		$this->setup_posts();
+		$args = array(
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
+			//'related'    => false, // Default true. This setting does not matter here.
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], '', $args );
+
+		// Empty taxonomies defaults to all taxonomies
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument.
+	 */
+	function test_related_posts_by_terms_invalid_taxonomy() {
+		$this->setup_posts();
+		$args = array(
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], 'lulu', $args );
+
+		// Valid taxonomies are needed for related terms.
+		$this->assertEmpty( $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument.
+	 */
+	function test_related_posts_by_terms_invalid_taxonomy_unrelated() {
+		$this->setup_posts();
+		$args = array(
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
+			'related'    => false,
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], 'lulu', $args );
+
+		// Invalid taxonomies are ignored when related is set to false.
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
 	}
 

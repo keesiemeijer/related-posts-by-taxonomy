@@ -123,6 +123,18 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return $tax_terms;
 	}
 
+	function get_highest_term_id() {
+		// Get highest term id
+		$terms = get_terms(
+			array(
+				'fields'   => 'ids',
+				'order'    => 'DESC',
+				'orderby'  => 'term_id',
+				'number'   => 1,
+			) );
+		return isset( $terms[0] ) ? absint( $terms[0] ) : 0;
+	}
+
 	function return_first_argument( $arg ) {
 		$this->arg = $arg;
 		return  $arg;
