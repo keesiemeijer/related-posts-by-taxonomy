@@ -77,6 +77,8 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Tests if wp_rest_api filter is set to false (by default).
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_wp_rest_Api_not_registered_route() {
 		// Added by setUp().
@@ -417,7 +419,7 @@ EOF;
 	}
 
 	/**
-	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_with_no_taxonomies() {
 		register_post_type( 'rel_cpt', array( 'taxonomies' => array( 'post_tag', 'rel_ctax' ) ) );
@@ -476,6 +478,8 @@ EOF;
 
 	/**
 	 * Test with valid and invlid post types and taxonomies.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_mixed_arguments() {
 		$this->setup_posts();
@@ -537,6 +541,8 @@ EOF;
 
 	/**
 	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related_posts_by_terms() {
 		$this->setup_posts();
@@ -551,6 +557,8 @@ EOF;
 
 	/**
 	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related_posts_by_terms_invalid_term_id() {
 		$this->setup_posts();
@@ -568,6 +576,8 @@ EOF;
 
 	/**
 	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related_posts_by_terms_empty_taxonomies() {
 		$this->setup_posts();
@@ -584,6 +594,8 @@ EOF;
 
 	/**
 	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related_posts_by_terms_no_taxonomies_unrelated() {
 		$this->setup_posts();
@@ -601,6 +613,8 @@ EOF;
 
 	/**
 	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related_posts_by_terms_invalid_taxonomy() {
 		$this->setup_posts();
@@ -617,6 +631,8 @@ EOF;
 
 	/**
 	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related_posts_by_terms_invalid_taxonomy_unrelated() {
 		$this->setup_posts();
@@ -635,7 +651,7 @@ EOF;
 	/**
 	 * Test terms argument with and without the correct taxonomy.
 	 *
-	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related_posts_by_terms_with_taxonomy() {
 		$this->setup_posts();
@@ -750,6 +766,8 @@ EOF;
 
 	/**
 	 * Test meta query arguments.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_meta_query() {
 		$this->setup_posts();
@@ -774,6 +792,8 @@ EOF;
 
 	/**
 	 * Test meta query without assigning meta to posts.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_meta_query_with_no_meta_assigned() {
 		$this->setup_posts();
@@ -808,6 +828,8 @@ EOF;
 
 	/**
 	 * Test post_thumbnail with meta function argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_post_thumbnail_and_meta() {
 		$this->setup_posts();
@@ -829,6 +851,8 @@ EOF;
 
 	/**
 	 * Test meta query filter.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_meta_query_filter() {
 		$this->setup_posts();
@@ -1025,6 +1049,8 @@ EOF;
 
 	/**
 	 * test related posts for post type post
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_include_self_orderby_rand() {
 		$this->setup_posts();
