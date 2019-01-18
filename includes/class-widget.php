@@ -98,6 +98,10 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$args['post_thumbnail'] = true;
 		}
 
+		if ( $this->plugin->all_tax === $args['taxonomies'] ) {
+			$args['taxonomies'] = '';
+		}
+
 		// Get allowed fields for use in templates
 		$args['fields'] = km_rpbt_get_template_fields( $args );
 
