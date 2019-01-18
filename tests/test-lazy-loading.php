@@ -69,7 +69,7 @@ EOF;
 
 		// expected related posts are post 1,2,3
 		$expected = <<<EOF
-<div class='rpbt-related-posts-lazy-loading' data-rpbt_args='{&quot;post_types&quot;:[&quot;post&quot;],&quot;post_id&quot;:{$posts[0]},&quot;taxonomies&quot;:&quot;all&quot;,&quot;before_widget&quot;:&quot;&lt;section&gt;&quot;,&quot;after_widget&quot;:&quot;&lt;\/section&gt;&quot;,&quot;before_title&quot;:&quot;&lt;h2&gt;&quot;,&quot;after_title&quot;:&quot;&lt;\/h2&gt;&quot;,&quot;type&quot;:&quot;widget&quot;}'>
+<div class='rpbt-related-posts-lazy-loading' data-rpbt_args='{&quot;post_types&quot;:[&quot;post&quot;],&quot;post_id&quot;:{$posts[0]},&quot;before_widget&quot;:&quot;&lt;section&gt;&quot;,&quot;after_widget&quot;:&quot;&lt;\/section&gt;&quot;,&quot;before_title&quot;:&quot;&lt;h2&gt;&quot;,&quot;after_title&quot;:&quot;&lt;\/h2&gt;&quot;,&quot;type&quot;:&quot;widget&quot;}'>
 </div>
 EOF;
 
