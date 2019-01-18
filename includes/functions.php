@@ -131,14 +131,15 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	if ( ! $post_id ) {
 		return array();
 	}
-	// Sanitize arguments.
-	$args = km_rpbt_sanitize_args( $args );
 
 	// Check if any taxonomies are used for the query.
 	$taxonomies = isset( $args['taxonomies'] ) ? $args['taxonomies'] : '';
 	if ( ! $taxonomies ) {
 		$args['taxonomies'] = km_rpbt_get_public_taxonomies();
 	}
+
+	// Important! Sanitize arguments after taxonomy check.
+	$args = km_rpbt_sanitize_args( $args );
 
 	// Set post_id the same as used for the $post_id parameter.
 	$args['post_id'] = $post_id;
