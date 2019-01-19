@@ -117,15 +117,17 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 * If found it is assumed you only want posts from these post types.
 		 * If they are invalid (after validation) the query for related posts is
 		 * cancelled because the query defaults to post type `post`.
+		 *
+		 * If no post types are in the request it defaults to the post type of
+		 * the current post.
 		 */
 		$post_types = ! empty( $args['post_types'] );
 
-		// Validate request arguments
+		// Validate request arguments.
 		$args = $this->validate_args( $args );
 
 		// Check if requested taxonomies or post types were valid.
 		$invalid_post_types = $post_types && ! $args['post_types'];
-
 
 		/**
 		 * Filter (validated) Rest API arguments.
