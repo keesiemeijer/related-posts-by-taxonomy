@@ -926,7 +926,7 @@ EOF;
 
 		// Test post 0.
 		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
-		$this->assertEquals( array( $posts[3], $posts[2], $posts[1] ), $rel_post0 );
+		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
 	}
 
 	/**

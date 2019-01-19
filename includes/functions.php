@@ -206,59 +206,40 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
 	$args       = km_rpbt_sanitize_args( $args );
 
+	// Unrelated terms
+	if ( ! $args['related'] && ( $args['terms'] || $args['include_terms'] ) ) {
+		return $args['terms'] ? $args['terms'] : $args['include_terms'];
+	}
+
+	if ( $args['related'] && empty( $taxonomies ) ) {
+		// Taxonomies are needed for related terms.
+		return array();
+	}
+
 	if ( $args['terms'] ) {
-
-		// Unrelated terms.
-		if ( ! $args['related'] ) {
-			return $args['terms'];
-		}
-
-		// Taxonomies are needed for filtering related terms.
-		if ( empty( $taxonomies ) ) {
-
-			/*
-			 * Bail because get_terms() below returns:
-			 * - all terms if taxonomies is an empty array.
-			 * - an empty array if taxonomies is an empty string.
-			 */
-			return array();
-		}
-
 		$term_args = array(
 			'include'  => $args['terms'],
 			'taxonomy' => $taxonomies,
 			'fields'   => 'ids',
 		);
 
-		// Filter out terms not belonging to the taxonomies
+		// Get terms from taxonomies.
 		$terms = get_terms( $term_args );
-
-		// Error for invalid $taxonomies.
-		return ! is_wp_error( $terms ) ? $terms : array();
-	}
-
-	if ( ! $args['related'] && ! empty( $args['include_terms'] ) ) {
-		// Unrelated terms, use included term ids as is.
-		$terms = $args['include_terms'];
+		$terms = ! is_wp_error( $terms ) ? $terms : array();
 	} else {
 
 		// Get post terms.
 		$terms = wp_get_object_terms( $post_id, $taxonomies, array( 'fields' => 'ids', ) );
-
-		// Error for invalid $taxonomies.
-		// Empty array if there are no post terms, wrong $post_id, or empty $taxonomies.
-		if ( is_wp_error( $terms ) || empty( $terms ) ) {
-			return array();
-		}
+		$terms = ! is_wp_error( $terms ) ? $terms : array();
 
 		// Only use included terms from the post terms.
-		if ( $args['related'] && ! empty( $args['include_terms'] ) ) {
+		if ( $args['include_terms'] ) {
 			$terms = array_values( array_intersect( $args['include_terms'], $terms ) );
 		}
 	}
 
 	// Exclude terms.
-	if ( empty( $args['include_terms'] ) ) {
+	if ( ! empty( $terms ) ) {
 		$terms = array_values( array_diff( $terms , $args['exclude_terms'] ) );
 	}
 
@@ -369,7 +350,7 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 		$html =  isset( $rpbt_args[ $before ] ) ? $rpbt_args[ $before ]  . "\n" : '';
 		$html .= trim( $rpbt_args['title'] ) . "\n";
 		$html .= $output . "\n";
-		$html .=  isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ]  . "\n" : '';
+		$html .= isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ]  . "\n" : '';
 	}
 
 	$recursing = false;

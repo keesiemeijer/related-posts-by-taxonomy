@@ -67,16 +67,10 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
 	$args       = km_rpbt_sanitize_args( $args );
 	$terms      = km_rpbt_get_terms( $post_id, $taxonomies, $args );
-	$related    = $args['related'];
 
 	if ( ! $post_id || empty( $terms ) ) {
 		// Invalid post ID, invalid taxonomies, or no terms found.
 		return array();
-	}
-
-	if ( ! $related && $args['terms'] ) {
-		// Default to true.
-		$related = true;
 	}
 
 	$args['related_terms'] = $terms;
@@ -183,10 +177,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	}
 
 	if ( ! $order_by_rand ) {
-		if ( $related ) {
-			// Related terms count sql.
-			$select_sql .= ' , count(distinct tt.term_taxonomy_id) as termcount';
-		}
+		$select_sql .= ' , count(distinct tt.term_taxonomy_id) as termcount';
 		$order_by_sql .= "$wpdb->posts.$orderby";
 	}
 
@@ -325,7 +316,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	if ( $results ) {
 
 		/* Order the related posts */
-		if ( ! $order_by_rand && $related ) {
+		if ( ! $order_by_rand ) {
 
 			/* Add the (termcount) score and key to results for ordering*/
 			for ( $i = 0; $i < count( $results ); $i++ ) {

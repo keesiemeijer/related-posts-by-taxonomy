@@ -582,6 +582,7 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test ascending order.
+	 *
 	 */
 	function test_order_asc() {
 		$this->setup_posts();
@@ -608,13 +609,13 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$args = array(
 			'fields'     => 'ids',
 			'order'      => 'asc',
-			'related'    => false,
+			'related'    => false, // makes no difference.
 			'taxonomies' => array( 'category', 'post_tag' ),
 		);
 
 		// test post 0
 		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
-		$this->assertEquals( array( $posts[3], $posts[2], $posts[1] ), $rel_post0 );
+		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
 	}
 
 	/**
@@ -721,7 +722,7 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 			'taxonomies'   => array( 'post_tag' ),
 		);
 
-		// test post 0
+		// 2, 1, 3 is normal order
 		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
 		$this->assertEquals( array( $posts[0], $posts[2], $posts[1], $posts[3] ), $rel_post0 );
 
