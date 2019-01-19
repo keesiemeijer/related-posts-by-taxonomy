@@ -159,12 +159,12 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	// Limit date sql.
 	$limit_date_sql = '';
 	if ( $args['limit_year'] || $args['limit_month'] ) {
-		// Year takes precedence over month.
-		$time_limit  = ( $args['limit_year'] ) ? $args['limit_year'] : $args['limit_month'];
-		$time_string = ( $args['limit_year'] ) ? 'year' : 'month';
+		// Month takes precedence over month.
+		$time_limit  = ( $args['limit_month'] ) ? $args['limit_month'] : $args['limit_year'];
+		$time_string = ( $args['limit_month'] ) ? 'month' : 'year';
 		$last_date = date( 'Y-m-t', strtotime( 'now' ) );
 		$first_date  = date( 'Y-m-d', strtotime( "$last_date -$time_limit $time_string" ) );
-		$limit_date_sql    = " AND $wpdb->posts.$orderby > '$first_date 23:59:59' AND $wpdb->posts.$orderby <= '$last_date 23:59:59'";
+		$limit_date_sql = " AND $wpdb->posts.$orderby > '$first_date 23:59:59' AND $wpdb->posts.$orderby <= '$last_date 23:59:59'";
 		$limit_sql = '';
 	}
 
