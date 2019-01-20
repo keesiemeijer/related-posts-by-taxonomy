@@ -85,7 +85,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	/**
 	 * Filter WP Rest API request arguments.
 	 *
-	 * @since  2.3.0
+	 * @since 2.5.1
 	 *
 	 * @param array $args    Request arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
 	 *                       for more information on accepted arguments.
@@ -107,18 +107,27 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		$defaults = apply_filters( "related_posts_by_taxonomy_wp_rest_api_defaults", $defaults );
 		$args     = array_merge( $defaults, (array) $args );
 
-		// Check if taxonomies or post types are in the request.
-		$taxonomies = ! empty( $args['taxonomies'] );
+		// Unfilterable arguments.
+		$args['type'] = 'wp_rest_api';
+		$args['post_id'] = $post_id;
+
+		/*
+		 * Check if specific post types are in the request (or defaults).
+		 *
+		 * If found it is assumed you only want posts from these post types.
+		 * If they are invalid (after validation) the query for related posts is
+		 * cancelled because the query defaults to post type `post`.
+		 *
+		 * If no post types are in the request it defaults to the post type of
+		 * the current post.
+		 */
 		$post_types = ! empty( $args['post_types'] );
 
-		// Validate request arguments
+		// Validate request arguments.
 		$args = $this->validate_args( $args );
 
-		// Check if requested taxonomy or post type was valid.
-		$tax_fail = $taxonomies && ! $args['taxonomies'];
-		$type_fail = $post_types && ! $args['post_types'];
-
-		$args['type'] = 'wp_rest_api';
+		// Check if requested taxonomies or post types were valid.
+		$invalid_post_types = $post_types && ! $args['post_types'];
 
 		/**
 		 * Filter (validated) Rest API arguments.
@@ -129,14 +138,14 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 */
 		$args = apply_filters( "related_posts_by_taxonomy_wp_rest_api_args", $args );
 
-		// Invalid taxonomies or post types in the request and not added by args filter.
-		if ( ( $tax_fail && ! $args['taxonomies'] ) || ( $type_fail && ! $args['post_types'] ) ) {
+		// Invalid post types in the request and not added by args filter.
+		if ( $invalid_post_types && ! $args['post_types'] ) {
 			$request->set_param( 'rpbt_cancel_query', true );
 		}
 
-		// Unfilerable args argument
+		// Unfilerable arguments
 		$args['post_id'] = $post_id;
-		$args['type'] = 'wp_rest_api';
+		$args['type']    = 'wp_rest_api';
 
 		return array_merge( $defaults, (array) $args );
 	}
@@ -155,8 +164,6 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		if ( 'thumbnails' === $args['format'] ) {
 			$args['post_thumbnail'] = true;
 		}
-
-		$args['taxonomies'] = km_rpbt_get_taxonomies( $args['taxonomies'] );
 
 		// Default to the post type from the current post if no post types are in the request.
 		$args['post_types'] = ! $args['post_types'] ? get_post_type( $args['post_id'] ) : $args['post_types'];

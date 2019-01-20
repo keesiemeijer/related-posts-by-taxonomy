@@ -89,15 +89,15 @@ function km_rpbt_plugin_supports( $feature ) {
  *     @type string         $fields           Return full post objects, IDs, post titles or post slugs.
  *                                            Accepts 'all', 'ids', 'names' or 'slugs'. Default is 'all'.
  *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
- *                                            list of term ids. The terms don't need to be assigned to the post to
- *                                            get related posts for. Default empty.
+ *                                            list of term ids. Only includes terms from the `$taxonomies` argument.
+ *                                            Default empty.
  *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
- *                                            list of term ids. Only includes terms also assigned to the post to get
- *                                            related posts for. Default empty.
+ *                                            list of term ids. Only includes terms in common with the current post.
+ *                                            Default empty.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
- *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
- *                                            the post to get related posts for. Default true.
+ *     @type boolean        $related          If false the `$terms` and `$include_terms` terms are used without
+ *                                            checking taxonomies or post terms. Default true.
  *     @type array|string   $exclude_post     Exclude posts for the related posts query. Array or comma separated
  *                                            list of post ids. Default empty.
  *     @type int            $limit_posts      Limit the posts to search related posts in. Default -1 (search in all posts).
@@ -131,14 +131,15 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	if ( ! $post_id ) {
 		return array();
 	}
-	// Sanitize arguments.
-	$args = km_rpbt_sanitize_args( $args );
 
 	// Check if any taxonomies are used for the query.
 	$taxonomies = isset( $args['taxonomies'] ) ? $args['taxonomies'] : '';
 	if ( ! $taxonomies ) {
 		$args['taxonomies'] = km_rpbt_get_public_taxonomies();
 	}
+
+	// Important! Sanitize arguments after taxonomy check.
+	$args = km_rpbt_sanitize_args( $args );
 
 	// Set post_id the same as used for the $post_id parameter.
 	$args['post_id'] = $post_id;
@@ -177,7 +178,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 }
 
 /**
- * Get the terms from a post or from included terms.
+ * Get the terms from a post or arguments.
  *
  * @since  2.5.0
  *
@@ -187,64 +188,58 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
  *     Optional. Arguments to get terms.
  *
  *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
- *                                            list of term ids. The terms don't need to be assigned to the post set by the
- *                                            `$post_id` argument. Default empty.
+ *                                            list of term ids. The terms need to be in the taxonomies set by the
+ *                                            `$taxonomies` argument. Default empty.
  *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
  *                                            list of term ids. Only includes terms also assigned to the post set by the
  *                                            `$post_id` argument. Default empty.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
- *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
- *                                            the post set by the `$post_id` argument. Default true.
+ *     @type boolean        $related          If false the `terms` and `$include_terms` terms are returned without
+ *                                            checking taxonomies or post terms. Default true.
  * }
  * @return array Array with term ids.
  */
 function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
-	$terms = array();
-	$args  = km_rpbt_sanitize_args( $args );
+	$terms      = array();
+	$post_id    = absint( $post_id );
+	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
+	$args       = km_rpbt_sanitize_args( $args );
+
+	// Unrelated terms
+	if ( ! $args['related'] && ( $args['terms'] || $args['include_terms'] ) ) {
+		return $args['terms'] ? $args['terms'] : $args['include_terms'];
+	}
+
+	if ( $args['related'] && empty( $taxonomies ) ) {
+		// Taxonomies are needed for related terms.
+		return array();
+	}
 
 	if ( $args['terms'] ) {
-
-		if ( ! $args['related'] ) {
-			return $args['terms'];
-		}
-
 		$term_args = array(
 			'include'  => $args['terms'],
 			'taxonomy' => $taxonomies,
 			'fields'   => 'ids',
 		);
 
-		// Filter out terms not assigned to the taxonomies
+		// Get terms from taxonomies.
 		$terms = get_terms( $term_args );
-
-		return ! is_wp_error( $terms ) ? $terms : array();
-	}
-
-	if ( ! $args['related'] && ! empty( $args['include_terms'] ) ) {
-		// Not related, use included term ids as is.
-		$terms = $args['include_terms'];
+		$terms = ! is_wp_error( $terms ) ? $terms : array();
 	} else {
 
-		// Post terms.
-		$terms = wp_get_object_terms(
-			$post_id, $taxonomies, array(
-				'fields' => 'ids',
-			)
-		);
-
-		if ( is_wp_error( $terms ) || empty( $terms ) ) {
-			return array();
-		}
+		// Get post terms.
+		$terms = wp_get_object_terms( $post_id, $taxonomies, array( 'fields' => 'ids', ) );
+		$terms = ! is_wp_error( $terms ) ? $terms : array();
 
 		// Only use included terms from the post terms.
-		if ( $args['related'] && ! empty( $args['include_terms'] ) ) {
+		if ( $args['include_terms'] ) {
 			$terms = array_values( array_intersect( $args['include_terms'], $terms ) );
 		}
 	}
 
 	// Exclude terms.
-	if ( empty( $args['include_terms'] ) ) {
+	if ( ! empty( $terms ) ) {
 		$terms = array_values( array_diff( $terms , $args['exclude_terms'] ) );
 	}
 
@@ -355,7 +350,7 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 		$html =  isset( $rpbt_args[ $before ] ) ? $rpbt_args[ $before ]  . "\n" : '';
 		$html .= trim( $rpbt_args['title'] ) . "\n";
 		$html .= $output . "\n";
-		$html .=  isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ]  . "\n" : '';
+		$html .= isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ]  . "\n" : '';
 	}
 
 	$recursing = false;

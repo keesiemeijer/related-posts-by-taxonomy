@@ -75,7 +75,6 @@ Attributes for the shortcode are:
 * `caption`
 * `link_caption`
 * `limit_posts`
-* `limit_year`
 * `limit_month`
 * `meta_key`
 * `meta_value`
