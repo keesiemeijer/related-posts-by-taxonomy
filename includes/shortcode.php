@@ -82,10 +82,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
 	$settings = km_rpbt_get_default_settings( 'shortcode' );
 
 	/**
-	 * Filter default feature attributes.
-	 *
-	 * The dynamic portion of the hook name, `$type`, refers to
-	 * the widget, shortcode or wp_rest_api feature.
+	 * Filter default shortcode attributes.
 	 *
 	 * @since 0.2.1
 	 *
@@ -95,7 +92,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
 	$defaults = apply_filters( "related_posts_by_taxonomy_shortcode_defaults", $settings );
 	$defaults = array_merge( $settings, (array) $defaults );
 
-	// Filter args with hook shortcode_atts_related_posts_by_tax.
+	// Filter hook shortcode_atts_related_posts_by_tax.
 	$args = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
 
 	$args['type'] = 'shortcode';

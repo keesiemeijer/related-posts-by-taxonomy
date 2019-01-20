@@ -159,7 +159,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	// Limit date sql.
 	$limit_date_sql = '';
 	if ( $args['limit_year'] || $args['limit_month'] ) {
-		// Month takes precedence over month.
+		// Month takes precedence over year.
 		$time_limit  = ( $args['limit_month'] ) ? $args['limit_month'] : $args['limit_year'];
 		$time_string = ( $args['limit_month'] ) ? 'month' : 'year';
 		$last_date = date( 'Y-m-t', strtotime( 'now' ) );

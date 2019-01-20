@@ -89,15 +89,15 @@ function km_rpbt_plugin_supports( $feature ) {
  *     @type string         $fields           Return full post objects, IDs, post titles or post slugs.
  *                                            Accepts 'all', 'ids', 'names' or 'slugs'. Default is 'all'.
  *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
- *                                            list of term ids. The terms don't need to be assigned to the post to
- *                                            get related posts for. Default empty.
+ *                                            list of term ids. Only includes terms from the `$taxonomies` argument.
+ *                                            Default empty.
  *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
- *                                            list of term ids. Only includes terms also assigned to the post to get
- *                                            related posts for. Default empty.
+ *                                            list of term ids. Only includes terms in common with the current post.
+ *                                            Default empty.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
- *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
- *                                            the post to get related posts for. Default true.
+ *     @type boolean        $related          If false the `$terms` and `$include_terms` terms are used without
+ *                                            checking taxonomies or post terms. Default true.
  *     @type array|string   $exclude_post     Exclude posts for the related posts query. Array or comma separated
  *                                            list of post ids. Default empty.
  *     @type int            $limit_posts      Limit the posts to search related posts in. Default -1 (search in all posts).
@@ -188,15 +188,15 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
  *     Optional. Arguments to get terms.
  *
  *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
- *                                            list of term ids. The terms don't need to be assigned to the post set by the
- *                                            `$post_id` argument. Default empty.
+ *                                            list of term ids. The terms need to be in the taxonomies set by the
+ *                                            `$taxonomies` argument. Default empty.
  *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
  *                                            list of term ids. Only includes terms also assigned to the post set by the
  *                                            `$post_id` argument. Default empty.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
- *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
- *                                            the post set by the `$post_id` argument. Default true.
+ *     @type boolean        $related          If false the `terms` and `$include_terms` terms are returned without
+ *                                            checking taxonomies or post terms. Default true.
  * }
  * @return array Array with term ids.
  */

@@ -88,7 +88,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$args['post_types'] = array_keys( $args['post_types'] );
 		}
 
-		/* added in 2.0 */
 		if ( $args['random'] ) {
 			unset( $args['random'] );
 			$args['order'] = 'RAND';

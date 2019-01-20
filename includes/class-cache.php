@@ -161,7 +161,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 
 			// Get cached post ids from meta.
-			$cache      = $this->get_post_meta( $args );
+			$cache = $this->get_post_meta( $args );
 
 			if ( isset( $cache['ids'] ) ) {
 
