@@ -53,6 +53,7 @@
 			'show_date'    => $rpbt_args['show_date'], // Show post date
 			'post_class'   => $rpbt_args['post_class'], // CSS classes string
 			'type'         => $rpbt_args['type'], // type widget or shortcode
+			'gallery_format' => $rpbt_args['gallery_format'], // 'editor_block' or empty string. Default empty string.
 		);
 
 		// Plugin function to display the galllery in /includes/gallery.php
