@@ -144,11 +144,12 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 		return '';
 	}
 
+	$args          = km_rpbt_validate_gallery_args( $args );
 	$html5         = current_theme_supports( 'html5', 'gallery' );
+	$instance      = absint( $instance );
 	$float         = is_rtl() ? 'right' : 'left';
 	$selector      = "rpbt-related-gallery-{$instance}";
 	$gallery_style = '';
-	$args          = km_rpbt_validate_gallery_args( $args );
 	$itemwidth     = $args['columns'] > 0 ? floor( 100 / $args['columns'] ) : 100;
 
 	/**
@@ -184,8 +185,11 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 		</style>\n\t\t";
 	}
 
-	$size_class = sanitize_html_class( $args['size'] );
-	$gallery_div = "<div id='$selector' class='{$args['gallery_class']}related-gallery related-galleryid-{$args['id']} gallery-columns-{$args['columns']} gallery-size-{$size_class}'>";
+	$size_class    = sanitize_html_class( $args['size'] );
+	$gallery_class = sanitize_html_class( $args['gallery_class'] );
+	$gallery_class = $gallery_class ? $gallery_class . ' ' : '';
+
+	$gallery_div = "<div id='$selector' class='{$gallery_class}related-gallery related-galleryid-{$args['id']} gallery-columns-{$args['columns']} gallery-size-{$size_class}'>";
 	$output = apply_filters( 'gallery_style', $gallery_style . $gallery_div );
 
 	$i = 0;
@@ -209,6 +213,7 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 		}
 
 		$itemclass  = km_rpbt_get_gallery_post_class( $related, $args, 'gallery-item' );
+		$itemclass  = $itemclass ? " class='{$itemclass}'" : '';
 		$image_meta = wp_get_attachment_metadata( $thumbnail_id );
 
 		$orientation = '';
@@ -216,7 +221,7 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 			$orientation = ( $image_meta['height'] > $image_meta['width'] ) ? 'portrait' : 'landscape';
 		}
 
-		$item_output .= "<{$args['itemtag']} class='{$itemclass}'>";
+		$item_output .= "<{$args['itemtag']}{$itemclass}>";
 		$item_output .= "
 			<{$args['icontag']} class='gallery-icon {$orientation}'>
 				$image_link
@@ -276,16 +281,16 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array() 
 		}
 
 		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
-		$caption       = km_rpbt_get_gallery_image_caption( $thumbnail_id, $related, $args );
 		$image_link    = km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args );
-
 		if ( ! $image_link ) {
 			continue;
 		}
 
+		$caption    = km_rpbt_get_gallery_image_caption( $thumbnail_id, $related, $args );
 		$post_class = km_rpbt_get_gallery_post_class( $related, $args, 'blocks-gallery-item' );
+		$post_class = $post_class ? ' class="' . $post_class . '"' : '';
 
-		$html .= '<li class="' . $post_class . '">' . "\n";
+		$html .= "<li{$post_class}>\n";
 		$html .= "<figure>\n" . $image_link;
 		if ( $caption ) {
 			$html .= "<figcaption>{$caption}</figcaption>\n";
@@ -325,9 +330,9 @@ function km_rpbt_validate_gallery_args( $args ) {
 	}
 
 	$args['columns']       = intval( $args['columns'] );
+
 	$args['caption']       = is_string( $args['caption'] ) ? $args['caption'] : 'post_title';
-	$args['gallery_class'] = is_string( $args['gallery_class'] ) ? trim( $args['gallery_class'] ) : 'gallery';
-	$args['gallery_class'] = $args['gallery_class'] ? $args['gallery_class'] . ' ' : '';
+	$args['gallery_class'] = is_string( $args['gallery_class'] ) ? $args['gallery_class'] : 'gallery';
 
 	return $args;
 }
@@ -344,8 +349,10 @@ function km_rpbt_validate_gallery_args( $args ) {
  * @return string CSS classes for gallery items.
  */
 function km_rpbt_get_gallery_post_class( $related, $args, $default_class = '' ) {
-	$defaults    = km_kpbt_get_gallery_defaults();
-	$args        = array_merge( $defaults, $args );
+	$defaults      = km_kpbt_get_gallery_defaults();
+	$default_class = sanitize_html_class( $default_class );
+	$args          = array_merge( $defaults, $args );
+
 
 	/**
 	 * Filter the related posts gallery item CSS classes.
