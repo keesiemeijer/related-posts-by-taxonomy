@@ -70,6 +70,7 @@ Attributes for the shortcode are:
 * `exclude_terms`
 * `exclude_posts`
 * `format`
+* `gallery_format`
 * `image_size`
 * `columns`
 * `caption`
@@ -141,6 +142,13 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.6.1 =
+* Enhancement
+	* New format for related galleries similar to the Gutenberg gallery block.
+* Bug Fixes
+	* (minor) Fix default taxonomies for the related posts query.
+		* Don't default to all public taxonomies if no valid taxonomies are used.
+
 = 2.6.0 =
 * Enhancement
 	* Meta query
@@ -201,5 +209,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.6.0 =
-This upgrade introduces new meta query arguments (and filter). Other features: Faster query and lazy loading. See the change log.
+= 2.6.1 =
+This upgrade adds a new format for related galleries similar to the Gutenberg gallery block.
