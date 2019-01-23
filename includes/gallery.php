@@ -20,7 +20,7 @@ function km_kpbt_get_gallery_defaults() {
 		'link_caption'   => false,
 		'gallery_type'   => 'rpbt_gallery',
 		'gallery_class'  => 'gallery',
-		'gallery_format' => '',
+		'gallery_format' => '', // empty string or 'editor_block'
 		'post_class'     => '',
 		'type'           => '',
 	);
@@ -39,24 +39,26 @@ function km_kpbt_get_gallery_defaults() {
  * @param array $args          {
  *     Arguments of the related posts thumbnail gallery.
  *
- *     @type int          $id            Post ID.
- *     @type string       $itemtag       HTML tag to use for each image in the gallery.
- *                                       Default 'dl', or 'figure' when the theme registers HTML5 gallery support.
- *     @type string       $icontag       HTML tag to use for each image's icon.
- *                                       Default 'dt', or 'div' when the theme registers HTML5 gallery support.
- *     @type string       $captiontag    HTML tag to use for each image's caption.
- *                                       Default 'dd', or 'figcaption' when the theme registers HTML5 gallery support.
- *     @type boolean      $show_date     Whether to display the post date after the caption. Default false.
- *     @type int          $columns       Number of columns of images to display. Default 3.
- *     @type string|array $size          Size of the images to display. Accepts any valid image size. Default 'thumbnail'.
- *     @type string       $caption       Caption text for the post thumbnail.
- *                                       Accepts 'post_title', 'post_excerpt', 'attachment_caption', 'attachment_alt', or
- *                                       a custom string. Default 'post_title'
- *     @type boolean      $link_caption  Whether to link the caption to the related post. Default false.
- *     @type string       $gallery_class Default class for the gallery. Default 'gallery'.
- *     @type string       $post_class    CSS Class for gallery items. Default empty string.
- *     @type string       $gallery_type  Gallery type. Default 'rpbt_gallery'.
- *     @type string       $type          Feature type. (shortcode, widget, wp_rest_api)
+ *     @type int          $id             Post ID.
+ *     @type string       $itemtag        HTML tag to use for each image in the gallery.
+ *                                        Default 'dl', or 'figure' when the theme registers HTML5 gallery support.
+ *     @type string       $icontag        HTML tag to use for each image's icon.
+ *                                        Default 'dt', or 'div' when the theme registers HTML5 gallery support.
+ *     @type string       $captiontag     HTML tag to use for each image's caption.
+ *                                        Default 'dd', or 'figcaption' when the theme registers HTML5 gallery support.
+ *     @type boolean      $show_date      Whether to display the post date after the caption. Default false.
+ *     @type int          $columns        Number of columns of images to display. Default 3.
+ *     @type string|array $size           Size of the images to display. Accepts any valid image size. Default 'thumbnail'.
+ *     @type string       $caption        Caption text for the post thumbnail.
+ *                                        Accepts 'post_title', 'post_excerpt', 'attachment_caption', 'attachment_alt', or
+ *                                        a custom string. Default 'post_title'
+ *     @type boolean      $link_caption   Whether to link the caption to the related post. Default false.
+ *     @type string       $gallery_format HTML format for the gallery. Accepts `editor_block` or empty string.
+ *                                        Default empty string.
+ *     @type string       $gallery_class  Default class for the gallery. Default 'gallery'.
+ *     @type string       $post_class     CSS Class for gallery items. Default empty string.
+ *     @type string       $gallery_type   Gallery type. Default 'rpbt_gallery'.
+ *     @type string       $type           Feature type. (shortcode, widget, wp_rest_api)
  * }
  * @param array $related_posts Array with related post objects that have a post thumbnail.
  * @return string HTML string of a gallery.
@@ -186,10 +188,12 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 	}
 
 	$size_class    = sanitize_html_class( $args['size'] );
-	$gallery_class = sanitize_html_class( $args['gallery_class'] );
+	$gallery_class = km_rpbt_sanitize_classes( $args['gallery_class'] );
 	$gallery_class = $gallery_class ? $gallery_class . ' ' : '';
 
 	$gallery_div = "<div id='$selector' class='{$gallery_class}related-gallery related-galleryid-{$args['id']} gallery-columns-{$args['columns']} gallery-size-{$size_class}'>";
+
+	/** This filter is documented in wp-includes/media.php */
 	$output = apply_filters( 'gallery_style', $gallery_style . $gallery_div );
 
 	$i = 0;
@@ -272,7 +276,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array() 
 	}
 
 	$args = km_rpbt_validate_gallery_args( $args );
-	$html = "<ul class='wp-block-gallery columns-{$args['columns']}'>";
+	$html = '<ul class="wp-block-gallery columns-' . $args['columns'] . '">' . "\n";
 
 	foreach ( (array) $related_posts as $related ) {
 		$related = is_object( $related ) ? $related : get_post( $related );
@@ -281,17 +285,18 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array() 
 		}
 
 		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
+		$caption       = km_rpbt_get_gallery_image_caption( $thumbnail_id, $related, $args );
+
 		$image_link    = km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args );
 		if ( ! $image_link ) {
 			continue;
 		}
 
-		$caption    = km_rpbt_get_gallery_image_caption( $thumbnail_id, $related, $args );
 		$post_class = km_rpbt_get_gallery_post_class( $related, $args, 'blocks-gallery-item' );
 		$post_class = $post_class ? ' class="' . $post_class . '"' : '';
 
 		$html .= "<li{$post_class}>\n";
-		$html .= "<figure>\n" . $image_link;
+		$html .= "<figure>\n{$image_link}\n";
 		if ( $caption ) {
 			$html .= "<figcaption>{$caption}</figcaption>\n";
 		}
@@ -350,8 +355,8 @@ function km_rpbt_validate_gallery_args( $args ) {
  */
 function km_rpbt_get_gallery_post_class( $related, $args, $default_class = '' ) {
 	$defaults      = km_kpbt_get_gallery_defaults();
-	$default_class = sanitize_html_class( $default_class );
 	$args          = array_merge( $defaults, $args );
+	$default_class = sanitize_html_class( $default_class );
 
 
 	/**
@@ -437,7 +442,7 @@ function km_rpbt_get_gallery_image_caption( $thumbnail_id, $related, $args = arr
 
 	if ( 'post_title' === $args['caption'] ) {
 		$date    = $args['show_date'] ? ' ' . km_rpbt_get_post_date( $related ) : '';
-		$caption = $title . $date;
+		$caption = $title ? $title . $date : '';
 
 		if ( (bool) $args['link_caption'] ) {
 			$caption = km_rpbt_get_post_link( $related, $args );
