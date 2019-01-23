@@ -201,6 +201,8 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		$posts        = $this->create_posts();
 		$related_post = get_post( $posts[0] );
 		$permalink    = get_permalink( $related_post->ID );
+		$attachment_id = $this->create_image();
+		set_post_thumbnail ( $posts[0], $attachment_id );
 
 		// Adds a fake image <img>, otherwhise the function will return nothing.
 		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
@@ -219,7 +221,7 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 	 * Adds a fake image for testing.
 	 */
 	function add_image( $image, $attr, $related, $args ) {
-		return "<a href='{$attr['permalink']}' title='{$attr['title_attr']}'><img></a>";
+		return $content = preg_replace( '/<img .*?\/>/', '<img>', $image );
 	}
 
 	/**
