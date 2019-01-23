@@ -21,9 +21,8 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 		extract( $gallery_args );
 
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
-		ob_start();
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
-		$gallery = ob_get_clean();
+
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
@@ -44,15 +43,38 @@ EOF;
 	/**
 	 * Test output from gallery.
 	 */
+	function test_shortcode_gallery_format_editor_block_with_custom_post_class() {
+		$gallery_args = $this->setup_gallery();
+		$gallery_args['args']['gallery_format'] = 'editor_block';
+		$gallery_args['args']['post_class']     = 'my-class';
+		extract( $gallery_args );
+
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+
+		$expected = <<<EOF
+<ul class="wp-block-gallery columns-3">
+<li class="blocks-gallery-item my-class">
+<figure>
+<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+<figcaption>{$related_post->post_title}</figcaption>
+</figure>
+</li>
+</ul>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
+	}
+
+	/**
+	 * Test output from gallery.
+	 */
 	function test_shortcode_no_gallery_style_fields_ids() {
 		$gallery_args = $this->setup_gallery();
 		extract( $gallery_args );
 
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
-		ob_start();
 		// Use IDs for related posts.
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( "{$related_post->ID}" ) );
-		$gallery = ob_get_clean();
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( "{$related_post->ID}" ) );
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
@@ -79,9 +101,7 @@ EOF;
 		$args['show_date'] = true;
 
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
-		ob_start();
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
-		$gallery  = ob_get_clean();
+		$gallery  = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 		$date     = get_the_date( '', $related_post );
 		$datetime = get_the_date( DATE_W3C, $related_post );
 
@@ -110,9 +130,7 @@ EOF;
 
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
 		$args['gallery_class'] = '';
-		ob_start();
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
-		$gallery = ob_get_clean();
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
@@ -139,9 +157,7 @@ EOF;
 
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
 		$args['post_class'] = 'my-class';
-		ob_start();
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
-		$gallery = ob_get_clean();
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
@@ -167,9 +183,7 @@ EOF;
 		extract( $gallery_args );
 
 		add_filter( 'use_default_gallery_style', '__return_true', 99 );
-		ob_start();
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
-		$gallery = ob_get_clean();
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
@@ -214,9 +228,7 @@ EOF;
 		$args['caption'] = '';
 
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
-		ob_start();
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
-		$gallery = ob_get_clean();
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
@@ -242,9 +254,7 @@ EOF;
 		$args['link_caption'] = true;
 
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
-		ob_start();
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
-		$gallery = ob_get_clean();
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
