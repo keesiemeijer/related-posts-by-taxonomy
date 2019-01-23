@@ -1,7 +1,7 @@
 <?php
 /**
  * Tests for gallery in gallery.php
- * 
+ *
  * @group Gallery
  */
 class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
@@ -55,7 +55,7 @@ EOF;
 <ul class="wp-block-gallery columns-3">
 <li class="blocks-gallery-item my-class">
 <figure>
-<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+<a href='{$permalink}'><img></a>
 <figcaption>{$related_post->post_title}</figcaption>
 </figure>
 </li>
