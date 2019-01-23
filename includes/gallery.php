@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-function km_kpbt_get_gallery_defaults() {
+function km_kpbt_get_default_gallery_args() {
 	$html5 = current_theme_supports( 'html5', 'gallery' );
 
 	return array(
@@ -72,7 +72,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$instance++;
 
 	$post           = get_post();
-	$defaults       = km_kpbt_get_gallery_defaults();
+	$defaults       = km_kpbt_get_default_gallery_args();
 	$defaults['id'] = $post ? $post->ID : 0;
 
 	/* Filter hook: shortcode_atts_gallery */
@@ -147,8 +147,8 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 	}
 
 	$args          = km_rpbt_validate_gallery_args( $args );
-	$html5         = current_theme_supports( 'html5', 'gallery' );
 	$instance      = absint( $instance );
+	$html5         = current_theme_supports( 'html5', 'gallery' );
 	$float         = is_rtl() ? 'right' : 'left';
 	$selector      = "rpbt-related-gallery-{$instance}";
 	$gallery_style = '';
@@ -316,7 +316,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array() 
  * @return array Validated arguments.
  */
 function km_rpbt_validate_gallery_args( $args ) {
-	$defaults = km_kpbt_get_gallery_defaults();
+	$defaults = km_kpbt_get_default_gallery_args();
 	$args     = array_merge( $defaults, $args );
 
 	$args['id']         = intval( $args['id'] );
@@ -354,7 +354,7 @@ function km_rpbt_validate_gallery_args( $args ) {
  * @return string CSS classes for gallery items.
  */
 function km_rpbt_get_gallery_post_class( $related, $args, $default_class = '' ) {
-	$defaults      = km_kpbt_get_gallery_defaults();
+	$defaults      = km_kpbt_get_default_gallery_args();
 	$args          = array_merge( $defaults, $args );
 	$default_class = sanitize_html_class( $default_class );
 
@@ -390,7 +390,7 @@ function km_rpbt_get_gallery_post_class( $related, $args, $default_class = '' ) 
  * @return string HTML link for a gallery item.
  */
 function km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args, $describedby = '' ) {
-	$defaults    = km_kpbt_get_gallery_defaults();
+	$defaults    = km_kpbt_get_default_gallery_args();
 	$args        = array_merge( $defaults, $args );
 
 	$thumbnail   = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $describedby );
@@ -401,9 +401,11 @@ function km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args, $descri
 		$title = apply_filters( 'the_title', $related->post_title, $related->ID );
 	}
 
-	$title_attr  = esc_attr( $title );
-	$image_link  = ( $thumbnail ) ? "<a href='$permalink' title='$title_attr'>$thumbnail</a>" : '';
-	$image_attr  = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
+	$title_attr = esc_attr( $title );
+	$link_attr  = $title_attr ? " title='{$title_attr}'" : '';
+	$link_attr  = ( 'editor_block' === $args['gallery_format'] ) ? '' : $link_attr;
+	$image_link = ( $thumbnail ) ? "<a href='$permalink'{$link_attr}>$thumbnail</a>" : '';
+	$image_attr = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
 
 	/**
 	 * Filter the gallery image link.
@@ -430,7 +432,7 @@ function km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args, $descri
  * @return string Image caption.
  */
 function km_rpbt_get_gallery_image_caption( $thumbnail_id, $related, $args = array() ) {
-	$defaults      = km_kpbt_get_gallery_defaults();
+	$defaults      = km_kpbt_get_default_gallery_args();
 	$args          = array_merge( $defaults, $args );
 	$caption       = '';
 	$thumbnail_id  = absint( $thumbnail_id );
