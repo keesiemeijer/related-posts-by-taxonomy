@@ -449,6 +449,7 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 		// add meta value for meta query argument
 		add_post_meta( $this->posts[3], 'meta_key' , 'meta_value' );
+		add_post_meta( $this->posts[2], 'meta_key' , 'wrong_value' );
 
 		$args = array(
 			'fields'     => 'ids',
@@ -459,8 +460,10 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 
 		add_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'return_first_argument' ) );
 
-		// Post 3 is related and is the only posts with post meta key `meta_key`
 		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
+
+		// Post 3 is related and is the only posts with post meta key `meta_key` and value `meta_value`
+		// Post 2 is related but doesn't have the meta value `meta_value`
 		$this->assertEquals( array( $this->posts[3] ), $rel_post0 );
 		$this->assertSame( 'AND', $this->arg['relation'] );
 		$this->arg = null;

@@ -145,6 +145,8 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$_posts       = get_posts();
 		$args         =  array( 'fields' => 'ids' );
 		$taxonomies   = array( 'category', 'post_tag' );
+		$attachment_id = $this->create_image();
+
 
 		// Plugin editor block was already registered.
 		if( function_exists('unregister_block_type') ){
@@ -166,7 +168,6 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$sanitize            = km_rpbt_sanitize_args( $_args );
 		$html                = km_rpbt_get_related_posts_html( $rel_posts3, $_args );
 		$html_ajax           = km_rpbt_get_lazy_loading_html( $_args );
-		$gallery             = km_rpbt_related_posts_by_taxonomy_gallery( array( 'id' => $posts[0] ), $rel_posts3 );
 		$widget              = km_rpbt_related_posts_by_taxonomy_widget();
 		$shortcode           = km_rpbt_related_posts_by_taxonomy_shortcode( array( 'post_id' => $posts[0] ) );
 		$settings            = km_rpbt_get_default_settings( 'shortcode' );
@@ -190,6 +191,16 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$render              = km_rpbt_render_block_related_post( array() );
 		$link                = km_rpbt_get_post_link( $_posts[0], true );
 		$link2               = km_rpbt_get_permalink( $_posts[0] );
+		$post_thumb          = set_post_thumbnail ( $posts[2], $attachment_id );
+		$rel_posts4          = km_rpbt_get_related_posts( $posts[0], array('post_thumbnail' => true, 'fields' => 'ids') );
+		$gallery_args        = km_kpbt_get_default_gallery_args();
+		$gallery             = km_rpbt_related_posts_by_taxonomy_gallery( array( 'id' => $posts[0] ), array( $rel_posts4[0] ) );
+		$gallery_shortcode   = km_kpbt_get_gallery_shortcode_html( $rel_posts4, $gallery_args, 1 );
+		$gallery_block       = km_rpbt_get_gallery_editor_block_html( $rel_posts4, $gallery_args );
+		$gallery_validate    = km_rpbt_validate_gallery_args( $gallery_args );
+		$gallery_class       = km_rpbt_get_gallery_post_class( $rel_posts4[0], $gallery_args, 'my-class' );
+		$gallery_image       = km_rpbt_get_gallery_image_link( $attachment_id, $_posts[2], $gallery_args );
+		$gallery_caption     = km_rpbt_get_gallery_image_caption( $attachment_id, $_posts[2] );
 
 		// Deprecated functions
 		$classes3   = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );

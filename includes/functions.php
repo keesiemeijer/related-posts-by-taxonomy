@@ -234,16 +234,16 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 
 		// Only use included terms from the post terms.
 		if ( $args['include_terms'] ) {
-			$terms = array_values( array_intersect( $args['include_terms'], $terms ) );
+			$terms = array_intersect( $args['include_terms'], $terms );
 		}
 	}
 
 	// Exclude terms.
-	if ( ! empty( $terms ) ) {
-		$terms = array_values( array_diff( $terms , $args['exclude_terms'] ) );
+	if ( ! empty( $terms ) && ! empty( $args['exclude_terms'] ) ) {
+		$terms = array_diff( $terms , $args['exclude_terms'] );
 	}
 
-	return $terms;
+	return array_values( $terms );
 }
 
 /**

@@ -5,6 +5,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+function km_kpbt_get_default_gallery_args() {
+	$html5 = current_theme_supports( 'html5', 'gallery' );
+
+	return array(
+		'id'             => 0,
+		'itemtag'        => $html5 ? 'figure' : 'dl',
+		'icontag'        => $html5 ? 'div' : 'dt',
+		'captiontag'     => $html5 ? 'figcaption' : 'dd',
+		'show_date'      => false,
+		'columns'        => 3,
+		'size'           => 'thumbnail',
+		'caption'        => 'post_title', // Use 'post_title', 'post_excerpt', 'attachment_caption', attachment_alt, or a custom string.
+		'link_caption'   => false,
+		'gallery_type'   => 'rpbt_gallery',
+		'gallery_class'  => 'gallery',
+		'gallery_format' => '', // empty string or 'editor_block'
+		'post_class'     => '',
+		'type'           => '',
+	);
+}
+
 /**
  * Related posts by taxonomy thumbnail gallery.
  *
@@ -18,59 +39,45 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param array $args          {
  *     Arguments of the related posts thumbnail gallery.
  *
- *     @type int          $id            Post ID.
- *     @type string       $itemtag       HTML tag to use for each image in the gallery.
- *                                       Default 'dl', or 'figure' when the theme registers HTML5 gallery support.
- *     @type string       $icontag       HTML tag to use for each image's icon.
- *                                       Default 'dt', or 'div' when the theme registers HTML5 gallery support.
- *     @type string       $captiontag    HTML tag to use for each image's caption.
- *                                       Default 'dd', or 'figcaption' when the theme registers HTML5 gallery support.
- *     @type boolean      $show_date     Whether to display the post date after the caption. Default false.
- *     @type int          $columns       Number of columns of images to display. Default 3.
- *     @type string|array $size          Size of the images to display. Accepts any valid image size. Default 'thumbnail'.
- *     @type string       $caption       Caption text for the post thumbnail.
- *                                       Accepts 'post_title', 'post_excerpt', 'attachment_caption', 'attachment_alt', or
- *                                       a custom string. Default 'post_title'
- *     @type boolean      $link_caption  Whether to link the caption to the related post. Default false.
- *     @type string       $gallery_class Default class for the gallery. Default 'gallery'.
- *     @type string       $gallery_type  Gallery type. Default gallery type 'rpbt_gallery'.
- *     @type string       $type          Feature type. (shortcode, widget, wp_rest_api)
+ *     @type int          $id             Post ID.
+ *     @type string       $itemtag        HTML tag to use for each image in the gallery.
+ *                                        Default 'dl', or 'figure' when the theme registers HTML5 gallery support.
+ *     @type string       $icontag        HTML tag to use for each image's icon.
+ *                                        Default 'dt', or 'div' when the theme registers HTML5 gallery support.
+ *     @type string       $captiontag     HTML tag to use for each image's caption.
+ *                                        Default 'dd', or 'figcaption' when the theme registers HTML5 gallery support.
+ *     @type boolean      $show_date      Whether to display the post date after the caption. Default false.
+ *     @type int          $columns        Number of columns of images to display. Default 3.
+ *     @type string|array $size           Size of the images to display. Accepts any valid image size. Default 'thumbnail'.
+ *     @type string       $caption        Caption text for the post thumbnail.
+ *                                        Accepts 'post_title', 'post_excerpt', 'attachment_caption', 'attachment_alt', or
+ *                                        a custom string. Default 'post_title'
+ *     @type boolean      $link_caption   Whether to link the caption to the related post. Default false.
+ *     @type string       $gallery_format HTML format for the gallery. Accepts `editor_block` or empty string.
+ *                                        Default empty string.
+ *     @type string       $gallery_class  Default class for the gallery. Default 'gallery'.
+ *     @type string       $post_class     CSS Class for gallery items. Default empty string.
+ *     @type string       $gallery_type   Gallery type. Default 'rpbt_gallery'.
+ *     @type string       $type           Feature type. (shortcode, widget, wp_rest_api)
  * }
  * @param array $related_posts Array with related post objects that have a post thumbnail.
  * @return string HTML string of a gallery.
  */
 function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = array() ) {
-
 	if ( empty( $related_posts ) ) {
 		return '';
 	}
 
-	$post = get_post();
-
 	static $instance = 0;
 	$instance++;
 
-	// WordPress >= 3.9 supports html5 tags for the gallery shortcode.
-	$html5 = current_theme_supports( 'html5', 'gallery' );
+	$post           = get_post();
+	$defaults       = km_kpbt_get_default_gallery_args();
+	$defaults['id'] = $post ? $post->ID : 0;
 
-	$defaults = array(
-		'id'            => $post ? $post->ID : 0,
-		'itemtag'       => $html5 ? 'figure' : 'dl',
-		'icontag'       => $html5 ? 'div' : 'dt',
-		'captiontag'    => $html5 ? 'figcaption' : 'dd',
-		'show_date'     => false,
-		'columns'       => 3,
-		'size'          => 'thumbnail',
-		'caption'       => 'post_title', // Use 'post_title', 'post_excerpt', 'attachment_caption', attachment_alt, or a custom string.
-		'link_caption'  => false,
-		'gallery_class' => 'gallery',
-		'gallery_type'  => 'rpbt_gallery',
-		'post_class'    => '',
-		'type'          => '',
-	);
-
-	/* Can be filtered in WordPress > 3.5 (hook: shortcode_atts_gallery) */
+	/* Filter hook: shortcode_atts_gallery */
 	$args = shortcode_atts( $defaults, $args, 'gallery' );
+	$args = array_merge( $defaults, $args );
 
 	/**
 	 * Filter the related post thumbnail gallery arguments.
@@ -82,9 +89,8 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$filtered_args = apply_filters( 'related_posts_by_taxonomy_gallery', $args );
 	$args          = array_merge( $defaults, (array) $filtered_args );
 
-	$id = intval( $args['id'] );
 	if ( is_feed() ) {
-		$args['type'] = 'rpbt_gallery_feed';
+		$args['gallery_type'] = 'rpbt_gallery_feed';
 		$output = "\n";
 		foreach ( (array) $related_posts as $related ) {
 			$related = is_object( $related ) ? $related : get_post( $related );
@@ -117,27 +123,36 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		return $output;
 	}
 
-	$itemtag    = tag_escape( $args['itemtag'] );
-	$captiontag = tag_escape( $args['captiontag'] );
-	$icontag    = tag_escape( $args['icontag'] );
-	$valid_tags = wp_kses_allowed_html( 'post' );
-	if ( ! isset( $valid_tags[ $itemtag ] ) ) {
-		$itemtag = 'dl';
-	}
-	if ( ! isset( $valid_tags[ $captiontag ] ) ) {
-		$captiontag = 'dd';
-	}
-	if ( ! isset( $valid_tags[ $icontag ] ) ) {
-		$icontag = 'dt';
+	if ( 'editor_block' === $args['gallery_format'] ) {
+		return km_rpbt_get_gallery_editor_block_html( $related_posts, $args );
 	}
 
-	$columns       = intval( $args['columns'] );
-	$itemwidth     = $columns > 0 ? floor( 100 / $columns ) : 100;
+	return km_kpbt_get_gallery_shortcode_html( $related_posts, $args, $instance );
+}
+
+/**
+ * Gallery HTML similar to the WordPress gallery shortcode.
+ *
+ * @since  2.6.1
+ *
+ * @param array   $related_posts Array with related post objects that have a post thumbnail.
+ * @param array   $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
+ *                               accepted arguments.
+ * @param integer $instance      Gallery instance number for gallery CSS ids.
+ * @return string Gallery HTML.
+ */
+function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $instance = 0 ) {
+	if ( empty( $related_posts ) ) {
+		return '';
+	}
+
+	$args          = km_rpbt_validate_gallery_args( $args );
+	$instance      = absint( $instance );
+	$html5         = current_theme_supports( 'html5', 'gallery' );
 	$float         = is_rtl() ? 'right' : 'left';
 	$selector      = "rpbt-related-gallery-{$instance}";
-	$gallery_class = is_string( $args['gallery_class'] ) ? trim( $args['gallery_class'] ) : 'gallery';
-	$gallery_class = $gallery_class ? $gallery_class . ' ' : '';
 	$gallery_style = '';
+	$itemwidth     = $args['columns'] > 0 ? floor( 100 / $args['columns'] ) : 100;
 
 	/**
 	 * Filter whether to print default gallery styles.
@@ -172,8 +187,13 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		</style>\n\t\t";
 	}
 
-	$size_class = sanitize_html_class( $args['size'] );
-	$gallery_div = "<div id='$selector' class='{$gallery_class}related-gallery related-galleryid-{$id} gallery-columns-{$columns} gallery-size-{$size_class}'>";
+	$size_class    = sanitize_html_class( $args['size'] );
+	$gallery_class = km_rpbt_sanitize_classes( $args['gallery_class'] );
+	$gallery_class = $gallery_class ? $gallery_class . ' ' : '';
+
+	$gallery_div = "<div id='$selector' class='{$gallery_class}related-gallery related-galleryid-{$args['id']} gallery-columns-{$args['columns']} gallery-size-{$size_class}'>";
+
+	/** This filter is documented in wp-includes/media.php */
 	$output = apply_filters( 'gallery_style', $gallery_style . $gallery_div );
 
 	$i = 0;
@@ -185,106 +205,41 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 			continue;
 		}
 
-		$caption       = '';
 		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
-		$title         = apply_filters( 'the_title', $related->post_title, $related->ID );
-
-		if ( 'post_title' === $args['caption'] ) {
-			$date    = $args['show_date'] ? ' ' . km_rpbt_get_post_date( $related ) : '';
-			$caption = $title . $date;
-
-			if ( (bool) $args['link_caption'] ) {
-				$caption = km_rpbt_get_post_link( $related, $args );
-			}
-		} elseif ( 'post_excerpt' === $args['caption'] ) {
-			global $post;
-			$post = $related;
-			setup_postdata( $related );
-			$caption = apply_filters( 'the_excerpt', get_the_excerpt() );
-			wp_reset_postdata();
-		} elseif ( $thumbnail_id && ( 'attachment_caption' === $args['caption'] ) ) {
-			$attachment = get_post( $thumbnail_id );
-			$caption = ( isset( $attachment->post_excerpt ) ) ? $attachment->post_excerpt : '';
-		} elseif ( $thumbnail_id && ( 'attachment_alt' === $args['caption'] ) ) {
-			$caption = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
-		} else {
-			$caption = (string) $args['caption'];
-		}
-
-		/**
-		 * Filter the related post thumbnail caption.
-		 *
-		 * @since 0.3
-		 *
-		 * @param string $caption Options 'post_title', 'attachment_caption', attachment_alt, or a custom string. Default: post_title.
-		 * @param object $related Related post object.
-		 * @param array  $args    Function arguments.
-		 */
-		$caption = apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args );
-
-		$describedby = ( trim( $caption ) ) ? array(
+		$caption       = km_rpbt_get_gallery_image_caption( $thumbnail_id, $related, $args );
+		$describedby   = ( trim( $caption ) ) ? array(
 			'aria-describedby' => "{$selector}-{$related->ID}",
 		) : '';
-		$thumbnail   = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $describedby );
-		$permalink   = km_rpbt_get_permalink(  $related, $args );
-		$title_attr  = esc_attr( $title );
-		$image_link  = ( $thumbnail ) ? "<a href='$permalink' title='$title_attr'>$thumbnail</a>" : '';
-		$image_attr  = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
 
-		/**
-		 * Filter the gallery image link.
-		 *
-		 * @since 0.3
-		 *
-		 * @param string $post_thumbnail Html image tag or empty string.
-		 * @param array  $attributes     Image attributes.
-		 * @param object $related        Related post object
-		 * @param array  $args           Function arguments.
-		 */
-		$image_link = apply_filters( 'related_posts_by_taxonomy_post_thumbnail_link', $image_link, $image_attr, $related, $args );
-
+		$image_link = km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args, $describedby );
 		if ( ! $image_link ) {
 			continue;
 		}
 
-		/**
-		 * Filter the related posts gallery item CSS classes.
-		 *
-		 * Use this filter to remove the `gallery-item` class if you need to.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $classes Classes used for a gallery item. Default 'gallery-item'
-		 * @param object $related Related post object
-		 * @param array  $args    Gallery arguments.
-		 */
-		$itemclass  = apply_filters( 'related_posts_by_taxonomy_gallery_item_class', 'gallery-item', $related, $args );
-		$itemclass .= is_string( $args['post_class'] ) ? ' ' . $args['post_class'] : '';
-
-		$args['post_class'] = trim( $itemclass );
-		$itemclass          = km_rpbt_get_post_classes( $related, $args );
-		$image_meta         = wp_get_attachment_metadata( $thumbnail_id );
+		$itemclass  = km_rpbt_get_gallery_post_class( $related, $args, 'gallery-item' );
+		$itemclass  = $itemclass ? " class='{$itemclass}'" : '';
+		$image_meta = wp_get_attachment_metadata( $thumbnail_id );
 
 		$orientation = '';
 		if ( isset( $image_meta['height'], $image_meta['width'] ) ) {
 			$orientation = ( $image_meta['height'] > $image_meta['width'] ) ? 'portrait' : 'landscape';
 		}
 
-		$item_output .= "<{$itemtag} class='{$itemclass}'>";
+		$item_output .= "<{$args['itemtag']}{$itemclass}>";
 		$item_output .= "
-			<{$icontag} class='gallery-icon {$orientation}'>
+			<{$args['icontag']} class='gallery-icon {$orientation}'>
 				$image_link
-			</{$icontag}>";
+			</{$args['icontag']}>";
 
-		if ( $captiontag && trim( $caption ) ) {
+		if ( $args['captiontag'] && trim( $caption ) ) {
 			$item_output .= "
-				<{$captiontag} class='wp-caption-text gallery-caption' id='{$selector}-{$related->ID}'>
+				<{$args['captiontag']} class='wp-caption-text gallery-caption' id='{$selector}-{$related->ID}'>
 				" . $caption . "
-				</{$captiontag}>";
+				</{$args['captiontag']}>";
 		}
-		$item_output .= "</{$itemtag}>";
+		$item_output .= "</{$args['itemtag']}>";
 
-		if ( ! $html5 && ( $columns > 0 ) && ( ++$i % $columns == 0 ) ) {
+		if ( ! $html5 && ( $args['columns'] > 0 ) && ( ++$i % $args['columns'] == 0 ) ) {
 			$item_output .= '<br style="clear: both" />';
 		}
 	}
@@ -295,7 +250,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 	$output .= $item_output;
 
-	if ( ! $html5 && ( $columns > 0 ) && ( $i % $columns !== 0 ) ) {
+	if ( ! $html5 && ( $args['columns'] > 0 ) && ( $i % $args['columns'] !== 0 ) ) {
 		$output .= "
 			<br style='clear: both' />";
 	}
@@ -304,4 +259,219 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		</div>\n";
 
 	return $output;
+}
+
+/**
+ * Gallery HTML similar to the Gutenberg gallery block.
+ *
+ * @since  2.6.1
+ * @param array $related_posts Array with related post objects that have a post thumbnail.
+ * @param array $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
+ *                             accepted arguments.
+ * @return string Gallery HYML
+ */
+function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array() ) {
+	if ( empty( $related_posts ) ) {
+		return '';
+	}
+
+	$args = km_rpbt_validate_gallery_args( $args );
+	$html = '<ul class="wp-block-gallery columns-' . $args['columns'] . '">' . "\n";
+
+	foreach ( (array) $related_posts as $related ) {
+		$related = is_object( $related ) ? $related : get_post( $related );
+		if ( ! isset( $related->ID, $related->post_title ) ) {
+			continue;
+		}
+
+		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
+		$caption       = km_rpbt_get_gallery_image_caption( $thumbnail_id, $related, $args );
+
+		$image_link = km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args );
+		if ( ! $image_link ) {
+			continue;
+		}
+
+		$post_class = km_rpbt_get_gallery_post_class( $related, $args, 'blocks-gallery-item' );
+		$post_class = $post_class ? ' class="' . $post_class . '"' : '';
+
+		$html .= "<li{$post_class}>\n";
+		$html .= "<figure>\n{$image_link}\n";
+		if ( $caption ) {
+			$html .= "<figcaption>{$caption}</figcaption>\n";
+		}
+		$html .= "</figure>\n</li>\n";
+	}
+
+	return $html . "</ul>\n";
+}
+
+/**
+ * Validation of gallery arguments.
+ *
+ * @since 2.6.1
+ *
+ * @param array $args Arguments to validate. See km_rpbt_related_posts_by_taxonomy_gallery() for
+ *                    accepted arguments.
+ * @return array Validated arguments.
+ */
+function km_rpbt_validate_gallery_args( $args ) {
+	$defaults = km_kpbt_get_default_gallery_args();
+	$args     = array_merge( $defaults, $args );
+
+	$args['id']         = intval( $args['id'] );
+	$args['itemtag']    = tag_escape( $args['itemtag'] );
+	$args['captiontag'] = tag_escape( $args['captiontag'] );
+	$args['icontag']    = tag_escape( $args['icontag'] );
+	$valid_tags         = wp_kses_allowed_html( 'post' );
+	if ( ! isset( $valid_tags[ $args['itemtag'] ] ) ) {
+		$args['itemtag'] = 'dl';
+	}
+	if ( ! isset( $valid_tags[ $args['captiontag'] ] ) ) {
+		$args['captiontag'] = 'dd';
+	}
+	if ( ! isset( $valid_tags[ $args['icontag'] ] ) ) {
+		$args['icontag'] = 'dt';
+	}
+
+	$args['columns']       = intval( $args['columns'] );
+
+	$args['caption']       = is_string( $args['caption'] ) ? $args['caption'] : 'post_title';
+	$args['gallery_class'] = is_string( $args['gallery_class'] ) ? $args['gallery_class'] : 'gallery';
+
+	return $args;
+}
+
+/**
+ * CSS class for gallery items.
+ *
+ * @since 2.6.1
+ *
+ * @param array  $related_posts Array with related post objects that have a post thumbnail.
+ * @param array  $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
+ *                               accepted arguments.
+ * @param string $default_class Default CSS class for gallery items. Default empty string.
+ * @return string CSS classes for gallery items.
+ */
+function km_rpbt_get_gallery_post_class( $related, $args, $default_class = '' ) {
+	$defaults      = km_kpbt_get_default_gallery_args();
+	$args          = array_merge( $defaults, $args );
+	$default_class = sanitize_html_class( $default_class );
+
+
+	/**
+	 * Filter the related posts gallery item CSS classes.
+	 *
+	 * Use this filter to remove the `gallery-item` class if you need to.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $classes Classes used for a gallery item. Default 'gallery-item'
+	 * @param object $related Related post object
+	 * @param array  $args    Gallery arguments.
+	 */
+	$itemclass  = apply_filters( 'related_posts_by_taxonomy_gallery_item_class', $default_class, $related, $args );
+	$itemclass .= is_string( $args['post_class'] ) ? ' ' . $args['post_class'] : '';
+
+	$args['post_class'] = trim( $itemclass );
+	return km_rpbt_get_post_classes( $related, $args );
+}
+
+/**
+ * Get the gallery item link.
+ *
+ * @since  2.6.1
+ *
+ * @param int    $thumbnail_id Thumbnail ID.
+ * @param object $related      Related post object.
+ * @param array  $args         Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
+ *                             accepted arguments.
+ * @param array  $describedby  Array with aria-describedby attribute.
+ * @return string HTML link for a gallery item.
+ */
+function km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args, $describedby = '' ) {
+	$defaults    = km_kpbt_get_default_gallery_args();
+	$args        = array_merge( $defaults, $args );
+
+	$thumbnail   = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $describedby );
+	$permalink   = km_rpbt_get_permalink( $related, $args );
+
+	$title = '';
+	if ( isset( $related->post_title, $related->ID ) ) {
+		$title = apply_filters( 'the_title', $related->post_title, $related->ID );
+	}
+
+	$title_attr = esc_attr( $title );
+	$link_attr  = $title_attr ? " title='{$title_attr}'" : '';
+	$link_attr  = ( 'editor_block' === $args['gallery_format'] ) ? '' : $link_attr;
+	$image_link = ( $thumbnail ) ? "<a href='$permalink'{$link_attr}>$thumbnail</a>" : '';
+	$image_attr = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
+
+	/**
+	 * Filter the gallery image link.
+	 *
+	 * @since 0.3
+	 *
+	 * @param string $post_thumbnail Html image tag or empty string.
+	 * @param array  $attributes     Image attributes.
+	 * @param object $related        Related post object
+	 * @param array  $args           Function arguments.
+	 */
+	return apply_filters( 'related_posts_by_taxonomy_post_thumbnail_link', $image_link, $image_attr, $related, $args );
+}
+
+/**
+ * Get the gallery image caption
+ *
+ * @since 2.6.1
+ *
+ * @param int    $thumbnail_id Thumbnail ID.
+ * @param object $related      Related post object.
+ * @param array  $args         Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
+ *                             accepted arguments.
+ * @return string Image caption.
+ */
+function km_rpbt_get_gallery_image_caption( $thumbnail_id, $related, $args = array() ) {
+	$defaults      = km_kpbt_get_default_gallery_args();
+	$args          = array_merge( $defaults, $args );
+	$caption       = '';
+	$thumbnail_id  = absint( $thumbnail_id );
+
+	$title = '';
+	if ( isset( $related->post_title, $related->ID ) ) {
+		$title = apply_filters( 'the_title', $related->post_title, $related->ID );
+	}
+
+	if ( 'post_title' === $args['caption'] ) {
+		$date    = $args['show_date'] ? ' ' . km_rpbt_get_post_date( $related ) : '';
+		$caption = $title ? $title . $date : '';
+
+		if ( (bool) $args['link_caption'] ) {
+			$caption = km_rpbt_get_post_link( $related, $args );
+		}
+	} elseif ( 'post_excerpt' === $args['caption'] ) {
+		global $post;
+		$post = $related;
+		setup_postdata( $related );
+		$caption = apply_filters( 'the_excerpt', get_the_excerpt() );
+		wp_reset_postdata();
+	} elseif ( $thumbnail_id && ( 'attachment_caption' === $args['caption'] ) ) {
+		$attachment = get_post( $thumbnail_id );
+		$caption = ( isset( $attachment->post_excerpt ) ) ? $attachment->post_excerpt : '';
+	} elseif ( $thumbnail_id && ( 'attachment_alt' === $args['caption'] ) ) {
+		$caption = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
+	} else {
+		$caption = (string) $args['caption'];
+	}
+
+	/**
+	 * Filter the related post thumbnail caption.
+	 *
+	 * @since 0.3
+	 *
+	 * @param string $caption Options 'post_title', 'attachment_caption', attachment_alt, or a custom string. Default: post_title.
+	 * @param object $related Related post object.
+	 * @param array  $args    Function arguments.
+	 */
+	return apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args );
 }

@@ -181,10 +181,11 @@ function km_rpbt_get_default_settings( $type = '' ) {
 		'title'          => __( 'Related Posts', 'related-posts-by-taxonomy' ),
 		'format'         => 'links',
 		'image_size'     => 'thumbnail',
+		'gallery_format' => '',
 		'columns'        => 3,
+		'caption'        => 'post_title',
 		'link_caption'   => false,
 		'show_date'      => false,
-		'caption'        => 'post_title',
 		'post_class'     => '',
 
 		// back compat: double quoted class attribute

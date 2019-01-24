@@ -41,18 +41,19 @@
 		 */
 		$args = array(
 
-			// 'itemtag'    => 'dl',
-			// 'icontag'    => 'dt',
-			// 'captiontag' => 'dd',
+			// 'itemtag'     => 'dl',
+			// 'icontag'     => 'dt',
+			// 'captiontag'  => 'dd',
 
-			'id'           => $rpbt_args['post_id'],
-			'columns'      => $rpbt_args['columns'],    // zero or positive number
-			'size'         => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
-			'caption'      => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
-			'link_caption' => $rpbt_args['link_caption'], // Link caption to post
-			'show_date'    => $rpbt_args['show_date'], // Show post date
-			'post_class'   => $rpbt_args['post_class'], // CSS classes string
-			'type'         => $rpbt_args['type'], // type widget or shortcode
+			'id'             => $rpbt_args['post_id'],
+			'columns'        => $rpbt_args['columns'],    // zero or positive number
+			'size'           => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
+			'caption'        => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
+			'link_caption'   => $rpbt_args['link_caption'], // Link caption to post
+			'show_date'      => $rpbt_args['show_date'], // Show post date
+			'post_class'     => $rpbt_args['post_class'], // CSS classes string
+			'type'           => $rpbt_args['type'], // type widget or shortcode
+			'gallery_format' => $rpbt_args['gallery_format'], // 'editor_block' or empty string. Default empty string.
 		);
 
 		// Plugin function to display the galllery in /includes/gallery.php
