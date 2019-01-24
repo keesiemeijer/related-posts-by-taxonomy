@@ -5784,17 +5784,13 @@ var RelatedPostsBlock = function (_Component) {
 				null,
 				inspectorControls,
 				wp.element.createElement(
-					Disabled,
-					null,
-					wp.element.createElement(
-						'div',
-						{ className: className },
-						wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__components_RestRequest__["a" /* default */], {
-							block: 'related-posts-by-taxonomy/related-posts-block',
-							postID: postID,
-							attributes: shortcodeAttr
-						})
-					)
+					'div',
+					{ className: className },
+					wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__components_RestRequest__["a" /* default */], {
+						block: 'related-posts-by-taxonomy/related-posts-block',
+						postID: postID,
+						attributes: shortcodeAttr
+					})
 				)
 			);
 		}
@@ -6287,6 +6283,8 @@ function rendererPath(postID) {
 
 	var queryArgs = null !== attributes ? attributes : {};
 	queryArgs.editor_block = true;
+	queryArgs.gallery_format = 'is_block_editor';
+	queryArgs.link_caption = false;
 
 	return addQueryArgs('/related-posts-by-taxonomy/v1/posts/' + postID, _extends({}, queryArgs, urlQueryArgs));
 }

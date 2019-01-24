@@ -37,16 +37,17 @@
 		 * Arguments for km_rpbt_related_posts_by_taxonomy_gallery() function.
 		 */
 		$args = array(
-			'itemtag'       => $html5 ? 'figure' : 'dl',
-			'icontag'       => $html5 ? 'div' : 'dt',
-			'captiontag'    => $html5 ? 'figcaption' : 'dd',
-			'id'            => $rpbt_args['post_id'],
-			'columns'       => $rpbt_args['columns'],    // zero or positive number
-			'size'          => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
-			'caption'       => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
-			'link_caption'  => $rpbt_args['link_caption'],
-			'show_date'     => $rpbt_args['show_date'],
-			'gallery_class' => '',
+			'itemtag'        => $html5 ? 'figure' : 'dl',
+			'icontag'        => $html5 ? 'div' : 'dt',
+			'captiontag'     => $html5 ? 'figcaption' : 'dd',
+			'id'             => $rpbt_args['post_id'],
+			'columns'        => $rpbt_args['columns'],    // zero or positive number
+			'size'           => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
+			'caption'        => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
+			'link_caption'   => $rpbt_args['link_caption'],
+			'show_date'      => $rpbt_args['show_date'],
+			'gallery_format' => $rpbt_args['gallery_format'],
+			'gallery_class'  => '',
 		);
 
 		// Plugin function to display the galllery in /includes/functions-thumbnail.php

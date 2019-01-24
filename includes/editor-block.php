@@ -171,6 +171,7 @@ function km_rpbt_render_block_related_post( $args ) {
 	}
 
 	$settings = km_rpbt_get_default_settings( 'editor_block' );
+	$settings['gallery_format'] = 'editor_block';
 
 	/**
 	 * Filter default editor block attributes.
@@ -182,6 +183,7 @@ function km_rpbt_render_block_related_post( $args ) {
 	 */
 	$defaults = apply_filters( "related_posts_by_taxonomy_editor_block_defaults", $settings );
 	$defaults = array_merge( $settings, (array) $defaults );
+	$args     = array_merge( $defaults, $args );
 
 	$args['type'] = 'editor_block';
 	$args         = km_rpbt_validate_args( $args );

@@ -70,7 +70,6 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 	static $instance = 0;
 	$instance++;
-
 	$post           = get_post();
 	$defaults       = km_kpbt_get_default_gallery_args();
 	$defaults['id'] = $post ? $post->ID : 0;
@@ -78,6 +77,10 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	/* Filter hook: shortcode_atts_gallery */
 	$args = shortcode_atts( $defaults, $args, 'gallery' );
 	$args = array_merge( $defaults, $args );
+	if ( 'is_block_editor' === $args['gallery_format'] ) {
+		$args['gallery_format'] = 'editor_block';
+		$args['is_block_editor'] = true;
+	}
 
 	/**
 	 * Filter the related post thumbnail gallery arguments.
@@ -339,6 +342,8 @@ function km_rpbt_validate_gallery_args( $args ) {
 	$args['caption']       = is_string( $args['caption'] ) ? $args['caption'] : 'post_title';
 	$args['gallery_class'] = is_string( $args['gallery_class'] ) ? $args['gallery_class'] : 'gallery';
 
+	$args = km_rpbt_validate_booleans( $args, $defaults );
+
 	return $args;
 }
 
@@ -392,6 +397,11 @@ function km_rpbt_get_gallery_post_class( $related, $args, $default_class = '' ) 
 function km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args, $describedby = '' ) {
 	$defaults    = km_kpbt_get_default_gallery_args();
 	$args        = array_merge( $defaults, $args );
+	$is_editor   = isset( $args['is_block_editor'] ) && $args['is_block_editor'];
+
+	if ( $is_editor ) {
+		return km_rpbt_get_editor_block_attachment_image( $thumbnail_id );
+	}
 
 	$thumbnail   = wp_get_attachment_image( $thumbnail_id, $args['size'], false, $describedby );
 	$permalink   = km_rpbt_get_permalink( $related, $args );
@@ -407,6 +417,7 @@ function km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args, $descri
 	$image_link = ( $thumbnail ) ? "<a href='$permalink'{$link_attr}>$thumbnail</a>" : '';
 	$image_attr = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
 
+
 	/**
 	 * Filter the gallery image link.
 	 *
@@ -418,6 +429,22 @@ function km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args, $descri
 	 * @param array  $args           Function arguments.
 	 */
 	return apply_filters( 'related_posts_by_taxonomy_post_thumbnail_link', $image_link, $image_attr, $related, $args );
+}
+
+
+function km_rpbt_get_editor_block_attachment_image( $attachment_id, $size = 'thumbnail' ) {
+	$html  = '';
+	$image = wp_get_attachment_image_src( $attachment_id, 'large' );
+	if ( isset( $image[0] ) && $image[0] ) {
+		$alt = trim( strip_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) );
+
+		$html .= '<img src="' . esc_attr( $image[0] ) . '"';
+		$html .= $alt ? ' alt="' . esc_attr( $alt ) . '"' : '';
+		$html .= ' data-id="' . $attachment_id . '"';
+		$html .= ' class="wp-image-' . $attachment_id . '" />';
+	}
+
+	return $html;
 }
 
 /**

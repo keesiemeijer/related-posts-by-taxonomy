@@ -158,7 +158,7 @@ export class RelatedPostsBlock extends Component {
 		return (
 			<Fragment>
 				{inspectorControls}
-				<Disabled>
+				
 					<div className={className}>
 					<RestRequest
 						block="related-posts-by-taxonomy/related-posts-block"
@@ -166,7 +166,7 @@ export class RelatedPostsBlock extends Component {
 						attributes={ shortcodeAttr }
 					/>
 					</div>
-				</Disabled>
+				
 			</Fragment>
 		);
 	}
