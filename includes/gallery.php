@@ -287,7 +287,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array() 
 		$thumbnail_id  = get_post_thumbnail_id( $related->ID );
 		$caption       = km_rpbt_get_gallery_image_caption( $thumbnail_id, $related, $args );
 
-		$image_link    = km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args );
+		$image_link = km_rpbt_get_gallery_image_link( $thumbnail_id, $related, $args );
 		if ( ! $image_link ) {
 			continue;
 		}
