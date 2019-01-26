@@ -158,15 +158,15 @@ export class RelatedPostsBlock extends Component {
 		return (
 			<Fragment>
 				{inspectorControls}
-				
 					<div className={className}>
+					<Disabled>
 					<RestRequest
 						block="related-posts-by-taxonomy/related-posts-block"
 						postID={postID}
 						attributes={ shortcodeAttr }
 					/>
+					</Disabled>
 					</div>
-				
 			</Fragment>
 		);
 	}

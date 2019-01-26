@@ -94,6 +94,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 */
 	private function filter_request_args( $args, $post_id, $request ) {
 		$args['post_id'] = $post_id;
+
 		$defaults = km_rpbt_get_default_settings( 'wp_rest_api' );
 
 		/**
@@ -215,9 +216,11 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @return mixed
 	 */
 	public function prepare_item_for_response( $args, $request ) {
-		$related_posts = array();
-		$rendered      = '';
-		$cancel_query  = $request->get_param( 'rpbt_cancel_query' );
+		$related_posts   = array();
+		$rendered        = '';
+		$cancel_query    = $request->get_param( 'rpbt_cancel_query' );
+		$is_editor_block = isset( $args['is_editor'] ) && $args['is_editor'];
+		$args['type']    = $is_editor_block ? 'editor_block' : 'wp_rest_api';
 
 		// Check if none, or valid (registered) post types and taxonomies are provided in the request.
 		if ( ! $cancel_query ) {

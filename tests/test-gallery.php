@@ -40,6 +40,8 @@ EOF;
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
 	}
 
+
+
 	/**
 	 * Test output from gallery.
 	 */
@@ -52,7 +54,7 @@ EOF;
 		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$expected = <<<EOF
-<ul class="wp-block-gallery columns-3">
+<ul class="wp-block-gallery rpbt-related-block-gallery columns-3">
 <li class="blocks-gallery-item my-class">
 <figure>
 <a href='{$permalink}'><img></a>
@@ -60,6 +62,37 @@ EOF;
 </figure>
 </li>
 </ul>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
+	}
+
+		/**
+	 * Test output from gallery.
+	 */
+	function test_shortcode_no_gallery_style_back_compat() {
+		$gallery_args = $this->setup_gallery();
+		extract( $gallery_args );
+		$args['post_id'] = $args['id'];
+		$args['image_size'] = 'medium';
+
+		unset($args['id']);
+
+		add_filter( 'use_default_gallery_style', '__return_false', 99 );
+
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+
+		$static   = $this->get_gallery_instance_id( $gallery );
+		$expected = <<<EOF
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['post_id']} gallery-columns-3 gallery-size-medium'><dl class='gallery-item'>
+<dt class='gallery-icon '>
+<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['post_id']}'>
+{$related_post->post_title}
+</dd></dl>
+<br style='clear: both' />
+</div>
 EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );

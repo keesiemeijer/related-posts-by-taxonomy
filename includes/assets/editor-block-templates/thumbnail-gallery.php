@@ -1,26 +1,28 @@
 <?php
 /**
- * Format thumbnail gallery in the editor block.
+ * Widget and shortcode template: post thumbnails template
+ *
+ * This template is used by the plugin: Related Posts by Taxonomy.
+ *
+ * plugin:        https://wordpress.org/plugins/related-posts-by-taxonomy
+ * Documentation: https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/
+ *
+ * Only edit this file after you've copied it to your (child) theme's related-post-plugin folder.
+ * See: https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/templates/
  *
  * @package Related Posts by Taxonomy
- * @since 2.4.2
- *
- * The same template as /templates/related-posts-thumbnails.php.
- * In this template we set the item, icon, and figcaption tags instead of using the defaults.
- * The 'gallery' class selector is also removed.
- *
- * The reason for using this template for the editor is that you cannot filter this template in your theme.
+ * @since 0.3
  *
  * The following variables are available:
  *
- * @var array  $related_posts Array with full related posts objects or empty array.
- * @var array  $rpbt_args     Array with widget or shortcode arguments.
+ * @var array $related_posts Array with related post objects or related post IDs.
+ *                           Empty array if no related posts are found.
+ * @var array $rpbt_args     Array with widget, shortcode, rest API or editor block arguments.
  *
  * deprecated (since version 0.3)
  * @var string $image_size    Image size. (deprecated - use $rpbt_args['image_size'] instead)
  * @var string $columns       Columns.    (deprecated - use $rpbt_args['columns'] instead)
  */
-
 ?>
 
 <?php
@@ -30,28 +32,16 @@
 ?>
 
 <?php if ( $related_posts ) : ?>
+
 	<?php
-		$html5 = current_theme_supports( 'html5', 'gallery' );
-
 		/**
-		 * Arguments for km_rpbt_related_posts_by_taxonomy_gallery() function.
+		 * Use the $rpbt_args from the shortcode, widget, rest API or editor block.
+		 *
+		 * See plugin function documentation.
+		 * https://keesiemeijer.github.io/related-posts-by-taxonomy/functions/km_rpbt_related_posts_by_taxonomy_gallery
 		 */
-		$args = array(
-			'itemtag'        => $html5 ? 'figure' : 'dl',
-			'icontag'        => $html5 ? 'div' : 'dt',
-			'captiontag'     => $html5 ? 'figcaption' : 'dd',
-			'id'             => $rpbt_args['post_id'],
-			'columns'        => $rpbt_args['columns'],    // zero or positive number
-			'size'           => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
-			'caption'        => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
-			'link_caption'   => $rpbt_args['link_caption'],
-			'show_date'      => $rpbt_args['show_date'],
-			'gallery_format' => $rpbt_args['gallery_format'],
-			'gallery_class'  => '',
-		);
 
-		// Plugin function to display the galllery in /includes/functions-thumbnail.php
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts );
+		echo km_rpbt_related_posts_by_taxonomy_gallery( $rpbt_args, $related_posts );
 	?>
 
 <?php else : ?>

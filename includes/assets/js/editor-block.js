@@ -5786,11 +5786,15 @@ var RelatedPostsBlock = function (_Component) {
 				wp.element.createElement(
 					'div',
 					{ className: className },
-					wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__components_RestRequest__["a" /* default */], {
-						block: 'related-posts-by-taxonomy/related-posts-block',
-						postID: postID,
-						attributes: shortcodeAttr
-					})
+					wp.element.createElement(
+						Disabled,
+						null,
+						wp.element.createElement(__WEBPACK_IMPORTED_MODULE_7__components_RestRequest__["a" /* default */], {
+							block: 'related-posts-by-taxonomy/related-posts-block',
+							postID: postID,
+							attributes: shortcodeAttr
+						})
+					)
 				)
 			);
 		}
@@ -6282,8 +6286,10 @@ function rendererPath(postID) {
 	var urlQueryArgs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
 	var queryArgs = null !== attributes ? attributes : {};
-	queryArgs.editor_block = true;
-	queryArgs.gallery_format = 'is_block_editor';
+
+	// Defaults
+	queryArgs.gallery_format = 'editor_block';
+	queryArgs.is_editor = true;
 	queryArgs.link_caption = false;
 
 	return addQueryArgs('/related-posts-by-taxonomy/v1/posts/' + postID, _extends({}, queryArgs, urlQueryArgs));

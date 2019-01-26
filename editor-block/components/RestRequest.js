@@ -14,8 +14,10 @@ const { addQueryArgs } = wp.url;
 
 export function rendererPath( postID, attributes = null, urlQueryArgs = {} ) {
 	let queryArgs = ( null !== attributes ) ? attributes : {};
-	queryArgs.editor_block = true;
-	queryArgs.gallery_format = 'is_block_editor';
+
+	// Defaults
+	queryArgs.gallery_format = 'editor_block';
+	queryArgs.is_editor = true;
 	queryArgs.link_caption = false;
 
 	return addQueryArgs( `/related-posts-by-taxonomy/v1/posts/${ postID }`, {		
