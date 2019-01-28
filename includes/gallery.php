@@ -5,6 +5,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Default gallery arguments.
+ *
+ * @since 2.6.1
+ *
+ * @param integer $post_id Optional. post ID. Default 0.
+ * @return Default gallery arguments.
+ */
 function km_kpbt_get_default_gallery_args( $post_id = 0 ) {
 	$html5 = current_theme_supports( 'html5', 'gallery' );
 
@@ -281,10 +289,11 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 		return '';
 	}
 
+	$html = '';
 	$args = km_rpbt_validate_gallery_args( $args );
-	$args['size'] = 'large';
 
-	$html = '<ul class="wp-block-gallery rpbt-related-block-gallery columns-' . $args['columns'] . '">' . "\n";
+	// Use wp_make_content_images_responsive() to make images responsive.
+	$args['size'] = 'large';
 
 	foreach ( (array) $related_posts as $related ) {
 		$related = is_object( $related ) ? $related : get_post( $related );
@@ -303,15 +312,21 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 		$post_class = km_rpbt_get_gallery_post_class( $related, $args, 'blocks-gallery-item' );
 		$post_class = $post_class ? ' class="' . $post_class . '"' : '';
 
-		$html .= "<li{$post_class}>\n";
-		$html .= "<figure>\n{$image}\n";
+		$html .= "<li{$post_class}>\n<figure>\n{$image}\n";
 		if ( $caption ) {
 			$html .= "<figcaption>{$caption}</figcaption>\n";
 		}
 		$html .= "</figure>\n</li>\n";
 	}
 
-	return $html . "</ul>\n";
+	if ( ! $html ) {
+		return '';
+	}
+
+	$class = "wp-block-gallery rpbt-related-block-gallery columns-{$args['columns']}";
+	$html  = '<ul class="' . $class  . '">' . "\n" . $html . "</ul>\n";
+
+	return wp_make_content_images_responsive( $html );
 }
 
 /**
@@ -434,7 +449,16 @@ function km_rpbt_get_gallery_image_link( $attachment_id, $related, $args = array
 	return apply_filters( 'related_posts_by_taxonomy_post_thumbnail_link', $image_link, $image_attr, $related, $args );
 }
 
-
+/**
+ * Image HTML similar to the Gutenberg gallery block images.
+ *
+ * @since  2.6.1
+ *
+ * @param int   $attachment_id Thumbnail ID.
+ * @param array $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
+ *                             accepted arguments.
+ * @return string Image HTML string.
+ */
 function km_rpbt_get_editor_block_image( $attachment_id, $args = array() ) {
 	$defaults = km_kpbt_get_default_gallery_args();
 	$args     = array_merge( $defaults, $args );
@@ -453,6 +477,17 @@ function km_rpbt_get_editor_block_image( $attachment_id, $args = array() ) {
 	return $html;
 }
 
+/**
+ * HTML image link similar to the Gutenberg gallery block.
+ *
+ * @since  2.6.1
+ *
+ * @param int    $attachment_id Thumbnail ID.
+ * @param object $related       Related post object.
+ * @param array  $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
+ *                              accepted arguments.
+ * @return string Image link HTML string.
+ */
 function km_rpbt_get_editor_block_image_link( $attachment_id, $related, $args = array() ) {
 	$image = km_rpbt_get_editor_block_image( $attachment_id, $args );
 	if ( ! $image ) {
