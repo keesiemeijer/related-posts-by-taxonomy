@@ -292,7 +292,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$html = '';
 	$args = km_rpbt_validate_gallery_args( $args );
 
-	// Use wp_make_content_images_responsive() to make images responsive.
+	// Use wp_make_content_images_responsive() below to make images responsive.
 	$args['size'] = 'large';
 
 	foreach ( (array) $related_posts as $related ) {
@@ -326,7 +326,12 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$class = "wp-block-gallery rpbt-related-block-gallery columns-{$args['columns']}";
 	$html  = '<ul class="' . $class  . '">' . "\n" . $html . "</ul>\n";
 
-	return wp_make_content_images_responsive( $html );
+	if ( function_exists( 'wp_make_content_images_responsive' ) ) {
+		// since WP 4.4.0
+		$html = wp_make_content_images_responsive( $html );
+	}
+
+	return $html;
 }
 
 /**
