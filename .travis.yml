@@ -8,23 +8,23 @@ notifications:
     on_failure: change
 
 matrix:
-  allow_failures:
-    - php: hhvm
   include:
-    - php: 7.0
+    - php: 7.3
       env: WP_VERSION=latest WP_MULTISITE=0
-    - php: 7.0
+    - php: 7.3
       env: WP_VERSION=latest WP_MULTISITE=1
-    - php: 7.0
+    - php: 7.3
       env: WP_VERSION=4.9 WP_MULTISITE=0
-    - php: 7.0
+    - php: 7.3
       env: WP_VERSION=4.8 WP_MULTISITE=0
-    - php: 5.6
+    - php: 7.2
+      env: WP_VERSION=latest WP_MULTISITE=0
+    - php: 7.1
+      env: WP_VERSION=latest WP_MULTISITE=0
+    - php: 7.0
       env: WP_VERSION=latest WP_MULTISITE=0
     - php: 5.6
-      env: WP_VERSION=4.9 WP_MULTISITE=0
-    - php: 5.6
-      env: WP_VERSION=4.8 WP_MULTISITE=0
+      env: WP_VERSION=latest WP_MULTISITE=0
     - php: 5.5
       env: WP_VERSION=latest WP_MULTISITE=0
     - php: 5.4
