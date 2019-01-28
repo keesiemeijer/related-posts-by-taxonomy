@@ -154,6 +154,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			$args = array_merge( $this->default_args, (array) $args );
 
+			/** This filter is documented in includes/functions.php */
+			$posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $args );
+			if ( is_array( $posts ) ) {
+				return $posts;
+			}
+
 			// Check if post_id and taxonomies are set.
 			if ( ! $this->is_valid_cache_args( $args ) ) {
 				$this->cache_log[] = 'Cache failed - invalid cache args';
@@ -164,13 +170,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			$cache = $this->get_post_meta( $args );
 
 			if ( isset( $cache['ids'] ) ) {
-
 				if ( empty( $cache['ids'] ) ) {
 					// Cached, but the current post has no related posts.
 					$posts = array();
 					$this->cache_log[] = sprintf( 'Post ID %d - cache exists (no related posts found)', $args['post_id'] );
 				} else {
-					// Cached related post ids are found!
+					// Cached and related post ids are found!
 					$posts = $this->get_cache( $args, $cache );
 				}
 			} else {
@@ -233,19 +238,15 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// Restricted query arguments.
 			unset( $query_args['taxonomies'], $query_args['post_id'] );
 
-			/** This filter is documented in includes/functions.php */
-			$posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $args );
+			// Add a filter to get the current arguments with related terms found.
+			add_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
 
-			if ( ! is_array( $posts ) ) {
-				// Add a filter to get the current arguments with related terms found.
-				add_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
+			// Get related posts.
+			$posts = km_rpbt_query_related_posts( $args['post_id'], $args['taxonomies'], $query_args );
 
-				// Get related posts.
-				$posts = km_rpbt_query_related_posts( $args['post_id'], $args['taxonomies'], $query_args );
+			// Remove the filter.
+			remove_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
 
-				// Remove the filter.
-				remove_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
-			}
 
 			// Create the array with cached post ids
 			// and add the related term count.
@@ -328,13 +329,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				$wp_query_args['fields'] = 'ids';
 			}
 
-			/** This filter is documented in includes/functions.php */
-			$posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $args );
-
-			if ( ! is_array( $posts ) ) {
-				// Get related posts with get_posts().
-				$posts = get_posts( $wp_query_args );
-			}
+			// Get related posts with get_posts().
+			$posts = get_posts( $wp_query_args );
 
 			if ( ! empty( $posts ) ) {
 				if ( '' === $fields ) {
