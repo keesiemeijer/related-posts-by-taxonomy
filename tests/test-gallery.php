@@ -52,7 +52,7 @@ EOF;
 		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$expected = <<<EOF
-<ul class="wp-block-gallery columns-3">
+<ul class="wp-block-gallery rpbt-related-block-gallery columns-3">
 <li class="blocks-gallery-item my-class">
 <figure>
 <a href='{$permalink}'><img></a>
