@@ -154,6 +154,9 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 		$link = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . '</a>';
 		$link .= $args['show_date'] ? ' ' . km_rpbt_get_post_date( $post ) : '';
 	}
+
+	$link_attr = compact( 'title', 'permalink' );
+
 	/**
 	 * Filter related post link HTML.
 	 *
@@ -162,7 +165,7 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 	 * @param Object $post Post object.
 	 * @param array  $attr Link attributes.
 	 */
-	return apply_filters( 'related_posts_by_taxonomy_post_link', $link, $post, compact( 'title', 'permalink, $args' ) );
+	return apply_filters( 'related_posts_by_taxonomy_post_link', $link, $post, $link_attr, $args );
 }
 
 /**
