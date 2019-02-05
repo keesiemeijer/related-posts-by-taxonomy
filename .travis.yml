@@ -37,9 +37,11 @@ matrix:
 
 before_script:
 - |
-  ts_version=''
-  [[ 'trunk' != "$RPBT_WP_TS_VERSION" ]] && ts_version=" --wp-ts-version=$WP_VERSION"
-  bash bin/install-wp-tests.sh wordpress_test root '' --wp-version="$WP_VERSION" "$ts_version"
+  if [[ 'trunk' != "$RPBT_WP_TS_VERSION" ]]; then
+    bash bin/install-wp-tests.sh wordpress_test root '' --wp-version="$WP_VERSION" --wp-ts-version="$WP_VERSION"
+  else
+    bash bin/install-wp-tests.sh wordpress_test root '' --wp-version="$WP_VERSION"
+  fi 
 - |
   # Export Composer's global bin dir to PATH, but not on PHP 5.2:
   if [[ ${TRAVIS_PHP_VERSION:0:3} != "5.2" ]]; then
