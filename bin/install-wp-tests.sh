@@ -90,18 +90,23 @@ printf "WP_TESTS_DIR=%s\n" "$WP_TESTS_DIR"
 
 set -x
 
+# Functions
 download() {
-	curl -s "$1" -o "$2" 2>/dev/null || wget -nv -O "$2" "$1"
+	if command_exists "curl"; then
+		curl -s "$1" > "$2";
+	elif command_exists "wget"; then
+		wget -q --show-progress -O "$2" "$1" 2>/dev/null
+	fi
+
+	# Check if file exists.
+	if [[ -f "$2" ]]; then
+		return 0
+	fi
+
+	printf "Error: Could not download %s\n" "$1"
+	return 1
 }
  
-wp_download_exists(){
-	if command_exists "curl"; then
-		curl --output /dev/null --silent --head --fail "$1";
-	elif command_exists "wget"; then
-		wget --spider "$1" >/dev/null 2>&1;
-	fi
-}
-
 install_wp() {
 	mkdir -p "$WP_CORE_DIR"
 
@@ -116,18 +121,16 @@ install_wp() {
 		printf "Installing WordPress trunk... \n"
 		svn export --quiet --force "https://develop.svn.wordpress.org/trunk/src/" "$WP_CORE_DIR"
 	else
-		if wp_download_exists "https://wordpress.org/wordpress-$WP_VERSION.tar.gz"; then
-			download "https://wordpress.org/wordpress-$WP_VERSION.tar.gz" "$TMPDIR/wordpress.tar.gz"
+		if download "https://wordpress.org/wordpress-$WP_VERSION.tar.gz" "$TMPDIR/wordpress.tar.gz"; then			
 			tar --strip-components=1 -zxmf "$TMPDIR/wordpress.tar.gz" -C "$WP_CORE_DIR"
 		else
-			echo "Error: WordPress not downloaded."
 			exit
 		fi 
 	fi
 
 	if [[ -d "$WP_CORE_DIR/wp-content/" ]]; then
-		if wp_download_exists "https://raw.github.com/markoheijnen/wp-mysqli/master/db.php"; then
-			download "https://raw.github.com/markoheijnen/wp-mysqli/master/db.php" "$WP_CORE_DIR/wp-content/db.php"
+		if ! download "https://raw.github.com/markoheijnen/wp-mysqli/master/db.php" "$WP_CORE_DIR/wp-content/db.php"; then
+			exit
 		fi
 	fi
 }
@@ -150,10 +153,8 @@ install_test_suite() {
 	fi
 
 	# Set up the testing suite from the core version
-
-	if ! wp_download_exists "https://develop.svn.wordpress.org/$archive/wp-tests-config-sample.php"; then
-		echo "Error: wp-tests-config-sample.php not found."
-		return
+	if ! download "https://develop.svn.wordpress.org/$archive/wp-tests-config-sample.php" "$WP_TESTS_DIR/wp-tests-config.php"; then
+		exit 1
 	fi
 
 	svn export --quiet --force "https://develop.svn.wordpress.org/$archive/tests/phpunit/includes/" "$WP_TESTS_DIR/includes"
@@ -161,7 +162,6 @@ install_test_suite() {
 
 	cd "$WP_TESTS_DIR" || exit
 
-	download "https://develop.svn.wordpress.org/$archive/wp-tests-config-sample.php" "$WP_TESTS_DIR/wp-tests-config.php"
 
 	if [[ -f "$WP_TESTS_DIR/wp-tests-config.php" ]]; then
 		sed $ioption "s:dirname( __FILE__ ) . '/src/':'$WP_CORE_DIR/':" "$WP_TESTS_DIR/wp-tests-config.php"
