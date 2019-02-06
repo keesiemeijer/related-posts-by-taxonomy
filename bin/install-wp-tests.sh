@@ -2,11 +2,19 @@
 
 ARGUMENT_COUNT=0
 
+TMPDIR=${TMPDIR-/tmp}
+WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
+WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress/}
+
+#remove trailing slash
+WP_CORE_DIR=${WP_CORE_DIR%/}
+
 # Set arguments and flags.
 for arg in "$@"
 do
 	if ! [[ "$arg" =~ ^- ]]; then
 		ARGUMENT_COUNT=$((ARGUMENT_COUNT + 1))
+		# Back compat
 		case "$ARGUMENT_COUNT" in
 			4) DB_HOST=$4 ;;
 			5) WP_VERSION=$5 ;;
@@ -16,7 +24,7 @@ do
 		case "$arg" in
 			--wp-version=*) WP_VERSION=${arg#"--wp-version="};;
 			--wp-ts-version=*) WP_TS_VERSION=${arg#"--wp-ts-version="};;
-			--skip-database-creation) SKIP_DB_CREATE=true ;;
+			--skip-database-creation) SKIP_DB_CREATE="true" ;;
 			*)
 			printf "Unknown option: %s.\n" "$arg"
 			exit 1
@@ -47,14 +55,19 @@ if [[ -f "$WP_CORE_DIR/wp-includes/version.php" ]]; then
 	fi
 fi
 
+# Utility function to check if a command is installed.
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
 WP_LATEST=''
 if [[ 'latest' = "$WP_VERSION" || 'latest' = "$WP_TS_VERSION" ]]; then
 	api_url="http://api.wordpress.org/core/version-check/1.5/"
 
-	if [ `which curl` ]; then
+	if command_exists "curl"; then
 		WP_LATEST=$(curl -s "$api_url" | head -n 4 | tail -n 1)
-	elif [ `which wget` ]; then
-		WP_LATEST=$(wget -S -q -O - "$api_url" | head -n 4 | tail -n 1);
+	elif command_exists "wget"; then
+		WP_LATEST=$(wget -S -q -O - "$api_url" 2>/dev/null | head -n 4 | tail -n 1);
 	fi
 
 	if [[ -z "$WP_LATEST" ]]; then
@@ -68,35 +81,23 @@ printf "DB_USER=%s\n" "$DB_USER"
 printf "DB_PASS=%s\n" "$DB_PASS"
 printf "DB_HOST=%s\n" "$DB_HOST"
 printf "WP_VERSION=%s\n" "$WP_VERSION"
+printf "WP_TS_VERSION=%s\n" "$WP_TS_VERSION"
 printf "WP_LATEST=%s\n" "$WP_LATEST"
 printf "INSTALLED_VERSION=%s\n" "$INSTALLED_VERSION"
-printf "WP_TS_VERSION=%s\n" "$WP_TS_VERSION"
 printf "SKIP_DB_CREATE=%s\n" "$SKIP_DB_CREATE"
-
-# To test release candidates use
-# bash bin/install-wp-tests.sh wordpress_test root '' --wp-version=4.5-RC1 --wp-ts-version=trunk
-
-TMPDIR=${TMPDIR-/tmp}
-WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
-WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress/}
-
-#remove trailing slash
-WP_CORE_DIR=${WP_CORE_DIR%/}
+printf "WP_CORE_DIR=%s\n" "$WP_CORE_DIR"
+printf "WP_TESTS_DIR=%s\n" "$WP_TESTS_DIR"
 
 set -x
 
 download() {
-	if [ `which curl` ]; then
-		curl -s "$1" > "$2";
-	elif [ `which wget` ]; then
-		wget -nv -O "$2" "$1"
-	fi
+	curl -s "$1" -o "$2" 2>/dev/null || wget -nv -O "$2" "$1"
 }
  
 wp_download_exists(){
-	if [ `which curl` ]; then
+	if command_exists "curl"; then
 		curl --output /dev/null --silent --head --fail "$1";
-	elif [ `which wget` ]; then
+	elif command_exists "wget"; then
 		wget --spider "$1" >/dev/null 2>&1;
 	fi
 }
@@ -172,6 +173,9 @@ install_test_suite() {
 }
 
 install_db() {
+	if [ "$SKIP_DB_CREATE" = "true" ]; then
+		return 0
+	fi
 	# parse DB_HOST for port or socket references
 	local PARTS=("${DB_HOST//\:/ }")
 	local DB_HOSTNAME="${PARTS[0]}";
@@ -179,11 +183,11 @@ install_db() {
 	local EXTRA=""
 
 	if [ -n "$DB_HOSTNAME" ] ; then
-		if [ "$(echo "$DB_SOCK_OR_PORT" | grep -e '^[0-9]\{1,\}$')" ]; then
+		if [[ -n "$(echo "$DB_SOCK_OR_PORT" | grep -e '^[0-9]\{1,\}$')" ]]; then
 			EXTRA="--host=$DB_HOSTNAME --port=$DB_SOCK_OR_PORT --protocol=tcp"
-		elif [ -n "$DB_SOCK_OR_PORT" ] ; then
+		elif [[ -n "$DB_SOCK_OR_PORT" ]]; then
 			EXTRA="--socket=$DB_SOCK_OR_PORT"
-		elif [ -n "$DB_HOSTNAME" ] ; then
+		elif [[ -n "$DB_HOSTNAME" ]]; then
 			EXTRA="--host=$DB_HOSTNAME"
 		fi
 	fi
