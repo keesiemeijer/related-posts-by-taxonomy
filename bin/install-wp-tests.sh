@@ -92,14 +92,15 @@ set -x
 
 # Functions
 download() {
+	local download=false
 	if command_exists "curl"; then
-		curl -s "$1" > "$2";
+		curl -s "$1" > "$2" && download=true
 	elif command_exists "wget"; then
-		wget -q --show-progress -O "$2" "$1" 2>/dev/null
+		wget -q --show-progress -O "$2" "$1" 2>/dev/null && download=true
 	fi
 
-	# Check if file exists.
-	if [[ -f "$2" ]]; then
+	# Check if file was downloaded.
+	if [[ -f "$2" && "$download" = true ]]; then
 		return 0
 	fi
 
