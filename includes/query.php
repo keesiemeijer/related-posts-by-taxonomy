@@ -73,6 +73,11 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		return array();
 	}
 
+	if ( $args['include_parents'] ) {
+		$parent_terms = km_rpbt_get_parent_terms( $terms, $taxonomies );
+		$terms        = array_unique( array_merge( $terms, $parent_terms ) );
+	}
+
 	$args['related_terms'] = $terms;
 	$args['termcount']     = array();
 
@@ -186,7 +191,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$meta_query = is_array( $meta_query->queries ) ? $meta_query->queries : array();
 
 	// Default to AND.
-	if( isset( $meta_query['relation'] ) ) {
+	if ( isset( $meta_query['relation'] ) ) {
 		$meta_query['relation'] = 'AND';
 	}
 

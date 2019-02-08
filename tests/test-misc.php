@@ -141,12 +141,13 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_empty_output() {
 		$create_posts = $this->create_posts_with_terms();
+
 		$posts        = $create_posts['posts'];
+		$terms        = $create_posts['tax2_terms'];
 		$_posts       = get_posts();
-		$args         =  array( 'fields' => 'ids' );
+		$args         = array( 'fields' => 'ids' );
 		$taxonomies   = array( 'category', 'post_tag' );
 		$attachment_id = $this->create_image();
-
 
 		ob_start();
 
@@ -174,6 +175,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$post_types          = km_rpbt_get_post_types( 'post,page' );
 		$taxonomies          = km_rpbt_get_taxonomies( $taxonomies );
 		$taxonomies2         = km_rpbt_get_public_taxonomies();
+		$parent_terms        = km_rpbt_get_parent_terms( $terms, 'category' );
 		$terms               = km_rpbt_get_terms( $_posts[0]->ID, $taxonomies );
 		$value               = km_rpbt_get_comma_separated_values( 'hello,world' );
 		$template            = km_rpbt_get_template( 'excerpts' );
@@ -184,7 +186,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$link                = km_rpbt_get_post_link( $_posts[0], true );
 		$link2               = km_rpbt_get_permalink( $_posts[0] );
 		$post_thumb          = set_post_thumbnail ( $posts[2], $attachment_id );
-		$rel_posts4          = km_rpbt_get_related_posts( $posts[0], array('post_thumbnail' => true, 'fields' => 'ids') );
+		$rel_posts4          = km_rpbt_get_related_posts( $posts[0], array( 'post_thumbnail' => true, 'fields' => 'ids' ) );
 		$gallery_args        = km_kpbt_get_default_gallery_args();
 		$gallery             = km_rpbt_related_posts_by_taxonomy_gallery( array( 'id' => $posts[0] ), array( $rel_posts4[0] ) );
 		$gallery_shortcode   = km_kpbt_get_gallery_shortcode_html( $rel_posts4, $gallery_args, 1 );

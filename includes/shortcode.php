@@ -135,10 +135,11 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	$atts['fields'] = km_rpbt_get_template_fields( $atts );
 
 	// Convert (strings) to booleans or use defaults.
-	$atts['related']      = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
-	$atts['link_caption'] = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
-	$atts['public_only']  = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
-	$atts['show_date']    = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
+	$atts['related']         = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
+	$atts['link_caption']    = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
+	$atts['public_only']     = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
+	$atts['show_date']       = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
+	$atts['include_parents'] = ( '' !== trim( $atts['include_parents'] ) ) ? $atts['include_parents'] : false;
 
 	if ( 'regular_order' !== $atts['include_self'] ) {
 		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;

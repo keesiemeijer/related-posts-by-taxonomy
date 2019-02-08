@@ -71,6 +71,9 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 		// Functions for related posts
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions.php';
 
+		// Taxonomy functions.
+		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/taxonomy.php';
+
 		// The related post thumbnail gallery.
 		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/gallery.php';
 
