@@ -35,6 +35,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
  *                                            list of term ids. Only includes terms in common with the current post.
  *                                            Default empty.
+ *     @type boolean        $include_parents  Whether to include parent terms in the query for related posts. Default false.
+ *     @type boolean        $include_children Whether to include child terms in the query for related posts. Default false.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
  *     @type boolean        $related          If false the ` $include_terms` argument also includes terms
@@ -135,11 +137,12 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	$atts['fields'] = km_rpbt_get_template_fields( $atts );
 
 	// Convert (strings) to booleans or use defaults.
-	$atts['related']         = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
-	$atts['link_caption']    = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
-	$atts['public_only']     = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
-	$atts['show_date']       = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
-	$atts['include_parents'] = ( '' !== trim( $atts['include_parents'] ) ) ? $atts['include_parents'] : false;
+	$atts['related']          = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
+	$atts['link_caption']     = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
+	$atts['public_only']      = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
+	$atts['show_date']        = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
+	$atts['include_parents']  = ( '' !== trim( $atts['include_parents'] ) ) ? $atts['include_parents'] : false;
+	$atts['include_children'] = ( '' !== trim( $atts['include_children'] ) ) ? $atts['include_children'] : false;
 
 	if ( 'regular_order' !== $atts['include_self'] ) {
 		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;

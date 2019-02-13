@@ -94,6 +94,8 @@ function km_rpbt_plugin_supports( $feature ) {
  *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
  *                                            list of term ids. Only includes terms in common with the current post.
  *                                            Default empty.
+ *     @type boolean        $include_parents  Whether to include parent terms in the query for related posts. Default false.
+ *     @type boolean        $include_children Whether to include child terms in the query for related posts. Default false.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
  *     @type boolean        $related          If false the `$terms` and `$include_terms` terms are used without

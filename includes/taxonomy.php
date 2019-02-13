@@ -102,38 +102,76 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 }
 
 /**
- * Get all parent terms for term ids.
+ * Get all parent or child terms.
  *
  * If the taxonomies argument is empty it returns parents for all terms.
  * If taxonomies are provided it only returns parents from terms in the taxonomies.
  *
  * @since  2.6.1
- * 
- * @param  array|string $terms      Array or comma separated list of term ids.
- * @param  array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.
+ *
+ * @param array|string $terms      Array or comma separated list of term ids.
+ * @param array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.
+ * @param string       $type       Type of hierarchy. Accepts 'parents' or 'children'. Default empty.
  * @return array Array with term ids
  */
-function km_rpbt_get_parent_terms( $terms, $taxonomies = '' ) {
-	if ( ! $terms ) {
+function km_rpbt_get_terms_hierarchy( $terms, $taxonomies = '', $type = '' ) {
+	if ( ! $terms ||  ! in_array( $type, array( 'parents', 'children' ) ) ) {
 		return $terms;
 	}
 
 	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
 	$terms      = km_rpbt_get_term_objects( $terms, $taxonomies );
 
-	$parents = array();
+	$tree_terms = array();
 	foreach ( $terms as $term ) {
 		if ( ! is_taxonomy_hierarchical( $term->taxonomy ) ) {
 			continue;
 		}
 
-		$ancestors = get_ancestors( $term->term_id, $term->taxonomy );
-		if ( $ancestors ) {
-			$parents = array_merge( $parents, $ancestors );
+		if ( 'parents' === $type ) {
+			$tree = get_ancestors( $term->term_id, $term->taxonomy, 'taxonomy' );
+		} else {
+			$tree = get_term_children( $term->term_id, $term->taxonomy );
+		}
+
+		if ( $tree ) {
+			$tree_terms = array_merge( $tree_terms, $tree );
 		}
 	}
 
-	return km_rpbt_validate_ids( $parents );
+	return km_rpbt_validate_ids( $tree_terms );
+}
+
+/**
+ * Get all parent terms.
+ *
+ * If the taxonomies argument is empty it returns parents for all terms.
+ * If taxonomies are provided it only returns parents from terms in the taxonomies.
+ *
+ * @since  2.6.1
+ *
+ * @param array|string $terms      Array or comma separated list of term ids.
+ * @param array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.
+ * @return array Array with term ids
+ */
+function km_rpbt_get_parent_terms( $terms, $taxonomies = '' ) {
+	return km_rpbt_get_terms_hierarchy( $terms, $taxonomies, 'parents' );
+}
+
+/**
+ * Get all child terms.
+ *
+ * If the taxonomies argument is empty it returns children for all terms.
+ * If taxonomies are provided it only returns children from terms in the taxonomies.
+ *
+ * @since  2.6.1
+ *
+ * @param array|string $terms      Array or comma separated list of term ids.
+ * @param array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.
+ * @return array Array with term ids
+ */
+function km_rpbt_get_child_terms( $terms, $taxonomies = '' ) {
+	return km_rpbt_get_terms_hierarchy( $terms, $taxonomies, 'children' );
 }
 
 /**
@@ -141,13 +179,13 @@ function km_rpbt_get_parent_terms( $terms, $taxonomies = '' ) {
  *
  * Only the `term_id` and `taxonomy` properties are included in the term objects.
  *
- * If the taxonomies argument is empty it returns all terms, if not it
- * returns only term objects in the provided taxonomies.
+ * If the taxonomies argument is empty it returns all terms.
+ * If taxonomies are provided it only returns terms from the taxonomies.
  *
  * @since 2.6.1
  *
- * @param  array|string $terms      Array or comma separated list of term ids.
- * @param  array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.
+ * @param array|string $terms      Array or comma separated list of term ids.
+ * @param array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.
  * @return array Array with term objects.
  */
 function km_rpbt_get_term_objects( $terms, $taxonomies = '' ) {
@@ -177,7 +215,7 @@ function km_rpbt_get_term_objects( $terms, $taxonomies = '' ) {
 
 	$key          = md5( $query );
 	$last_changed = wp_cache_get_last_changed( 'km_rpbt_terms' );
-	$cache_key    = "get_terms_in_taxonomies:$key:$last_changed";
+	$cache_key    = "km_rpbt_get_term_objects:$key:$last_changed";
 	$cache        = wp_cache_get( $cache_key, 'km_rpbt_terms' );
 
 	if ( false !== $cache ) {

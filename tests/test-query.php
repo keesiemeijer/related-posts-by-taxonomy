@@ -370,10 +370,11 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
 	}
+
 	/**
 	 * Test the include_parents argument.
 	 */
-	function test_include_parents(){
+	function test_include_parents() {
 		$hierarchical = $this->create_posts_with_hierarchical_terms();
 		$posts = $hierarchical['posts'];
 		$terms = $hierarchical['terms'];
@@ -384,11 +385,34 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		);
 
 		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
-		$this->assertEquals(array($posts[3]),$rel_post0);
+		$this->assertEquals( array( $posts[3] ), $rel_post0 );
 
 		$args['include_parents'] = true;
 		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
-		$this->assertEquals(array( $posts[1], $posts[2], $posts[3]), $rel_post0);
+		$this->assertEquals( array( $posts[1], $posts[2], $posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test the include_children argument.
+	 *
+	 * @group inc
+	 */
+	function test_include_children() {
+		$hierarchical = $this->create_posts_with_hierarchical_terms();
+		$posts = $hierarchical['posts'];
+		$terms = $hierarchical['terms'];
+
+		$args = array(
+			'fields' => 'ids',
+			'terms'  => array( $terms[1] ),
+		);
+
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
+		$this->assertEquals( array( $posts[1] ), $rel_post0 );
+
+		$args['include_children'] = true;
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
+		$this->assertEquals( array( $posts[1], $posts[2], $posts[3] ), $rel_post0 );
 	}
 
 	/**

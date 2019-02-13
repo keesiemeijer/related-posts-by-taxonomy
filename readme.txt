@@ -67,6 +67,8 @@ Attributes for the shortcode are:
 * `after_title`
 * `terms`
 * `include_terms`
+* `include_parents`
+* `include_children`
 * `exclude_terms`
 * `exclude_posts`
 * `format`
@@ -145,9 +147,9 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 = 2.6.1 =
 * Enhancement
 	* New format for related galleries similar to the Gutenberg gallery block.
+	* Include child or parent terms for the related posts query.
 * Bug Fixes
-	* (minor) Fix default taxonomies for the related posts query.
-		* Don't default to all public taxonomies if no valid taxonomies are used.
+	* (minor) Don't default to all public taxonomies if no valid taxonomies are used.
 
 = 2.6.0 =
 * Enhancement

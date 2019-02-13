@@ -176,6 +176,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$taxonomies          = km_rpbt_get_taxonomies( $taxonomies );
 		$taxonomies2         = km_rpbt_get_public_taxonomies();
 		$parent_terms        = km_rpbt_get_parent_terms( $terms, 'category' );
+		$child_terms         = km_rpbt_get_child_terms( $terms, 'category' );
 		$terms               = km_rpbt_get_terms( $_posts[0]->ID, $taxonomies );
 		$value               = km_rpbt_get_comma_separated_values( 'hello,world' );
 		$template            = km_rpbt_get_template( 'excerpts' );

@@ -31,6 +31,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
  *                                            list of term ids. Only includes terms also assigned to the post to get
  *                                            related posts for. Default empty.
+ *     @type boolean        $include_parents  Whether to include parent terms in the query for related posts. Default false.
+ *     @type boolean        $include_children Whether to include child terms in the query for related posts. Default false.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
  *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
@@ -73,10 +75,18 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		return array();
 	}
 
+	$parent_terms = array();
 	if ( $args['include_parents'] ) {
 		$parent_terms = km_rpbt_get_parent_terms( $terms, $taxonomies );
-		$terms        = array_unique( array_merge( $terms, $parent_terms ) );
 	}
+
+	$child_terms = array();
+	if ( $args['include_children'] ) {
+		$child_terms = km_rpbt_get_child_terms( $terms, $taxonomies );
+	}
+
+	$terms = array_merge( $terms, $parent_terms );
+	$terms = array_unique( array_merge( $terms, $child_terms ) );
 
 	$args['related_terms'] = $terms;
 	$args['termcount']     = array();
