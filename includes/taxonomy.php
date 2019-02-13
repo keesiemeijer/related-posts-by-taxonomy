@@ -38,7 +38,7 @@ function km_rpbt_get_public_taxonomies() {
 }
 
 /**
- * Get the terms from a post or arguments.
+ * Get the terms from the post or from arguments.
  *
  * @since  2.5.0
  *
@@ -47,14 +47,13 @@ function km_rpbt_get_public_taxonomies() {
  * @param string|array $args       {
  *     Optional. Arguments to get terms.
  *
- *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
- *                                            list of term ids. The terms need to be in the taxonomies set by the
- *                                            `$taxonomies` argument. Default empty.
- *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
- *                                            list of term ids. Only includes terms also assigned to the post set by the
- *                                            `$post_id` argument. Default empty.
- *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
- *                                            list of term ids. Default empty
+ *     @type array|string   $terms            Array or comma separated list of term ids. if `$related is set to true` it only 
+ *                                            uses terms from the `$taxonomies` argument. Default empty.
+ *     @type array|string   $include_terms    Array or comma separated list of term ids. If `$related is set to true it only 
+ *                                            includes terms also assigned to the `$post_id` argument. Default empty.
+ *     @type boolean        $include_parents  Whether to include parent terms. Default false.
+ *     @type boolean        $include_children Whether to include child terms. Default false.
+ *     @type array|string   $exclude_terms    Array or comma separated list of term ids to exclude. Default empty
  *     @type boolean        $related          If false the `terms` and `$include_terms` terms are returned without
  *                                            checking taxonomies or post terms. Default true.
  * }
@@ -66,32 +65,41 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
 	$args       = km_rpbt_sanitize_args( $args );
 
-	// Unrelated terms
-	if ( ! $args['related'] && ( $args['terms'] || $args['include_terms'] ) ) {
-		return $args['terms'] ? $args['terms'] : $args['include_terms'];
-	}
-
 	if ( $args['related'] && empty( $taxonomies ) ) {
 		// Taxonomies are needed for related terms.
 		return array();
 	}
 
-	if ( $args['terms'] ) {
-
+	if ( ! $args['related'] && ( $args['terms'] || $args['include_terms'] ) ) {
+		// Unrelated terms
+		$terms = $args['terms'] ? $args['terms'] : $args['include_terms'];
+	} elseif ( $args['terms'] ) {
 		// Filters out terms not in taxonomies.
 		$terms = km_rpbt_get_term_objects(  $args['terms'], $taxonomies );
 		$terms = ! empty( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
 	} else {
-
 		// Get post terms.
 		$terms = wp_get_object_terms( $post_id, $taxonomies, array( 'fields' => 'ids', ) );
 		$terms = ! is_wp_error( $terms ) ? $terms : array();
 
 		// Only use included terms from the post terms.
-		if ( $args['include_terms'] ) {
+		if ( $args['related'] && $args['include_terms'] ) {
 			$terms = array_intersect( $args['include_terms'], $terms );
 		}
 	}
+
+	$parent_terms = array();
+	if ( ! empty( $terms ) && $args['include_parents'] ) {
+		$parent_terms = km_rpbt_get_hierarchy_terms( 'parents', $terms, $taxonomies );
+	}
+
+	$child_terms = array();
+	if ( ! empty( $terms ) && $args['include_children'] ) {
+		$child_terms = km_rpbt_get_hierarchy_terms( 'children', $terms, $taxonomies );
+	}
+
+	$terms = array_merge( $terms, $parent_terms );
+	$terms = array_unique( array_merge( $terms, $child_terms ) );
 
 	// Exclude terms.
 	if ( ! empty( $terms ) && ! empty( $args['exclude_terms'] ) ) {
@@ -114,9 +122,9 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
  * @param array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.
  * @return array Array with term ids
  */
-function km_rpbt_get_terms_hierarchy( $tree_type, $terms, $taxonomies = '' ) {
+function km_rpbt_get_hierarchy_terms( $tree_type, $terms, $taxonomies = '' ) {
 	if ( ! $terms ||  ! in_array( $tree_type, array( 'parents', 'children' ) ) ) {
-		return $terms;
+		return array();
 	}
 
 	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
@@ -156,38 +164,6 @@ function km_rpbt_get_terms_hierarchy( $tree_type, $terms, $taxonomies = '' ) {
 }
 
 /**
- * Get all parent terms.
- *
- * If the taxonomies argument is empty it returns parents for all terms.
- * If taxonomies are provided it only returns parents from terms in the taxonomies.
- *
- * @since  2.6.1
- *
- * @param array|string $terms      Array or comma separated list of term ids.
- * @param array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.
- * @return array Array with term ids
- */
-function km_rpbt_get_parent_terms( $terms, $taxonomies = '' ) {
-	return km_rpbt_get_terms_hierarchy( 'parents', $terms, $taxonomies );
-}
-
-/**
- * Get all child terms.
- *
- * If the taxonomies argument is empty it returns children for all terms.
- * If taxonomies are provided it only returns children from terms in the taxonomies.
- *
- * @since  2.6.1
- *
- * @param array|string $terms      Array or comma separated list of term ids.
- * @param array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.
- * @return array Array with term ids
- */
-function km_rpbt_get_child_terms( $terms, $taxonomies = '' ) {
-	return km_rpbt_get_terms_hierarchy( 'children', $terms, $taxonomies );
-}
-
-/**
  * Get term objects from term ids.
  *
  * Only the `term_id` and `taxonomy` properties are included in the term objects.
@@ -208,7 +184,7 @@ function km_rpbt_get_term_objects( $terms, $taxonomies = '' ) {
 	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
 
 	if ( ! $terms ) {
-		return $terms;
+		return array();
 	}
 
 	$tax_sql    = '';

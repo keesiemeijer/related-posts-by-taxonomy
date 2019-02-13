@@ -75,19 +75,6 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		return array();
 	}
 
-	$parent_terms = array();
-	if ( $args['include_parents'] ) {
-		$parent_terms = km_rpbt_get_parent_terms( $terms, $taxonomies );
-	}
-
-	$child_terms = array();
-	if ( $args['include_children'] ) {
-		$child_terms = km_rpbt_get_child_terms( $terms, $taxonomies );
-	}
-
-	$terms = array_merge( $terms, $parent_terms );
-	$terms = array_unique( array_merge( $terms, $child_terms ) );
-
 	$args['related_terms'] = $terms;
 	$args['termcount']     = array();
 
