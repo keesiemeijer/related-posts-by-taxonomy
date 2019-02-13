@@ -109,13 +109,13 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
  *
  * @since  2.6.1
  *
+ * @param string       $tree_type  Type of hierarchy tree. Accepts 'parents' or 'children'.
  * @param array|string $terms      Array or comma separated list of term ids.
  * @param array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.
- * @param string       $type       Type of hierarchy. Accepts 'parents' or 'children'. Default empty.
  * @return array Array with term ids
  */
-function km_rpbt_get_terms_hierarchy( $terms, $taxonomies = '', $type = '' ) {
-	if ( ! $terms ||  ! in_array( $type, array( 'parents', 'children' ) ) ) {
+function km_rpbt_get_terms_hierarchy( $tree_type, $terms, $taxonomies = '' ) {
+	if ( ! $terms ||  ! in_array( $tree_type, array( 'parents', 'children' ) ) ) {
 		return $terms;
 	}
 
@@ -128,13 +128,26 @@ function km_rpbt_get_terms_hierarchy( $terms, $taxonomies = '', $type = '' ) {
 			continue;
 		}
 
-		if ( 'parents' === $type ) {
+		if ( 'parents' === $tree_type ) {
 			$tree = get_ancestors( $term->term_id, $term->taxonomy, 'taxonomy' );
 		} else {
 			$tree = get_term_children( $term->term_id, $term->taxonomy );
+			$tree = ! is_wp_error( $tree ) ? $tree : array();
 		}
 
-		if ( $tree ) {
+		/**
+		 * Filter parent or child terms.
+		 *
+		 * @since  2.6.1
+		 *
+		 * @param array $tree       Parent or child term ids.
+		 * @param int   $term_id    Term id.
+		 * @param array $taxonomies Term taxonomy.
+		 * @param array $tree_type  Hierarchy tree type 'parents' or 'children'.
+		 */
+		$tree = apply_filters( 'related_posts_by_taxonomy_get_terms_hierarchy', $tree, $tree_type, $term->term_id, $term->taxonomy );
+
+		if ( $tree && is_array( $tree ) ) {
 			$tree_terms = array_merge( $tree_terms, $tree );
 		}
 	}
@@ -155,7 +168,7 @@ function km_rpbt_get_terms_hierarchy( $terms, $taxonomies = '', $type = '' ) {
  * @return array Array with term ids
  */
 function km_rpbt_get_parent_terms( $terms, $taxonomies = '' ) {
-	return km_rpbt_get_terms_hierarchy( $terms, $taxonomies, 'parents' );
+	return km_rpbt_get_terms_hierarchy( 'parents', $terms, $taxonomies );
 }
 
 /**
@@ -171,7 +184,7 @@ function km_rpbt_get_parent_terms( $terms, $taxonomies = '' ) {
  * @return array Array with term ids
  */
 function km_rpbt_get_child_terms( $terms, $taxonomies = '' ) {
-	return km_rpbt_get_terms_hierarchy( $terms, $taxonomies, 'children' );
+	return km_rpbt_get_terms_hierarchy( 'children', $terms, $taxonomies );
 }
 
 /**
