@@ -38,7 +38,7 @@ function km_rpbt_get_public_taxonomies() {
 }
 
 /**
- * Get the terms from the post or from arguments.
+ * Get the terms from a post or from the arguments.
  *
  * @since  2.5.0
  *
@@ -78,7 +78,10 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 		$terms = km_rpbt_get_term_objects(  $args['terms'], $taxonomies );
 		$terms = ! empty( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
 	} else {
-		// Get post terms.
+		/**
+		 * The post ID and taxonomies are validated above (set to empty value if invalid).
+		 * wp_get_object_terms() returns an empty array if one argument is empty.
+		 */
 		$terms = wp_get_object_terms( $post_id, $taxonomies, array( 'fields' => 'ids', ) );
 		$terms = ! is_wp_error( $terms ) ? $terms : array();
 
