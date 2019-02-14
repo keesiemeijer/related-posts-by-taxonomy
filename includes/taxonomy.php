@@ -47,9 +47,9 @@ function km_rpbt_get_public_taxonomies() {
  * @param string|array $args       {
  *     Optional. Arguments to get terms.
  *
- *     @type array|string   $terms            Array or comma separated list of term ids. if `$related is set to true` it only 
- *                                            uses terms from the `$taxonomies` argument. Default empty.
- *     @type array|string   $include_terms    Array or comma separated list of term ids. If `$related is set to true it only 
+ *     @type array|string   $terms            Array or comma separated list of term ids. if `$related is set to true` it only
+ *                                            returns terms in the `$taxonomies` argument. Default empty.
+ *     @type array|string   $include_terms    Array or comma separated list of term ids. If `$related is set to true it only
  *                                            includes terms also assigned to the `$post_id` argument. Default empty.
  *     @type boolean        $include_parents  Whether to include parent terms. Default false.
  *     @type boolean        $include_children Whether to include child terms. Default false.
@@ -195,10 +195,10 @@ function km_rpbt_get_term_objects( $terms, $taxonomies = '' ) {
 	}
 
 	$terms_sql  = implode( ', ', $terms );
-	$select_sql = "SELECT t.term_id, tt.taxonomy FROM $wpdb->terms AS t";
-	$join_sql   = "INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id";
+	$select_sql = "SELECT t.term_id, tt.taxonomy FROM {$wpdb->terms} AS t";
+	$join_sql   = "INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";
 	$where_sql  = $tax_sql ? "WHERE {$tax_sql} AND " : 'WHERE ';
-	$where_sql .= "t.term_id IN ($terms_sql)";
+	$where_sql .= "t.term_id IN ({$terms_sql})";
 
 	$query = "{$select_sql} {$join_sql} {$where_sql}";
 
