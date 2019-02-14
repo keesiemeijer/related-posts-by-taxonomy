@@ -50,4 +50,53 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 		$term_ids = km_rpbt_get_hierarchy_terms( 'children', array( $terms[2] ) );
 		$this->assertEquals( array( $terms[3] ), $term_ids );
 	}
+
+	function test_km_rpbt_get_terms_related_true() {
+		$create_posts = $this->create_posts_with_terms();
+		$terms = $create_posts['tax1_terms'];
+		$posts = $create_posts['posts'];
+
+		// Term 0 is assigned to post 0
+		$args = array( 'related' => true, 'terms' => $terms[0] );
+		$post_terms = km_rpbt_get_terms( $posts[0], 'post_tag', $args );
+
+		// Term 0 is a post_tag
+		$this->assertEquals( array( $terms[0] ), $post_terms );
+	}
+
+	function test_km_rpbt_get_terms_related_true_term_not_in_taxonomy() {
+		$create_posts = $this->create_posts_with_terms();
+		$terms = $create_posts['tax1_terms'];
+		$posts = $create_posts['posts'];
+
+		// Term 0 is assigned to post 0
+		$args = array( 'related' => true, 'terms' => $terms[0] );
+		$post_terms = km_rpbt_get_terms( $posts[0], 'category', $args );
+		// Term 0 is not a category term
+		$this->assertEmpty( $post_terms );
+
+		// Term 3 is not assigned to post 0
+		$args = array( 'related' => true, 'include_terms' => $terms[3] );
+		$post_terms = km_rpbt_get_terms( $posts[0], 'post_tag', $args );
+		// Terms is not included
+		$this->assertEmpty( $post_terms );
+	}
+
+	function test_km_rpbt_get_terms_related_false_with_invalid_taxonomy() {
+		$create_posts = $this->create_posts_with_terms();
+		$terms = $create_posts['tax1_terms'];
+		$posts = $create_posts['posts'];
+
+		// Term 3 is not assigned to post 0 and invalid taxonomy
+		$args = array( 'related' => false, 'terms' => $terms[3], 'include_terms' => $terms[4] );
+		$post_terms = km_rpbt_get_terms( $posts[0], 'invalid_tax', $args );
+		// Term 3 is included over term 4 from include_terms.
+		$this->assertEquals( array( $terms[3] ), $post_terms );
+
+		// Term 3 is not assigned to post 0 and invalid taxonomy
+		$args = array( 'related' => false, 'include_terms' => $terms[3] );
+		$post_terms = km_rpbt_get_terms( $posts[0], 'invalid_tax', $args );
+		// Term 3 is also included with include_terms
+		$this->assertEquals( array( $terms[3] ), $post_terms );
+	}
 }
