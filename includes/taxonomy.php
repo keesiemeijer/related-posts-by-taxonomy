@@ -79,7 +79,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 		$terms = ! empty( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
 	} else {
 
-		/**
+		/*
 		 * The post ID and taxonomies are validated above (set to empty value if invalid).
 		 * wp_get_object_terms() returns an empty array if one argument is empty.
 		 */
@@ -157,7 +157,7 @@ function km_rpbt_get_hierarchy_terms( $tree_type, $terms, $taxonomies = '' ) {
 		 * @param array $taxonomies Term taxonomy.
 		 * @param array $tree_type  Hierarchy tree type 'parents' or 'children'.
 		 */
-		$tree = apply_filters( 'related_posts_by_taxonomy_get_terms_hierarchy', $tree, $tree_type, $term->term_id, $term->taxonomy );
+		$tree = apply_filters( 'related_posts_by_taxonomy_get_hierarchy_terms', $tree, $tree_type, $term->term_id, $term->taxonomy );
 
 		if ( $tree && is_array( $tree ) ) {
 			$tree_terms = array_merge( $tree_terms, $tree );
