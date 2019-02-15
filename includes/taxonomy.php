@@ -78,6 +78,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 		$terms = km_rpbt_get_term_objects(  $args['terms'], $taxonomies );
 		$terms = ! empty( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
 	} else {
+
 		/**
 		 * The post ID and taxonomies are validated above (set to empty value if invalid).
 		 * wp_get_object_terms() returns an empty array if one argument is empty.
@@ -85,7 +86,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 		$terms = wp_get_object_terms( $post_id, $taxonomies, array( 'fields' => 'ids', ) );
 		$terms = ! is_wp_error( $terms ) ? $terms : array();
 
-		// Only use included terms from the post terms.
+		// Only include terms from the post terms.
 		if ( $args['related'] && $args['include_terms'] ) {
 			$terms = array_intersect( $args['include_terms'], $terms );
 		}
