@@ -440,8 +440,6 @@ EOF;
 	/**
 	 * Test invalid function arguments.
 	 *
-	 * @group fails
-	 *
 	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_invalid_arguments() {
@@ -597,25 +595,6 @@ EOF;
 	 *
 	 * @requires function WP_REST_Controller::register_routes
 	 */
-	function test_related_posts_by_terms_no_taxonomies_unrelated() {
-		$this->setup_posts();
-		$args = array(
-			'terms'      => array( $this->tax_2_terms[3] ),
-			'fields'     => 'ids',
-			//'related'    => false, // Default true. This setting does not matter here.
-		);
-
-		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], '', $args );
-
-		// Empty taxonomies defaults to all taxonomies
-		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
-	}
-
-	/**
-	 * Test terms argument.
-	 *
-	 * @requires function WP_REST_Controller::register_routes
-	 */
 	function test_related_posts_by_terms_invalid_taxonomy() {
 		$this->setup_posts();
 		$args = array(
@@ -729,8 +708,6 @@ EOF;
 
 	/**
 	 * Test the include_children argument.
-	 *
-	 * @group inc
 	 */
 	function test_include_children() {
 		$hierarchical = $this->create_posts_with_hierarchical_terms();
