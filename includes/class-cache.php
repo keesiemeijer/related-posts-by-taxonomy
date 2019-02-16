@@ -324,7 +324,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				'update_post_meta_cache' => false,
 			);
 
-			$fields = km_rpbt_get_template_fields( $args['fields'] );
+			$fields = km_rpbt_get_template_fields( $args );
 			if ( 'ids' === $fields ) {
 				$wp_query_args['fields'] = 'ids';
 			}
