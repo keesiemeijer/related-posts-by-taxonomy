@@ -15,7 +15,7 @@ const { __ } = wp.i18n;
 /**
  * Internal dependencies
  */
-import './editor.scss'
+//import './editor.scss'
 import { getPluginData } from './data/data';
 import PostsPanel from './components/posts-panel';
 import ImagePanel from './components/image-panel';

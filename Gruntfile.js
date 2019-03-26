@@ -60,11 +60,16 @@ module.exports = function( grunt ) {
 
 		// Clean up build directory
 		clean: {
+			editor_block: ['includes/assets/js/editor-block.js'],
 			main: [ 'build/<%= pkg.name %>' ]
 		},
 
 		// Copy the theme into the build directory
 		copy: {
+			editor_block: {
+				src: 'editor-block/build/index.js',
+				dest: 'includes/assets/js/editor-block.js'
+			},
 			main: {
 				src: [
 					'**',
@@ -146,6 +151,9 @@ module.exports = function( grunt ) {
 		run: {
 			build: {
 				cmd: 'npm',
+				options: {
+					cwd: 'editor-block'
+  				},
 				args: [
 					'run',
 					'build'
@@ -160,7 +168,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'travis', [ 'githash', 'replace:replace_branch' ] );
 
 	// Creates build
-	grunt.registerTask( 'build', [ 'clean:main', 'run:build', 'uglify', 'version', 'makepot', 'travis', 'copy:main' ] );
+	grunt.registerTask( 'build', [ 'clean:main', 'clean:editor_block', 'run:build', 'copy:editor_block', 'uglify', 'version', 'makepot', 'travis', 'copy:main' ] );
 
 	grunt.util.linefeed = '\n';
 };

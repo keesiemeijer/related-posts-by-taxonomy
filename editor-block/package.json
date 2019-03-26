@@ -1,0 +1,14 @@
+{
+  "name": "related-posts-by-taxonomy-editor-block",
+  "version": "1.0.0",
+  "license": "GPL-2.0-or-later",
+  "main": "src/index.js",
+  "devDependencies": {
+    "@wordpress/scripts": "^3.1.0",
+    "classnames": "^2.2.6"
+  },
+  "scripts": {
+    "start": "wp-scripts start",
+    "build": "wp-scripts build"
+  }
+}
