@@ -32,23 +32,4 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 		sort( $post_types );
 		$this->assertEquals( $expected, km_rpbt_get_post_types( $post_types ) );
 	}
-
-	/**
-	 * Test validating taxonomies.
-	 */
-	function test_km_rpbt_get_taxonomies() {
-		$taxonomies = 'category ,lol, category';
-		$this->assertEquals( array( 'category' ), km_rpbt_get_taxonomies( $taxonomies ) );
-	}
-
-	/**
-	 * Test validating custom taxonomies.
-	 */
-	function test_km_rpbt_get_taxonomies_custom() {
-		register_taxonomy( 'ctax', 'post' );
-		$expected = array( 'category', 'ctax' );
-		$taxonomies = km_rpbt_get_taxonomies( $expected );
-		sort( $taxonomies );
-		$this->assertEquals( $expected, $taxonomies );
-	}
 }

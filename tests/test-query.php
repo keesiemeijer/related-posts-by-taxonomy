@@ -272,21 +272,6 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Test terms argument.
 	 */
-	function test_related_posts_by_terms_no_taxonomies() {
-		$this->setup_posts();
-		$args = array(
-			'terms'      => array( $this->tax_2_terms[3] ),
-			'fields'     => 'ids',
-			//'related'    => false, // Default true. This setting does not matter here.
-		);
-		// Should default to all taxonomies
-		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
-		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
-	}
-
-	/**
-	 * Test terms argument.
-	 */
 	function test_related_posts_by_terms_invalid_taxonomy() {
 		$this->setup_posts();
 		$args = array(
@@ -369,6 +354,48 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		);
 		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test the include_parents argument.
+	 */
+	function test_include_parents() {
+		$hierarchical = $this->create_posts_with_hierarchical_terms();
+		$posts = $hierarchical['posts'];
+		$terms = $hierarchical['terms'];
+
+		$args = array(
+			'fields' => 'ids',
+			'terms'  => array( $terms[3] ),
+		);
+
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
+		$this->assertEquals( array( $posts[3] ), $rel_post0 );
+
+		$args['include_parents'] = true;
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
+		$this->assertEquals( array( $posts[1], $posts[2], $posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test the include_children argument.
+	 */
+	function test_include_children() {
+		$hierarchical = $this->create_posts_with_hierarchical_terms();
+		$posts = $hierarchical['posts'];
+		$terms = $hierarchical['terms'];
+
+		$args = array(
+			'fields' => 'ids',
+			'terms'  => array( $terms[1] ),
+		);
+
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
+		$this->assertEquals( array( $posts[1] ), $rel_post0 );
+
+		$args['include_children'] = true;
+		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
+		$this->assertEquals( array( $posts[1], $posts[2], $posts[3] ), $rel_post0 );
 	}
 
 	/**

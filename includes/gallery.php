@@ -5,6 +5,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Default gallery arguments.
+ *
+ * @since 2.6.1
+ *
+ * @param integer $post_id Optional. post ID. Default 0.
+ * @return Default gallery arguments.
+ */
 function km_kpbt_get_default_gallery_args( $post_id = 0 ) {
 	$html5 = current_theme_supports( 'html5', 'gallery' );
 
@@ -23,7 +31,6 @@ function km_kpbt_get_default_gallery_args( $post_id = 0 ) {
 		'gallery_format' => '', // empty string or 'editor_block'
 		'post_class'     => '',
 		'type'           => '',
-		'is_editor'      => false,
 	);
 }
 
@@ -275,17 +282,18 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
  * @param array $related_posts Array with related post objects that have a post thumbnail.
  * @param array $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
  *                             accepted arguments.
- * @return string Gallery HYML
+ * @return string Gallery HTML
  */
 function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(), $describedby = '' ) {
 	if ( empty( $related_posts ) ) {
 		return '';
 	}
 
+	$html = '';
 	$args = km_rpbt_validate_gallery_args( $args );
-	$args['size'] = 'large';
 
-	$html = '<ul class="wp-block-gallery rpbt-related-block-gallery columns-' . $args['columns'] . '">' . "\n";
+	// Use wp_make_content_images_responsive() below to make images responsive.
+	$args['size'] = 'large';
 
 	foreach ( (array) $related_posts as $related ) {
 		$related = is_object( $related ) ? $related : get_post( $related );
@@ -296,12 +304,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 		$attachment_id  = get_post_thumbnail_id( $related->ID );
 		$caption        = km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args );
 
-		if ( $args['is_editor'] ) {
-			$image = km_rpbt_get_editor_block_image( $attachment_id, $args );
-		} else {
-			$image = km_rpbt_get_editor_block_image_link( $attachment_id, $related, $args );
-		}
-
+		$image = km_rpbt_get_editor_block_image_link( $attachment_id, $related, $args );
 		if ( ! $image ) {
 			continue;
 		}
@@ -309,15 +312,26 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 		$post_class = km_rpbt_get_gallery_post_class( $related, $args, 'blocks-gallery-item' );
 		$post_class = $post_class ? ' class="' . $post_class . '"' : '';
 
-		$html .= "<li{$post_class}>\n";
-		$html .= "<figure>\n{$image}\n";
+		$html .= "<li{$post_class}>\n<figure>\n{$image}\n";
 		if ( $caption ) {
 			$html .= "<figcaption>{$caption}</figcaption>\n";
 		}
 		$html .= "</figure>\n</li>\n";
 	}
 
-	return $html . "</ul>\n";
+	if ( ! $html ) {
+		return '';
+	}
+
+	$class = "wp-block-gallery rpbt-related-block-gallery columns-{$args['columns']}";
+	$html  = '<ul class="' . $class  . '">' . "\n" . $html . "</ul>\n";
+
+	if ( function_exists( 'wp_make_content_images_responsive' ) ) {
+		// since WP 4.4.0
+		$html = wp_make_content_images_responsive( $html );
+	}
+
+	return $html;
 }
 
 /**
@@ -440,7 +454,16 @@ function km_rpbt_get_gallery_image_link( $attachment_id, $related, $args = array
 	return apply_filters( 'related_posts_by_taxonomy_post_thumbnail_link', $image_link, $image_attr, $related, $args );
 }
 
-
+/**
+ * Image HTML similar to the Gutenberg gallery block images.
+ *
+ * @since  2.6.1
+ *
+ * @param int   $attachment_id Thumbnail ID.
+ * @param array $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
+ *                             accepted arguments.
+ * @return string Image HTML string.
+ */
 function km_rpbt_get_editor_block_image( $attachment_id, $args = array() ) {
 	$defaults = km_kpbt_get_default_gallery_args();
 	$args     = array_merge( $defaults, $args );
@@ -459,6 +482,17 @@ function km_rpbt_get_editor_block_image( $attachment_id, $args = array() ) {
 	return $html;
 }
 
+/**
+ * HTML image link similar to the Gutenberg gallery block.
+ *
+ * @since  2.6.1
+ *
+ * @param int    $attachment_id Thumbnail ID.
+ * @param object $related       Related post object.
+ * @param array  $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
+ *                              accepted arguments.
+ * @return string Image link HTML string.
+ */
 function km_rpbt_get_editor_block_image_link( $attachment_id, $related, $args = array() ) {
 	$image = km_rpbt_get_editor_block_image( $attachment_id, $args );
 	if ( ! $image ) {

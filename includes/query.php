@@ -31,6 +31,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
  *                                            list of term ids. Only includes terms also assigned to the post to get
  *                                            related posts for. Default empty.
+ *     @type boolean        $include_parents  Whether to include parent terms in the query for related posts. Default false.
+ *     @type boolean        $include_children Whether to include child terms in the query for related posts. Default false.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
  *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
@@ -186,7 +188,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$meta_query = is_array( $meta_query->queries ) ? $meta_query->queries : array();
 
 	// Default to AND.
-	if( isset( $meta_query['relation'] ) ) {
+	if ( isset( $meta_query['relation'] ) ) {
 		$meta_query['relation'] = 'AND';
 	}
 
