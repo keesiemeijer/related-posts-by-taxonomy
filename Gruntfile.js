@@ -60,16 +60,14 @@ module.exports = function( grunt ) {
 
 		// Clean up build directory
 		clean: {
-			editor_block: ['includes/assets/js/editor-block.js'],
-			main: [ 'build/<%= pkg.name %>' ]
+			main: [
+				'build/<%= pkg.name %>',
+				'editor-block/build',
+			]
 		},
 
 		// Copy the theme into the build directory
 		copy: {
-			editor_block: {
-				src: 'editor-block/build/index.js',
-				dest: 'includes/assets/js/editor-block.js'
-			},
 			main: {
 				src: [
 					'**',
@@ -79,24 +77,19 @@ module.exports = function( grunt ) {
 					'!build/**',
 					'!editor-block/**',
 					'!webpack.config.js',
-					'!.git/**',
 					'!Gruntfile.js',
 					'!package.json',
+					'!package-lock.json',
+					'!composer.lock',
+					'!phpunit.xml',
+					'!README.md',
+					'!readme.md',
+					'!travis.yml',
+					'!.git/**',
 					'!.gitignore',
 					'!.gitmodules',
 					'!.gitattributes',
 					'!.editorconfig',
-					'!**/Gruntfile.js',
-					'!**/package.json',
-					'!**/phpunit.xml',
-					'!**/composer.lock',
-					'!**/package-lock.json',
-					'!**/README.md',
-					'!**/readme.md',
-					'!**/CHANGELOG.md',
-					'!**/CONTRIBUTING.md',
-					'!**/travis.yml',
-					'!**/*~'
 				],
 				dest: 'build/<%= pkg.name %>/'
 			}
@@ -168,7 +161,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'travis', [ 'githash', 'replace:replace_branch' ] );
 
 	// Creates build
-	grunt.registerTask( 'build', [ 'clean:main', 'clean:editor_block', 'run:build', 'copy:editor_block', 'uglify', 'version', 'makepot', 'travis', 'copy:main' ] );
+	grunt.registerTask( 'build', [ 'clean:main', 'run:build', 'uglify', 'version', 'makepot', 'travis', 'copy:main' ] );
 
 	grunt.util.linefeed = '\n';
 };
