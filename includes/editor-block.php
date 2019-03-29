@@ -64,7 +64,7 @@ function km_rpbt_block_editor_assets() {
 	// Styles.
 	wp_enqueue_style(
 		'rpbt-related-posts-block-css', // Handle.
-		RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . 'includes/assets/css/editor-block.css',
+		RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . 'includes/assets/css/editor.css',
 		array( 'wp-edit-blocks' )
 	);
 

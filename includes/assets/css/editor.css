@@ -1,21 +1,14 @@
 .wp-block-related-posts-by-taxonomy-related-posts-block.rpbt-html5-gallery .related-gallery {
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+  flex-wrap: wrap;
   list-style-type: none; }
   .wp-block-related-posts-by-taxonomy-related-posts-block.rpbt-html5-gallery .related-gallery .gallery-item {
     margin: 8px;
-    display: -ms-flexbox;
     display: flex;
-    -ms-flex-positive: 0;
-        flex-grow: 0;
-    -ms-flex-direction: column;
-        flex-direction: column;
-    -ms-flex-pack: start;
-        justify-content: flex-start;
-    -ms-flex-align: center;
-        align-items: center;
+    flex-grow: 0;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
     position: relative; }
     .wp-block-related-posts-by-taxonomy-related-posts-block.rpbt-html5-gallery .related-gallery .gallery-item img {
       display: block;
@@ -45,6 +38,9 @@
       width: calc(100% / 7 - 16px); }
     .wp-block-related-posts-by-taxonomy-related-posts-block.rpbt-html5-gallery .related-gallery.gallery-columns-8 .gallery-item {
       width: calc(100% / 8 - 16px); } }
+
+.block-editor .wp-block-related-posts-by-taxonomy-related-posts-block ul {
+  padding-left: 1em; }
 
 .block-editor .wp-block-related-posts-by-taxonomy-related-posts-block .rpbt-post-date {
   display: block;

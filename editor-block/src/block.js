@@ -15,7 +15,6 @@ const { __ } = wp.i18n;
 /**
  * Internal dependencies
  */
-//import './editor.scss'
 import { getPluginData } from './data/data';
 import PostsPanel from './components/posts-panel';
 import ImagePanel from './components/image-panel';
@@ -159,13 +158,11 @@ export class RelatedPostsBlock extends Component {
 			<Fragment>
 				{inspectorControls}
 					<div className={className}>
-					<Disabled>
 					<RestRequest
 						block="related-posts-by-taxonomy/related-posts-block"
 						postID={postID}
 						attributes={ shortcodeAttr }
 					/>
-					</Disabled>
 					</div>
 			</Fragment>
 		);

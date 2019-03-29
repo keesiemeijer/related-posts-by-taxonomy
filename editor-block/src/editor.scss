@@ -55,6 +55,9 @@ $block-class: wp-block-related-posts-by-taxonomy-related-posts-block;
 
 .block-editor .#{$block-class} {
 	
+	ul {
+		padding-left: 1em;
+	}
 
 	.rpbt-post-date {
 		display: block;

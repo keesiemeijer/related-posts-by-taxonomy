@@ -58,11 +58,30 @@ module.exports = function( grunt ) {
 			}
 		},
 
+		sass: {
+			dist: {
+				files: {
+					'includes/assets/css/editor.css': 'editor-block/src/editor.scss'
+				}
+			}
+		},
+
+		watch: {
+			all: {
+				files: [ "editor-block/src/editor.scss" ],
+				tasks: [ "sass:dist" ],
+				options: {
+					spawn: false
+				}
+			}
+		},
+
 		// Clean up build directory
 		clean: {
 			main: [
 				'build/<%= pkg.name %>',
 				'editor-block/build',
+				'includes/assets/js/editor-block.js.map',
 			]
 		},
 
@@ -161,7 +180,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'travis', [ 'githash', 'replace:replace_branch' ] );
 
 	// Creates build
-	grunt.registerTask( 'build', [ 'clean:main', 'run:build', 'uglify', 'version', 'makepot', 'travis', 'copy:main' ] );
+	grunt.registerTask( 'build', [ 'clean:main', 'run:build', 'sass', 'uglify', 'version', 'makepot', 'travis', 'copy:main' ] );
 
 	grunt.util.linefeed = '\n';
 };
