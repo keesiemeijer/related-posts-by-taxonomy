@@ -15,7 +15,7 @@ Quickly increase your readers' engagement by adding related posts in the sidebar
 
 Posts with the **most terms in common** will display at the top! 
 
-This plugin is capable of finding related posts in multiple **taxonomies** and **post types**. Include or exclude terms from the search for related posts. Change the look and feel by using your own templates in your (child) theme.
+This plugin is capable of finding related posts in multiple **taxonomies** and **post types**. Include or exclude terms from the search for related posts. Change the look and feel by using your own templates in a (child) theme.
 
 [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/)
 
@@ -27,9 +27,9 @@ Plugin features:
 * Automatic display of related posts after the post content.
 * **Exclude** or **include** terms and posts.
 * Search for related posts in single or multiple **taxonomies** and **post types**.
-* Search for related posts with post meta.
-* **Limit the search** of related posts by date or number.
-* Extensive **[plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/)**.
+* Limit the search for related posts by date, number or post meta.
+* Use your own **HTML templates** for display of the related posts.
+* Extensive [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/).
 * Follows WordPress coding standards and plugin best practices.
 * Highly Adjustable!
 
@@ -37,14 +37,15 @@ For the following features you need to be somewhat familiar with WordPress [hook
 
 Extended features:
 
-* Use your own **HTML templates** for display of the related posts.
+* The WordPress object cache is used for the related posts query.
+* Use the plugin persistent cache for the related posts query. (opt-in feature)
 * Use the **WordPress REST API** to get related posts. (opt-in feature)
-* Use a persistent cache layer for the related posts. (opt-in feature)
 * Load related posts after the whole page has loaded (with Ajax). (opt-in feature)
 * Use **plugin functions** in your theme templates to display related posts yourself.
 * Use Filters to **change the default behavior** of the plugin. 
 
-Follow this plugin on [GitHub](https://github.com/keesiemeijer/related-posts-by-taxonomy).
+Follow this plugin on [GitHub](https://github.com/keesiemeijer/related-posts-by-taxonomy).  
+Search the [code reference](https://keesiemeijer.github.io/related-posts-by-taxonomy)  
 
 See the [FAQ](http://wordpress.org/extend/plugins/related-posts-by-taxonomy/faq/) to have related posts automatically display after the post content without using the shortcode or widget. 
 
@@ -212,4 +213,4 @@ For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
 = 2.6.1 =
-This upgrade adds a new format for related galleries similar to the Gutenberg gallery block.
+This upgrade lets you include child or parent terms in the related posts query. See the changelog for more information
