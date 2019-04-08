@@ -83,24 +83,21 @@ module.exports = function( grunt ) {
 					'!bin/**',
 					'!tests/**',
 					'!build/**',
-					'!.git/**',
+					'!editor-block/**',
+					'!webpack.config.js',
 					'!Gruntfile.js',
 					'!package.json',
+					'!package-lock.json',
+					'!composer.lock',
+					'!phpunit.xml',
+					'!README.md',
+					'!readme.md',
+					'!travis.yml',
+					'!.git/**',
 					'!.gitignore',
 					'!.gitmodules',
 					'!.gitattributes',
 					'!.editorconfig',
-					'!**/Gruntfile.js',
-					'!**/package.json',
-					'!**/phpunit.xml',
-					'!**/composer.lock',
-					'!**/package-lock.json',
-					'!**/README.md',
-					'!**/readme.md',
-					'!**/CHANGELOG.md',
-					'!**/CONTRIBUTING.md',
-					'!**/travis.yml',
-					'!**/*~'
 				],
 				dest: 'build/<%= pkg.name %>/'
 			}
@@ -146,9 +143,6 @@ module.exports = function( grunt ) {
 				replacements: [ {
 					from: /related-posts-by-taxonomy.svg\?branch=(master|develop)/g,
 					to: "related-posts-by-taxonomy.svg?branch=<%= githash.main.branch %>"
-				}, {
-					from: /related-posts-by-taxonomy\/tree\/(master|develop)#pull-requests/g,
-					to: "related-posts-by-taxonomy/tree/<%= githash.main.branch %>#pull-requests"
 				} ]
 			}
 		}
