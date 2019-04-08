@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Related Posts By Taxonomy 2.6.1-alpha\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2019-01-09 14:29:06+00:00\n"
+"POT-Creation-Date: 2019-04-08 14:34:40+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,7 +23,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
-"X-Generator: grunt-wp-i18n1.0.2\n"
+"X-Generator: grunt-wp-i18n 1.0.3\n"
 
 #: includes/assets/partials/widget/columns.php:3
 msgid "Number of image columns"
@@ -137,31 +137,31 @@ msgstr ""
 msgid "Invalid post ID."
 msgstr ""
 
-#: includes/class-rest-api.php:268
+#: includes/class-rest-api.php:275
 msgid "The related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:276
+#: includes/class-rest-api.php:283
 msgid "Number of related terms in common with the post."
 msgstr ""
 
-#: includes/class-rest-api.php:284
+#: includes/class-rest-api.php:291
 msgid "The Post ID to get related posts for."
 msgstr ""
 
-#: includes/class-rest-api.php:289
+#: includes/class-rest-api.php:296
 msgid "Post types used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:297
+#: includes/class-rest-api.php:304
 msgid "Taxonomies used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:305
+#: includes/class-rest-api.php:312
 msgid "Related term ids used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:313
+#: includes/class-rest-api.php:320
 msgid "Rendered related posts HTML"
 msgstr ""
 
@@ -173,13 +173,13 @@ msgstr ""
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/settings.php:178
+#: includes/settings.php:180
 msgid "Related Posts"
 msgstr ""
 
 #: templates/related-posts-excerpts.php:46 templates/related-posts-links.php:47
 #: templates/related-posts-posts.php:47
-#: templates/related-posts-thumbnails.php:63
+#: templates/related-posts-thumbnails.php:48
 msgid "No related posts found"
 msgstr ""
 
