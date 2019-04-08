@@ -140,28 +140,8 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 		$args['taxonomies'] = km_rpbt_get_public_taxonomies();
 	}
 
-	// Important! Sanitize arguments after taxonomy check.
-	$args = km_rpbt_sanitize_args( $args );
-
 	// Set post_id the same as used for the $post_id parameter.
 	$args['post_id'] = $post_id;
-
-	/**
-	 * Filter whether to use your own related posts.
-	 *
-	 * @since  2.5.0
-	 *
-	 * @param boolean|array $related_posts Return an array with (related) post objects to use your own
-	 *                                     related post. This prevents the query for related posts by this plugin.
-	 *                                     Default false (Let this plugin query for related posts).
-	 *
-	 * @param array         Array with widget or shortcode arguments.
-	 */
-	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $args );
-
-	if ( is_array( $related_posts ) ) {
-		return $related_posts;
-	}
 
 	if ( km_rpbt_plugin_supports( 'cache' ) && km_rpbt_is_cache_loaded() ) {
 		// Get related posts from cache.
@@ -169,7 +149,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	} else {
 		$query_args = $args;
 
-		/* restricted arguments */
+		/* restricted arguments (back compat) */
 		unset( $query_args['post_id'], $query_args['taxonomies'] );
 
 		/* get related posts */

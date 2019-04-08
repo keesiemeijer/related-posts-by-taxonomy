@@ -217,7 +217,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @since 2.6.0
 		 */
 		function pre_related_posts( $posts, $args ) {
-			$args       = km_rpbt_sanitize_args( $args );
 			$post_id    = $args['post_id'];
 			$taxonomies = $args['taxonomies'];
 			$related    = $args['related'];
