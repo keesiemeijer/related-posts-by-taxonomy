@@ -408,9 +408,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array      Sorted arguments.
 		 */
 		public function order_cache_args( $args ) {
+			$args = km_rpbt_nested_array_sort( $args );
 			foreach ( $args as $key => $value ) {
 				if ( is_array( $args[ $key ] ) ) {
-					sort( $args[ $key ] );
+					// Convert to string to keep cache value small.
 					$args[ $key ] = implode( ',', $args[ $key ] );
 				}
 			}

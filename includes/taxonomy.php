@@ -193,11 +193,13 @@ function km_rpbt_get_term_objects( $terms, $taxonomies = '' ) {
 
 	$tax_sql    = '';
 	if ( ! empty( $taxonomies ) ) {
+		sort( $taxonomies );
 		$taxonomies = array_map( 'esc_sql', $taxonomies );
 		$taxonomies = implode( "', '", $taxonomies );
 		$tax_sql    = "tt.taxonomy IN ('{$taxonomies}')";
 	}
 
+	sort( $terms );
 	$terms_sql  = implode( ', ', $terms );
 	$select_sql = "SELECT t.term_id, tt.taxonomy FROM {$wpdb->terms} AS t";
 	$join_sql   = "INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";

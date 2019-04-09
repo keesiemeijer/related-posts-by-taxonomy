@@ -75,6 +75,9 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		return array();
 	}
 
+	// Sort arrays for WP object cache key.
+	$args = km_rpbt_nested_array_sort( $args );
+
 	$args['related_terms'] = $terms;
 	$args['termcount']     = array();
 	$args['post_id']       = $post_id;

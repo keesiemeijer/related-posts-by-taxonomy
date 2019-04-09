@@ -352,6 +352,31 @@ function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
 }
 
 /**
+ * Sort nested numerical arrays.
+ *
+ * @since 2.6.1
+ *
+ * @param array $array Array.
+ * @return array Array with nested numerical arrays sorted
+ */
+function km_rpbt_nested_array_sort( $array ) {
+	foreach ( $array as $key => $value ) {
+		if ( ! is_array( $value ) ) {
+			continue;
+		}
+
+		$keys        = array_keys( $value );
+		$string_keys = array_filter( $keys, 'is_string' );
+
+		if ( 0 === count( $string_keys ) ) {
+			sort( $array[ $key ] );
+		}
+	}
+
+	return $array;
+}
+
+/**
  * Checks if the cache class is loaded.
  *
  * @since  2.5.0
