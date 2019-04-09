@@ -17,7 +17,7 @@
  *
  * @var array $related_posts Array with related post objects or related post IDs.
  *                           Empty array if no related posts are found.
- * @var array $rpbt_args     Array with widget or shortcode arguments.
+ * @var array $rpbt_args     Array with widget, shortcode, rest API or editor block arguments.
  *
  * deprecated (since version 0.3)
  * @var string $image_size    Image size. (deprecated - use $rpbt_args['image_size'] instead)
@@ -35,28 +35,13 @@
 
 	<?php
 		/**
-		 * Arguments for km_rpbt_related_posts_by_taxonomy_gallery() function.
+		 * Use the $rpbt_args from the shortcode, widget or rest API.
 		 *
-		 * Here we use the defaults for 'itemtag', 'icontag', 'captiontag'
+		 * See plugin function documentation.
+		 * https://keesiemeijer.github.io/related-posts-by-taxonomy/functions/km_rpbt_related_posts_by_taxonomy_gallery
 		 */
-		$args = array(
 
-			// 'itemtag'    => 'dl',
-			// 'icontag'    => 'dt',
-			// 'captiontag' => 'dd',
-
-			'id'           => $rpbt_args['post_id'],
-			'columns'      => $rpbt_args['columns'],    // zero or positive number
-			'size'         => $rpbt_args['image_size'], // 'thumbnail', 'medium', 'large', 'full' and custom sizes set by your theme
-			'caption'      => $rpbt_args['caption'],    // 'post_title', 'post_excerpt' 'attachment_caption', attachment_alt, or a custom string
-			'link_caption' => $rpbt_args['link_caption'], // Link caption to post
-			'show_date'    => $rpbt_args['show_date'], // Show post date
-			'post_class'   => $rpbt_args['post_class'], // CSS classes string
-			'type'         => $rpbt_args['type'], // type widget or shortcode
-		);
-
-		// Plugin function to display the galllery in /includes/gallery.php
-		echo km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts );
+		echo km_rpbt_related_posts_by_taxonomy_gallery( $rpbt_args, $related_posts );
 	?>
 
 <?php else : ?>

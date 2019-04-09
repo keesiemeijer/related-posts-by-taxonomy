@@ -25,7 +25,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$this->plugin = km_rpbt_plugin();
 
 		$widget = array(
-			'name' => __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ),
+			'name'        => __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ),
 			'description' => __( 'Show a list of related posts by taxonomy.', 'related-posts-by-taxonomy' ),
 		);
 
@@ -88,7 +88,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$args['post_types'] = array_keys( $args['post_types'] );
 		}
 
-		/* added in 2.0 */
 		if ( $args['random'] ) {
 			unset( $args['random'] );
 			$args['order'] = 'RAND';
@@ -96,6 +95,10 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		if ( 'thumbnails' === $args['format'] ) {
 			$args['post_thumbnail'] = true;
+		}
+
+		if ( $this->plugin->all_tax === $args['taxonomies'] ) {
+			$args['taxonomies'] = '';
 		}
 
 		// Get allowed fields for use in templates
@@ -110,7 +113,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		 * @param string $widget_args Widget arguments.
 		 */
 		$filter = apply_filters( 'related_posts_by_taxonomy_widget_args', $args, $widget_args );
-		$args = array_merge( $args, (array) $filter );
+		$args   = array_merge( $args, (array) $filter );
 
 		$args['title'] = apply_filters( 'widget_title', $args['title'], $args, $this->id_base );
 
@@ -222,7 +225,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			'post_id',
 		);
 		foreach ( $pieces as $piece ) {
-			$file = str_replace( '_', '-', $piece );
+			$file             = str_replace( '_', '-', $piece );
 			$fields[ $piece ] = $this->get_field( $file, $i );
 		}
 
@@ -245,8 +248,8 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 */
 	function get_field( $field, $i ) {
 		$plugin = $this->plugin;
-		$style = ' style="border-top: 1px solid #e5e5e5; padding-top: 1em;"';
-		$file = RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/assets/partials/widget/' . $field . '.php';
+		$style  = ' style="border-top: 1px solid #e5e5e5; padding-top: 1em;"';
+		$file   = RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/assets/partials/widget/' . $field . '.php';
 		if ( ! is_readable( $file ) ) {
 			return '';
 		}
@@ -255,7 +258,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		include $file;
 		return ob_get_clean();
 	}
-
 
 	/**
 	 * Adds public query var km_rpbt_related_post_id.

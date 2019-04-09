@@ -31,6 +31,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
  *                                            list of term ids. Only includes terms also assigned to the post to get
  *                                            related posts for. Default empty.
+ *     @type boolean        $include_parents  Whether to include parent terms in the query for related posts. Default false.
+ *     @type boolean        $include_children Whether to include child terms in the query for related posts. Default false.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
  *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
@@ -66,29 +68,38 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$post_id    = absint( $post_id );
 	$taxonomies = km_rpbt_get_taxonomies( $taxonomies );
 	$args       = km_rpbt_sanitize_args( $args );
-	$related    = $args['related'];
+	$terms      = km_rpbt_get_terms( $post_id, $taxonomies, $args );
 
-	// Check if this is a query for unrelated terms.
-	$unrelated_terms = ! $related && $args['terms'];
-
-	if ( ! $post_id || ( ! $unrelated_terms && empty( $taxonomies ) ) ) {
-		// Invalid post ID or invalid taxonomies
+	if ( ! $post_id || empty( $terms ) ) {
+		// Invalid post ID, invalid taxonomies, or no terms found.
 		return array();
 	}
 
-	if ( ! $unrelated_terms ) {
-		$terms = km_rpbt_get_terms( $post_id, $taxonomies, $args );
-	} else {
-		$terms   = $args['terms'];
-		$related = true;
-	}
-
-	if ( empty( $terms ) ) {
-		return array();
-	}
+	// Sort arrays for WP object cache key.
+	$args = km_rpbt_nested_array_sort( $args );
 
 	$args['related_terms'] = $terms;
 	$args['termcount']     = array();
+	$args['post_id']       = $post_id;
+	$args['taxonomies']    = $taxonomies;
+
+	/**
+	 * Filter whether to use your own related posts.
+	 *
+	 * @since  2.5.0
+	 *
+	 * @param null|array $related_posts Array or null. Prevent the query for related posts by
+	 *                                  returning an array (with post objects or ids).
+	 *                                  Default null (do the query for related posts).
+	 * @param array      $args          Array with query arguments.
+	 */
+	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', null, $args );
+	if ( is_array( $related_posts ) ) {
+		return $related_posts;
+	}
+
+	// Back compat for filters.
+	unset( $args['post_id'], $args['taxonomies'] );
 
 	// Term ids sql.
 	if ( count( $terms ) > 1 ) {
@@ -173,12 +184,12 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	// Limit date sql.
 	$limit_date_sql = '';
 	if ( $args['limit_year'] || $args['limit_month'] ) {
-		// Year takes precedence over month.
-		$time_limit  = ( $args['limit_year'] ) ? $args['limit_year'] : $args['limit_month'];
-		$time_string = ( $args['limit_year'] ) ? 'year' : 'month';
+		// Month takes precedence over year.
+		$time_limit  = ( $args['limit_month'] ) ? $args['limit_month'] : $args['limit_year'];
+		$time_string = ( $args['limit_month'] ) ? 'month' : 'year';
 		$last_date = date( 'Y-m-t', strtotime( 'now' ) );
 		$first_date  = date( 'Y-m-d', strtotime( "$last_date -$time_limit $time_string" ) );
-		$limit_date_sql    = " AND $wpdb->posts.$orderby > '$first_date 23:59:59' AND $wpdb->posts.$orderby <= '$last_date 23:59:59'";
+		$limit_date_sql = " AND $wpdb->posts.$orderby > '$first_date 23:59:59' AND $wpdb->posts.$orderby <= '$last_date 23:59:59'";
 		$limit_sql = '';
 	}
 
@@ -191,10 +202,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	}
 
 	if ( ! $order_by_rand ) {
-		if ( $related ) {
-			// Related terms count sql.
-			$select_sql .= ' , count(distinct tt.term_taxonomy_id) as termcount';
-		}
+		$select_sql .= ' , count(distinct tt.term_taxonomy_id) as termcount';
 		$order_by_sql .= "$wpdb->posts.$orderby";
 	}
 
@@ -203,7 +211,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$meta_query = is_array( $meta_query->queries ) ? $meta_query->queries : array();
 
 	// Default to AND.
-	if( isset( $meta_query['relation'] ) ) {
+	if ( isset( $meta_query['relation'] ) ) {
 		$meta_query['relation'] = 'AND';
 	}
 
@@ -333,7 +341,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	if ( $results ) {
 
 		/* Order the related posts */
-		if ( ! $order_by_rand && $related ) {
+		if ( ! $order_by_rand ) {
 
 			/* Add the (termcount) score and key to results for ordering*/
 			for ( $i = 0; $i < count( $results ); $i++ ) {

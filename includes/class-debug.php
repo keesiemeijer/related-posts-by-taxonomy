@@ -217,7 +217,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @since 2.6.0
 		 */
 		function pre_related_posts( $posts, $args ) {
-			$args       = km_rpbt_sanitize_args( $args );
 			$post_id    = $args['post_id'];
 			$taxonomies = $args['taxonomies'];
 			$related    = $args['related'];
@@ -294,16 +293,22 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return array Array with with post objects.
 		 */
 		function posts_found( $results ) {
+			if ( ! is_array( $results ) ) {
+				return $this->debug['related post ids found']['error'] = $results;
+			}
+
 			if ( ! empty( $results ) ) {
 				if ( isset( $results[0]->ID ) ) {
+					// Assume array with post objects.
 					$post_ids = wp_list_pluck( $results, 'ID' );
-					$this->debug['related post ids found'] = ! empty( $post_ids ) ? implode( ', ', $post_ids ) : '';
+					$this->debug['related post ids found'] = implode( ', ', $post_ids );
 				} else {
-					$this->debug['related post ids found']['error'] = 'results found but could not get post IDs';
-					$this->debug['related post ids found']['results'] = $results;
+					// Assume array with ids, names or slugs.
+					$this->debug['related post ids found'] = implode( ', ', $results );
 				}
 			} else {
-				$this->debug['related post ids found'] = $results;
+				// Only reached if terms were found for the query
+				$this->debug['related post ids found'] = 'no related post ids found';
 			}
 
 			return $results;

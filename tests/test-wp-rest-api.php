@@ -77,6 +77,8 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Tests if wp_rest_api filter is set to false (by default).
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_wp_rest_Api_not_registered_route() {
 		// Added by setUp().
@@ -273,7 +275,7 @@ EOF;
 		$response = rest_do_request( $request );
 		$data     = $response->get_data();
 
-		$this->assertEquals( array( $post_names[1],$post_names[2], $post_names[3] ), $data['posts'] );
+		$this->assertEquals( array( $post_names[1], $post_names[2], $post_names[3] ), $data['posts'] );
 
 		// Not rendered if fields is names
 		$this->assertSame( '', $data['rendered'] );
@@ -417,7 +419,7 @@ EOF;
 	}
 
 	/**
-	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_with_no_taxonomies() {
 		register_post_type( 'rel_cpt', array( 'taxonomies' => array( 'post_tag', 'rel_ctax' ) ) );
@@ -437,8 +439,6 @@ EOF;
 
 	/**
 	 * Test invalid function arguments.
-	 *
-	 * @group fails
 	 *
 	 * @requires function WP_REST_Controller::register_routes
 	 */
@@ -460,23 +460,24 @@ EOF;
 		$fail2 = $this->rest_related_posts_by_taxonomy( 9999999999, $taxonomies, $args );
 		$this->assertSame( 'rest_post_invalid_id', $fail2, 'Non existant post ID' );
 
-		//Empty taxonomy should default to all taxonomies.
+		// PEmpty taxonomy should default to all taxonomies.
 		$fail4 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
 		$this->assertNotEmpty( $fail4, 'no taxonomies' );
 
-		// Nonexistent taxonomy.
+		// Ivalid taxonomy.
 		$fail3 = $this->rest_related_posts_by_taxonomy( $posts[0], 'not a taxonomy', $args );
-		$this->assertEmpty( $fail3, 'Non existant taxonomy' );
+		$this->assertEmpty( $fail3, 'Invalid taxonomy' );
 
-		// Nonexistent post type.
+		// Invalid post type.
 		$args['post_types'] = 'not a post type';
-		// Non existant post_type.
 		$fail5 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
-		$this->assertEmpty( $fail5, 'Non existant post type' );
+		$this->assertEmpty( $fail5, 'Invalid post type' );
 	}
 
 	/**
 	 * Test with valid and invlid post types and taxonomies.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_mixed_arguments() {
 		$this->setup_posts();
@@ -544,9 +545,8 @@ EOF;
 	function test_related_posts_by_terms() {
 		$this->setup_posts();
 		$args = array(
-			'terms' => array( $this->tax_2_terms[3] ),
-			'related'       => false,
-			'fields'        => 'ids',
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
 		);
 
 		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
@@ -554,9 +554,83 @@ EOF;
 	}
 
 	/**
+	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_related_posts_by_terms_invalid_term_id() {
+		$this->setup_posts();
+		$invalid_id = $this->get_highest_term_id() + 1;
+
+		$args = array(
+			'terms'      => array( $invalid_id ),
+			'fields'     => 'ids',
+			'related'    => false,
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
+		$this->assertEmpty(  $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_related_posts_by_terms_empty_taxonomies() {
+		$this->setup_posts();
+		$args = array(
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], '', $args );
+
+		// No taxonomies defaults to all taxonomies
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_related_posts_by_terms_invalid_taxonomy() {
+		$this->setup_posts();
+		$args = array(
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], 'lulu', $args );
+
+		// Valid taxonomies are needed for related terms.
+		$this->assertEmpty( $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_related_posts_by_terms_invalid_taxonomy_unrelated() {
+		$this->setup_posts();
+		$args = array(
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
+			'related'    => false,
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], 'lulu', $args );
+
+		// Invalid taxonomies are ignored when related is set to false.
+		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
 	 * Test terms argument with and without the correct taxonomy.
 	 *
-	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_related_posts_by_terms_with_taxonomy() {
 		$this->setup_posts();
@@ -609,6 +683,48 @@ EOF;
 		);
 		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], $this->taxonomies, $args );
 		$this->assertEquals( array( $this->posts[1], $this->posts[2], $this->posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test the include_parents argument.
+	 */
+	function test_include_parents() {
+		$hierarchical = $this->create_posts_with_hierarchical_terms();
+		$posts = $hierarchical['posts'];
+		$terms = $hierarchical['terms'];
+
+		$args = array(
+			'fields' => 'ids',
+			'terms'  => array( $terms[3] ),
+		);
+
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
+		$this->assertEquals( array( $posts[3] ), $rel_post0 );
+
+		$args['include_parents'] = true;
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
+		$this->assertEquals( array( $posts[1], $posts[2], $posts[3] ), $rel_post0 );
+	}
+
+	/**
+	 * Test the include_children argument.
+	 */
+	function test_include_children() {
+		$hierarchical = $this->create_posts_with_hierarchical_terms();
+		$posts = $hierarchical['posts'];
+		$terms = $hierarchical['terms'];
+
+		$args = array(
+			'fields' => 'ids',
+			'terms'  => array( $terms[1] ),
+		);
+
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
+		$this->assertEquals( array( $posts[1] ), $rel_post0 );
+
+		$args['include_children'] = true;
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], '', $args );
+		$this->assertEquals( array( $posts[1], $posts[2], $posts[3] ), $rel_post0 );
 	}
 
 	/**
@@ -671,6 +787,8 @@ EOF;
 
 	/**
 	 * Test meta query arguments.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_meta_query() {
 		$this->setup_posts();
@@ -695,6 +813,8 @@ EOF;
 
 	/**
 	 * Test meta query without assigning meta to posts.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_meta_query_with_no_meta_assigned() {
 		$this->setup_posts();
@@ -729,6 +849,8 @@ EOF;
 
 	/**
 	 * Test post_thumbnail with meta function argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_post_thumbnail_and_meta() {
 		$this->setup_posts();
@@ -750,6 +872,8 @@ EOF;
 
 	/**
 	 * Test meta query filter.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_meta_query_filter() {
 		$this->setup_posts();
@@ -823,7 +947,7 @@ EOF;
 
 		// Test post 0.
 		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
-		$this->assertEquals( array( $posts[3], $posts[2], $posts[1] ), $rel_post0 );
+		$this->assertEquals( array( $posts[2], $posts[1], $posts[3] ), $rel_post0 );
 	}
 
 	/**
@@ -946,6 +1070,8 @@ EOF;
 
 	/**
 	 * test related posts for post type post
+	 *
+	 * @requires function WP_REST_Controller::register_routes
 	 */
 	function test_include_self_orderby_rand() {
 		$this->setup_posts();

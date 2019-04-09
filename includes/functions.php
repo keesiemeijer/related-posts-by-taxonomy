@@ -89,15 +89,17 @@ function km_rpbt_plugin_supports( $feature ) {
  *     @type string         $fields           Return full post objects, IDs, post titles or post slugs.
  *                                            Accepts 'all', 'ids', 'names' or 'slugs'. Default is 'all'.
  *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
- *                                            list of term ids. The terms don't need to be assigned to the post to
- *                                            get related posts for. Default empty.
+ *                                            list of term ids. Only includes terms from the `$taxonomies` argument.
+ *                                            Default empty.
  *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
- *                                            list of term ids. Only includes terms also assigned to the post to get
- *                                            related posts for. Default empty.
+ *                                            list of term ids. Only includes terms in common with the current post.
+ *                                            Default empty.
+ *     @type boolean        $include_parents  Whether to include parent terms in the query for related posts. Default false.
+ *     @type boolean        $include_children Whether to include child terms in the query for related posts. Default false.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
- *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
- *                                            the post to get related posts for. Default true.
+ *     @type boolean        $related          If false the `$terms` and `$include_terms` terms are used without
+ *                                            checking taxonomies or post terms. Default true.
  *     @type array|string   $exclude_post     Exclude posts for the related posts query. Array or comma separated
  *                                            list of post ids. Default empty.
  *     @type int            $limit_posts      Limit the posts to search related posts in. Default -1 (search in all posts).
@@ -131,8 +133,6 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	if ( ! $post_id ) {
 		return array();
 	}
-	// Sanitize arguments.
-	$args = km_rpbt_sanitize_args( $args );
 
 	// Check if any taxonomies are used for the query.
 	$taxonomies = isset( $args['taxonomies'] ) ? $args['taxonomies'] : '';
@@ -143,30 +143,13 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	// Set post_id the same as used for the $post_id parameter.
 	$args['post_id'] = $post_id;
 
-	/**
-	 * Filter whether to use your own related posts.
-	 *
-	 * @since  2.5.0
-	 *
-	 * @param boolean|array $related_posts Return an array with (related) post objects to use your own
-	 *                                     related post. This prevents the query for related posts by this plugin.
-	 *                                     Default false (Let this plugin query for related posts).
-	 *
-	 * @param array         Array with widget or shortcode arguments.
-	 */
-	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $args );
-
-	if ( is_array( $related_posts ) ) {
-		return $related_posts;
-	}
-
 	if ( km_rpbt_plugin_supports( 'cache' ) && km_rpbt_is_cache_loaded() ) {
 		// Get related posts from cache.
 		$related_posts = $plugin->cache->get_related_posts( $args );
 	} else {
 		$query_args = $args;
 
-		/* restricted arguments */
+		/* restricted arguments (back compat) */
 		unset( $query_args['post_id'], $query_args['taxonomies'] );
 
 		/* get related posts */
@@ -174,81 +157,6 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	}
 
 	return $related_posts;
-}
-
-/**
- * Get the terms from a post or from included terms.
- *
- * @since  2.5.0
- *
- * @param int          $post_id    The post id to get terms for.
- * @param array|string $taxonomies The taxonomies to retrieve terms from.
- * @param string|array $args       {
- *     Optional. Arguments to get terms.
- *
- *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
- *                                            list of term ids. The terms don't need to be assigned to the post set by the
- *                                            `$post_id` argument. Default empty.
- *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
- *                                            list of term ids. Only includes terms also assigned to the post set by the
- *                                            `$post_id` argument. Default empty.
- *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
- *                                            list of term ids. Default empty
- *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
- *                                            the post set by the `$post_id` argument. Default true.
- * }
- * @return array Array with term ids.
- */
-function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
-	$terms = array();
-	$args  = km_rpbt_sanitize_args( $args );
-
-	if ( $args['terms'] ) {
-
-		if ( ! $args['related'] ) {
-			return $args['terms'];
-		}
-
-		$term_args = array(
-			'include'  => $args['terms'],
-			'taxonomy' => $taxonomies,
-			'fields'   => 'ids',
-		);
-
-		// Filter out terms not assigned to the taxonomies
-		$terms = get_terms( $term_args );
-
-		return ! is_wp_error( $terms ) ? $terms : array();
-	}
-
-	if ( ! $args['related'] && ! empty( $args['include_terms'] ) ) {
-		// Not related, use included term ids as is.
-		$terms = $args['include_terms'];
-	} else {
-
-		// Post terms.
-		$terms = wp_get_object_terms(
-			$post_id, $taxonomies, array(
-				'fields' => 'ids',
-			)
-		);
-
-		if ( is_wp_error( $terms ) || empty( $terms ) ) {
-			return array();
-		}
-
-		// Only use included terms from the post terms.
-		if ( $args['related'] && ! empty( $args['include_terms'] ) ) {
-			$terms = array_values( array_intersect( $args['include_terms'], $terms ) );
-		}
-	}
-
-	// Exclude terms.
-	if ( empty( $args['include_terms'] ) ) {
-		$terms = array_values( array_diff( $terms , $args['exclude_terms'] ) );
-	}
-
-	return $terms;
 }
 
 /**
@@ -355,7 +263,7 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 		$html =  isset( $rpbt_args[ $before ] ) ? $rpbt_args[ $before ]  . "\n" : '';
 		$html .= trim( $rpbt_args['title'] ) . "\n";
 		$html .= $output . "\n";
-		$html .=  isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ]  . "\n" : '';
+		$html .= isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ]  . "\n" : '';
 	}
 
 	$recursing = false;
@@ -427,37 +335,6 @@ function km_rpbt_get_post_types( $post_types = '' ) {
 }
 
 /**
- * Returns array with validated taxonomy names.
- *
- * @since 2.2
- * @param string|array $taxonomies Taxonomies.
- * @return array        Array with taxonomy names.
- */
-function km_rpbt_get_taxonomies( $taxonomies ) {
-	$plugin  = km_rpbt_plugin();
-
-	if ( $plugin && ( $taxonomies === $plugin->all_tax ) ) {
-		$taxonomies = array_keys( $plugin->taxonomies );
-	}
-
-	$taxonomies = km_rpbt_get_comma_separated_values( $taxonomies );
-
-	return array_values( array_filter( $taxonomies, 'taxonomy_exists' ) );
-}
-
-/**
- * Get all public taxonomies.
- *
- * @since 2.5.0
- *
- * @return array Array with all public taxonomies.
- */
-function km_rpbt_get_public_taxonomies() {
-	$plugin = km_rpbt_plugin();
-	return isset( $plugin->all_tax ) ? km_rpbt_get_taxonomies( $plugin->all_tax ) : array();
-}
-
-/**
  * Get the values from a comma separated string.
  *
  * Removes duplicates and empty values.
@@ -472,6 +349,31 @@ function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
 	}
 
 	return array_values( array_filter( array_unique( array_map( 'trim', $value ) ) ) );
+}
+
+/**
+ * Sort nested numerical arrays.
+ *
+ * @since 2.7.0
+ *
+ * @param array $array Array.
+ * @return array Array with nested numerical arrays sorted
+ */
+function km_rpbt_nested_array_sort( $array ) {
+	foreach ( $array as $key => $value ) {
+		if ( ! is_array( $value ) ) {
+			continue;
+		}
+
+		$keys        = array_keys( $value );
+		$string_keys = array_filter( $keys, 'is_string' );
+
+		if ( 0 === count( $string_keys ) ) {
+			sort( $array[ $key ] );
+		}
+	}
+
+	return $array;
 }
 
 /**

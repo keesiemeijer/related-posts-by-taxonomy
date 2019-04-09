@@ -30,22 +30,22 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 	 * Test if atts are not changed due to debugging.
 	 */
 	function test_km_rpbt_get_shortcode_atts() {
-
 		$expected = array(
 			'post_id'          => '',
 			'taxonomies'       => '',
-			'before_shortcode' => '<div class="rpbt_shortcode">',
-			'after_shortcode'  => '</div>',
-			'before_title'     => '<h3>',
-			'after_title'      => '</h3>',
 			'title'            => 'Related Posts',
 			'format'           => 'links',
 			'image_size'       => 'thumbnail',
+			'gallery_format'   => '',
 			'columns'          => 3,
 			'caption'          => 'post_title',
-			'post_class'       => '',
 			'link_caption'     => false,
 			'show_date'        => false,
+			'post_class'       => '',
+			"before_shortcode" => '<div class="rpbt_shortcode">',
+			"after_shortcode"  => '</div>',
+			'before_title'     => '<h3>',
+			'after_title'      => '</h3>',
 			'type'             => 'shortcode',
 		);
 

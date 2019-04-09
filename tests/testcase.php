@@ -41,6 +41,34 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return compact( 'posts', 'tax1_terms', 'tax2_terms' );
 	}
 
+	function create_posts_with_hierarchical_terms( $post_type = 'post', $taxonomy = 'category' ) {
+		$posts = $this->create_posts( $post_type, 5 );
+
+		$terms = $this->factory->term->create_many( 5, array( 'taxonomy' => $taxonomy ) );
+
+		foreach ( array_values( $posts ) as $key => $post ) {
+			wp_set_post_terms ( $posts[ $key ], $terms[ $key ], $taxonomy );
+		}
+
+		//$assigned_terms = assign_taxonomy_terms($posts_taxonomy);
+
+		// term 0
+		// --term 1
+		// ----term 2
+		// ------term 3
+		// --term 4
+		$args = array();
+		foreach ( array( 1, 2, 3 ) as $id ) {
+			$args['parent'] = $terms[ $id - 1 ];
+			wp_update_term( $terms[ $id ] , $taxonomy, $args );
+		}
+
+		$args['parent'] = $terms[0];
+		wp_update_term( $terms[4] , $taxonomy, $args );
+
+		return compact( 'posts', 'terms' );
+	}
+
 	/**
 	 * Creates posts with decreasing timestamps a day apart.
 	 *
@@ -123,6 +151,18 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		return $tax_terms;
 	}
 
+	function get_highest_term_id() {
+		// Get highest term id
+		$terms = get_terms(
+			array(
+				'fields'   => 'ids',
+				'order'    => 'DESC',
+				'orderby'  => 'term_id',
+				'number'   => 1,
+			) );
+		return isset( $terms[0] ) ? absint( $terms[0] ) : 0;
+	}
+
 	function return_first_argument( $arg ) {
 		$this->arg = $arg;
 		return  $arg;
@@ -189,6 +229,8 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		$posts        = $this->create_posts();
 		$related_post = get_post( $posts[0] );
 		$permalink    = get_permalink( $related_post->ID );
+		$attachment_id = $this->create_image();
+		set_post_thumbnail ( $posts[0], $attachment_id );
 
 		// Adds a fake image <img>, otherwhise the function will return nothing.
 		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
@@ -207,7 +249,7 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 	 * Adds a fake image for testing.
 	 */
 	function add_image( $image, $attr, $related, $args ) {
-		return "<a href='{$attr['permalink']}' title='{$attr['title_attr']}'><img></a>";
+		return $content = preg_replace( '/<img .*?\/>/', '<img>', $image );
 	}
 
 	/**
