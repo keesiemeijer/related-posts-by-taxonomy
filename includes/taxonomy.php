@@ -119,7 +119,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
  * If the taxonomies argument is empty it returns parents for all terms.
  * If taxonomies are provided it only returns parents from terms in the taxonomies.
  *
- * @since  2.6.1
+ * @since 2.7.0
  *
  * @param string       $tree_type  Type of hierarchy tree. Accepts 'parents' or 'children'.
  * @param array|string $terms      Array or comma separated list of term ids.
@@ -150,7 +150,7 @@ function km_rpbt_get_hierarchy_terms( $tree_type, $terms, $taxonomies = '' ) {
 		/**
 		 * Filter parent or child terms.
 		 *
-		 * @since  2.6.1
+		 * @since 2.7.0
 		 *
 		 * @param array $tree       Parent or child term ids.
 		 * @param int   $term_id    Term id.
@@ -175,7 +175,7 @@ function km_rpbt_get_hierarchy_terms( $tree_type, $terms, $taxonomies = '' ) {
  * If the taxonomies argument is empty it returns all terms.
  * If taxonomies are provided it only returns terms from the taxonomies.
  *
- * @since 2.6.1
+ * @since 2.7.0
  *
  * @param array|string $terms      Array or comma separated list of term ids.
  * @param array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.

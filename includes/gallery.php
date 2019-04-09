@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Default gallery arguments.
  *
- * @since 2.6.1
+ * @since 2.7.0
  *
  * @param integer $post_id Optional. post ID. Default 0.
  * @return Default gallery arguments.
@@ -146,7 +146,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 /**
  * Gallery HTML similar to the WordPress gallery shortcode.
  *
- * @since  2.6.1
+ * @since 2.7.0
  *
  * @param array   $related_posts Array with related post objects that have a post thumbnail.
  * @param array   $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
@@ -278,7 +278,7 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 /**
  * Gallery HTML similar to the Gutenberg gallery block.
  *
- * @since  2.6.1
+ * @since 2.7.0
  * @param array $related_posts Array with related post objects that have a post thumbnail.
  * @param array $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
  *                             accepted arguments.
@@ -337,7 +337,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 /**
  * Validation of gallery arguments.
  *
- * @since 2.6.1
+ * @since 2.7.0
  *
  * @param array $args Arguments to validate. See km_rpbt_related_posts_by_taxonomy_gallery() for
  *                    accepted arguments.
@@ -374,7 +374,7 @@ function km_rpbt_validate_gallery_args( $args, $valid_tags = array() ) {
 /**
  * CSS class for gallery items.
  *
- * @since 2.6.1
+ * @since 2.7.0
  *
  * @param array  $related_posts Array with related post objects that have a post thumbnail.
  * @param array  $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
@@ -408,7 +408,7 @@ function km_rpbt_get_gallery_post_class( $related, $args, $default_class = '' ) 
 /**
  * Get the gallery item link.
  *
- * @since  2.6.1
+ * @since 2.7.0
  *
  * @param int    $attachment_id Thumbnail ID.
  * @param object $related       Related post object.
@@ -457,7 +457,7 @@ function km_rpbt_get_gallery_image_link( $attachment_id, $related, $args = array
 /**
  * Image HTML similar to the Gutenberg gallery block images.
  *
- * @since  2.6.1
+ * @since 2.7.0
  *
  * @param int   $attachment_id Thumbnail ID.
  * @param array $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
@@ -485,7 +485,7 @@ function km_rpbt_get_editor_block_image( $attachment_id, $args = array() ) {
 /**
  * HTML image link similar to the Gutenberg gallery block.
  *
- * @since  2.6.1
+ * @since 2.7.0
  *
  * @param int    $attachment_id Thumbnail ID.
  * @param object $related       Related post object.
@@ -524,7 +524,7 @@ function km_rpbt_get_editor_block_image_link( $attachment_id, $related, $args = 
 /**
  * Get the gallery image caption
  *
- * @since 2.6.1
+ * @since 2.7.0
  *
  * @param int    $attachment_id Thumbnail ID.
  * @param object $related       Related post object.

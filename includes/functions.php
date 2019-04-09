@@ -354,7 +354,7 @@ function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
 /**
  * Sort nested numerical arrays.
  *
- * @since 2.6.1
+ * @since 2.7.0
  *
  * @param array $array Array.
  * @return array Array with nested numerical arrays sorted

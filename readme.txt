@@ -1,9 +1,9 @@
 === Related Posts by Taxonomy ===
 Contributors: keesiemeijer
-Tags: posts,related,related posts,related thumbnails,similar,similar posts,widget,shortcode,taxonomy,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
-Requires at least: 4.1
-Tested up to: 5.0
-Stable tag: 2.6.1-alpha
+Tags: posts,related,related posts,thumbnails,taxonomy,widget,shortcode,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
+Requires at least: 4.2
+Tested up to: 5.1
+Stable tag: 2.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
