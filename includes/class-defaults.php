@@ -121,7 +121,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @since 0.2.1
 		 */
 		public function _setup() {
-			$this->all_tax     = 'all'; // All taxonomies.
+			// The all_tax property is no longer used since version 2.7.1
+			// Empty string is now used for all taxonomies.
+			$this->all_tax = 'all';
+
 			$this->default_tax = array( 'category' => __( 'Category', 'related-posts-by-taxonomy' ) );
 			$this->taxonomies  = $this->get_taxonomies();
 			$this->post_types  = $this->get_post_types();
@@ -178,31 +181,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @return array Array with taxonomy names and labels.
 		 */
 		public function get_taxonomies() {
-			$tax = array();
+			$tax        = array();
 			$taxonomies = get_taxonomies( array( 'public' => true ), 'objects', 'and' );
 
-			$i = 0;
 			foreach ( (array) $taxonomies as $key => $value ) {
-
 				$tax[ $key ] = esc_attr( $value->labels->menu_name );
-
-				// Set first taxonomy as the default taxonomy.
-				if ( ! $i++ ) {
-					$this->default_tax = array( $key => esc_attr( $value->labels->menu_name ) );
-				}
-			}
-
-			// If 'all' is a registered taxonomy change the all_tax value (slug: all-2).
-			if ( ! empty( $tax ) ) {
-				if ( in_array( $this->all_tax, array_keys( $tax ) ) ) {
-					$num = 2;
-					do {
-						$alt_slug = $this->all_tax . "-$num";
-						$num++;
-						$slug_check = in_array( $alt_slug, $tax );
-					} while ( $slug_check );
-					$this->all_tax = $alt_slug;
-				}
 			}
 
 			if ( empty( $tax ) ) {

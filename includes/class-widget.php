@@ -73,19 +73,32 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			return '';
 		}
 
-		$args = $this->get_instance_settings( $args, $widget_args );
+		$settings = km_rpbt_get_default_settings( 'widget' );
+
+		/**
+		 * Filter widget defaults.
+		 *
+		 * @since 2.7.1
+		 *
+		 * @param array $defaults Default widget arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
+		 *                        for more information about default widget arguments.
+		 */
+		$defaults = apply_filters( "related_posts_by_taxonomy_widget_defaults", $settings );
+		$defaults = array_merge( $settings, (array) $defaults );
+
+		$args = $this->get_instance_settings( $args, $widget_args, $defaults );
 
 		/* don't show widget on pages other than single if singular_template is set */
 		if ( $args['singular_template'] && ! is_singular() ) {
 			return;
 		}
 
-		if ( empty( $args['post_id'] ) ) {
-			$args['post_id'] = $this->get_the_ID();
-		}
-
 		if ( ! empty( $args['post_types'] ) ) {
 			$args['post_types'] = array_keys( $args['post_types'] );
+		}
+
+		if ( empty( $args['post_id'] ) ) {
+			$args['post_id'] = $this->get_the_ID();
 		}
 
 		if ( $args['random'] ) {
@@ -97,7 +110,10 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$args['post_thumbnail'] = true;
 		}
 
-		if ( $this->plugin->all_tax === $args['taxonomies'] ) {
+		// Back compat. All taxonomies option is saved as an
+		// empty string since version 2.7.1
+		$taxonomies = $args['taxonomies'];
+		if ( ! $taxonomies || $this->is_all_taxonomies( $taxonomies ) ) {
 			$args['taxonomies'] = '';
 		}
 
@@ -117,10 +133,28 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		$args['title'] = apply_filters( 'widget_title', $args['title'], $args, $this->id_base );
 
-		/* Not filterable */
+		// Not filterable
 		$args['type'] = 'widget';
 
 		echo km_rpbt_get_feature_html( 'widget', $args );
+	}
+
+	/**
+	 * Check if all taxonomies is selected.
+	 *
+	 * The $this->plugin->all_tax property is no longer used since version 2.7.1.
+	 * Use empty string or 'km_rpbt_all_tax' for all taxonomies option in the widget.
+	 *
+	 * @since 2.7.1
+	 *
+	 * @param  array|string $taxonomies Taxonomies.
+	 * @return boolean True if all taxonomies is selected.
+	 */
+	function is_all_taxonomies( $taxonomies ) {
+		if ( ( 'km_rpbt_all_tax' === $taxonomies ) || ( $this->plugin->all_tax === $taxonomies ) ) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -135,6 +169,19 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	function get_related_posts( $args ) {
 		_deprecated_function( __FUNCTION__, '2.4.0', 'km_rpbt_get_related_posts()' );
 		return km_rpbt_get_related_posts( $args );
+	}
+
+	/**
+	 * Returns the current post id to get related posts for.
+	 *
+	 *
+	 * @since 0.2.1
+	 * @since 2.5.0 Moved logic to km_rpbt_get_widget_post_id().
+	 *
+	 * @return int Post id.
+	 */
+	function get_the_ID() {
+		return km_rpbt_get_widget_post_id();
 	}
 
 	/**
@@ -177,8 +224,9 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$i['show_date']         = isset( $new_instance['show_date'] ) ? (bool) $new_instance['show_date'] : false;
 
 		// Validation.
-		$i['post_id'] = $i['post_id'] ? $i['post_id']  : '';
-		$i['columns'] = $i['columns'] ? $i['columns']  : 3;
+		$i['taxonomies'] = $this->is_all_taxonomies( $i['taxonomies'] ) ? '' : $i['taxonomies'];
+		$i['post_id']    = $i['post_id'] ? $i['post_id']  : '';
+		$i['columns']    = $i['columns'] ? $i['columns']  : 3;
 
 		if ( -1 !== $i['posts_per_page'] ) {
 			$posts_per_page = absint( $i['posts_per_page'] );
@@ -207,7 +255,17 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	 * @param array $instance Current settings.
 	 */
 	function form( $instance ) {
-		$i = $this->get_instance_settings( $instance );
+
+		/**
+		 * Filter widget form instance settings.
+		 *
+		 * @since 2.7.1
+		 *
+		 * @param array $instance Widget form instance. See km_rpbt_related_posts_by_taxonomy_widget() for
+		 *                        for more information about default feature arguments.
+		 */
+		$instance = apply_filters( "related_posts_by_taxonomy_widget_form_instance", $instance );
+		$i        = $this->get_instance_settings( $instance );
 
 		$fields = array();
 		$pieces = array(
@@ -272,44 +330,19 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	}
 
 	/**
-	 * Returns the current post id to get related posts for.
-	 *
-	 * @since 0.2.1
-	 * @return int Post id.
-	 */
-	function get_the_ID() {
-		global $wp_query;
-
-		// Inside the loop.
-		$post_id = get_the_ID();
-
-		// Outside the loop.
-		if ( ! in_the_loop() ) {
-
-			if ( isset( $wp_query->post->ID ) ) {
-				$post_id = $wp_query->post->ID;
-			}
-
-			if ( isset( $wp_query->query_vars['km_rpbt_related_post_id'] ) ) {
-				$post_id = $wp_query->query_vars['km_rpbt_related_post_id'];
-			}
-		}
-
-		return $post_id;
-	}
-
-	/**
 	 * Returns all widget instance settings.
 	 *
 	 * @since 2.2.2
 	 * @param array $instance Widget instance.
 	 * @return array Widget instance
 	 */
-	function get_instance_settings( $instance, $widget_args = array() ) {
+	function get_instance_settings( $instance, $widget_args = array(), $defaults = array() ) {
 		$i = $this->back_compat_settings( $instance );
-		$defaults = km_rpbt_get_default_settings( 'widget' );
 
-		// Set default post type.
+		if ( ! $defaults ) {
+			$defaults = km_rpbt_get_default_settings( 'widget' );
+		}
+
 		$defaults['post_types'] = array( 'post' => 'on' );
 
 		$allowed = array(
@@ -348,11 +381,11 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 
 		if ( isset( $i['taxonomy'] ) && $i['taxonomy'] ) {
-			$i['taxonomies'] = ( 'all_taxonomies' === $i['taxonomy'] ) ? $this->plugin->all_tax : $i['taxonomy'];
+			$i['taxonomies'] = ( 'all_taxonomies' === $i['taxonomy'] ) ? '' : $i['taxonomy'];
 			unset( $i['taxonomy'] );
 		} else {
 			// Taxonomy and taxonomies argument doesn't exist.
-			$i['taxonomies'] = $this->plugin->all_tax;
+			$i['taxonomies'] = '';
 		}
 
 		return $i;
