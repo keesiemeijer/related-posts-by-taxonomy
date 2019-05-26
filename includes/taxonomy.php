@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function km_rpbt_get_taxonomies( $taxonomies ) {
 	$plugin  = km_rpbt_plugin();
 
-	if ( $plugin && ( $taxonomies === $plugin->all_tax ) ) {
+	if ( $plugin && ( 'km_rpbt_all_tax' === $taxonomies ) ) {
 		$taxonomies = array_keys( $plugin->taxonomies );
 	}
 
@@ -33,8 +33,7 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
  * @return array Array with all public taxonomies.
  */
 function km_rpbt_get_public_taxonomies() {
-	$plugin = km_rpbt_plugin();
-	return isset( $plugin->all_tax ) ? km_rpbt_get_taxonomies( $plugin->all_tax ) : array();
+	return km_rpbt_get_taxonomies( 'km_rpbt_all_tax' );
 }
 
 /**

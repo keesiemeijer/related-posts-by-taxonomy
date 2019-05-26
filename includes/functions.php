@@ -335,6 +335,33 @@ function km_rpbt_get_post_types( $post_types = '' ) {
 }
 
 /**
+ * Returns the current post id to get related posts for.
+ *
+ * @since 0.2.1
+ * @return int Post id.
+ */
+function km_rpbt_get_widget_post_id() {
+	global $wp_query;
+
+	// Inside the loop.
+	$post_id = get_the_ID();
+
+	// Outside the loop.
+	if ( ! in_the_loop() ) {
+
+		if ( isset( $wp_query->post->ID ) ) {
+			$post_id = $wp_query->post->ID;
+		}
+
+		if ( isset( $wp_query->query_vars['km_rpbt_related_post_id'] ) ) {
+			$post_id = $wp_query->query_vars['km_rpbt_related_post_id'];
+		}
+	}
+
+	return $post_id;
+}
+
+/**
  * Get the values from a comma separated string.
  *
  * Removes duplicates and empty values.
