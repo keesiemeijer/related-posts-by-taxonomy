@@ -121,7 +121,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @since 0.2.1
 		 */
 		public function _setup() {
-			// The all_tax property is no longer used since version 2.7.1
+			// The all_tax property is no longer used since version 2.7.0
 			// Empty string is now used for all taxonomies.
 			$this->all_tax = 'all';
 

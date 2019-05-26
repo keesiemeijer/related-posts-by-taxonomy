@@ -145,10 +145,11 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
-= 2.6.1 =
+= 2.7.0 =
 * Enhancement
 	* New format for related galleries similar to the Gutenberg gallery block.
 	* Include child or parent terms for the related posts query.
+	* Filters for Widget defaults and instance.
 * Bug Fixes
 	* (minor) Don't default to all public taxonomies if no valid taxonomies are used.
 
@@ -212,5 +213,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.6.1 =
+= 2.7.0 =
 This upgrade lets you include child or parent terms in the related posts query. See the changelog for more information

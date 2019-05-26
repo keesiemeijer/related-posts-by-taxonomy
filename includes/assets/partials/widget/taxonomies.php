@@ -1,7 +1,7 @@
 <?php
 $i['taxonomies'] = is_array( $i['taxonomies'] ) ? '' : $i['taxonomies'];
 
-// Back compat. All taxonomies option is saved as an empty string since version 2.7.1
+// Back compat. All taxonomies option is saved as an empty string since version 2.7.0
 if ( ! $i['taxonomies'] || $this->is_all_taxonomies( $i['taxonomies'] ) ) {
 	$i['taxonomies'] = 'km_rpbt_all_tax';
 }
