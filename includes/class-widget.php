@@ -78,7 +78,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		/**
 		 * Filter widget defaults.
 		 *
-		 * @since 2.7.1
+		 * @since 2.7.0
 		 *
 		 * @param array $defaults Default widget arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
 		 *                        for more information about default widget arguments.
@@ -111,7 +111,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 
 		// Back compat. All taxonomies option is saved as an
-		// empty string since version 2.7.1
+		// empty string since version 2.7.0
 		$taxonomies = $args['taxonomies'];
 		if ( ! $taxonomies || $this->is_all_taxonomies( $taxonomies ) ) {
 			$args['taxonomies'] = '';
@@ -137,66 +137,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$args['type'] = 'widget';
 
 		echo km_rpbt_get_feature_html( 'widget', $args );
-	}
-
-	/**
-	 * Check if all taxonomies is selected.
-	 *
-	 * The $this->plugin->all_tax property is no longer used since version 2.7.1.
-	 * Use empty string or 'km_rpbt_all_tax' for all taxonomies option in the widget.
-	 *
-	 * @since 2.7.1
-	 *
-	 * @param  array|string $taxonomies Taxonomies.
-	 * @return boolean True if all taxonomies is selected.
-	 */
-	function is_all_taxonomies( $taxonomies ) {
-		if ( ( 'km_rpbt_all_tax' === $taxonomies ) || ( $this->plugin->all_tax === $taxonomies ) ) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Get the related posts used by the widget.
-	 *
-	 * @since 2.3.2
-	 * @deprecated 2.5.0 Use km_rpbt_get_related_posts() instead.
-	 *
-	 * @param array $args Widget arguments.
-	 * @return array Array with related post objects.
-	 */
-	function get_related_posts( $args ) {
-		_deprecated_function( __FUNCTION__, '2.4.0', 'km_rpbt_get_related_posts()' );
-		return km_rpbt_get_related_posts( $args );
-	}
-
-	/**
-	 * Returns the current post id to get related posts for.
-	 *
-	 *
-	 * @since 0.2.1
-	 * @since 2.5.0 Moved logic to km_rpbt_get_widget_post_id().
-	 *
-	 * @return int Post id.
-	 */
-	function get_the_ID() {
-		return km_rpbt_get_widget_post_id();
-	}
-
-	/**
-	 * Widget output
-	 *
-	 * @deprecated 2.6.0 Use km_rpbt_get_related_posts_html() instead.
-	 *
-	 * @param array $related_posts Array with related post objects.
-	 * @param array $args          Widget arguments.
-	 * @param array $widget_args   Widget display arguments.
-	 * @return void
-	 */
-	function widget_output( $related_posts, $args, $widget_args ) {
-		_deprecated_function( __FUNCTION__, '2.6.0', 'km_rpbt_get_related_posts_html()' );
-		echo km_rpbt_get_related_posts_html( $related_posts, $args );
 	}
 
 	/**
@@ -259,7 +199,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		/**
 		 * Filter widget form instance settings.
 		 *
-		 * @since 2.7.1
+		 * @since 2.7.0
 		 *
 		 * @param array $instance Widget form instance. See km_rpbt_related_posts_by_taxonomy_widget() for
 		 *                        for more information about default feature arguments.
@@ -294,40 +234,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			echo  ( isset( $fields[ $piece ] ) ) ? $fields[ $piece ] : '';
 		}
 	} // end form
-
-	/**
-	 * Get form field
-	 *
-	 * @since  2.5.1
-	 *
-	 * @param string $field Field name.
-	 * @param array  $i     Widget instance settings.
-	 * @return string String with field HYML.
-	 */
-	function get_field( $field, $i ) {
-		$plugin = $this->plugin;
-		$style  = ' style="border-top: 1px solid #e5e5e5; padding-top: 1em;"';
-		$file   = RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/assets/partials/widget/' . $field . '.php';
-		if ( ! is_readable( $file ) ) {
-			return '';
-		}
-
-		ob_start();
-		include $file;
-		return ob_get_clean();
-	}
-
-	/**
-	 * Adds public query var km_rpbt_related_post_id.
-	 * called by filter hook 'query_vars'
-	 *
-	 * @since 0.2.1
-	 * @param array $query_vars Array with query vars.
-	 */
-	function add_related_post_id( $query_vars ) {
-		$query_vars[] = 'km_rpbt_related_post_id';
-		return $query_vars;
-	}
 
 	/**
 	 * Returns all widget instance settings.
@@ -389,6 +295,100 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		}
 
 		return $i;
+	}
+
+	/**
+	 * Get form field
+	 *
+	 * @since  2.5.1
+	 *
+	 * @param string $field Field name.
+	 * @param array  $i     Widget instance settings.
+	 * @return string String with field HYML.
+	 */
+	function get_field( $field, $i ) {
+		$plugin = $this->plugin;
+		$style  = ' style="border-top: 1px solid #e5e5e5; padding-top: 1em;"';
+		$file   = RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/assets/partials/widget/' . $field . '.php';
+		if ( ! is_readable( $file ) ) {
+			return '';
+		}
+
+		ob_start();
+		include $file;
+		return ob_get_clean();
+	}
+
+	/**
+	 * Returns the current post id to get related posts for.
+	 *
+	 *
+	 * @since 0.2.1
+	 * @since 2.5.0 Moved logic to km_rpbt_get_widget_post_id().
+	 *
+	 * @return int Post id.
+	 */
+	function get_the_ID() {
+		return km_rpbt_get_widget_post_id();
+	}
+
+	/**
+	 * Adds public query var km_rpbt_related_post_id.
+	 * called by filter hook 'query_vars'
+	 *
+	 * @since 0.2.1
+	 * @param array $query_vars Array with query vars.
+	 */
+	function add_related_post_id( $query_vars ) {
+		$query_vars[] = 'km_rpbt_related_post_id';
+		return $query_vars;
+	}
+
+	/**
+	 * Check if all taxonomies is selected.
+	 *
+	 * The $this->plugin->all_tax property is no longer used since version 2.7.0.
+	 * Use empty string or 'km_rpbt_all_tax' for all taxonomies option in the widget.
+	 *
+	 * @since 2.7.0
+	 *
+	 * @param  array|string $taxonomies Taxonomies.
+	 * @return boolean True if all taxonomies is selected.
+	 */
+	function is_all_taxonomies( $taxonomies ) {
+		if ( ( 'km_rpbt_all_tax' === $taxonomies ) || ( $this->plugin->all_tax === $taxonomies ) ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Get the related posts used by the widget.
+	 *
+	 * @since 2.3.2
+	 * @deprecated 2.5.0 Use km_rpbt_get_related_posts() instead.
+	 *
+	 * @param array $args Widget arguments.
+	 * @return array Array with related post objects.
+	 */
+	function get_related_posts( $args ) {
+		_deprecated_function( __FUNCTION__, '2.4.0', 'km_rpbt_get_related_posts()' );
+		return km_rpbt_get_related_posts( $args );
+	}
+
+	/**
+	 * Widget output
+	 *
+	 * @deprecated 2.6.0 Use km_rpbt_get_related_posts_html() instead.
+	 *
+	 * @param array $related_posts Array with related post objects.
+	 * @param array $args          Widget arguments.
+	 * @param array $widget_args   Widget display arguments.
+	 * @return void
+	 */
+	function widget_output( $related_posts, $args, $widget_args ) {
+		_deprecated_function( __FUNCTION__, '2.6.0', 'km_rpbt_get_related_posts_html()' );
+		echo km_rpbt_get_related_posts_html( $related_posts, $args );
 	}
 
 } // end Related_Posts_By_Taxonomy class
