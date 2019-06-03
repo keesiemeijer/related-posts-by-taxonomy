@@ -30,6 +30,7 @@ function km_kpbt_get_default_gallery_args( $post_id = 0 ) {
 		'gallery_class'  => 'gallery',
 		'gallery_format' => '', // empty string or 'editor_block'
 		'post_class'     => '',
+		'cropped'        => true,
 		'type'           => '',
 	);
 }
@@ -87,6 +88,12 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	$args['id']     = isset( $args['post_id'] ) ? $args['post_id'] : $args['id'];
 	$args['size']   = isset( $args['size'] ) ? $args['size'] : $defaults['size'];
 	$args['size']   = isset( $args['image_size'] ) ? $args['image_size'] : $args['size'];
+
+	$format = isset( $args['gallery_format'] ) && $args['gallery_format'];
+	if ( $format && ( 'editor_block' === $args['gallery_format'] ) ) {
+		// Default class for block editor galleries
+		$defaults['gallery_class'] = 'wp-block-gallery';
+	}
 
 	/* Filter hook: shortcode_atts_gallery */
 	$args = shortcode_atts( $defaults, $args, 'gallery' );
@@ -293,7 +300,11 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$args = km_rpbt_validate_gallery_args( $args );
 
 	// Use wp_make_content_images_responsive() below to make images responsive.
+	// See https://github.com/WordPress/gutenberg/issues/1450
 	$args['size'] = 'large';
+
+	// Default to 1 if columns is 0. (zero is allowed for the normal gallery)
+	$args['columns'] = ( 0 === $args['columns'] ) ? 1 : $args['columns'];
 
 	foreach ( (array) $related_posts as $related ) {
 		$related = is_object( $related ) ? $related : get_post( $related );
@@ -304,7 +315,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 		$attachment_id  = get_post_thumbnail_id( $related->ID );
 		$caption        = km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args );
 
-		$image = km_rpbt_get_editor_block_image_link( $attachment_id, $related, $args );
+		$image = km_rpbt_get_gallery_image_link( $attachment_id, $related, $args );
 		if ( ! $image ) {
 			continue;
 		}
@@ -323,9 +334,13 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 		return '';
 	}
 
-	$class = "wp-block-gallery rpbt-related-block-gallery columns-{$args['columns']}";
-	$html  = '<ul class="' . $class  . '">' . "\n" . $html . "</ul>\n";
+	$gallery_class = km_rpbt_sanitize_classes( $args['gallery_class'] );
+	$gallery_class = $gallery_class ? $gallery_class . ' ' : '';
 
+	$class = "{$gallery_class}rpbt-related-block-gallery columns-{$args['columns']}";
+	$class .= $args['cropped'] ? ' is-cropped' : '';
+
+	$html  = '<ul class="' . $class  . '">' . "\n" . $html . "</ul>\n";
 	if ( function_exists( 'wp_make_content_images_responsive' ) ) {
 		// since WP 4.4.0
 		$html = wp_make_content_images_responsive( $html );
@@ -347,7 +362,7 @@ function km_rpbt_validate_gallery_args( $args, $valid_tags = array() ) {
 	$defaults = km_kpbt_get_default_gallery_args();
 	$args     = array_merge( $defaults, $args );
 
-	$args['id']         = intval( $args['id'] );
+	$args['id']         = absint( $args['id'] );
 	$args['itemtag']    = tag_escape( $args['itemtag'] );
 	$args['captiontag'] = tag_escape( $args['captiontag'] );
 	$args['icontag']    = tag_escape( $args['icontag'] );
@@ -362,7 +377,7 @@ function km_rpbt_validate_gallery_args( $args, $valid_tags = array() ) {
 		$args['icontag'] = 'dt';
 	}
 
-	$args['columns']       = intval( $args['columns'] );
+	$args['columns']       = absint( $args['columns'] );
 	$args['caption']       = is_string( $args['caption'] ) ? $args['caption'] : 'post_title';
 	$args['gallery_class'] = is_string( $args['gallery_class'] ) ? $args['gallery_class'] : 'gallery';
 
@@ -418,11 +433,21 @@ function km_rpbt_get_gallery_post_class( $related, $args, $default_class = '' ) 
  * @return string HTML link for a gallery item.
  */
 function km_rpbt_get_gallery_image_link( $attachment_id, $related, $args = array(), $describedby = '' ) {
-	$defaults    = km_kpbt_get_default_gallery_args();
-	$args        = array_merge( $defaults, $args );
+	$defaults = km_kpbt_get_default_gallery_args();
+	$args     = array_merge( $defaults, $args );
 
-	$image       = wp_get_attachment_image( $attachment_id, $args['size'], false, $describedby );
-	$permalink   = km_rpbt_get_permalink( $related, $args );
+	$block_format = ( 'editor_block' === $args['gallery_format'] );
+	if ( $block_format ) {
+		$image = km_rpbt_get_editor_block_image( $attachment_id, $args );
+	} else {
+		$image = wp_get_attachment_image( $attachment_id, $args['size'], false, $describedby );
+	}
+
+	if ( ! $image ) {
+		return '';
+	}
+
+	$permalink = km_rpbt_get_permalink( $related, $args );
 
 	$title = '';
 	if ( isset( $related->post_title, $related->ID ) ) {
@@ -431,7 +456,7 @@ function km_rpbt_get_gallery_image_link( $attachment_id, $related, $args = array
 
 	$title_attr = esc_attr( $title );
 	$link_attr  = $title_attr ? " title='{$title_attr}'" : '';
-	$link_attr  = ( 'editor_block' === $args['gallery_format'] ) ? '' : $link_attr;
+	$link_attr  = $block_format ? '' : $link_attr;
 	$image_link = ( $image ) ? "<a href='$permalink'{$link_attr}>$image</a>" : '';
 
 	// back compat
@@ -439,7 +464,6 @@ function km_rpbt_get_gallery_image_link( $attachment_id, $related, $args = array
 	$thumbnail_id = $attachment_id;
 
 	$image_attr = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
-
 
 	/**
 	 * Filter the gallery image link.
@@ -480,45 +504,6 @@ function km_rpbt_get_editor_block_image( $attachment_id, $args = array() ) {
 	}
 
 	return $html;
-}
-
-/**
- * HTML image link similar to the Gutenberg gallery block.
- *
- * @since 2.7.0
- *
- * @param int    $attachment_id Thumbnail ID.
- * @param object $related       Related post object.
- * @param array  $args          Otional arguments. See km_rpbt_related_posts_by_taxonomy_gallery() for
- *                              accepted arguments.
- * @return string Image link HTML string.
- */
-function km_rpbt_get_editor_block_image_link( $attachment_id, $related, $args = array() ) {
-	$image = km_rpbt_get_editor_block_image( $attachment_id, $args );
-	if ( ! $image ) {
-		return '';
-	}
-
-	$defaults  = km_kpbt_get_default_gallery_args();
-	$args      = array_merge( $defaults, $args );
-	$permalink = km_rpbt_get_permalink( $related, $args );
-
-	$title = '';
-	if ( isset( $related->post_title, $related->ID ) ) {
-		$title = apply_filters( 'the_title', $related->post_title, $related->ID );
-	}
-
-	// back compat
-	$title_attr   = esc_attr( $title );
-	$thumbnail    = $image;
-	$thumbnail_id = $attachment_id;
-	$describedby  = '';
-
-	$image_link = "<a href='$permalink'>$image</a>";
-	$image_attr = compact( 'thumbnail_id', 'thumbnail', 'permalink', 'describedby', 'title_attr' );
-
-	/** This filter is documented in includes/gallery.php */
-	return apply_filters( 'related_posts_by_taxonomy_post_thumbnail_link', $image_link, $image_attr, $related, $args );
 }
 
 /**

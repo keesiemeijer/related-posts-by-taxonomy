@@ -11,6 +11,45 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'use_default_gallery_style', '__return_false', 99 );
 		remove_filter( 'use_default_gallery_style', '__return_true', 99 );
 		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
+		remove_filter( 'related_posts_by_taxonomy_gallery', array( $this, 'return_first_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'return_query_args' ),10, 4 );
+	}
+
+	function test_gallery_class() {
+		$gallery_args = $this->setup_gallery();
+		extract( $gallery_args );
+
+		add_filter( 'related_posts_by_taxonomy_gallery', array( $this, 'return_first_argument' ) );
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+
+		$this->assertSame( 'gallery', $this->arg['gallery_class'] );
+		$this->arg = null;
+
+		$args['gallery_format'] = 'editor_block';
+
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+		$this->assertSame( 'wp-block-gallery', $this->arg['gallery_class'] );
+		$this->arg = null;
+	}
+
+	function test_gallery_columns() {
+		$gallery_args = $this->setup_gallery();
+		extract( $gallery_args );
+
+		$args['columns'] = 0;
+		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'return_query_args' ),10, 4 );
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+
+		$this->assertSame( 0, $this->query_args['columns'] );
+		$this->query_args = null;
+
+		$args['gallery_format'] = 'editor_block';
+
+		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+
+		// Zero columns is not allowed
+		$this->assertSame( 1, $this->query_args['columns'] );
+		$this->query_args = null;
 	}
 
 	/**
@@ -52,7 +91,7 @@ EOF;
 		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$expected = <<<EOF
-<ul class="wp-block-gallery rpbt-related-block-gallery columns-3">
+<ul class="wp-block-gallery rpbt-related-block-gallery columns-3 is-cropped">
 <li class="blocks-gallery-item my-class">
 <figure>
 <a href='{$permalink}'><img></a>
