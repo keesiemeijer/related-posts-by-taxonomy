@@ -210,6 +210,56 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
+	 * Test args validation.
+	 */
+	function test_widget_deprecated_all_taxonomy_value() {
+		$create_posts = $this->create_posts_with_terms();
+		$widget       = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+		$this->assertSame( 'all',  $widget->plugin->all_tax );
+
+		$args = array( 'taxonomies' => 'all' );
+		$settings = $widget->get_instance_settings( $args );
+
+		$expected = km_rpbt_get_default_settings( 'widget' );
+		$expected['post_types'] = array( 'post' => 'on' ); // set in the widget as default
+
+		// All taxonomies option is saved as empty string since version 2.7.0
+		$this->assertEquals( '', $settings['taxonomies'] );
+	}
+
+	/**
+	 * Test args validation.
+	 */
+	function test_widget_deprecated_taxonomy_instance_setting_all_taxonomies() {
+		$create_posts = $this->create_posts_with_terms();
+		$widget       = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+
+		$expected = km_rpbt_get_default_settings( 'widget' );
+		$expected['post_types'] = array( 'post' => 'on' ); // set in the widget as default
+
+		$args = array( 'taxonomy' => 'all_taxonomies' );
+		$settings = $widget->get_instance_settings( $args );
+		$this->assertEquals( '', $settings['taxonomies'] );
+		$this->assertTrue( ! isset( $settings['taxonomy'] ) );
+	}
+
+	/**
+	 * Test args validation.
+	 */
+	function test_widget_deprecated_taxonomy_instance_setting_category() {
+		$create_posts = $this->create_posts_with_terms();
+		$widget       = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+
+		$expected = km_rpbt_get_default_settings( 'widget' );
+		$expected['post_types'] = array( 'post' => 'on' ); // set in the widget as default
+
+		$args = array( 'taxonomy' => 'category' );
+		$settings = $widget->get_instance_settings( $args );
+		$this->assertEquals( 'category', $settings['taxonomies'] );
+		$this->assertTrue( ! isset( $settings['taxonomy'] ) );
+	}
+
+	/**
 	 * Test output from widget.
 	 */
 	function test_rpbt_widget_output() {

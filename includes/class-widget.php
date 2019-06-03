@@ -110,13 +110,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$args['post_thumbnail'] = true;
 		}
 
-		// Back compat. All taxonomies option is saved as an
-		// empty string since version 2.7.0
-		$taxonomies = $args['taxonomies'];
-		if ( ! $taxonomies || $this->is_all_taxonomies( $taxonomies ) ) {
-			$args['taxonomies'] = '';
-		}
-
 		// Get allowed fields for use in templates
 		$args['fields'] = km_rpbt_get_template_fields( $args );
 
@@ -266,10 +259,12 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	}
 
 	/**
-	 * Returns correct settings if taxonomies argument is not defined.
+	 * Returns correct settings for changed instance settings.
 	 *
-	 * Provides back compatiblity for **upgading** from version 0.2.1.
-	 * The variable taxonomy changed to taxonomies in version 0.2.2.
+	 * This function provides back compatiblity for **upgrading** from older versions.
+	 *
+	 * In version 0.2.2 the variable taxonomy changed to taxonomies.
+	 * in version 2.7.0 the "all taxonomies" value is saved as an empty string.
 	 *
 	 * @param array $instance Widget instance.
 	 * @return array Widget instance.
@@ -283,6 +278,8 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		if ( isset( $i['taxonomies'] ) ) {
 			// Taxonomies argument exist.
+			$all_tax = ! $i['taxonomies'] || $this->is_all_taxonomies( $i['taxonomies'] );
+			$i['taxonomies'] = $all_tax ? '' : $i['taxonomies'];
 			return $i;
 		}
 
@@ -290,7 +287,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 			$i['taxonomies'] = ( 'all_taxonomies' === $i['taxonomy'] ) ? '' : $i['taxonomy'];
 			unset( $i['taxonomy'] );
 		} else {
-			// Taxonomy and taxonomies argument doesn't exist.
+			// Return default empty value for all taxonomies.
 			$i['taxonomies'] = '';
 		}
 
@@ -347,12 +344,12 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	/**
 	 * Check if all taxonomies is selected.
 	 *
-	 * The $this->plugin->all_tax property is no longer used since version 2.7.0.
+	 * The all_tax property is no longer used since version 2.7.0.
 	 * Use empty string or 'km_rpbt_all_tax' for all taxonomies option in the widget.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param  array|string $taxonomies Taxonomies.
+	 * @param array|string $taxonomies Taxonomies.
 	 * @return boolean True if all taxonomies is selected.
 	 */
 	function is_all_taxonomies( $taxonomies ) {
