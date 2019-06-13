@@ -79,15 +79,16 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 	static $instance = 0;
 	$instance++;
-	$post           = get_post();
-	$post_id        = isset( $post->ID ) ? $post->ID : 0;
-	$defaults       = km_kpbt_get_default_gallery_args( $post_id );
+
+	$post     = get_post();
+	$post_id  = isset( $post->ID ) ? $post->ID : 0;
+	$defaults = km_kpbt_get_default_gallery_args( $post_id );
 
 	// Back compat with WP gallery_shortcode() and plugin filters.
-	$args['id']     = isset( $args['id'] ) ? $args['id'] : $defaults['id'];
-	$args['id']     = isset( $args['post_id'] ) ? $args['post_id'] : $args['id'];
-	$args['size']   = isset( $args['size'] ) ? $args['size'] : $defaults['size'];
-	$args['size']   = isset( $args['image_size'] ) ? $args['image_size'] : $args['size'];
+	$args['id']   = isset( $args['id'] ) ? $args['id'] : $defaults['id'];
+	$args['id']   = isset( $args['post_id'] ) ? $args['post_id'] : $args['id'];
+	$args['size'] = isset( $args['size'] ) ? $args['size'] : $defaults['size'];
+	$args['size'] = isset( $args['image_size'] ) ? $args['image_size'] : $args['size'];
 
 	$format = isset( $args['gallery_format'] ) && $args['gallery_format'];
 	if ( $format && ( 'editor_block' === $args['gallery_format'] ) ) {
@@ -443,10 +444,6 @@ function km_rpbt_get_gallery_image_link( $attachment_id, $related, $args = array
 		$image = wp_get_attachment_image( $attachment_id, $args['size'], false, $describedby );
 	}
 
-	if ( ! $image ) {
-		return '';
-	}
-
 	$permalink = km_rpbt_get_permalink( $related, $args );
 
 	$title = '';
@@ -457,7 +454,7 @@ function km_rpbt_get_gallery_image_link( $attachment_id, $related, $args = array
 	$title_attr = esc_attr( $title );
 	$link_attr  = $title_attr ? " title='{$title_attr}'" : '';
 	$link_attr  = $block_format ? '' : $link_attr;
-	$image_link = ( $image ) ? "<a href='$permalink'{$link_attr}>$image</a>" : '';
+	$image_link = ( $image && $permalink ) ? "<a href='$permalink'{$link_attr}>$image</a>" : '';
 
 	// back compat
 	$thumbnail    = $image;
