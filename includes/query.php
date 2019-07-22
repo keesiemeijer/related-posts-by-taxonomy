@@ -228,7 +228,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		$meta_join_sql = ( isset( $meta['join'] ) && $meta['join'] ) ? $meta['join'] : '';
 		$meta_where_sql = ( isset( $meta['where'] ) && $meta['where'] ) ? $meta['where'] : '';
 
-		if ( ( '' === $meta_join_sql ) || ( '' === $meta_join_sql ) ) {
+		if ( ( '' === $meta_join_sql ) || ( '' === $meta_where_sql ) ) {
 			$meta_join_sql = $meta_where_sql = '';
 		}
 	}
