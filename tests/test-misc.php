@@ -205,7 +205,6 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$gallery_image       = km_rpbt_get_gallery_image_link( $attachment_id, $_posts[2], $gallery_args );
 		$gallery_caption     = km_rpbt_get_gallery_image_caption( $attachment_id, $_posts[2] );
         $block_image         = km_rpbt_get_editor_block_image( $attachment_id, $gallery_args );
-		$block_image_link    = km_rpbt_get_editor_block_image_link( $attachment_id, $_posts[2], $gallery_args );
 
 		// Deprecated functions
 		$classes3   = km_rpbt_add_post_classes( $_posts, array( 'post_class' => 'add-this-class' ) );
