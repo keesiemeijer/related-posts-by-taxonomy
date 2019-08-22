@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function km_rpbt_get_taxonomies( $taxonomies ) {
 	$plugin  = km_rpbt_plugin();
 
-	if ( $plugin && ( $taxonomies === $plugin->all_tax ) ) {
+	if ( $plugin && ( 'km_rpbt_all_tax' === $taxonomies ) ) {
 		$taxonomies = array_keys( $plugin->taxonomies );
 	}
 
@@ -33,8 +33,7 @@ function km_rpbt_get_taxonomies( $taxonomies ) {
  * @return array Array with all public taxonomies.
  */
 function km_rpbt_get_public_taxonomies() {
-	$plugin = km_rpbt_plugin();
-	return isset( $plugin->all_tax ) ? km_rpbt_get_taxonomies( $plugin->all_tax ) : array();
+	return km_rpbt_get_taxonomies( 'km_rpbt_all_tax' );
 }
 
 /**
@@ -119,7 +118,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
  * If the taxonomies argument is empty it returns parents for all terms.
  * If taxonomies are provided it only returns parents from terms in the taxonomies.
  *
- * @since  2.6.1
+ * @since 2.7.0
  *
  * @param string       $tree_type  Type of hierarchy tree. Accepts 'parents' or 'children'.
  * @param array|string $terms      Array or comma separated list of term ids.
@@ -150,7 +149,7 @@ function km_rpbt_get_hierarchy_terms( $tree_type, $terms, $taxonomies = '' ) {
 		/**
 		 * Filter parent or child terms.
 		 *
-		 * @since  2.6.1
+		 * @since 2.7.0
 		 *
 		 * @param array $tree       Parent or child term ids.
 		 * @param int   $term_id    Term id.
@@ -175,7 +174,7 @@ function km_rpbt_get_hierarchy_terms( $tree_type, $terms, $taxonomies = '' ) {
  * If the taxonomies argument is empty it returns all terms.
  * If taxonomies are provided it only returns terms from the taxonomies.
  *
- * @since 2.6.1
+ * @since 2.7.0
  *
  * @param array|string $terms      Array or comma separated list of term ids.
  * @param array|string $taxonomies Array or comma separated list of taxonomy names. Default empty.
@@ -193,11 +192,13 @@ function km_rpbt_get_term_objects( $terms, $taxonomies = '' ) {
 
 	$tax_sql    = '';
 	if ( ! empty( $taxonomies ) ) {
+		sort( $taxonomies );
 		$taxonomies = array_map( 'esc_sql', $taxonomies );
 		$taxonomies = implode( "', '", $taxonomies );
 		$tax_sql    = "tt.taxonomy IN ('{$taxonomies}')";
 	}
 
+	sort( $terms );
 	$terms_sql  = implode( ', ', $terms );
 	$select_sql = "SELECT t.term_id, tt.taxonomy FROM {$wpdb->terms} AS t";
 	$join_sql   = "INNER JOIN {$wpdb->term_taxonomy} AS tt ON t.term_id = tt.term_id";

@@ -154,9 +154,6 @@ module.exports = function( grunt ) {
 				replacements: [ {
 					from: /related-posts-by-taxonomy.svg\?branch=(master|develop)/g,
 					to: "related-posts-by-taxonomy.svg?branch=<%= githash.main.branch %>"
-				}, {
-					from: /related-posts-by-taxonomy\/tree\/(master|develop)#pull-requests/g,
-					to: "related-posts-by-taxonomy/tree/<%= githash.main.branch %>#pull-requests"
 				} ]
 			}
 		},

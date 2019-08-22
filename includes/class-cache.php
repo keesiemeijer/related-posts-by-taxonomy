@@ -151,14 +151,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array  Array with related post objects .
 		 */
 		public function get_related_posts( $args ) {
-
-			$args = array_merge( $this->default_args, (array) $args );
-
-			/** This filter is documented in includes/functions.php */
-			$posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $args );
-			if ( is_array( $posts ) ) {
-				return $posts;
-			}
+			$args = km_rpbt_sanitize_args( $args );
 
 			// Check if post_id and taxonomies are set.
 			if ( ! $this->is_valid_cache_args( $args ) ) {
@@ -312,6 +305,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			$query_args['related_terms'] = $cache_args['related_terms'];
 			$query_args['termcount']     = array();
 
+			/** This filter is documented in includes/query.php */
+			$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', null, $query_args );
+			if ( is_array( $related_posts ) ) {
+				return $related_posts;
+			}
+
 			// Restricted query arguments.
 			unset( $query_args['taxonomies'], $query_args['post_id'] );
 
@@ -409,9 +408,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		 * @return array      Sorted arguments.
 		 */
 		public function order_cache_args( $args ) {
+			$args = km_rpbt_nested_array_sort( $args );
 			foreach ( $args as $key => $value ) {
 				if ( is_array( $args[ $key ] ) ) {
-					sort( $args[ $key ] );
+					// Convert to string to keep cache value small.
 					$args[ $key ] = implode( ',', $args[ $key ] );
 				}
 			}

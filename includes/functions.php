@@ -140,28 +140,8 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 		$args['taxonomies'] = km_rpbt_get_public_taxonomies();
 	}
 
-	// Important! Sanitize arguments after taxonomy check.
-	$args = km_rpbt_sanitize_args( $args );
-
 	// Set post_id the same as used for the $post_id parameter.
 	$args['post_id'] = $post_id;
-
-	/**
-	 * Filter whether to use your own related posts.
-	 *
-	 * @since  2.5.0
-	 *
-	 * @param boolean|array $related_posts Return an array with (related) post objects to use your own
-	 *                                     related post. This prevents the query for related posts by this plugin.
-	 *                                     Default false (Let this plugin query for related posts).
-	 *
-	 * @param array         Array with widget or shortcode arguments.
-	 */
-	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', false, $args );
-
-	if ( is_array( $related_posts ) ) {
-		return $related_posts;
-	}
 
 	if ( km_rpbt_plugin_supports( 'cache' ) && km_rpbt_is_cache_loaded() ) {
 		// Get related posts from cache.
@@ -169,7 +149,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 	} else {
 		$query_args = $args;
 
-		/* restricted arguments */
+		/* restricted arguments (back compat) */
 		unset( $query_args['post_id'], $query_args['taxonomies'] );
 
 		/* get related posts */
@@ -355,6 +335,33 @@ function km_rpbt_get_post_types( $post_types = '' ) {
 }
 
 /**
+ * Returns the current post id to get related posts for.
+ *
+ * @since 0.2.1
+ * @return int Post id.
+ */
+function km_rpbt_get_widget_post_id() {
+	global $wp_query;
+
+	// Inside the loop.
+	$post_id = get_the_ID();
+
+	// Outside the loop.
+	if ( ! in_the_loop() ) {
+
+		if ( isset( $wp_query->post->ID ) ) {
+			$post_id = $wp_query->post->ID;
+		}
+
+		if ( isset( $wp_query->query_vars['km_rpbt_related_post_id'] ) ) {
+			$post_id = $wp_query->query_vars['km_rpbt_related_post_id'];
+		}
+	}
+
+	return $post_id;
+}
+
+/**
  * Get the values from a comma separated string.
  *
  * Removes duplicates and empty values.
@@ -369,6 +376,31 @@ function km_rpbt_get_comma_separated_values( $value, $filter = 'string' ) {
 	}
 
 	return array_values( array_filter( array_unique( array_map( 'trim', $value ) ) ) );
+}
+
+/**
+ * Sort nested numerical arrays.
+ *
+ * @since 2.7.0
+ *
+ * @param array $array Array.
+ * @return array Array with nested numerical arrays sorted
+ */
+function km_rpbt_nested_array_sort( $array ) {
+	foreach ( $array as $key => $value ) {
+		if ( ! is_array( $value ) ) {
+			continue;
+		}
+
+		$keys        = array_keys( $value );
+		$string_keys = array_filter( $keys, 'is_string' );
+
+		if ( 0 === count( $string_keys ) ) {
+			sort( $array[ $key ] );
+		}
+	}
+
+	return $array;
 }
 
 /**

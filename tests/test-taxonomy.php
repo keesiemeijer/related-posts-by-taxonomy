@@ -35,6 +35,23 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertTrue( isset( $term_obj[0]->term_id, $term_obj[0]->taxonomy ) );
 	}
 
+	function test_km_rpbt_get_term_objects_cache() {
+		$create_posts = $this->create_posts_with_hierarchical_terms();
+		$queries_before = get_num_queries();
+
+		$terms = $create_posts['terms'];
+		$term_obj = km_rpbt_get_term_objects( array( $terms[0], $terms[1] ), $taxonomies = 'category' );
+
+		$queries_after = get_num_queries();
+		$this->assertSame( $queries_before + 1, $queries_after );
+
+		// flip terms and do same query again
+		$term_obj = km_rpbt_get_term_objects( array( $terms[1], $terms[0] ), $taxonomies = 'category' );
+
+		// No extra database queries (cache is used)
+		$this->assertSame( $queries_before + 1, get_num_queries() );
+	}
+
 	function test_km_rpbt_get_term_objects_no_taxonomies() {
 		$create_posts = $this->create_posts_with_hierarchical_terms();
 

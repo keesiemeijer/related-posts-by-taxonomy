@@ -1,8 +1,9 @@
 {
   "name": "related-posts-by-taxonomy",
-  "version": "2.6.1-alpha",
-  "tested_up_to": "5.0",
-  "requires_at_least": "4.1",
+  "version": "2.7.2-alpha",
+  "license": "GPL-2.0-or-later",
+  "tested_up_to": "5.2",
+  "requires_at_least": "4.2",
   "main": "editor-block/index.js",
   "author": "keesiemeijer",
   "repository": {
@@ -10,18 +11,16 @@
     "url": "https://github.com/keesiemeijer/related-posts-by-taxonomy.git"
   },
   "devDependencies": {
-    "grunt": "^1.0.3",
-    "grunt-contrib-clean": "^1.1.0",
+    "grunt": "^1.0.4",
+    "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-uglify": "^4.0.0",
-    "grunt-contrib-watch": "^1.1.0",
+    "grunt-contrib-uglify": "^4.0.1",
     "grunt-githash": "^0.1.3",
     "grunt-run": "^0.8.1",
     "grunt-sass": "^2.0.0",
     "grunt-text-replace": "^0.4.0",
-    "grunt-version": "^1.3.0",
+    "grunt-version": "^1.3.1",
     "grunt-wp-i18n": "^1.0.3",
-    "load-grunt-tasks": "^3.2.0"
-  },
-  "dependencies": {}
+    "load-grunt-tasks": "^5.0.0"
+  }
 }

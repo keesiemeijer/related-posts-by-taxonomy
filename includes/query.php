@@ -75,8 +75,31 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		return array();
 	}
 
+	// Sort arrays for WP object cache key.
+	$args = km_rpbt_nested_array_sort( $args );
+
 	$args['related_terms'] = $terms;
 	$args['termcount']     = array();
+	$args['post_id']       = $post_id;
+	$args['taxonomies']    = $taxonomies;
+
+	/**
+	 * Filter whether to use your own related posts.
+	 *
+	 * @since  2.5.0
+	 *
+	 * @param null|array $related_posts Array or null. Prevent the query for related posts by
+	 *                                  returning an array (with post objects or ids).
+	 *                                  Default null (do the query for related posts).
+	 * @param array      $args          Array with query arguments.
+	 */
+	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', null, $args );
+	if ( is_array( $related_posts ) ) {
+		return $related_posts;
+	}
+
+	// Back compat for filters.
+	unset( $args['post_id'], $args['taxonomies'] );
 
 	// Term ids sql.
 	if ( count( $terms ) > 1 ) {
@@ -205,7 +228,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		$meta_join_sql = ( isset( $meta['join'] ) && $meta['join'] ) ? $meta['join'] : '';
 		$meta_where_sql = ( isset( $meta['where'] ) && $meta['where'] ) ? $meta['where'] : '';
 
-		if ( ( '' === $meta_join_sql ) || ( '' === $meta_join_sql ) ) {
+		if ( ( '' === $meta_join_sql ) || ( '' === $meta_where_sql ) ) {
 			$meta_join_sql = $meta_where_sql = '';
 		}
 	}

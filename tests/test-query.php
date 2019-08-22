@@ -205,6 +205,45 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 	}
 
 	/**
+	 * Test WP object cache.
+	 */
+	function test_query_cache() {
+		$this->setup_posts();
+
+		register_post_type(
+			'rel_cpt', array(
+				'taxonomies' => array( 'post_tag', 'rel_ctax' ),
+			)
+		);
+		register_taxonomy( 'rel_ctax', 'rel_cpt' );
+
+		$args = array(
+			'terms'      => array( $this->tax_1_terms[0], $this->tax_1_terms[2] ),
+			'fields'     => 'ids',
+			'taxonomies' => $this->taxonomies,
+			'post_types' =>  array('post', 'rel_cpt'),
+		);
+
+		$queries_before = get_num_queries();
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
+		$queries_after = get_num_queries();
+
+		// Query for related posts and query for term objects
+		$this->assertSame( $queries_before + 2, $queries_after );
+
+		// Flip values
+		$args['terms'] =  array( $this->tax_1_terms[2], $this->tax_1_terms[0] );
+		$args['taxonomies'] = array('post_tag', 'category' );
+		$args['post_types'] = array('rel_cpt', 'post' );
+
+		// Do same query
+		$rel_post0 = km_rpbt_get_related_posts( $this->posts[0], $args );
+
+		// No extra database queries (cache is used)
+		$this->assertSame( $queries_before + 2,  get_num_queries() );
+	}
+
+	/**
 	 * Test include_terms argument when related === false.
 	 */
 	function test_include_terms_unrelated() {
