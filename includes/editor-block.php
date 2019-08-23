@@ -79,7 +79,7 @@ function km_rpbt_block_editor_assets() {
 			'post_types'       => $plugin->post_types,
 			'taxonomies'       => $plugin->taxonomies,
 			'default_tax'      => $plugin->default_tax,
-			'all_tax'          => $plugin->all_tax,
+			'all_tax'          => 'km_rpbt_all_tax',
 			'formats'          => $plugin->formats,
 			'image_sizes'      => $plugin->image_sizes,
 			'order'            => $order,
@@ -104,7 +104,7 @@ function km_rpbt_register_block_type() {
 			'attributes' => array(
 				'taxonomies' => array(
 					'type'    => 'string',
-					'default' => 'all',
+					'default' => 'km_rpbt_all_tax',
 				),
 				'post_types' => array(
 					'type' => 'string',

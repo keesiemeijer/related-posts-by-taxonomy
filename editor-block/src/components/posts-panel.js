@@ -83,13 +83,9 @@ export default function PostsPanel({
 }
 
 function getTaxonomyOptions() {
-	if (!getPluginData('all_tax')) {
-		return [];
-	}
-
 	const options = [{
 		label: __('all taxonomies'),
-		value: getPluginData('all_tax'),
+		value: 'km_rpbt_all_tax',
 	}, ];
 
 	return getOptions('taxonomies', options);
