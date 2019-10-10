@@ -219,6 +219,18 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		$meta_query[] = array( 'key' => '_thumbnail_id' );
 	}
 
+	/**
+	 * Limit the related posts query by post meta query.
+	 *
+	 * The default relation of the meta query is 'AND'.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @param array $meta_query Meta query. Array of meta query arguments.
+	 * @param int   $post_id    Post ID.
+	 * @param array $taxonomies Array of Taxonomy names.
+	 * @param array $args       Related posts query arguments.
+	 */
 	$meta_query = apply_filters( 'related_posts_by_taxonomy_posts_meta_query', $meta_query, $post_id, $taxonomies, $args );
 	$meta_query = is_array( $meta_query ) ? $meta_query : array();
 
@@ -228,7 +240,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		$meta_join_sql = ( isset( $meta['join'] ) && $meta['join'] ) ? $meta['join'] : '';
 		$meta_where_sql = ( isset( $meta['where'] ) && $meta['where'] ) ? $meta['where'] : '';
 
-		if ( ( '' === $meta_join_sql ) || ( '' === $meta_join_sql ) ) {
+		if ( ( '' === $meta_join_sql ) || ( '' === $meta_where_sql ) ) {
 			$meta_join_sql = $meta_where_sql = '';
 		}
 	}
@@ -241,6 +253,9 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	 * @since 0.3.1
 	 *
 	 * @param string $select_sql The SELECT clause of the related posts query.
+	 * @param int    $post_id    Post ID.
+	 * @param array  $taxonomies Array of Taxonomy names.
+	 * @param array  $args       Related posts query arguments.
 	 */
 	$select_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_fields', array( $select_sql, $post_id, $taxonomies, $args ) );
 
@@ -252,7 +267,10 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $join_sql The JOIN clause of the related posts query.
+	 * @param string $join_sql   The JOIN clause of the related posts query.
+	 * @param int    $post_id    Post ID.
+	 * @param array  $taxonomies Array of Taxonomy names.
+	 * @param array  $args       Related posts query arguments.
 	 */
 	$join_sql  = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_join', array( $join_sql, $post_id, $taxonomies, $args ) );
 
@@ -263,7 +281,10 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $where The WHERE clause of the related posts query.
+	 * @param string $where      The WHERE clause of the related posts query.
+	 * @param int    $post_id    Post ID.
+	 * @param array  $taxonomies Array of Taxonomy names.
+	 * @param array  $args       Related posts query arguments.
 	 */
 	$where_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_where', array( $where_sql, $post_id, $taxonomies, $args ) );
 
@@ -272,7 +293,10 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $groupby The GROUP BY clause of the related posts query.
+	 * @param string $groupby    The GROUP BY clause of the related posts query.
+	 * @param int    $post_id    Post ID.
+	 * @param array  $taxonomies Array of Taxonomy names.
+	 * @param array  $args       Related posts query arguments.
 	 */
 	$group_by_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_groupby', array( $group_by_sql, $post_id, $taxonomies, $args ) );
 
@@ -283,7 +307,10 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $orderby The ORDER BY clause of the related posts query.
+	 * @param string $orderby    The ORDER BY clause of the related posts query.
+	 * @param int    $post_id    Post ID.
+	 * @param array  $taxonomies Array of Taxonomy names.
+	 * @param array  $args       Related posts query arguments.
 	 */
 	$order_by_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_orderby', array( $order_by_sql, $post_id, $taxonomies, $args ) );
 
@@ -292,7 +319,10 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param string $limits The LIMIT clause of the related posts query.
+	 * @param string $limits     The LIMIT clause of the related posts query.
+	 * @param int    $post_id    Post ID.
+	 * @param array  $taxonomies Array of Taxonomy names.
+	 * @param array  $args       Related posts query arguments.
 	 */
 	$limit_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_limits', array( $limit_sql, $post_id, $taxonomies, $args ) );
 
@@ -304,7 +334,10 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	 *
 	 * @since 0.3.1
 	 *
-	 * @param array $pieces The list of clauses for the related posts query.
+	 * @param array $pieces     The list of clauses for the related posts query.
+	 * @param int   $post_id    Post ID.
+	 * @param array $taxonomies Array of Taxonomy names.
+	 * @param array Related posts query arguments.
 	 */
 	$clauses = (array) apply_filters_ref_array( 'related_posts_by_taxonomy_posts_clauses', array( compact( $pieces ), $post_id, $taxonomies, $args ) );
 
