@@ -337,7 +337,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	 * @param array $pieces     The list of clauses for the related posts query.
 	 * @param int   $post_id    Post ID.
 	 * @param array $taxonomies Array of Taxonomy names.
-	 * @param array Related posts query arguments.
+	 * @param array $args       Related posts query arguments.
 	 */
 	$clauses = (array) apply_filters_ref_array( 'related_posts_by_taxonomy_posts_clauses', array( compact( $pieces ), $post_id, $taxonomies, $args ) );
 
