@@ -28,9 +28,10 @@ function km_rpbt_plugin() {
  * @since  2.5.0
  *
  * @param string $type Type of feature.
+ * @param array  $args Optional arguments.
  * @return bool True if the feature is supported.
  */
-function km_rpbt_plugin_supports( $feature ) {
+function km_rpbt_plugin_supports( $feature, $args = array() ) {
 	$supports = km_rpbt_get_plugin_supports();
 
 	if ( ! in_array( $feature, array_keys( $supports ) ) ) {
@@ -58,7 +59,7 @@ function km_rpbt_plugin_supports( $feature ) {
 	 *
 	 * @param bool $bool Add support if true. Default false
 	 */
-	return apply_filters( "related_posts_by_taxonomy_{$feature}", (bool) $supports[ $feature ] );
+	return apply_filters( "related_posts_by_taxonomy_{$feature}", (bool) $supports[ $feature ], $args );
 }
 
 /**
@@ -191,7 +192,7 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
 
 	// Get the related posts from database or cache.
 	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
-	$hide_empty    = km_rpbt_plugin_supports( "{$feature}_hide_empty" );
+	$hide_empty    = km_rpbt_plugin_supports( "{$feature}_hide_empty", $args );
 
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
 		$html = km_rpbt_get_related_posts_html( $related_posts, $args );
