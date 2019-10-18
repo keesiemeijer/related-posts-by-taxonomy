@@ -149,7 +149,7 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 	* Fix for gallery image (fallback) filter not being reached.
 	* Sanitize Rest API rendered HTML with wp_kses_post().
 
-= 2.7.0 =
+= 2.7.1 =
 * Enhancement
 	* New format for related galleries similar to the Gutenberg gallery block.
 	* Include child or parent terms for the related posts query.
