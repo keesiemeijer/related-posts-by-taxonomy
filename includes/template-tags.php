@@ -169,6 +169,28 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 }
 
 /**
+ * Message when no related posts are found.
+ *
+ * @since 2.7.3
+ *
+ * @param array $args Optional. Widget or shortcode arguments.
+ *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                    information on accepted arguments.
+ */
+function km_rpbt_no_posts_found_notice( $args ) {
+	$notice = __( 'No related posts found', 'related-posts-by-taxonomy' );
+
+	/**
+	 * Filter the no related posts found message
+	 *
+	 * @since 2.7.3
+	 *
+	 * @param string $notice No posts found notice. Default "No related posts found".
+	 */
+	echo apply_filters( 'related_posts_by_taxonomy_no_posts_found_notice', $notice, $args );
+}
+
+/**
  * Wrapper function for get_permalink() to allow filtering.
  *
  * Filter related posts permalinks with the {@see 'related_posts_by_taxonomy_the_permalink'} filter.
