@@ -66,14 +66,14 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_hierarchical_terms();
 
 		$terms = $create_posts['terms'];
-		$term_obj = km_rpbt_get_term_objects( array( $terms[0] ), $taxonomies = 'post_tag' );
+		$term_obj = km_rpbt_get_term_objects( array( $terms[0] ), 'post_tag' );
 
 		// Term 0 is a not a post_tag taxonomy term.
 		$this->assertEmpty( $term_obj );
 	}
 
 	function test_km_rpbt_get_term_objects_return_array() {
-		$term_obj = km_rpbt_get_term_objects( false, $taxonomies = 'category' );
+		$term_obj = km_rpbt_get_term_objects( false, 'category' );
 
 		// returns array for invalid argument
 		$this->assertTrue( is_array( $term_obj ) && empty( $term_obj ) );
