@@ -94,7 +94,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 */
 	private function filter_request_args( $args, $post_id, $request ) {
 		$args['post_id'] = $post_id;
-		$defaults = km_rpbt_get_default_settings( 'wp_rest_api' );
+		$settings = km_rpbt_get_default_settings( 'wp_rest_api' );
 
 		/**
 		 * Filter default arguments.
@@ -104,8 +104,10 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 * @param array $defaults See km_rpbt_related_posts_by_taxonomy_shortcode() for
 		 *                        for more information about default arguments.
 		 */
-		$defaults = apply_filters( "related_posts_by_taxonomy_wp_rest_api_defaults", $defaults );
-		$args     = array_merge( $defaults, (array) $args );
+		$defaults = apply_filters( "related_posts_by_taxonomy_wp_rest_api_defaults", $settings );
+		$defaults = array_merge( $settings, (array) $defaults );
+
+		$args = array_merge( $defaults, (array) $args );
 
 		// Unfilterable arguments.
 		$args['type'] = 'wp_rest_api';
