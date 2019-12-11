@@ -247,7 +247,13 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 			$orientation = ( $image_meta['height'] > $image_meta['width'] ) ? 'portrait' : 'landscape';
 		}
 
-		$item_output .= "<{$args['itemtag']}{$itemclass}>";
+		$title = '';
+		if ( isset( $related->post_title, $related->ID ) ) {
+			$title = apply_filters( 'the_title', $related->post_title, $related->ID );
+		}
+		$title_attr = esc_attr( $title );
+
+		$item_output .= "<{$args['itemtag']}{$itemclass} role=\"group\" aria-label=\"{$title_attr}\">";
 		$item_output .= "
 			<{$args['icontag']} class='gallery-icon {$orientation}'>
 				$image_link
