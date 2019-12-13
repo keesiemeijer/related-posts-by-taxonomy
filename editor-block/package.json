@@ -4,13 +4,13 @@
   "license": "GPL-2.0-or-later",
   "main": "src/index.js",
   "devDependencies": {
-    "@wordpress/components": "^8.1.0",
-    "@wordpress/scripts": "^3.4.0",
+    "@wordpress/components": "^8.4.0",
+    "@wordpress/scripts": "^6.0.0",
     "classnames": "^2.2.6"
   },
   "scripts": {
     "test": "wp-scripts test-unit-js",
-    "start": "wp-scripts start",
-    "build": "wp-scripts build"
+    "start": "wp-scripts start src/index.js --output-path=../includes/assets/js/editor-block",
+    "build": "wp-scripts build src/index.js --output-path=../includes/assets/js/editor-block"
   }
 }

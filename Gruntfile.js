@@ -1,5 +1,6 @@
 module.exports = function( grunt ) {
 
+	const sass = require('node-sass');
 	require( 'load-grunt-tasks' )( grunt );
 
 	'use strict';
@@ -59,6 +60,10 @@ module.exports = function( grunt ) {
 		},
 
 		sass: {
+			options: {
+				implementation: sass,
+				sourceMap: true
+			},
 			dist: {
 				files: {
 					'includes/assets/css/editor.css': 'editor-block/src/editor.scss'
@@ -81,7 +86,7 @@ module.exports = function( grunt ) {
 			main: [
 				'build/<%= pkg.name %>',
 				'editor-block/build',
-				'includes/assets/js/editor-block.js.map',
+				'includes/assets/js/editor-block',
 			]
 		},
 
