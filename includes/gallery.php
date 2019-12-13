@@ -96,6 +96,8 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 		$defaults['gallery_class'] = 'wp-block-gallery';
 	}
 
+	$args_raw = $args;
+
 	/* Filter hook: shortcode_atts_gallery */
 	$args = shortcode_atts( $defaults, $args, 'gallery' );
 	$args = array_merge( $defaults, $args );
@@ -105,9 +107,10 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	 *
 	 * @since 0.2.1
 	 *
-	 * @param array $args Function arguments.
+	 * @param array $args     Function arguments.
+	 * @param array $args_raw Function arguments before filters.
 	 */
-	$filtered_args = apply_filters( 'related_posts_by_taxonomy_gallery', $args );
+	$filtered_args = apply_filters( 'related_posts_by_taxonomy_gallery', $args, $args_raw );
 	$args          = array_merge( $defaults, (array) $filtered_args );
 
 	if ( is_feed() ) {

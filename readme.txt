@@ -3,11 +3,11 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,thumbnails,taxonomy,widget,shortcode,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.2
 Tested up to: 5.2
-Stable tag: 2.7.2-alpha
+Stable tag: 2.7.3-alpha
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This lightweight plugin lets you easily display related posts in a sidebar or after posts as thumbnails, links, excerpts or full posts.
+Display a list of related posts on your site based on the most terms in common. Supports thumbnails, shortcodes, a widget and more.
 
 == Description ==
 
@@ -37,8 +37,7 @@ For the following features you need to be somewhat familiar with WordPress [hook
 
 Extended features:
 
-* The WordPress object cache is used for the related posts query.
-* Use the plugin persistent cache for the related posts query. (opt-in feature)
+* Use a persistent cache for the related posts query. (opt-in feature)
 * Use the **WordPress REST API** to get related posts. (opt-in feature)
 * Load related posts after the whole page has loaded (with Ajax). (opt-in feature)
 * Use **plugin functions** in your theme templates to display related posts yourself.
@@ -145,7 +144,12 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
-= 2.7.0 =
+= 2.7.2 =
+* Bug Fixes
+	* Fix for gallery image (fallback) filter not being reached.
+	* Sanitize Rest API rendered HTML with wp_kses_post().
+
+= 2.7.1 =
 * Enhancement
 	* New format for related galleries similar to the Gutenberg gallery block.
 	* Include child or parent terms for the related posts query.
@@ -197,21 +201,8 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 	* (minor) Add missing filter pre_related_posts before cache queries
 	* (minor) Add missing properties to related posts returned by the cache 
 
-= 2.4.1 =
-* Enhancement
-	* Add post classes with filters or as a shortcode or widget argument
-	* Move included current post to the top of the stack by default 
-
-= 2.3.2 =
-* Enhancement
-	* Add public_only parameter to not display private related posts from the current author.
-	* Add include_self parameter to include the current post in the related posts.
-	* Add filter pre_related_posts to override the related posts query.
-* Bug fixes
-	* Fix duplicate gallery IDs breaking the column layout of WordPress galleries. Props: @sonamel
-
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.7.0 =
-This upgrade lets you include child or parent terms in the related posts query. See the changelog for more information
+= 2.7.2 =
+This upgrade contains minor bug fixes for filtering gallery images and the Rest API.

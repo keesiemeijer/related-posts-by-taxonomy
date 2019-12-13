@@ -15,6 +15,24 @@ class KM_RPBT_Defaults_Tests extends KM_RPBT_UnitTestCase {
 		$plugin->_setup();
 	}
 
+	function test_default_post_type() {
+		$plugin = km_rpbt_plugin();
+		$plugin->_setup();
+
+		$this->assertSame( array( 'post' ), array_keys( $plugin->post_types ) );
+	}
+
+	function test_default_taxonomies() {
+		$plugin = km_rpbt_plugin();
+		$plugin->_setup();
+
+		$taxonomies = array_keys( $plugin->taxonomies );
+		$expected = array( 'category', 'post_tag', 'post_format' );
+		sort( $taxonomies );
+		sort( $expected );
+		$this->assertSame( $expected, $taxonomies );
+	}
+
 	function test_post_types() {
 		$plugin = km_rpbt_plugin();
 		$plugin->_setup();

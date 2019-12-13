@@ -141,19 +141,13 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 */
 		public function get_post_types() {
 			$post_types = array();
-			$post_types_obj = get_post_types( array( 'public' => true, '_builtin' => false ), 'objects', 'and' );
+			$post_types_obj = get_post_types( array( 'public' => true ), 'objects', 'and' );
 
-			$post_types_obj = array( 'post' => get_post_type_object( 'post' ) ) + $post_types_obj;
 			foreach ( (array) $post_types_obj as $key => $value ) {
+				// Use only post types that have taxonomies.
 				if ( $this->has_taxonomies( $key ) ) {
 					$post_types[ $key ] = esc_attr( $value->labels->menu_name );
 				}
-			}
-
-			if ( $this->has_taxonomies( 'page' ) ) {
-				// Post type page has taxonomies.
-				$page = get_post_type_object( 'page' );
-				$post_types['page'] = esc_attr( $page->labels->menu_name );
 			}
 
 			// Default to post.

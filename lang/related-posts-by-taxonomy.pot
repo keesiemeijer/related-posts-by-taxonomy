@@ -2,10 +2,10 @@
 # This file is distributed under the GPL v2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Related Posts By Taxonomy 2.7.2-alpha\n"
+"Project-Id-Version: Related Posts By Taxonomy 2.7.3-alpha\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2019-08-23 10:04:29+00:00\n"
+"POT-Creation-Date: 2019-12-13 13:18:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,9 +26,7 @@ msgstr ""
 "X-Generator: grunt-wp-i18n 1.0.3\n"
 
 #: includes/assets/editor-block-templates/thumbnail-gallery.php:48
-#: templates/related-posts-excerpts.php:46 templates/related-posts-links.php:47
-#: templates/related-posts-posts.php:47
-#: templates/related-posts-thumbnails.php:48
+#: includes/template-tags.php:181
 msgid "No related posts found"
 msgstr ""
 
@@ -108,27 +106,27 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: includes/class-defaults.php:161
+#: includes/class-defaults.php:155
 msgid "Post"
 msgstr ""
 
-#: includes/class-defaults.php:237
+#: includes/class-defaults.php:231
 msgid "Thumbnail"
 msgstr ""
 
-#: includes/class-defaults.php:252
+#: includes/class-defaults.php:246
 msgid "Links"
 msgstr ""
 
-#: includes/class-defaults.php:253
+#: includes/class-defaults.php:247
 msgid "Posts"
 msgstr ""
 
-#: includes/class-defaults.php:254
+#: includes/class-defaults.php:248
 msgid "Excerpts"
 msgstr ""
 
-#: includes/class-defaults.php:255
+#: includes/class-defaults.php:249
 msgid "Post thumbnails"
 msgstr ""
 
@@ -144,31 +142,31 @@ msgstr ""
 msgid "Invalid post ID."
 msgstr ""
 
-#: includes/class-rest-api.php:279
+#: includes/class-rest-api.php:280
 msgid "The related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:287
+#: includes/class-rest-api.php:288
 msgid "Number of related terms in common with the post."
 msgstr ""
 
-#: includes/class-rest-api.php:295
+#: includes/class-rest-api.php:296
 msgid "The Post ID to get related posts for."
 msgstr ""
 
-#: includes/class-rest-api.php:300
+#: includes/class-rest-api.php:301
 msgid "Post types used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:308
+#: includes/class-rest-api.php:309
 msgid "Taxonomies used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:316
+#: includes/class-rest-api.php:317
 msgid "Related term ids used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:324
+#: includes/class-rest-api.php:325
 msgid "Rendered related posts HTML"
 msgstr ""
 

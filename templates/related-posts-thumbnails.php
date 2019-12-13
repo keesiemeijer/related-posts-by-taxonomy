@@ -45,7 +45,7 @@
 	?>
 
 <?php else : ?>
-	<p><?php _e( 'No related posts found', 'related-posts-by-taxonomy' ); ?></p>
+	<p><?php km_rpbt_no_posts_found_notice( $rpbt_args ); ?></p>
 <?php endif; ?>
 
 <?php

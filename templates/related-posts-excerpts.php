@@ -31,8 +31,10 @@
 
 	<?php foreach ( $related_posts as $post ) : ?>
 		<?php
+			// Set up postdata so we can use WordPress functions like the_excerpt().
 			setup_postdata( $post );
-			// In this loop you can use WordPress functions to display the related posts.
+
+			// The plugin functions below can be found in the /includes/template-tags.php file.
 		?>
 
 		<div<?php km_rpbt_post_class( $post, $rpbt_args ); ?>>
@@ -43,7 +45,7 @@
 	<?php endforeach; ?>
 
 <?php else : ?>
-	<p><?php _e( 'No related posts found', 'related-posts-by-taxonomy' ); ?></p>
+	<p><?php km_rpbt_no_posts_found_notice( $rpbt_args ); ?></p>
 <?php endif ?>
 
 <?php
