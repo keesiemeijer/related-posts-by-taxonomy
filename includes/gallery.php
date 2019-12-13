@@ -191,8 +191,10 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 	 *                       Otherwise, defaults to true.
 	 */
 	if ( apply_filters( 'use_default_gallery_style', ! $html5 ) ) {
+		$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
+
 		$gallery_style = "
-		<style type='text/css'>
+		<style{$type_attr}>
 			#{$selector} {
 				margin: auto;
 			}

@@ -12,7 +12,7 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'use_default_gallery_style', '__return_true', 99 );
 		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
 		remove_filter( 'related_posts_by_taxonomy_gallery', array( $this, 'return_first_argument' ) );
-		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'return_query_args' ),10, 4 );
+		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'return_query_args' ), 10, 4 );
 	}
 
 	function test_gallery_class() {
@@ -37,7 +37,7 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 		extract( $gallery_args );
 
 		$args['columns'] = 0;
-		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'return_query_args' ),10, 4 );
+		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'return_query_args' ), 10, 4 );
 		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$this->assertSame( 0, $this->query_args['columns'] );
@@ -224,9 +224,11 @@ EOF;
 		add_filter( 'use_default_gallery_style', '__return_true', 99 );
 		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
-		$static   = $this->get_gallery_instance_id( $gallery );
+		$static    = $this->get_gallery_instance_id( $gallery );
+		$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
+
 		$expected = <<<EOF
-<style type='text/css'>
+<style{$type_attr}>
 #rpbt-related-gallery-$static {
 margin: auto;
 }
@@ -350,8 +352,17 @@ BLOB;
 		$content = do_shortcode( $blob );
 		$content = preg_replace( '/<img .*?\/>/', '', $content );
 
+		$version   = $GLOBALS['wp_version'];
+		$type_attr = " type='text/css'";
+
+		// Type attribute changed from single to double quotes or
+		// was omitted in WP 5.3
+		if ( version_compare( $version , '5.3', '>=' ) ) {
+			$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
+		}
+
 		$expected = <<<EOF
-<style type='text/css'>
+<style{$type_attr}>
 	#gallery-1 {
 		margin: auto;
 	}
