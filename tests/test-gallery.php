@@ -258,8 +258,10 @@ EOF;
 		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$static   = $this->get_gallery_instance_id( $gallery );
+		$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
+
 		$expected = <<<EOF
-<style type='text/css'>
+<style{$type_attr}>
 #rpbt-related-gallery-$static {
 margin: auto;
 }
@@ -382,7 +384,6 @@ BLOB;
 
 		$content = do_shortcode( $blob );
 		$content = preg_replace( '/<img .*?\/>/', '', $content );
-
 
 		$version   = $GLOBALS['wp_version'];
 		$type_attr = " type='text/css'";
