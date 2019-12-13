@@ -6,9 +6,9 @@ import { isEmpty } from 'lodash';
 /**
  * WordPress dependencies
  */
-const { BaseControl } = wp.components;
-const { withInstanceId } = wp.compose;
-const { Component } = wp.element;
+import {  BaseControl  } from '@wordpress/components';
+import {  withInstanceId  } from '@wordpress/compose';
+import {  Component  } from '@wordpress/element';
 
 /**
  * Internal dependencies

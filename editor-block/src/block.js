@@ -7,10 +7,10 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-const { InspectorControls } = wp.editor;
-const { BaseControl, PanelBody, ToggleControl, ServerSideRender, Disabled } = wp.components;
-const { Component, Fragment } = wp.element;
-const { __ } = wp.i18n;
+import {  InspectorControls  } from '@wordpress/editor';
+import {  BaseControl, PanelBody, ToggleControl, ServerSideRender, Disabled  } from '@wordpress/components';
+import {  Component, Fragment  } from '@wordpress/element';
+import {  __  } from '@wordpress/i18n';
 
 /**
  * Internal dependencies

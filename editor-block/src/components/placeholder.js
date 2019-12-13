@@ -1,8 +1,8 @@
 /**
  * WordPress dependencies
  */
-const { Spinner, Placeholder } = wp.components;
-const { __ } = wp.i18n;
+import {  Spinner, Placeholder  } from '@wordpress/components';
+import {  __  } from '@wordpress/i18n';
 
 function LoadingPlaceholder( {
 	icon,

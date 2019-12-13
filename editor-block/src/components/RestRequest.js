@@ -6,11 +6,11 @@ import { isEqual, debounce } from 'lodash';
 /**
  * WordPress dependencies.
  */
-const { Component, RawHTML } = wp.element;
+import {  Component, RawHTML  } from '@wordpress/element';
 const { Placeholder, Spinner } = wp.components
-const { __, sprintf } = wp.i18n;
+import {  __, sprintf  } from '@wordpress/i18n';
 const apiFetch = wp.apiFetch;
-const { addQueryArgs } = wp.url;
+import {  addQueryArgs  } from '@wordpress/url';
 
 export function rendererPath( postID, attributes = null, urlQueryArgs = {} ) {
 	let queryArgs = ( null !== attributes ) ? attributes : {};

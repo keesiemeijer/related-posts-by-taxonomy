@@ -6,10 +6,10 @@ import { isEmpty, filter, flatten, includes, pickBy } from 'lodash';
 /**
  * WordPress dependencies
  */
-const { __ } = wp.i18n;
-const { registerBlockType } = wp.blocks;
-const { withSelect } = wp.data;
-const { compose } = wp.compose;
+import {  __  } from '@wordpress/i18n';
+import {  registerBlockType  } from '@wordpress/blocks';
+import {  withSelect  } from '@wordpress/data';
+import {  compose  } from '@wordpress/compose';
 /**
  * Internal dependencies
  */

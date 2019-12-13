@@ -1,8 +1,8 @@
 /**
  * WordPress dependencies
  */
-const { __ } = wp.i18n;
-const { SelectControl, RangeControl, ToggleControl } = wp.components;
+import {  __  } from '@wordpress/i18n';
+import {  SelectControl, RangeControl, ToggleControl  } from '@wordpress/components';
 
 
 /**
