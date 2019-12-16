@@ -114,7 +114,7 @@ EOF;
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>

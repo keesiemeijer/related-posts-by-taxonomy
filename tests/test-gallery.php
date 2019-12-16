@@ -70,7 +70,7 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -95,7 +95,7 @@ EOF;
 <li class="blocks-gallery-item my-class">
 <figure role='group' aria-label='Gallery image with caption: {$related_post->post_title}'>
 <a href='{$permalink}'><img></a>
-<figcaption><span class="screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}</figcaption>
+<figcaption><span class="rpbt-screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}</figcaption>
 </figure>
 </li>
 </ul>
@@ -122,7 +122,7 @@ EOF;
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -151,7 +151,7 @@ EOF;
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="screen-reader-text">Gallery image with caption:</span> {$related_post->post_title} <time class="rpbt-post-date" datetime="{$datetime}">{$date}</time>
+<span class="rpbt-screen-reader-text">Gallery image with caption:</span> {$related_post->post_title} <time class="rpbt-post-date" datetime="{$datetime}">{$date}</time>
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -178,7 +178,7 @@ EOF;
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -205,7 +205,7 @@ EOF;
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -251,7 +251,7 @@ margin-left: 0;
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -304,7 +304,7 @@ EOF;
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="screen-reader-text">Gallery image with caption:</span> <a href="{$permalink}">{$related_post->post_title}</a>
+<span class="rpbt-screen-reader-text">Gallery image with caption:</span> <a href="{$permalink}">{$related_post->post_title}</a>
 </dd></dl>
 <br style='clear: both' />
 </div>
