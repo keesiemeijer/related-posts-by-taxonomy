@@ -1,19 +1,17 @@
 /**
  * External dependencies
  */
-import { isEmpty, filter, flatten, includes, pickBy } from 'lodash';
+import { isEmpty } from 'lodash';
 
 /**
  * WordPress dependencies
  */
 import {  __  } from '@wordpress/i18n';
 import {  registerBlockType  } from '@wordpress/blocks';
-import {  withSelect  } from '@wordpress/data';
-import {  compose  } from '@wordpress/compose';
 /**
  * Internal dependencies
  */
-import RelatedPostsBlock from './block.js';
+import edit from './edit';
 import { _pluginData } from './data/data';
 
 if (!isEmpty(_pluginData)) {
@@ -31,44 +29,7 @@ function registerRelatedPostsBlock() {
 			html: false,
 			customClassName: false,
 		},
-
-		edit: compose(
-			withSelect((select, props) => {
-				return {
-					postID: select('core/editor').getCurrentPostId(),
-					postType: select('core/editor').getCurrentPostType(),
-					registeredTaxonomies: select('core').getTaxonomies(),
-				};
-			}),
-
-			withSelect((select, props) => {
-				if (!props.registeredTaxonomies || !props.postType || !props.postID) {
-					return null;
-				}
-
-				const taxonomyTerms = {};
-				const taxonomyNames = [];
-
-				const taxonomies = props.registeredTaxonomies;
-				const postTaxonomies = filter(taxonomies, (taxonomy) => includes(taxonomy.types, props.postType));
-				postTaxonomies.map((taxonomy) => {
-					taxonomyTerms[taxonomy.slug] = select('core/editor').getEditedPostAttribute(taxonomy.rest_base);
-					taxonomyNames.push(taxonomy.slug);
-				});
-
-				const ids = pickBy(taxonomyTerms, value => value.length);
-				let terms = Object.keys(ids).map((tax) => ids[tax]);
-
-				return {
-					editorData: {
-						taxonomyTerms: taxonomyTerms,
-						taxonomyNames: taxonomyNames,
-						termIDs: flatten(terms),
-					}
-				};
-			})
-		)(RelatedPostsBlock),
-
+		edit: edit,
 		save() {
 			// Rendering in PHP
 			return null;

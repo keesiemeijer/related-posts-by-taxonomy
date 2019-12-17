@@ -54,11 +54,13 @@ function km_rpbt_block_editor_assets() {
 	// Use un-minified Javascript when in debug mode.
 	$debug = $plugin && $plugin->plugin_supports( 'debug' ) ? '' : '.min';
 
+	$asset_file = include RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/assets/js/editor-block/index.asset.php';
+
 	// Scripts.
 	wp_enqueue_script(
 		'rpbt-related-posts-block', // Handle.
 		RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . "includes/assets/js/editor-block/index.js",
-		array( 'wp-blocks', 'wp-i18n', 'wp-url', 'wp-element', 'wp-data', 'wp-api-fetch', 'wp-editor', 'wp-components' )
+		$asset_file['dependencies']
 	);
 
 	// Styles.
@@ -102,6 +104,14 @@ function km_rpbt_register_block_type() {
 
 	register_block_type( 'related-posts-by-taxonomy/related-posts-block', array(
 			'attributes' => array(
+				'is_editor' => array(
+					'type'    => 'boolean',
+					'default' => true,
+				),
+				'gallery_format' => array(
+					'type'    => 'string',
+					'default' => 'editor_block',
+				),
 				'taxonomies' => array(
 					'type'    => 'string',
 					'default' => 'km_rpbt_all_tax',

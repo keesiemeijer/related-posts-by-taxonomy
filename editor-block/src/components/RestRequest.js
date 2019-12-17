@@ -7,9 +7,9 @@ import { isEqual, debounce } from 'lodash';
  * WordPress dependencies.
  */
 import {  Component, RawHTML  } from '@wordpress/element';
-const { Placeholder, Spinner } = wp.components
+import { Placeholder, Spinner } from '@wordpress/components';
 import {  __, sprintf  } from '@wordpress/i18n';
-const apiFetch = wp.apiFetch;
+import apiFetch from '@wordpress/api-fetch';
 import {  addQueryArgs  } from '@wordpress/url';
 
 export function rendererPath( postID, attributes = null, urlQueryArgs = {} ) {
@@ -18,7 +18,6 @@ export function rendererPath( postID, attributes = null, urlQueryArgs = {} ) {
 	// Defaults
 	queryArgs.gallery_format = 'editor_block';
 	queryArgs.is_editor = true;
-	queryArgs.link_caption = false;
 
 	return addQueryArgs( `/related-posts-by-taxonomy/v1/posts/${ postID }`, {		
 		...queryArgs,
@@ -47,7 +46,7 @@ export class RestRequest extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		if ( ! isEqual( prevProps, this.props ) ) {
+		if ( ! isEqual( prevProps.attributes, this.props.attributes ) ) {
 			this.fetch( this.props );
 		}
 	}
@@ -59,6 +58,7 @@ export class RestRequest extends Component {
 		if ( null !== this.state.response ) {
 			this.setState( { response: null } );
 		}
+
 		const { postID, attributes = null, urlQueryArgs = {} } = props;
 
 		const path = rendererPath( postID, attributes, urlQueryArgs );
@@ -67,7 +67,7 @@ export class RestRequest extends Component {
 		// check if it is the current request, to avoid race conditions on slow networks.
 		const fetchRequest = this.currentFetchRequest = apiFetch( { path } )
 			.then( ( response ) => {
-				if ( this.isStillMounted && fetchRequest === this.currentFetchRequest && response && response.rendered ) {
+				if ( this.isStillMounted && fetchRequest === this.currentFetchRequest && response ) {
 					this.setState( { response: response.rendered } );
 				}
 			} )
@@ -84,26 +84,61 @@ export class RestRequest extends Component {
 
 	render() {
 		const response = this.state.response;
-		if ( ! response ) {
+		const { className, EmptyResponsePlaceholder, ErrorResponsePlaceholder, LoadingResponsePlaceholder } = this.props;
+
+		if ( response === '' ) {
 			return (
-				<Placeholder><Spinner /></Placeholder>
+				<EmptyResponsePlaceholder response={ response } { ...this.props } />
+			);
+		} else if ( ! response ) {
+			return (
+				<LoadingResponsePlaceholder response={ response } { ...this.props } />
 			);
 		} else if ( response.error ) {
-			// translators: %s: error message describing the problem
-			const errorMessage = sprintf( __( 'Error loading post: %s' ), response.errorMsg );
 			return (
-				<Placeholder>{ errorMessage }</Placeholder>
-			);
-		} else if ( ! response.length ) {
-			return (
-				<Placeholder>{ __( 'No results found.' ) }</Placeholder>
+				<ErrorResponsePlaceholder response={ response } { ...this.props } />
 			);
 		}
 
 		return (
-			<RawHTML key="html">{ response }</RawHTML>
+			<RawHTML
+				key="html"
+				className={ className }
+			>
+				{ response }
+			</RawHTML>
 		);
 	}
 }
+
+RestRequest.defaultProps = {
+	EmptyResponsePlaceholder: ( { className } ) => (
+		<Placeholder
+			className={ className }
+		>
+			{ __('No posts found with the current block settings', 'related-posts-by-taxonomy') }
+		</Placeholder>
+	),
+	ErrorResponsePlaceholder: ( { response, className } ) => {
+		// translators: %s: error message describing the problem
+		const errorMessage = sprintf( __( 'Error loading block: %s' ), response.errorMsg );
+		return (
+			<Placeholder
+				className={ className }
+			>
+				{ errorMessage }
+			</Placeholder>
+		);
+	},
+	LoadingResponsePlaceholder: ( { className } ) => {
+		return (
+			<Placeholder
+				className={ className }
+			>
+				<Spinner />
+			</Placeholder>
+		);
+	},
+};
 
 export default RestRequest;

@@ -1,16 +1,19 @@
 /**
  * External dependencies
  */
-import { isUndefined, debounce } from 'lodash';
+import { isUndefined, debounce, filter, includes, isArray } from 'lodash';
 import classnames from 'classnames';
 
 /**
  * WordPress dependencies
  */
-import {  InspectorControls  } from '@wordpress/editor';
-import {  BaseControl, PanelBody, ToggleControl, ServerSideRender, Disabled  } from '@wordpress/components';
-import {  Component, Fragment  } from '@wordpress/element';
-import {  __  } from '@wordpress/i18n';
+import { InspectorControls } from '@wordpress/block-editor';
+import { BaseControl, PanelBody, ToggleControl, ServerSideRender, Disabled } from '@wordpress/components';
+import { Component, Fragment } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import {  withSelect  } from '@wordpress/data';
+import {  compose  } from '@wordpress/compose';
+
 
 /**
  * Internal dependencies
@@ -50,7 +53,8 @@ export class RelatedPostsBlock extends Component {
 			const { setAttributes } = this.props;
 
 			setAttributes({
-				[propName]: !value });
+				[propName]: !value
+			});
 		};
 	}
 
@@ -76,22 +80,22 @@ export class RelatedPostsBlock extends Component {
 	}
 
 	render() {
-		const { attributes, setAttributes, editorData, postType, postID } = this.props;
+		const { attributes, setAttributes, postType, postID, termIDs, taxonomyNames } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption, show_date, order, fields } = attributes;
 		const titleID = 'inspector-text-control-' + this.instanceId;
 		const className = classnames(this.props.className, { 'rpbt-html5-gallery': ('thumbnails' === format) && this.html5Gallery });
 
-		if (isUndefined(editorData)) {
+		if (isUndefined(termIDs) || isUndefined(taxonomyNames)) {
 			return null;
 		}
 
-		let shortcodeAttr = Object.assign({}, attributes);
-		shortcodeAttr['post_id'] = postID;
-		shortcodeAttr['terms'] = editorData.termIDs.join(',');
+		let restAttributes = Object.assign({}, attributes);
+		restAttributes['post_id'] = postID;
+		restAttributes['terms'] = termIDs.join(',');
 
-		if (!shortcodeAttr['terms'].length && (-1 !== editorData.taxonomyNames.indexOf('category'))) {
+		if (!restAttributes['terms'].length && (-1 !== taxonomyNames.indexOf('category'))) {
 			// Use default category if this post supports the 'category' taxonomy and no terms are selected.
-			shortcodeAttr['terms'] = this.defaultCategory;
+			restAttributes['terms'] = this.defaultCategory;
 		}
 
 		let checkedPostTypes = post_types;
@@ -161,7 +165,7 @@ export class RelatedPostsBlock extends Component {
 					<RestRequest
 						block="related-posts-by-taxonomy/related-posts-block"
 						postID={postID}
-						attributes={ shortcodeAttr }
+						attributes={ restAttributes }
 					/>
 					</div>
 			</Fragment>
@@ -169,4 +173,40 @@ export class RelatedPostsBlock extends Component {
 	}
 }
 
-export default RelatedPostsBlock;
+export default compose(
+	withSelect((select, props) => {
+		return {
+			postID: select('core/editor').getCurrentPostId(),
+			postType: select('core/editor').getCurrentPostType(),
+			registeredTaxonomies: select('core').getTaxonomies(),
+		};
+	}),
+
+	withSelect((select, props) => {
+		if (!props.registeredTaxonomies || !props.postType || !props.postID) {
+			return null;
+		}
+
+		const termIDs = [];
+		const taxonomyNames = [];
+
+		const taxonomies = props.registeredTaxonomies;
+		const postTaxonomies = filter(taxonomies, (taxonomy) => includes(taxonomy.types, props.postType));
+
+		postTaxonomies.map((taxonomy) => {
+			taxonomyNames.push(taxonomy.slug);
+
+			const terms = select('core/editor').getEditedPostAttribute(taxonomy.rest_base);
+			if (isArray(terms)) {
+				termIDs.push(...terms);
+			}
+		});
+
+		console.log('terms', termIDs);
+
+		return {
+			taxonomyNames: taxonomyNames,
+			termIDs: termIDs,
+		};
+	})
+)(RelatedPostsBlock)
