@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Related Posts By Taxonomy 2.7.3-alpha\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2019-12-13 14:24:38+00:00\n"
+"POT-Creation-Date: 2019-12-17 16:23:11+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -178,19 +178,19 @@ msgstr ""
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/editor-block.php:72
+#: includes/editor-block.php:74
 msgid "Most terms in common"
 msgstr ""
 
-#: includes/editor-block.php:73
+#: includes/editor-block.php:75
 msgid "Least terms in common"
 msgstr ""
 
-#: includes/editor-block.php:74
+#: includes/editor-block.php:76
 msgid "Randomly"
 msgstr ""
 
-#: includes/editor-block.php:117 includes/settings.php:183
+#: includes/editor-block.php:127 includes/settings.php:183
 msgid "Related Posts"
 msgstr ""
 
