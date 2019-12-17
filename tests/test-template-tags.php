@@ -109,12 +109,12 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item someclass'>
-<dt class='gallery-icon '>
-<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item someclass' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<dt class='gallery-icon'>
+<a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-{$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>

@@ -238,6 +238,19 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 			'aria-describedby' => "{$selector}-{$related->ID}",
 		) : '';
 
+		$role = 'figure';
+		if ( 'figure' === $args['itemtag'] ) {
+			$role = 'group';
+		}
+
+		$label = esc_attr( strip_tags( $caption ) );
+		if ( empty( $label ) ) {
+			$label = __( 'Gallery image', 'related-posts-by-taxonomy' );
+		}
+
+		$label = " role='{$role}' aria-label='{$label}'";
+
+
 		$image_link = km_rpbt_get_gallery_image_link( $attachment_id, $related, $args, $describedby );
 		if ( ! $image_link ) {
 			continue;
@@ -249,12 +262,13 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 
 		$orientation = '';
 		if ( isset( $image_meta['height'], $image_meta['width'] ) ) {
-			$orientation = ( $image_meta['height'] > $image_meta['width'] ) ? 'portrait' : 'landscape';
+			$orientation = ( $image_meta['height'] > $image_meta['width'] ) ? ' portrait' : ' landscape';
 		}
 
-		$item_output .= "<{$args['itemtag']}{$itemclass}>";
+		$item_output .= "<{$args['itemtag']}{$itemclass}{$label}>";
+
 		$item_output .= "
-			<{$args['icontag']} class='gallery-icon {$orientation}'>
+			<{$args['icontag']} class='gallery-icon{$orientation}'>
 				$image_link
 			</{$args['icontag']}>";
 
@@ -321,6 +335,11 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 		$attachment_id  = get_post_thumbnail_id( $related->ID );
 		$caption        = km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args );
 
+		$label = esc_attr( strip_tags( $caption ) );
+		if ( empty( $label ) ) {
+			$label = __( 'Gallery image', 'related-posts-by-taxonomy' );
+		}
+
 		$image = km_rpbt_get_gallery_image_link( $attachment_id, $related, $args );
 		if ( ! $image ) {
 			continue;
@@ -329,7 +348,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 		$post_class = km_rpbt_get_gallery_post_class( $related, $args, 'blocks-gallery-item' );
 		$post_class = $post_class ? ' class="' . $post_class . '"' : '';
 
-		$html .= "<li{$post_class}>\n<figure>\n{$image}\n";
+		$html .= "<li{$post_class}>\n<figure role='group' aria-label='$label'>\n{$image}\n";
 		if ( $caption ) {
 			$html .= "<figcaption>{$caption}</figcaption>\n";
 		}
@@ -456,12 +475,10 @@ function km_rpbt_get_gallery_image_link( $attachment_id, $related, $args = array
 		$title = apply_filters( 'the_title', $related->post_title, $related->ID );
 	}
 
-	$title_attr = esc_attr( $title );
-	$link_attr  = $title_attr ? " title='{$title_attr}'" : '';
-	$link_attr  = $block_format ? '' : $link_attr;
-	$image_link = ( $image && $permalink ) ? "<a href='$permalink'{$link_attr}>$image</a>" : '';
+	$image_link = ( $image && $permalink ) ? "<a href='$permalink'>$image</a>" : '';
 
 	// back compat
+	$title_attr   = esc_attr( $title );
 	$thumbnail    = $image;
 	$thumbnail_id = $attachment_id;
 
@@ -552,14 +569,20 @@ function km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args = ar
 		$caption = (string) $args['caption'];
 	}
 
+	$caption_raw = $caption;
+	if ( ! empty( $caption ) ) {
+		$caption = sprintf( __( '<span class="rpbt-screen-reader-text">Gallery image with caption:</span> %s', 'related-posts-by-taxonomy' ), $caption );
+	}
+
 	/**
 	 * Filter the related post thumbnail caption.
 	 *
 	 * @since 0.3
 	 *
-	 * @param string $caption Options 'post_title', 'attachment_caption', attachment_alt, or a custom string. Default: post_title.
-	 * @param object $related Related post object.
-	 * @param array  $args    Function arguments.
+	 * @param string $caption     Options 'post_title', 'attachment_caption', attachment_alt, or a custom string. Default: post_title.
+	 * @param object $related     Related post object.
+	 * @param array  $args        Function arguments.
+	 * @param string $caption_raw Caption without screen reader text.
 	 */
-	return apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args );
+	return apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args, $caption_raw );
 }
