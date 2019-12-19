@@ -350,7 +350,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 
 		$html .= "<li{$post_class}>\n<figure role='group' aria-label='$label'>\n{$image}\n";
 		if ( $caption ) {
-			$html .= "<figcaption>{$caption}</figcaption>\n";
+			$html .= '<figcaption class="blocks-gallery-item__caption">' . $caption . "</figcaption>\n";
 		}
 		$html .= "</figure>\n</li>\n";
 	}
@@ -365,7 +365,8 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$class = "{$gallery_class}rpbt-related-block-gallery columns-{$args['columns']}";
 	$class .= $args['cropped'] ? ' is-cropped' : '';
 
-	$html  = '<ul class="' . $class  . '">' . "\n" . $html . "</ul>\n";
+	$html = '<ul class="blocks-gallery-grid">' . "\n" . $html . "</ul>\n";
+	$html = '<figure class="' . $class  . '">' . "\n" . $html . "</figure>";
 	if ( function_exists( 'wp_make_content_images_responsive' ) ) {
 		// since WP 4.4.0
 		$html = wp_make_content_images_responsive( $html );
