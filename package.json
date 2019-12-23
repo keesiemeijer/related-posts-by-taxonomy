@@ -2,8 +2,8 @@
   "name": "related-posts-by-taxonomy",
   "version": "2.7.3-alpha",
   "license": "GPL-2.0-or-later",
-  "tested_up_to": "5.2",
-  "requires_at_least": "4.2",
+  "tested_up_to": "5.3",
+  "requires_at_least": "4.3",
   "main": "Gruntfile.js",
   "author": "keesiemeijer",
   "repository": {
