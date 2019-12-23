@@ -350,8 +350,17 @@ BLOB;
 		$content = do_shortcode( $blob );
 		$content = preg_replace( '/<img .*?\/>/', '', $content );
 
+		$version   = $GLOBALS['wp_version'];
+		$type_attr = " type='text/css'";
+
+		// Type attribute changed from single to double quotes or
+		// was omitted in WP 5.3
+		if ( version_compare( $version , '5.3', '>=' ) ) {
+			$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
+		}
+
 		$expected = <<<EOF
-<style type='text/css'>
+<style{$type_attr}>
 	#gallery-1 {
 		margin: auto;
 	}
