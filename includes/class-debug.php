@@ -224,7 +224,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$terms = get_terms( array( 'fields' => 'names', 'object_ids' => array( $post_id ) ) );
 			$terms = ! is_wp_error( $terms ) ? $terms : array();
 
-			$taxonomies = ! $related && $args['terms'] ? 'No taxonomies used in query (unrelated terms)' : $taxonomies;
+			$taxonomies = ! empty( $args['include_terms'] ) ? 'No taxonomies used in query (unrelated terms used with include_terms)' : $taxonomies;
 			$taxonomies = is_array( $taxonomies ) ? implode( ', ', $taxonomies ) : $taxonomies;
 
 			$this->debug['current post id'] = $post_id;
