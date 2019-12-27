@@ -132,15 +132,12 @@ function km_rpbt_get_query_vars() {
 		'order'            => 'DESC',
 		'orderby'          => 'post_date',
 		'fields'           => '',
-		'terms'            => '',
 		'include_terms'    => '',
 		'exclude_terms'    => '',
 		'include_parents'  => false,
 		'include_children' => false,
-		'related'          => true,
 		'exclude_posts'    => '',
 		'limit_posts'      => -1,
-		'limit_year'       => '',
 		'limit_month'      => '',
 		'post_thumbnail'   => false,
 		'public_only'      => false,
@@ -149,6 +146,11 @@ function km_rpbt_get_query_vars() {
 		'meta_value'       => '',
 		'meta_compare'     => '',
 		'meta_type'        => '',
+
+		// Deprecated arguments (can still be used)
+		'terms'            => '',
+		'related'          => null,
+		'limit_year'       => '',
 	);
 }
 
@@ -345,6 +347,11 @@ function km_rpbt_validate_booleans( $args, $defaults ) {
 	if ( isset( $args['include_self'] ) && ( 'regular_order' === $args['include_self'] ) ) {
 		// Do not check this value as a boolean
 		$defaults['include_self'] = 'regular_order';
+	}
+
+	if( isset($args['related']) && ! is_null( $args['related']) ) {
+		// If deprecated argument is not null treat it like a boolean (back compat).
+		$defaults['related'] = true;
 	}
 
 	$booleans = array_filter( (array) $defaults, 'is_bool' );

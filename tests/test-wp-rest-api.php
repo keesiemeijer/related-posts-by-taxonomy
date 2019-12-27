@@ -604,7 +604,26 @@ EOF;
 
 		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], 'lulu', $args );
 
-		// Valid taxonomies are needed for related terms.
+		// Invalid taxonomies is not used for included terms.
+		$this->assertNotEmpty( $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument.
+	 *
+	 * @requires function WP_REST_Controller::register_routes
+	 */
+	function test_related_posts_by_terms_invalid_taxonomy_back_compat() {
+		$this->setup_posts();
+		$args = array(
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
+			'related'    => true,
+		);
+
+		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], 'lulu', $args );
+
+		// Valid taxonomies are needed for related terms (back compat).
 		$this->assertEmpty( $rel_post0 );
 	}
 
@@ -621,7 +640,7 @@ EOF;
 			'related'    => false,
 		);
 
-		$rel_post0  = $this->rest_related_posts_by_taxonomy( $this->posts[0], 'lulu', $args );
+		$rel_post0 = $this->rest_related_posts_by_taxonomy( $this->posts[0], 'lulu', $args );
 
 		// Invalid taxonomies are ignored when related is set to false.
 		$this->assertEquals( array( $this->posts[1], $this->posts[3] ), $rel_post0 );

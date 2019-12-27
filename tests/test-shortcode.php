@@ -348,12 +348,17 @@ EOF;
 		// use filter to get arguments used for the related posts
 		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
 
-		// Default value is true if not used
+		// Default value is null if not used
 		do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '"]' );
-		$this->assertTrue( $this->arg['related'] );
+		$this->assertTrue( is_null( $this->arg['related'] ) );
 		$this->arg = null;
 
 		do_shortcode( '[related_posts_by_tax related="" post_id="' . $posts[0] . '"]' );
+		$this->assertTrue( is_null( $this->arg['related'] ) );
+		$this->arg = null;
+
+		// If used it's a boolean
+		do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '" related="true"]' );
 		$this->assertTrue( $this->arg['related'] );
 		$this->arg = null;
 
