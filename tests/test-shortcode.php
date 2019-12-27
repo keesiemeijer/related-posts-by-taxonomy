@@ -358,10 +358,6 @@ EOF;
 		$this->arg = null;
 
 		// If used it's a boolean
-		do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '" related="true"]' );
-		$this->assertTrue( $this->arg['related'] );
-		$this->arg = null;
-
 		do_shortcode( '[related_posts_by_tax related="true" post_id="' . $posts[0] . '"]' );
 		$this->assertTrue( $this->arg['related'] );
 		$this->arg = null;
