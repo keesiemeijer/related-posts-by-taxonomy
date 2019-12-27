@@ -65,7 +65,6 @@ Attributes for the shortcode are:
 * `show_date`
 * `before_title`
 * `after_title`
-* `terms`
 * `include_terms`
 * `include_parents`
 * `include_children`
@@ -83,7 +82,6 @@ Attributes for the shortcode are:
 * `meta_value`
 * `meta_compare`
 * `meta_type`
-* `related`
 * `public_only`
 * `include_self`
 * `post_class`
@@ -144,6 +142,16 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.7.3 =
+* Enhancement
+	* Add a function used in the templates for the no posts found message (to make it filterable).
+	* Update gallery to format changes made in the WordPress gallery.
+	* Add accessibility to the gallery. 
+* Deprecated
+	* Deprecated the 'terms' and 'related' arguments in favor of the 'include_terms' argument.
+		* The 'include_terms' argument now uses the included terms without restrictions.
+		* You can still use the 'related' argument together with 'terms' and 'include_terms'.
+
 = 2.7.2 =
 * Bug Fixes
 	* Fix for gallery image (fallback) filter not being reached.
