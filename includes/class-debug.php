@@ -270,7 +270,13 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			$query = "SELECT {$select_sql} FROM $wpdb->posts {$join_sql} {$where_sql} {$group_by_sql} {$order_by_sql} {$limit_sql}";
 
+			// Remove prefix
 			$query = str_replace( $wpdb->prefix , '' , $query );
+
+			// Format query
+			$query = preg_replace( "/ INNER JOIN /", " \nINNER JOIN ", $query );
+			$query = preg_replace( "/ WHERE /", " \nWHERE ", $query );
+			$query = preg_replace( "/ AND /", " \nAND ", $query );
 
 			$term_names = $this->get_terms_names( $args['related_terms'] );
 
@@ -420,6 +426,32 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			return $supports;
 		}
 
+		function get_style() {
+			$style = 'border:0 none;outline:0 none;padding:20px;margin:0;';
+			$style .= 'color: #333;background: #f5f5f5;font-family: monospace;font-size: 16px;font-style: normal;font-weight: normal;line-height: 1.5;white-space: pre;overflow:auto;';
+			$style .= 'width:100%;display:block;float:none;clear:both;text-align:left;z-index: 999;position:relative;';
+			return $style;
+		}
+
+		function get_section( $value ) {
+			$section = '';
+			if ( is_array( $value ) ) {
+				$style = $this->get_style();
+				// create string from array
+				$value = var_export( $value, true );
+				// clean up arrays
+				$value = preg_replace( "/\=>\s*array\s*\(/", '=> array(', $value );
+				$value = preg_replace( "/array\s*\(\s*\),/", 'array(),', $value );
+				// convert spaces to tabs
+				$value = preg_replace( "/(?<![^\s]{2})  /", "\t", $value );
+				$section  = "<pre style='{$style}'>" . htmlspecialchars( $value ) . '</pre>';
+			} else {
+				$section = "{$value}\n";
+			}
+
+			return "{$section}\n";
+		}
+
 		/**
 		 * Displays the results in the footer
 		 */
@@ -436,13 +468,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				'requested template', 'widget'
 			);
 			$order = array_fill_keys( $order , '' );
-			$style = 'border:0 none;outline:0 none;padding:20px;margin:0;';
-			$style .= 'color: #333;background: #f5f5f5;font-family: monospace;font-size: 16px;font-style: normal;font-weight: normal;line-height: 1.5;white-space: pre;overflow:auto;';
-			$style .= 'width:100%;display:block;float:none;clear:both;text-align:left;z-index: 999;position:relative;';
+			$style = $this->get_style();
 
 			echo "<pre style='{$style}'>" . $this->get_header( 'General Debug Information' ) . "\n\n";
 			echo "Plugin Supports \n\n";
-			echo htmlspecialchars( print_r(  $this->get_supports(), true ) );
+			echo $this->get_section( $this->get_supports() );
 			echo $seperator;
 			echo "All post types found (public and private)\n\n";
 			$post_types = implode( ', ', $this->post_types );
@@ -506,15 +536,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 						}
 
 						echo $title . ":\n\n";
-						if ( is_array( $value ) ) {
-							echo '<pre>';
-							echo htmlspecialchars( print_r( $value, true ) );
-							echo '</pre>';
-						} else {
-							echo $value . "\n";
-						}
-
-						echo "\n";
+						echo $this->get_section($value);
 						echo $seperator;
 					}
 					echo '</pre>';
