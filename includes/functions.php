@@ -118,8 +118,6 @@ function km_rpbt_plugin_supports( $feature, $args = array() ) {
  *                                            comparisons. Accepts 'NUMERIC', 'BINARY', 'CHAR', 'DATE',
  *                                            'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', or 'UNSIGNED'.
  *                                            Default is 'CHAR'.
- *     @type array|string   $terms            Deprecated argument. Use $include_terms instead.
- *     @type null           $related          Deprecated argument. Default null
  * }
  * @return array Array with related post objects.
  */

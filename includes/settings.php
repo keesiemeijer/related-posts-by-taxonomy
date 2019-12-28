@@ -349,8 +349,8 @@ function km_rpbt_validate_booleans( $args, $defaults ) {
 		$defaults['include_self'] = 'regular_order';
 	}
 
-	if( isset($args['related']) && ! is_null( $args['related']) ) {
-		// If deprecated argument is not null treat it like a boolean (back compat).
+	// If deprecated argument is not null treat it like a boolean (back compat).
+	if ( isset( $args['related'] ) && ! is_null( $args['related'] ) ) {
 		$defaults['related'] = true;
 	}
 

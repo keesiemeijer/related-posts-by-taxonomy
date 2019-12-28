@@ -53,8 +53,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  *                                            comparisons. Accepts 'NUMERIC', 'BINARY', 'CHAR', 'DATE',
  *                                            'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', or 'UNSIGNED'.
  *                                            Default is 'CHAR'.
- *     @type array|string   $terms            Deprecated argument. Use $include_terms instead.
- *     @type null           $related          Deprecated argument.
  * }
  * @return array Array with post objects. Empty array if no related posts found.
  */
