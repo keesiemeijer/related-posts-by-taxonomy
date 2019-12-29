@@ -427,11 +427,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		}
 
 		/**
-		 * Get inline style for HTML pre tag
+		 * Get inline style for HTML pre tag.
 		 *
 		 * @since 2.7.3
 		 *
-		 * @return [type] [description]
+		 * @return string Inline styles.
 		 */
 		function get_style() {
 			$style = 'border:0 none;outline:0 none;padding:20px;margin:0;';
@@ -445,7 +445,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 *
 		 * @since 2.7.3
 		 *
-		 * @param  string|array $value Debug section value.
+		 * @param string|array $value Debug section value.
 		 * @return string Formatted debug section HTML.
 		 */
 		function get_section_html( $value ) {
@@ -551,7 +551,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 						}
 
 						echo $title . ":\n\n";
-						echo $this->get_section_html($value);
+						echo $this->get_section_html( $value );
 						echo $seperator;
 					}
 					echo '</pre>';
