@@ -39,8 +39,8 @@ function km_rpbt_get_public_taxonomies() {
 /**
  * Get the terms from a post or from the arguments.
  *
- * @since  2.5.0
- * @since  2.7.3 Deprecated the `terms` and `related` arguments.
+ * @since 2.5.0
+ * @since 2.7.3 Deprecated the `terms` and `related` arguments.
  *
  * @param int          $post_id    The post id to get terms for.
  * @param array|string $taxonomies The taxonomies to retrieve terms from.

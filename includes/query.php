@@ -80,7 +80,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	/**
 	 * Filter whether to use your own related posts.
 	 *
-	 * @since  2.5.0
+	 * @since 2.5.0
 	 *
 	 * @param null|array $related_posts Array or null. Prevent the query for related posts by
 	 *                                  returning an array (with post objects or ids).

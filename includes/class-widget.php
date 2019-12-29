@@ -297,7 +297,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 	/**
 	 * Get form field
 	 *
-	 * @since  2.5.1
+	 * @since 2.5.1
 	 *
 	 * @param string $field Field name.
 	 * @param array  $i     Widget instance settings.

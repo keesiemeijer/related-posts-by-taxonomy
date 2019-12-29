@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * This function is used in the related posts display templates.
  *
- * @since  2.4.0
+ * @since 2.4.0
  *
  * @param object       $post Post object.
  * @param array|string $args Widget or shortcode arguments or string with post classes.
@@ -28,7 +28,7 @@ function km_rpbt_post_class( $post = null, $args = '' ) {
  *
  * Gets the classes from the 'rpbt_post_class' property of a post object (if it exists).
  *
- * @since  2.4.0
+ * @since 2.4.0
  *
  * @param object       $post Post object.
  * @param array|string $args Widget or shortcode arguments or string with post classes.
@@ -73,7 +73,7 @@ function km_rpbt_get_post_classes( $post = null, $args = '' ) {
 /**
  * Sanitize classnames.
  *
- * @since  2.4.0
+ * @since 2.4.0
  *
  * @param string $classes String with classnames separated by spaces.
  * @return string Sanitized string with classnames.
@@ -160,7 +160,7 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 	/**
 	 * Filter related post link HTML.
 	 *
-	 * @since  2.4.0
+	 * @since 2.4.0
 	 * @param string $link Related post link HTML.
 	 * @param Object $post Post object.
 	 * @param array  $attr Link attributes.
@@ -214,7 +214,7 @@ function km_rpbt_get_permalink( $post = null, $args = '' ) {
 	/**
 	 * Filter the permalink used for related posts.
 	 *
-	 * @since  2.5.1
+	 * @since 2.5.1
 	 *
 	 * @param string Permalink.
 	 */

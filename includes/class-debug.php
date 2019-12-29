@@ -375,7 +375,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		/**
 		 * Returns a fancy header for the debug information.
 		 *
-		 * @since  2.3.1
+		 * @since 2.3.1
 		 *
 		 * @param string $type Type of debug.
 		 * @return string Fancy header.
@@ -426,6 +426,13 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			return $supports;
 		}
 
+		/**
+		 * Get inline style for HTML pre tag
+		 *
+		 * @since 2.7.3
+		 *
+		 * @return [type] [description]
+		 */
 		function get_style() {
 			$style = 'border:0 none;outline:0 none;padding:20px;margin:0;';
 			$style .= 'color: #333;background: #f5f5f5;font-family: monospace;font-size: 16px;font-style: normal;font-weight: normal;line-height: 1.5;white-space: pre;overflow:auto;';
@@ -433,7 +440,15 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			return $style;
 		}
 
-		function get_section( $value ) {
+		/**
+		 * Get formatted debug section HTML.
+		 *
+		 * @since 2.7.3
+		 *
+		 * @param  string|array $value Debug section value.
+		 * @return string Formatted debug section HTML.
+		 */
+		function get_section_html( $value ) {
 			$section = '';
 			if ( is_array( $value ) ) {
 				$style = $this->get_style();
@@ -472,7 +487,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			echo "<pre style='{$style}'>" . $this->get_header( 'General Debug Information' ) . "\n\n";
 			echo "Plugin Supports \n\n";
-			echo $this->get_section( $this->get_supports() );
+			echo $this->get_section_html( $this->get_supports() );
 			echo $seperator;
 			echo "All post types found (public and private)\n\n";
 			$post_types = implode( ', ', $this->post_types );
@@ -536,7 +551,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 						}
 
 						echo $title . ":\n\n";
-						echo $this->get_section($value);
+						echo $this->get_section_html($value);
 						echo $seperator;
 					}
 					echo '</pre>';

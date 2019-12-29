@@ -134,7 +134,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		/**
 		 * Filter (validated) Rest API arguments.
 		 *
-		 * @since  2.3.0
+		 * @since 2.3.0
 		 *
 		 * @param array $args Arguments.
 		 */

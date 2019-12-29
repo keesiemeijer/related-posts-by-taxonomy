@@ -25,7 +25,7 @@ function km_rpbt_plugin() {
  * See the {@see 'related_posts_by_taxonomy_supports'} filter which
  * features are supported by default and which are opt-in
  *
- * @since  2.5.0
+ * @since 2.5.0
  *
  * @param string $type Type of feature.
  * @param array  $args Optional arguments.
@@ -73,7 +73,7 @@ function km_rpbt_plugin_supports( $feature, $args = array() ) {
  * If taxonomies are not set in the arguments it queries for
  * related posts in all public taxonomies.
  *
- * @since  2.5.0
+ * @since 2.5.0
  *
  * @param array        $post_id The post id to get related posts for.
  * @param string|array $args    {
@@ -157,7 +157,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 /**
  * Related posts feature HTML.
  *
- * @since  2.6.0
+ * @since 2.6.0
  *
  * @param string $feature Type of feature.
  * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
@@ -195,7 +195,7 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
 	/**
 	 * Fires after the related posts are displayed.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string Display type, widget or shortcode.
 	 */
@@ -288,7 +288,7 @@ function km_rpbt_get_lazy_loading_html( $args ) {
 	/**
 	 * Filter placeholder HTML while loading posts with the lazy loading feature.
 	 *
-	 * @since  2.6.0
+	 * @since 2.6.0
 	 *
 	 * @param string $content HTML that will be displayed while loading posts. Default empty string.
 	 * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() arguments.
@@ -401,7 +401,7 @@ function km_rpbt_nested_array_sort( $array ) {
 /**
  * Checks if the cache class is loaded.
  *
- * @since  2.5.0
+ * @since 2.5.0
  *
  * @param object $plugin Related_Posts_By_Taxonomy_Cache object. Default null.
  * @return bool True if the cache class is loaded.
@@ -417,7 +417,7 @@ function km_rpbt_is_cache_loaded() {
  * The opt-in cache feature needs to be activated (with a filter) to cache posts.
  *
  * @since 2.1
- * @since  2.5.0 Use empty string as default value for $taxonomies parameter.
+ * @since 2.5.0 Use empty string as default value for $taxonomies parameter.
  *
  * @param int          $post_id    The post id to cache related posts for.
  * @param array|string $taxonomies Taxonomies for the related posts query.

@@ -15,7 +15,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 	/**
 	 * Class to manage the persistent cache feature.
 	 *
-	 * @since  2.0.0
+	 * @since 2.0.0
 	 */
 	class Related_Posts_By_Taxonomy_Cache {
 

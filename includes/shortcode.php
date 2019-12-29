@@ -97,7 +97,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
 	/**
 	 * Filter validated shortcode arguments.
 	 *
-	 * @since  0.1
+	 * @since 0.1
 	 *
 	 * @param array $args Shortcode arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
 	 *                    for more information about feature arguments.

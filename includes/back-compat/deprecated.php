@@ -175,7 +175,7 @@ function km_rpbt_related_posts_by_taxonomy_widget() {
  * Use the {@see 'related_posts_by_taxonomy_post_class'} filter to add post classes on a
  * post per post basis
  *
- * @since  2.4.0
+ * @since 2.4.0
  * @deprecated 2.6.0
  *
  * @param array        $related_posts Array with (related) post objects.

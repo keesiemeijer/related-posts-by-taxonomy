@@ -8,7 +8,7 @@
  * - widget
  * - wp_rest_api
  *
- * @since  2.5.0
+ * @since 2.5.0
  *
  * @return array Array with supported setting types.
  */
@@ -35,7 +35,7 @@ function km_rpbt_is_valid_settings_type( $type ) {
 /**
  * Get the type of feature from arguments.
  *
- * @since  2.6.0
+ * @since 2.6.0
  *
  * @param array $args Arguments.
  * @return string Feature type or empty string if no valid settings type was found in the arguments.
@@ -70,7 +70,7 @@ function km_rpbt_get_template_fields( $args ) {
  * See the {@see related_posts_by_taxonomy_supports} filter for the
  * supported and opt-in features.
  *
- * @since  2.3.1
+ * @since 2.3.1
  *
  * @return Array Array with plugin support types.
  */
