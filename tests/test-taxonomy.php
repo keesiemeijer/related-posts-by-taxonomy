@@ -148,4 +148,18 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 		// Term 3 is also included with include_terms
 		$this->assertEquals( array( $terms[3] ), $post_terms );
 	}
+
+	function test_km_rpbt_get_terms_without_related_and_invalid_taxonomy() {
+		$create_posts = $this->create_posts_with_terms();
+		$terms = $create_posts['tax1_terms'];
+		$posts = $create_posts['posts'];
+		// In these tests terms need to exist. The taxonomy does not matter.
+
+		// Terms 3 and 4 are not assigned to post 0 and invalid taxonomy
+		$args = array( 'terms' => $terms[3], 'include_terms' => $terms[4] );
+		$post_terms = km_rpbt_get_terms( $posts[0], 'invalid_tax', $args );
+		// The terms argument is deprecated in version 2.7.3 but can still be used.
+		// Both include_terms and terms are used.
+		$this->assertEquals( array( $terms[3], $terms[4] ), $post_terms );
+	}
 }

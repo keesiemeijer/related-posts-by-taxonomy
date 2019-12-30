@@ -40,7 +40,7 @@ function km_rpbt_get_public_taxonomies() {
  * Get the terms from a post or from the arguments.
  *
  * @since 2.5.0
- * @since 2.7.3 Deprecated the `terms` and `related` arguments.
+ * @since 2.7.3 Deprecated the `terms` and `related` arguments. Use include_terms instead.
  *
  * @param int          $post_id    The post id to get terms for.
  * @param array|string $taxonomies The taxonomies to retrieve terms from.
@@ -69,27 +69,29 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	 * The `terms` and `related` arguments are deprecated.
 	 *
 	 * Use `include_terms` instead of the `terms` argument.
-	 * The default value for the `related` argument has changed from a boolean to null.
+	 * The default value for the `related` argument has changed from a boolean (true) to null.
 	 *
-	 * If `related` is a boolean the old behaviour still works.
+	 * When `related` is a boolean the old restrictions for
+	 * the terms and include_terms arguments are still in place.
 	 */
 	$back_compat = is_bool( $args['related'] );
 
 	if ( $back_compat && $args['related'] && empty( $taxonomies ) ) {
-		// Taxonomies are needed for related terms (back compat).
+		// Back compat: Taxonomies are needed for related terms.
 		return array();
 	}
 
 	if ( $back_compat && ! $args['related'] && ( $args['terms'] || $args['include_terms'] ) ) {
-		// Unrelated terms (back compat)
+		// Back compat: Unrelated terms.
 		$terms = $args['terms'] ? $args['terms'] : $args['include_terms'];
 	} elseif ( $back_compat && $args['terms'] ) {
-		// Filters out terms not in taxonomies (back compat).
+		// Back compat: Filters out terms not in taxonomies.
 		$terms = km_rpbt_get_term_objects(  $args['terms'], $taxonomies );
 		$terms = ! empty( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
 	} elseif ( ! $back_compat && ( $args['include_terms'] || $args['terms'] ) ) {
 		// Use included terms.
-		$terms = $args['include_terms'] ? $args['include_terms'] : $args['terms'];
+		$terms = array_merge( $args['terms'], $args['include_terms'] );
+		$terms = array_unique( $terms );
 	} else {
 		// Use post terms.
 
@@ -101,7 +103,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 		$terms = ! is_wp_error( $terms ) ? $terms : array();
 
 		if ( $back_compat && $args['related'] && $args['include_terms'] ) {
-			// Only include terms from the post terms (back compat).
+			// Back compat: Only include terms from the post terms.
 			$terms = array_intersect( $args['include_terms'], $terms );
 		}
 	}
@@ -144,7 +146,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
  * @return array Array with term ids
  */
 function km_rpbt_get_hierarchy_terms( $tree_type, $terms, $taxonomies = '' ) {
-	if ( ! $terms ||  ! in_array( $tree_type, array( 'parents', 'children' ) ) ) {
+	if ( ! $terms || ! in_array( $tree_type, array( 'parents', 'children' ) ) ) {
 		return array();
 	}
 
