@@ -91,14 +91,16 @@ EOF;
 		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$expected = <<<EOF
-<ul class="wp-block-gallery rpbt-related-block-gallery columns-3 is-cropped">
+<figure class="wp-block-gallery rpbt-related-block-gallery columns-3 is-cropped" role="group" aria-label="Gallery images">
+<ul class="blocks-gallery-grid">
 <li class="blocks-gallery-item my-class">
-<figure role='group' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<figure role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
 <a href='{$permalink}'><img></a>
-<figcaption><span class="rpbt-screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}</figcaption>
+<figcaption class="blocks-gallery-item__caption"><span class="rpbt-screen-reader-text">Gallery image with caption:</span> {$related_post->post_title}</figcaption>
 </figure>
 </li>
 </ul>
+</figure>
 EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );

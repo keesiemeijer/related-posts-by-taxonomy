@@ -348,9 +348,9 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 		$post_class = km_rpbt_get_gallery_post_class( $related, $args, 'blocks-gallery-item' );
 		$post_class = $post_class ? ' class="' . $post_class . '"' : '';
 
-		$html .= "<li{$post_class}>\n<figure role='group' aria-label='$label'>\n{$image}\n";
+		$html .= "<li{$post_class}>\n<figure role='figure' aria-label='$label'>\n{$image}\n";
 		if ( $caption ) {
-			$html .= "<figcaption>{$caption}</figcaption>\n";
+			$html .= '<figcaption class="blocks-gallery-item__caption">' . $caption . "</figcaption>\n";
 		}
 		$html .= "</figure>\n</li>\n";
 	}
@@ -365,7 +365,12 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$class = "{$gallery_class}rpbt-related-block-gallery columns-{$args['columns']}";
 	$class .= $args['cropped'] ? ' is-cropped' : '';
 
-	$html  = '<ul class="' . $class  . '">' . "\n" . $html . "</ul>\n";
+	$label = __( 'Gallery images', 'related-posts-by-taxonomy' );
+	$atts  = 'class="' . $class  . '" role="group" aria-label="' . $label . '"';
+
+	$html = '<ul class="blocks-gallery-grid">' . "\n{$html}</ul>";
+	$html = "<figure {$atts}>\n{$html}\n</figure>\n";
+
 	if ( function_exists( 'wp_make_content_images_responsive' ) ) {
 		// since WP 4.4.0
 		$html = wp_make_content_images_responsive( $html );
