@@ -576,7 +576,7 @@ function km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args = ar
 
 	$caption_raw = $caption;
 	if ( ! empty( $caption ) ) {
-		$caption = sprintf( __( '<span class="rpbt-screen-reader-text">Gallery image with caption:</span> %s', 'related-posts-by-taxonomy' ), $caption );
+		$caption = sprintf( __( '<span class="rpbt-screen-reader-text">Gallery image with caption: </span>%s', 'related-posts-by-taxonomy' ), $caption );
 	}
 
 	/**
