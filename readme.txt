@@ -212,5 +212,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.7.2 =
-This upgrade contains minor bug fixes for filtering gallery images and the Rest API.
+= 2.7.3 =
+This upgrade makes the "no found posts" message filterable.
