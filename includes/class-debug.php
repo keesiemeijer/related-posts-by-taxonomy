@@ -107,7 +107,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @since 2.0.0
 		 *
 		 * @param array $args   Widget or shortcode arguments.
-		 * @param array $widget Widget args.
+		 * @param array $widget Widget arguments.
 		 * @return array Array with widget or shortcode arguments.
 		 */
 		function debug_start( $args, $widget = '' ) {
@@ -119,7 +119,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			if ( 'related_posts_by_taxonomy_widget_args' === current_filter() ) {
 				$this->debug['type']        = 'widget';
-				$this->debug['widget args'] = $args;
+				$this->debug['widget arguments'] = $args;
 				$this->debug['widget']      = $widget;
 
 			} else {
@@ -217,14 +217,20 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @since 2.6.0
 		 */
 		function pre_related_posts( $posts, $args ) {
-			$post_id    = $args['post_id'];
-			$taxonomies = $args['taxonomies'];
-			$related    = $args['related'];
+			$post_id       = $args['post_id'];
+			$taxonomies    = $args['taxonomies'];
+			$back_compat   = is_bool( $args['related'] );
+			$include_terms = ( $args['include_terms'] || $args['terms'] );
 
 			$terms = get_terms( array( 'fields' => 'names', 'object_ids' => array( $post_id ) ) );
 			$terms = ! is_wp_error( $terms ) ? $terms : array();
 
-			$taxonomies = ! empty( $args['include_terms'] ) ? 'No taxonomies used in query (unrelated terms used with include_terms)' : $taxonomies;
+			if ( $back_compat && $include_terms && ! $args['related'] ) {
+				$taxonomies = 'No taxonomies used in query (related - false)';
+			} elseif ( ! $back_compat && $include_terms ) {
+				$taxonomies = 'No taxonomies used in query (related - null)';
+			}
+
 			$taxonomies = is_array( $taxonomies ) ? implode( ', ', $taxonomies ) : $taxonomies;
 
 			$this->debug['current post id'] = $post_id;
@@ -478,7 +484,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				'taxonomies used for query', 'cached taxonomies',
 				'terms used for query', 'cached terms',
 				'related post ids found', 'cached post ids',
-				'widget args', 'shortcode args', 'function args',
+				'widget arguments', 'shortcode args', 'function args',
 				'related posts query',
 				'requested template', 'widget'
 			);
@@ -518,7 +524,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 					}
 
 					if ( 'shortcode' === $debug_arr['type'] ) {
-						unset( $_order['widget args'], $_order['widget'] );
+						unset( $_order['widget arguments'], $_order['widget'] );
 					}
 
 					// reorder debug array.
