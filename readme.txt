@@ -146,11 +146,12 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 * Enhancement
 	* Add a function used in the templates for the no posts found message (to make it filterable).
 	* Update gallery to format changes made in the WordPress gallery.
-	* Add accessibility to the gallery. 
+	* Add accessibility to the gallery figure element.
 * Deprecated
-	* Deprecated the 'terms' and 'related' arguments in favor of the 'include_terms' argument.
+	* The 'terms' and 'related' arguments are deprecated in favor of the 'include_terms' argument.
 		* The 'include_terms' argument now uses the included terms without restrictions.
-		* You can still use the 'related' argument together with 'terms' and 'include_terms'.
+		* The default value for the 'related' argument changed from boolean true to null.
+		* Set the 'related' argument to a boolean true to have the old restrictions back.
 
 = 2.7.2 =
 * Bug Fixes
@@ -213,4 +214,4 @@ For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
 = 2.7.3 =
-This upgrade makes the "no found posts" message filterable.
+This upgrade makes the "no found posts" message filterable and deprecates two arguments (see the changelog)
