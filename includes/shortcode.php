@@ -29,18 +29,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  *     @type string         $show_date        Whether to display the post date after the title. Default false.
  *     @type string         $before_title     HTML before title. Default `<h3>`.
  *     @type string         $after_title      HTML after title. Default `</h3>`.
- *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
- *                                            list of term ids. It doesn't matter if the current post has these terms in common.
- *                                            Default empty.
- *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
- *                                            list of term ids. Only includes terms in common with the current post.
- *                                            Default empty.
+ *     @type array|string   $include_terms    Terms to use for the related posts query. Array or comma separated list of
+ *                                            term ids. Default empty (query by the terms of the current post).
  *     @type boolean        $include_parents  Whether to include parent terms in the query for related posts. Default false.
  *     @type boolean        $include_children Whether to include child terms in the query for related posts. Default false.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
- *     @type boolean        $related          If false the ` $include_terms` argument also includes terms
- *                                            not in common with the current post. Default true.
  *     @type array|string   $exclude_post     Exclude posts for the related posts query. Array or comma separated
  *                                            list of post ids. Default empty.
  *     @type string         $format           Format to display related posts.
@@ -103,7 +97,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
 	/**
 	 * Filter validated shortcode arguments.
 	 *
-	 * @since  0.1
+	 * @since 0.1
 	 *
 	 * @param array $args Shortcode arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
 	 *                    for more information about feature arguments.
@@ -137,12 +131,14 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	$atts['fields'] = km_rpbt_get_template_fields( $atts );
 
 	// Convert (strings) to booleans or use defaults.
-	$atts['related']          = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : true;
 	$atts['link_caption']     = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
 	$atts['public_only']      = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
 	$atts['show_date']        = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
 	$atts['include_parents']  = ( '' !== trim( $atts['include_parents'] ) ) ? $atts['include_parents'] : false;
 	$atts['include_children'] = ( '' !== trim( $atts['include_children'] ) ) ? $atts['include_children'] : false;
+
+	// Deprecated argument changed from boolean to null (back compat)
+	$atts['related'] = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : null;
 
 	if ( 'regular_order' !== $atts['include_self'] ) {
 		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;

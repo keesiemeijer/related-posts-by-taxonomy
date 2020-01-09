@@ -1,6 +1,6 @@
 /**
  * Ajax query for related posts
- * 
+ *
  * @since 2.6.0
  */
 

@@ -107,7 +107,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @since 2.0.0
 		 *
 		 * @param array $args   Widget or shortcode arguments.
-		 * @param array $widget Widget args.
+		 * @param array $widget Widget arguments.
 		 * @return array Array with widget or shortcode arguments.
 		 */
 		function debug_start( $args, $widget = '' ) {
@@ -119,7 +119,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			if ( 'related_posts_by_taxonomy_widget_args' === current_filter() ) {
 				$this->debug['type']        = 'widget';
-				$this->debug['widget args'] = $args;
+				$this->debug['widget arguments'] = $args;
 				$this->debug['widget']      = $widget;
 
 			} else {
@@ -217,14 +217,20 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @since 2.6.0
 		 */
 		function pre_related_posts( $posts, $args ) {
-			$post_id    = $args['post_id'];
-			$taxonomies = $args['taxonomies'];
-			$related    = $args['related'];
+			$post_id       = $args['post_id'];
+			$taxonomies    = $args['taxonomies'];
+			$back_compat   = is_bool( $args['related'] );
+			$include_terms = ( $args['include_terms'] || $args['terms'] );
 
 			$terms = get_terms( array( 'fields' => 'names', 'object_ids' => array( $post_id ) ) );
 			$terms = ! is_wp_error( $terms ) ? $terms : array();
 
-			$taxonomies = ! $related && $args['terms'] ? 'No taxonomies used in query (unrelated terms)' : $taxonomies;
+			if ( $back_compat && $include_terms && ! $args['related'] ) {
+				$taxonomies = 'No taxonomies used in query (related - false)';
+			} elseif ( ! $back_compat && $include_terms ) {
+				$taxonomies = 'No taxonomies used in query (related - null)';
+			}
+
 			$taxonomies = is_array( $taxonomies ) ? implode( ', ', $taxonomies ) : $taxonomies;
 
 			$this->debug['current post id'] = $post_id;
@@ -270,7 +276,13 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			$query = "SELECT {$select_sql} FROM $wpdb->posts {$join_sql} {$where_sql} {$group_by_sql} {$order_by_sql} {$limit_sql}";
 
+			// Remove prefix
 			$query = str_replace( $wpdb->prefix , '' , $query );
+
+			// Format query
+			$query = preg_replace( "/ INNER JOIN /", " \nINNER JOIN ", $query );
+			$query = preg_replace( "/ WHERE /", " \nWHERE ", $query );
+			$query = preg_replace( "/ AND /", " \nAND ", $query );
 
 			$term_names = $this->get_terms_names( $args['related_terms'] );
 
@@ -369,7 +381,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		/**
 		 * Returns a fancy header for the debug information.
 		 *
-		 * @since  2.3.1
+		 * @since 2.3.1
 		 *
 		 * @param string $type Type of debug.
 		 * @return string Fancy header.
@@ -421,6 +433,47 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		}
 
 		/**
+		 * Get inline style for HTML pre tag.
+		 *
+		 * @since 2.7.3
+		 *
+		 * @return string Inline styles.
+		 */
+		function get_style() {
+			$style = 'border:0 none;outline:0 none;padding:20px;margin:0;';
+			$style .= 'color: #333;background: #f5f5f5;font-family: monospace;font-size: 16px;font-style: normal;font-weight: normal;line-height: 1.5;white-space: pre;overflow:auto;';
+			$style .= 'width:100%;display:block;float:none;clear:both;text-align:left;z-index: 999;position:relative;';
+			return $style;
+		}
+
+		/**
+		 * Get formatted debug section HTML.
+		 *
+		 * @since 2.7.3
+		 *
+		 * @param string|array $value Debug section value.
+		 * @return string Formatted debug section HTML.
+		 */
+		function get_section_html( $value ) {
+			$section = '';
+			if ( is_array( $value ) ) {
+				$style = $this->get_style();
+				// create string from array
+				$value = var_export( $value, true );
+				// clean up arrays
+				$value = preg_replace( "/\=>\s*array\s*\(/", '=> array(', $value );
+				$value = preg_replace( "/array\s*\(\s*\),/", 'array(),', $value );
+				// convert spaces to tabs
+				$value = preg_replace( "/(?<![^\s]{2})  /", "\t", $value );
+				$section  = "<pre style='{$style}'>" . htmlspecialchars( $value ) . '</pre>';
+			} else {
+				$section = "{$value}\n";
+			}
+
+			return "{$section}\n";
+		}
+
+		/**
 		 * Displays the results in the footer
 		 */
 		function wp_footer() {
@@ -431,18 +484,16 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				'taxonomies used for query', 'cached taxonomies',
 				'terms used for query', 'cached terms',
 				'related post ids found', 'cached post ids',
-				'widget args', 'shortcode args', 'function args',
+				'widget arguments', 'shortcode args', 'function args',
 				'related posts query',
 				'requested template', 'widget'
 			);
 			$order = array_fill_keys( $order , '' );
-			$style = 'border:0 none;outline:0 none;padding:20px;margin:0;';
-			$style .= 'color: #333;background: #f5f5f5;font-family: monospace;font-size: 16px;font-style: normal;font-weight: normal;line-height: 1.5;white-space: pre;overflow:auto;';
-			$style .= 'width:100%;display:block;float:none;clear:both;text-align:left;z-index: 999;position:relative;';
+			$style = $this->get_style();
 
 			echo "<pre style='{$style}'>" . $this->get_header( 'General Debug Information' ) . "\n\n";
 			echo "Plugin Supports \n\n";
-			echo htmlspecialchars( print_r(  $this->get_supports(), true ) );
+			echo $this->get_section_html( $this->get_supports() );
 			echo $seperator;
 			echo "All post types found (public and private)\n\n";
 			$post_types = implode( ', ', $this->post_types );
@@ -473,7 +524,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 					}
 
 					if ( 'shortcode' === $debug_arr['type'] ) {
-						unset( $_order['widget args'], $_order['widget'] );
+						unset( $_order['widget arguments'], $_order['widget'] );
 					}
 
 					// reorder debug array.
@@ -506,15 +557,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 						}
 
 						echo $title . ":\n\n";
-						if ( is_array( $value ) ) {
-							echo '<pre>';
-							echo htmlspecialchars( print_r( $value, true ) );
-							echo '</pre>';
-						} else {
-							echo $value . "\n";
-						}
-
-						echo "\n";
+						echo $this->get_section_html( $value );
 						echo $seperator;
 					}
 					echo '</pre>';

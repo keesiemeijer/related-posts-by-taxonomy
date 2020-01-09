@@ -25,18 +25,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  *                                            Accepts 'post_date'and 'post_modified'. Default 'post_date'.
  *     @type string         $fields           Return full post objects, IDs, post titles or post slugs.
  *                                            Accepts 'all', 'ids', 'names' or 'slugs'.  Default is 'all'.
- *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
- *                                            list of term ids. The terms don't need to be assigned to the post to
- *                                            get related posts for. Default empty.
- *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
- *                                            list of term ids. Only includes terms also assigned to the post to get
- *                                            related posts for. Default empty.
+ *     @type array|string   $include_terms    Terms to use for the related posts query. Array or comma separated list of
+ *                                            term ids. Default empty (query by the terms of the current post).
  *     @type boolean        $include_parents  Whether to include parent terms in the query for related posts. Default false.
  *     @type boolean        $include_children Whether to include child terms in the query for related posts. Default false.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
- *     @type boolean        $related          If false the `$include_terms` argument also includes terms not assigned to
- *                                            the post to get related posts for. Default true.
  *     @type array|string   $exclude_post     Exclude posts for the related posts query. Array or comma separated
  *                                            list of post ids. Default empty.
  *     @type int            $limit_posts      Limit the posts to search related posts in. Default -1 (search in all posts).
@@ -86,7 +80,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	/**
 	 * Filter whether to use your own related posts.
 	 *
-	 * @since  2.5.0
+	 * @since 2.5.0
 	 *
 	 * @param null|array $related_posts Array or null. Prevent the query for related posts by
 	 *                                  returning an array (with post objects or ids).

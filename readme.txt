@@ -1,8 +1,8 @@
 === Related Posts by Taxonomy ===
 Contributors: keesiemeijer
 Tags: posts,related,related posts,thumbnails,taxonomy,widget,shortcode,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
-Requires at least: 4.2
-Tested up to: 5.2
+Requires at least: 4.3
+Tested up to: 5.3
 Stable tag: 2.7.3-alpha
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -65,7 +65,6 @@ Attributes for the shortcode are:
 * `show_date`
 * `before_title`
 * `after_title`
-* `terms`
 * `include_terms`
 * `include_parents`
 * `include_children`
@@ -83,7 +82,6 @@ Attributes for the shortcode are:
 * `meta_value`
 * `meta_compare`
 * `meta_type`
-* `related`
 * `public_only`
 * `include_self`
 * `post_class`
@@ -144,6 +142,17 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.7.3 =
+* Enhancement
+	* Add a function used in the templates for the no posts found message (to make it filterable).
+	* Update gallery to format changes made in the WordPress gallery.
+	* Add accessibility to the gallery figure element.
+* Deprecated
+	* The 'terms' and 'related' arguments are deprecated in favor of the 'include_terms' argument.
+		* The 'include_terms' argument now uses the included terms without restrictions.
+		* The default value for the 'related' argument changed from boolean true to null.
+		* Set the 'related' argument to a boolean true to have the old restrictions back.
+
 = 2.7.2 =
 * Bug Fixes
 	* Fix for gallery image (fallback) filter not being reached.
@@ -204,5 +213,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.7.2 =
-This upgrade contains minor bug fixes for filtering gallery images and the Rest API.
+= 2.7.3 =
+This upgrade makes the "no found posts" message filterable and deprecates two arguments (see the changelog)

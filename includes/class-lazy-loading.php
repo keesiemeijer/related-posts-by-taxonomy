@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Lazy loading feature
- * 
+ *
  * Query related posts after the page has loaded (with Ajax).
  *
  * @since 2.6.0

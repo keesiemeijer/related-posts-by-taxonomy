@@ -8,7 +8,7 @@
  * - widget
  * - wp_rest_api
  *
- * @since  2.5.0
+ * @since 2.5.0
  *
  * @return array Array with supported setting types.
  */
@@ -36,7 +36,7 @@ function km_rpbt_is_valid_settings_type( $type ) {
 /**
  * Get the type of feature from arguments.
  *
- * @since  2.6.0
+ * @since 2.6.0
  *
  * @param array $args Arguments.
  * @return string Feature type or empty string if no valid settings type was found in the arguments.
@@ -71,7 +71,7 @@ function km_rpbt_get_template_fields( $args ) {
  * See the {@see related_posts_by_taxonomy_supports} filter for the
  * supported and opt-in features.
  *
- * @since  2.3.1
+ * @since 2.3.1
  *
  * @return Array Array with plugin support types.
  */
@@ -135,15 +135,12 @@ function km_rpbt_get_query_vars() {
 		'order'            => 'DESC',
 		'orderby'          => 'post_date',
 		'fields'           => '',
-		'terms'            => '',
 		'include_terms'    => '',
 		'exclude_terms'    => '',
 		'include_parents'  => false,
 		'include_children' => false,
-		'related'          => true,
 		'exclude_posts'    => '',
 		'limit_posts'      => -1,
-		'limit_year'       => '',
 		'limit_month'      => '',
 		'post_thumbnail'   => false,
 		'public_only'      => false,
@@ -152,6 +149,11 @@ function km_rpbt_get_query_vars() {
 		'meta_value'       => '',
 		'meta_compare'     => '',
 		'meta_type'        => '',
+
+		// Deprecated arguments (can still be used)
+		'terms'            => '',
+		'related'          => null,
+		'limit_year'       => '',
 	);
 }
 
@@ -352,6 +354,11 @@ function km_rpbt_validate_booleans( $args, $defaults ) {
 	if ( isset( $args['include_self'] ) && ( 'regular_order' === $args['include_self'] ) ) {
 		// Do not check this value as a boolean
 		$defaults['include_self'] = 'regular_order';
+	}
+
+	// If deprecated argument is not null treat it like a boolean (back compat).
+	if ( isset( $args['related'] ) && ! is_null( $args['related'] ) ) {
+		$defaults['related'] = true;
 	}
 
 	$booleans = array_filter( (array) $defaults, 'is_bool' );
