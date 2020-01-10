@@ -99,6 +99,7 @@ function km_rpbt_get_plugin_supports() {
 	 * - shortcode
 	 * - shortcode_hide_empty
 	 * - widget_hide_empty
+	 * - editor_block
 	 *
 	 * Opt-in features
 	 *
@@ -295,10 +296,6 @@ function km_rpbt_validate_args( $args ) {
 	}
 
 	return $args;
-}
-
-function km_rpbt_validate_editor_block_args( $args ) {
-	return km_rpbt_validate_args($args);
 }
 
 /**
