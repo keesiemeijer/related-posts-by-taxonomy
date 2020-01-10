@@ -111,6 +111,14 @@ export class RelatedPostsBlock extends Component {
 			checkedPostTypes = postType;
 		}
 
+		let notice = '';
+		if(!restAttributes['include_terms']) {
+			notice = __('No terms are assigned to this post', 'related-posts-by-taxonomy');
+			if(! taxonomyNames.length && (checkedPostTypes === postType) ) {
+				notice = __('No taxonomies are registered for the current post post type', 'related-posts-by-taxonomy');
+			}
+		}
+
 		const inspectorControls = (
 			<InspectorControls>
 				<PanelBody title={ __( 'Related Posts Settings' , 'related-posts-by-taxonomy') }>
@@ -178,6 +186,8 @@ export class RelatedPostsBlock extends Component {
 					<RestRequest
 						block="related-posts-by-taxonomy/related-posts-block"
 						postID={postID}
+						notice={notice}
+						label={__('Related Posts by Taxonomies', 'related-posts-by-taxonomy')}
 						attributes={ restAttributes }
 					/>
 					</div>

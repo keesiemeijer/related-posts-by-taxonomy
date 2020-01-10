@@ -112,27 +112,37 @@ export class RestRequest extends Component {
 }
 
 RestRequest.defaultProps = {
-	EmptyResponsePlaceholder: ( { className } ) => (
-		<Placeholder
-			className={ className }
-		>
-			{ __('No posts found with the current block settings', 'related-posts-by-taxonomy') }
-		</Placeholder>
-	),
-	ErrorResponsePlaceholder: ( { response, className } ) => {
+	EmptyResponsePlaceholder: ( { className, notice, label } ) => {
+		let noticeMessage = '';
+		if(notice.length) {
+			noticeMessage = notice;
+		}
+		return (
+			<Placeholder
+				label={label}
+				className={ className }
+			>
+				{ __('No related posts found with the current block settings.', 'related-posts-by-taxonomy') }		
+				{noticeMessage && [<br/>, noticeMessage]}
+			</Placeholder>
+		);
+	},
+	ErrorResponsePlaceholder: ( { response, className, label } ) => {
 		// translators: %s: error message describing the problem
 		const errorMessage = sprintf( __( 'Error loading block: %s', 'related-posts-by-taxonomy' ), response.errorMsg );
 		return (
 			<Placeholder
+				label={label}
 				className={ className }
 			>
 				{ errorMessage }
 			</Placeholder>
 		);
 	},
-	LoadingResponsePlaceholder: ( { className } ) => {
+	LoadingResponsePlaceholder: ( { className, label } ) => {
 		return (
 			<Placeholder
+				label={label}
 				className={ className }
 			>
 				<Spinner />
