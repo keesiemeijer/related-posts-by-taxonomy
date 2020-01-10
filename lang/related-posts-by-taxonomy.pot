@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Related Posts By Taxonomy 2.7.3-alpha\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2020-01-09 12:33:21+00:00\n"
+"POT-Creation-Date: 2020-01-10 15:16:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,11 +24,6 @@ msgstr ""
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
 "X-Generator: grunt-wp-i18n 1.0.3\n"
-
-#: includes/assets/editor-block-templates/thumbnail-gallery.php:48
-#: includes/template-tags.php:181
-msgid "No related posts found"
-msgstr ""
 
 #: includes/assets/partials/widget/columns.php:3
 msgid "Number of image columns"
@@ -142,31 +137,31 @@ msgstr ""
 msgid "Invalid post ID."
 msgstr ""
 
-#: includes/class-rest-api.php:280
+#: includes/class-rest-api.php:301
 msgid "The related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:288
+#: includes/class-rest-api.php:309
 msgid "Number of related terms in common with the post."
 msgstr ""
 
-#: includes/class-rest-api.php:296
+#: includes/class-rest-api.php:317
 msgid "The Post ID to get related posts for."
 msgstr ""
 
-#: includes/class-rest-api.php:301
+#: includes/class-rest-api.php:322
 msgid "Post types used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:309
+#: includes/class-rest-api.php:330
 msgid "Taxonomies used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:317
+#: includes/class-rest-api.php:338
 msgid "Related term ids used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:325
+#: includes/class-rest-api.php:346
 msgid "Rendered related posts HTML"
 msgstr ""
 
@@ -178,15 +173,15 @@ msgstr ""
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/editor-block.php:74
+#: includes/editor-block.php:72
 msgid "Most terms in common"
 msgstr ""
 
-#: includes/editor-block.php:75
+#: includes/editor-block.php:73
 msgid "Least terms in common"
 msgstr ""
 
-#: includes/editor-block.php:76
+#: includes/editor-block.php:74
 msgid "Randomly"
 msgstr ""
 
@@ -194,18 +189,22 @@ msgstr ""
 msgid "Related Posts"
 msgstr ""
 
-#: includes/gallery.php:248 includes/gallery.php:340
+#: includes/gallery.php:248 includes/gallery.php:336
 msgid "Gallery image"
 msgstr ""
 
-#: includes/gallery.php:368
+#: includes/gallery.php:365
 msgid "Gallery images"
 msgstr ""
 
-#: includes/gallery.php:579
+#: includes/gallery.php:576
 msgid ""
 "<span class=\"rpbt-screen-reader-text\">Gallery image with caption: "
 "</span>%s"
+msgstr ""
+
+#: includes/template-tags.php:181
+msgid "No related posts found"
 msgstr ""
 
 #. Plugin URI of the plugin/theme

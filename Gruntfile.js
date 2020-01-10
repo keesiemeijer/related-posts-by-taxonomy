@@ -101,6 +101,7 @@ module.exports = function( grunt ) {
 					'!build/**',
 					'!editor-block/**',
 					'!webpack.config.js',
+					'!includes/assets/js/editor-block/index.js.map',
 					'!Gruntfile.js',
 					'!package.json',
 					'!package-lock.json',
@@ -182,7 +183,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'travis', [ 'githash', 'replace:replace_branch' ] );
 
 	// Creates build
-	grunt.registerTask( 'build', [ 'clean:main', 'run:build', 'sass', 'uglify', 'version', 'makepot', 'travis', 'copy:main' ] );
+	grunt.registerTask( 'build', [ 'clean:main', 'run:build', 'uglify', 'version', 'makepot', 'travis', 'copy:main' ] );
 
 	grunt.util.linefeed = '\n';
 };
