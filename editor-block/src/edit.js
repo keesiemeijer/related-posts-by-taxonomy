@@ -11,8 +11,8 @@ import { InspectorControls } from '@wordpress/block-editor';
 import { BaseControl, PanelBody, ToggleControl, ServerSideRender, Disabled } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import {  withSelect  } from '@wordpress/data';
-import {  compose  } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 
 
 /**
@@ -30,7 +30,6 @@ export class RelatedPostsBlock extends Component {
 		super(...arguments);
 
 		// Data provided by this plugin.
-		this.previewExpanded = getPluginData('preview');
 		this.html5Gallery = getPluginData('html5_gallery');
 		this.defaultCategory = getPluginData('default_category');
 
@@ -43,6 +42,7 @@ export class RelatedPostsBlock extends Component {
 
 		this.toggleLinkCaption = this.createToggleAttribute('link_caption');
 		this.toggleShowDate = this.createToggleAttribute('show_date');
+		this.toggleImageCrop = this.createToggleAttribute('image_crop');
 
 		this.instanceId = instances++;
 	}
@@ -56,6 +56,13 @@ export class RelatedPostsBlock extends Component {
 				[propName]: !value
 			});
 		};
+	}
+
+	getImageCropHelp(checked) {
+		if(checked) {
+			return __('Thumbnails are cropped to align.', 'related-posts-by-taxonomy');
+		}
+		return __('Thumbnails are not cropped.', 'related-posts-by-taxonomy');
 	}
 
 	componentWillUnmount() {
@@ -81,7 +88,7 @@ export class RelatedPostsBlock extends Component {
 
 	render() {
 		const { attributes, setAttributes, postType, postID, termIDs, taxonomyNames } = this.props;
-		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption, show_date, order, fields } = attributes;
+		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption, show_date, order, fields, image_crop } = attributes;
 		const titleID = 'inspector-text-control-' + this.instanceId;
 		const className = classnames(this.props.className, { 'rpbt-html5-gallery': ('thumbnails' === format) && this.html5Gallery });
 
@@ -91,11 +98,11 @@ export class RelatedPostsBlock extends Component {
 
 		let restAttributes = Object.assign({}, attributes);
 		restAttributes['post_id'] = postID;
-		restAttributes['terms'] = termIDs.join(',');
+		restAttributes['include_terms'] = termIDs.join(',');
 
-		if (!restAttributes['terms'].length && (-1 !== taxonomyNames.indexOf('category'))) {
+		if (!restAttributes['include_terms'].length && (-1 !== taxonomyNames.indexOf('category'))) {
 			// Use default category if this post supports the 'category' taxonomy and no terms are selected.
-			restAttributes['terms'] = this.defaultCategory;
+			restAttributes['include_terms'] = this.defaultCategory;
 		}
 
 		let checkedPostTypes = post_types;
@@ -106,14 +113,14 @@ export class RelatedPostsBlock extends Component {
 
 		const inspectorControls = (
 			<InspectorControls>
-				<PanelBody title={ __( 'Related Posts Settings' ) }>
+				<PanelBody title={ __( 'Related Posts Settings' , 'related-posts-by-taxonomy') }>
 					<div className={this.props.className + '-inspector-controls'}>
 						<div>
 							<p>
-							{ __( 'Note: The preview style is not the actual style used in the front end of your site.' ) }
+							{ __( 'Note: The preview style is not the actual style used in the front end of your site.' , 'related-posts-by-taxonomy') }
 							</p>
 						</div>
-						<BaseControl label={ __( 'Title'  ) } id={titleID}>
+						<BaseControl label={ __( 'Title'  , 'related-posts-by-taxonomy') } id={titleID}>
 							<input className="components-text-control__input"
 								type="text"
 								onChange={this.onTitleChange}
@@ -142,7 +149,7 @@ export class RelatedPostsBlock extends Component {
 						/>
 					</div>
 				</PanelBody>
-				<PanelBody title={ __( 'Image Settings' ) }>
+				<PanelBody title={ __( 'Image Settings' , 'related-posts-by-taxonomy') }>
 					<ImagePanel
 						imageSize={image_size}
 						onImageSizeChange={ ( value ) => setAttributes( { image_size: value } ) }
@@ -150,7 +157,13 @@ export class RelatedPostsBlock extends Component {
 						onColumnsChange={ ( value ) => setAttributes( { columns: Number( value ) } ) }
 					/>
 					<ToggleControl
-						label={ __( ' Link image captions to posts' ) }
+							label={ __( 'Crop Images' , 'related-posts-by-taxonomy') }
+							checked={ image_crop }
+							onChange={ this.toggleImageCrop }
+							help={ this.getImageCropHelp }
+					/>
+					<ToggleControl
+						label={ __( ' Link image captions to posts' , 'related-posts-by-taxonomy') }
 						checked={ link_caption }
 						onChange={ this.toggleLinkCaption }
 					/>
@@ -201,8 +214,6 @@ export default compose(
 				termIDs.push(...terms);
 			}
 		});
-
-		console.log('terms', termIDs);
 
 		return {
 			taxonomyNames: taxonomyNames,

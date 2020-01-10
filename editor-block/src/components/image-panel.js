@@ -1,8 +1,8 @@
 /**
  * WordPress dependencies
  */
-import {  __  } from '@wordpress/i18n';
-import {  SelectControl, RangeControl  } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+import { SelectControl, RangeControl } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -13,30 +13,30 @@ import { getOptions } from '../data/options';
 // Select input options
 const imageOptions = getOptions('image_sizes');
 
-export default function ImagePanel( {
+export default function ImagePanel({
 	imageSize,
 	onImageSizeChange,
 	columns,
 	onColumnsChange
-} ) {
+}) {
 
 	return [
 		onImageSizeChange && (
 			<SelectControl
 				key="rpbt-select-image-size"
-				label={ __( 'Image Size' ) }
+				label = { __('Image Size', 'related-posts-by-taxonomy') }
 				value={ `${ imageSize }` }
 				options={  imageOptions }
 				onChange={ ( value ) => { onImageSizeChange( value ); } }
-			/> ),
+			/>),
 		onColumnsChange && (
 			<RangeControl
 				key="rpbt-range-columns"
-				label={ __( 'Image Columns' ) }
+				label={ __( 'Image Columns' , 'related-posts-by-taxonomy') }
 				value={ columns }
 				onChange={ onColumnsChange }
 				min={ 0 }
 				max={ 20 }
-			/> ),
+			/>),
 	];
 }

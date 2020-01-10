@@ -16,3 +16,7 @@
 	width: 1px;
 	word-wrap: normal !important; /* many screen reader and browser combinations announce broken words as they would appear visually */
 }
+
+.editor-styles-wrapper .wp-block-related-posts-by-taxonomy-related-posts-block ul {
+	list-style: none;
+}

@@ -121,7 +121,7 @@ RestRequest.defaultProps = {
 	),
 	ErrorResponsePlaceholder: ( { response, className } ) => {
 		// translators: %s: error message describing the problem
-		const errorMessage = sprintf( __( 'Error loading block: %s' ), response.errorMsg );
+		const errorMessage = sprintf( __( 'Error loading block: %s', 'related-posts-by-taxonomy' ), response.errorMsg );
 		return (
 			<Placeholder
 				className={ className }

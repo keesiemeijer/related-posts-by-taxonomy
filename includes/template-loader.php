@@ -24,14 +24,6 @@ function km_rpbt_get_template( $format = false, $type = false ) {
 
 	$base_dir = RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR;
 
-	if ( ( 'editor_block' === $type ) && ( 'thumbnails' === $format ) ) {
-		// Unfilterable template for the block editor with expected CSS selectors.
-		$file = $base_dir . 'includes/assets/editor-block-templates/thumbnail-gallery.php';
-		if ( file_exists( $file ) ) {
-			return $file;
-		}
-	}
-
 	switch ( $format ) {
 		case 'posts': $template = 'related-posts-posts.php'; break;
 		case 'excerpts': $template = 'related-posts-excerpts.php'; break;

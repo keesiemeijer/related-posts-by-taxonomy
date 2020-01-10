@@ -53,14 +53,4 @@ class KM_RPBT_Template_Loader_Tests extends KM_RPBT_UnitTestCase {
 		$path2 = $this->path . '/templates/related-posts-thumbnails.php';
 		$this->assertEquals( $path2 , $template );
 	}
-
-	/**
-	 * Test if correct template was found.
-	 */
-	function test_template_loader_editor_block_thumbnail_template() {
-		// get the thumbnail template for the block editor.
-		$template = km_rpbt_get_template( 'thumbnails', 'editor_block' );
-		$path2 = $this->path . '/includes/assets/editor-block-templates/thumbnail-gallery.php';
-		$this->assertEquals( $path2 , $template );
-	}
 }

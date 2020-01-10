@@ -82,7 +82,6 @@ function km_rpbt_get_plugin_supports() {
 		'shortcode_hide_empty' => true,
 		'widget_hide_empty'    => true,
 		'editor_block'         => true,
-		'editor_block_preview' => true,
 		'cache'                => false,
 		'display_cache_log'    => false,
 		'wp_rest_api'          => false,

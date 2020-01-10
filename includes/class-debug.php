@@ -21,15 +21,16 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 	 */
 	class Related_Posts_By_Taxonomy_Debug {
 
-		public $debug             = array();
-		public $results           = array();
-		public $post_types        = array();
-		public $taxonomies        = array();
-		public $plugin            = 0;
-		public $widget_counter    = 0;
-		public $shortcode_counter = 0;
+		public $debug        = array();
+		public $results      = array();
+		public $post_types   = array();
+		public $taxonomies   = array();
+		public $plugin       = 0;
+		public $shortcode    = 0;
+		public $widget       = 0;
+		public $editor_block = 0;
 
-		function __construct() {
+		public function __construct() {
 			$this->debug_setup();
 		}
 
@@ -71,9 +72,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			// Add debug link before the widget title.
 			add_filter( 'dynamic_sidebar_params', array( $this, 'widget_params' ), 99 );
 
-			// Get widget and shortcode args.
+			// Get widget and arguments.
 			add_filter( 'related_posts_by_taxonomy_widget_args',    array( $this, 'debug_start' ), 99, 2 );
 			add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'debug_start' ), 99, 2 );
+			add_filter( 'related_posts_by_taxonomy_editor_block_args', array( $this, 'debug_start' ), 99, 2 );
 
 			// Bail, the page has already loaded when using lazy loading.
 			if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
@@ -118,16 +120,19 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$args['title'] = empty( $args['title'] ) ? 'Related Posts Debug Title' : $args['title'];
 
 			if ( 'related_posts_by_taxonomy_widget_args' === current_filter() ) {
-				$this->debug['type']        = 'widget';
-				$this->debug['widget arguments'] = $args;
-				$this->debug['widget']      = $widget;
-
-			} else {
-				$this->debug['type']           = 'shortcode';
-				$this->debug['shortcode args'] = $args;
-				$args['before_shortcode']      = '<div class="rpbt_shortcode">' . $this->debug_link( 'shortcode' ) . '<br/>';
-				$args['after_shortcode']       = '</div>';
+				$this->debug['type']   = 'widget';
+				$this->debug['widget'] = $widget;
+			} elseif ( 'related_posts_by_taxonomy_shortcode_atts' === current_filter() ) {
+				$this->debug['type']      = 'shortcode';
+				$args['before_shortcode'] = '<div class="rpbt_shortcode">' . $this->debug_link( 'shortcode' ) . '<br/>';
+				$args['after_shortcode']  = '</div>';
+			} elseif ( 'related_posts_by_taxonomy_editor_block_args' === current_filter() ) {
+				$this->debug['type']         = 'editor_block';
+				$args['before_editor_block'] = '<div class="rpbt_editor_block">' . $this->debug_link( 'editor block' ) . '<br/>';
+				$args['after_editor_block']  = '</div>';
 			}
+
+			$this->debug['arguments'] = $args;
 
 			return $args;
 		}
@@ -152,7 +157,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				$this->debug['cache']             = 'current post cached';
 				$this->debug['cached post ids']   = ! empty( $post_ids ) ? implode( ', ', $post_ids ) : '';
 				$defaults                         = km_rpbt_get_query_vars();
-				$this->debug['function args']     = array_intersect_key( $args , $defaults );
+				$this->debug['query arguments']     = array_intersect_key( $args , $defaults );
 				$taxonomies                       = km_rpbt_get_taxonomies( $cache_args['taxonomies'] );
 				$this->debug['cached taxonomies'] = implode( ', ', $taxonomies );
 				$this->debug['current post id']   = isset( $args['post_id'] ) ? $args['post_id'] : '';
@@ -198,7 +203,14 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return string Link to debug information,
 		 */
 		function debug_link( $type = 'widget' ) {
-			$counter = ( 'widget' === $type ) ? ++$this->widget_counter : ++$this->shortcode_counter;
+			$counter = 0;
+			if ( 'widget' === $type ) {
+				$counter = ++$this->widget;
+			} elseif ( 'shortcode' === $type ) {
+				$counter = ++$this->shortcode;
+			} elseif ( 'editor block' === $type ) {
+				$counter = ++$this->editor_block;
+			}
 
 			if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
 				$this->debug['debug_id'] = 'rpbt-debug-notice';
@@ -234,7 +246,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$taxonomies = is_array( $taxonomies ) ? implode( ', ', $taxonomies ) : $taxonomies;
 
 			$this->debug['current post id'] = $post_id;
-			$this->debug['taxonomies used for query'] = $taxonomies;
+			$this->debug['taxonomies used in query'] = $taxonomies;
 			$this->debug['terms found for current post'] = implode( ', ', $terms );
 
 			if ( $this->cache ) {
@@ -255,7 +267,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		}
 
 		/**
-		 * Gets query and function args from km_rpbt_query_related_posts().
+		 * Gets query and query arguments from km_rpbt_query_related_posts().
 		 * adds filter to related_posts_by_taxonomy.
 		 *
 		 * @since 2.0.0
@@ -286,12 +298,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			$term_names = $this->get_terms_names( $args['related_terms'] );
 
-			$this->debug['terms used for query'] = $term_names;
+			$this->debug['terms used in query'] = $term_names;
 
 			unset( $args['related_terms'] );
 
 			$defaults = km_rpbt_get_query_vars();
-			$this->debug['function args'] = array_intersect_key( $args , $defaults );
+			$this->debug['query arguments']     = array_intersect_key( $args , $defaults );
 			$this->debug['related posts query'] = $query;
 
 			return $pieces;
@@ -389,6 +401,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		function get_header( $type = '' ) {
 			static $shortcode = 0;
 			static $widget = 0;
+			static $editor_block = 0;
 
 			$type_count =  '';
 			$debug_type =  '';
@@ -397,6 +410,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				$debug_type = 'Debug: ';
 			} elseif ( 'widget' === $type ) {
 				$type_count = ' ' . ++$widget;
+				$debug_type = 'Debug: ';
+			} elseif ( 'editor_block' === $type ) {
+				$type_count = ' ' . ++$editor_block;
 				$debug_type = 'Debug: ';
 			}
 
@@ -481,10 +497,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 			$order = array(
 				'type', 'cache', 'current post id', 'terms found for current post',
-				'taxonomies used for query', 'cached taxonomies',
-				'terms used for query', 'cached terms',
+				'taxonomies used in query', 'cached taxonomies',
+				'terms used in query', 'cached terms',
 				'related post ids found', 'cached post ids',
-				'widget arguments', 'shortcode args', 'function args',
+				'arguments', 'query arguments',
 				'related posts query',
 				'requested template', 'widget'
 			);
@@ -519,17 +535,14 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 					$_order = $order;
 
-					if ( 'widget' === $debug_arr['type'] ) {
-						unset( $_order['shortcode args'] );
-					}
-
-					if ( 'shortcode' === $debug_arr['type'] ) {
-						unset( $_order['widget arguments'], $_order['widget'] );
+					if ( 'widget' !== $debug_arr['type'] ) {
+						unset( $_order['widget'] );
 					}
 
 					// reorder debug array.
 					$debug_arr = array_merge( $_order, $debug_arr );
 
+					$type = $debug_arr['type'];
 					unset( $debug_arr['type'] );
 
 					if ( $this->cache ) {
@@ -538,8 +551,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 							unset( $debug_arr['cached terms'] );
 							unset( $debug_arr['cached post ids'] );
 						} else {
-							unset( $debug_arr['taxonomies used for query'] );
-							unset( $debug_arr['terms used for query'] );
+							unset( $debug_arr['taxonomies used in query'] );
+							unset( $debug_arr['terms used in query'] );
 							unset( $debug_arr['related post ids found'] );
 							unset( $debug_arr['related posts query'] );
 						}
@@ -552,8 +565,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 
 					foreach ( $debug_arr as $key => $value ) {
 						$title = $key;
-						if ( 'function args' === $title ) {
-							$title = 'Related posts query arguments';
+
+						if ( 'arguments' === $title ) {
+							$title = str_replace( '_', ' ' , $type ) . ' arguments';
 						}
 
 						echo $title . ":\n\n";

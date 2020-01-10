@@ -30,7 +30,7 @@ function km_kpbt_get_default_gallery_args( $post_id = 0 ) {
 		'gallery_class'  => 'gallery',
 		'gallery_format' => '', // empty string or 'editor_block'
 		'post_class'     => '',
-		'cropped'        => true,
+		'image_crop'     => false,
 		'type'           => '',
 	);
 }
@@ -319,10 +319,6 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$html = '';
 	$args = km_rpbt_validate_gallery_args( $args );
 
-	// Use wp_make_content_images_responsive() below to make images responsive.
-	// See https://github.com/WordPress/gutenberg/issues/1450
-	$args['size'] = 'large';
-
 	// Default to 1 if columns is 0. (zero is allowed for the normal gallery)
 	$args['columns'] = ( 0 === $args['columns'] ) ? 1 : $args['columns'];
 
@@ -342,6 +338,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 
 		$image = km_rpbt_get_gallery_image_link( $attachment_id, $related, $args );
 		if ( ! $image ) {
+
 			continue;
 		}
 
@@ -363,7 +360,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$gallery_class = $gallery_class ? $gallery_class . ' ' : '';
 
 	$class = "{$gallery_class}rpbt-related-block-gallery columns-{$args['columns']}";
-	$class .= $args['cropped'] ? ' is-cropped' : '';
+	$class .= $args['image_crop'] ? ' is-cropped' : '';
 
 	$label = __( 'Gallery images', 'related-posts-by-taxonomy' );
 	$atts  = 'class="' . $class  . '" role="group" aria-label="' . $label . '"';
@@ -517,7 +514,7 @@ function km_rpbt_get_editor_block_image( $attachment_id, $args = array() ) {
 	$args     = array_merge( $defaults, $args );
 	$html     = '';
 
-	$image = wp_get_attachment_image_src( $attachment_id, 'large' );
+	$image = wp_get_attachment_image_src( $attachment_id, $args['size'] );
 	if ( isset( $image[0] ) && $image[0] ) {
 		$alt = trim( strip_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) );
 

@@ -15,12 +15,7 @@ const _defaults = {
 	order: { type: 'object' },
 	image_sizes: { type: 'object' },
 	default_tax: { type: 'string' },
-	all_tax: { type: 'string' },
 	default_category: { type: 'string' },
-	preview: {
-		type: 'bool',
-		default: true, /* default required for booleans */
-	},
 	html5_gallery: {
 		type: 'bool',
 		default: false,

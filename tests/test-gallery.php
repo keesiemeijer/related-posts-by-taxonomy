@@ -89,6 +89,7 @@ EOF;
 		$gallery_args['args']['gallery_format'] = 'editor_block';
 		$gallery_args['args']['post_class']     = 'my-class';
 		extract( $gallery_args );
+		$args['image_crop'] = true;
 
 		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 

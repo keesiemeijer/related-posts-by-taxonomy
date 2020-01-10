@@ -205,6 +205,27 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	}
 
 	/**
+	 * Sanitizes response HTML.
+	 *
+	 * @since 2.7.3
+	 *
+	 * @param string $html HTML to sanitize.
+	 * @return string Sanitized HTML.
+	 */
+	public function sanitize_response_html( $html ) {
+		$tags = wp_kses_allowed_html( 'post' );
+
+		// For show date
+		$tags['time'] = array(
+			'datetime' => true,
+			'class' => true,
+		);
+
+		$html = wp_kses( $html, $tags );
+		return $html ? $html : '';
+	}
+
+	/**
 	 * Prepare the item for the REST response
 	 *
 	 * @since 2.3.0
@@ -230,7 +251,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 			if ( $related_posts && ( empty( $fields ) || ( 'ids' === $fields ) ) ) {
 				// Render posts if the query was for post objects or post IDs.
 				$rendered = km_rpbt_get_related_posts_html( $related_posts, $args );
-				$rendered = wp_kses_post( $rendered );
+				$rendered = $this->sanitize_response_html( $rendered );
 			}
 
 			/* Default to all taxonomies if none were provided. */

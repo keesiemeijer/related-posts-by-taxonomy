@@ -63,11 +63,9 @@ function km_rpbt_block_editor_assets() {
 		$asset_file['dependencies']
 	);
 
-	// Styles.
 	wp_enqueue_style(
 		'rpbt-related-posts-block-css', // Handle.
-		RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . 'includes/assets/css/editor.css',
-		array( 'wp-edit-blocks' )
+		RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . 'includes/assets/css/styles.css'
 	);
 
 	$order = array(
@@ -81,11 +79,9 @@ function km_rpbt_block_editor_assets() {
 			'post_types'       => $plugin->post_types,
 			'taxonomies'       => $plugin->taxonomies,
 			'default_tax'      => $plugin->default_tax,
-			'all_tax'          => 'km_rpbt_all_tax',
 			'formats'          => $plugin->formats,
 			'image_sizes'      => $plugin->image_sizes,
 			'order'            => $order,
-			'preview'          => (bool) $plugin->plugin_supports( 'editor_block_preview' ),
 			'html5_gallery'    => (bool) current_theme_supports( 'html5', 'gallery' ),
 			'default_category' => absint( get_option( 'default_category' ) ),
 		)
@@ -108,6 +104,10 @@ function km_rpbt_register_block_type() {
 					'type'    => 'boolean',
 					'default' => true,
 				),
+				'image_crop' => array(
+					'type'    => 'boolean',
+					'default' => false,
+				),
 				'gallery_format' => array(
 					'type'    => 'string',
 					'default' => 'editor_block',
@@ -119,7 +119,7 @@ function km_rpbt_register_block_type() {
 				'post_types' => array(
 					'type' => 'string',
 				),
-				'terms' => array(
+				'include_terms' => array(
 					'type' => 'string',
 				),
 				'title' => array(

@@ -36,7 +36,7 @@ export default function PostsPanel({
 		onPostsPerPageChange && (
 			<RangeControl
 				key="rpbt-range-posts-per-page"
-				label={ __( 'Number of items' ) }
+				label={ __( 'Number of items' , 'related-posts-by-taxonomy') }
 				value={ postsPerPage }
 				onChange={ onPostsPerPageChange }
 				min={ -1 }
@@ -45,21 +45,21 @@ export default function PostsPanel({
 		onTaxonomiesChange && (
 			<SelectControl
 				key="rpbt-select-taxonomies"
-				label={ __( 'Taxonomies' ) }
+				label={ __( 'Taxonomies' , 'related-posts-by-taxonomy') }
 				value={ `${ taxonomies }` }
 				options={ taxonomyOptions }
 				onChange={ ( value ) => { onTaxonomiesChange( value ); } }
 			/>),
 		onPostTypesChange && (
 			<PostTypeControl
-				label={ __( 'Post Types' ) }
+				label={ __( 'Post Types' , 'related-posts-by-taxonomy') }
 				onChange={ onPostTypesChange }
 				postTypes={ postTypes }
 			/>),
 		onOrderChange && (
 			<SelectControl
 				key="rpbt-select-order"
-				label={ __( 'Order posts' ) }
+				label={ __( 'Order posts' , 'related-posts-by-taxonomy') }
 				value={ `${ order }` }
 				options={  orderOptions }
 				onChange={ ( value ) => { onOrderChange( value ); } }
@@ -67,14 +67,14 @@ export default function PostsPanel({
 		onFormatChange && (
 			<SelectControl
 				key="rpbt-select-format"
-				label={ __( 'Format' ) }
+				label={ __( 'Format' , 'related-posts-by-taxonomy') }
 				value={ `${ format }` }
 				options={  formatOptions }
 				onChange={ ( value ) => { onFormatChange( value ); } }
 			/>),
 		onShowDateChange && (
 			<ToggleControl
-				label={ __( 'Display post date' ) }
+				label={ __( 'Display post date' , 'related-posts-by-taxonomy') }
 				checked={ showDate }
 				onChange={ onShowDateChange }
 			/>
@@ -84,7 +84,7 @@ export default function PostsPanel({
 
 function getTaxonomyOptions() {
 	const options = [{
-		label: __('all taxonomies'),
+		label: __('all taxonomies', 'related-posts-by-taxonomy'),
 		value: 'km_rpbt_all_tax',
 	}, ];
 
