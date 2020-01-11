@@ -14,15 +14,11 @@ const _defaults = {
 	formats: { type: 'object' },
 	order: { type: 'object' },
 	image_sizes: { type: 'object' },
-	default_tax: { type: 'string' },
-	default_category: { type: 'string' },
-	html5_gallery: {
+	default_category_id: { type: 'string' },
+	message: { type: 'string' },
+	hide_empty: {
 		type: 'bool',
-		default: false,
-	},
-	show_date: {
-		type: 'bool',
-		default: false,
+		default: true,
 	}
 }
 

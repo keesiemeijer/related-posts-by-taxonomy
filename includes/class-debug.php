@@ -85,6 +85,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			// Show widget and shortcode even if no posts were found.
 			add_filter( 'related_posts_by_taxonomy_widget_hide_empty',    array( $this, 'hide_empty' ), 99 );
 			add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'hide_empty' ), 99 );
+			add_filter( 'related_posts_by_taxonomy_editor_block_hide_empty', array( $this, 'hide_empty' ), 99 );
 
 			// Get current post terms, taxonomies and post ID.
 			add_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'pre_related_posts' ), 99, 2 );

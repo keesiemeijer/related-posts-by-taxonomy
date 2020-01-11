@@ -74,24 +74,24 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	 * When `related` is a boolean true the old restrictions for
 	 * the `terms` and `include_terms` arguments are still in place.
 	 */
-	$back_compat   = is_bool( $args['related'] );
+	$strict        = is_bool( $args['related'] );
 	$include_terms = ( $args['include_terms'] || $args['terms'] );
 
-	if ( $back_compat && $args['related'] && empty( $taxonomies ) ) {
+	if ( $strict && $args['related'] && empty( $taxonomies ) ) {
 		// Back compat: Taxonomies are needed for related terms.
 		return array();
 	}
 
-	if ( $back_compat && $include_terms && ! $args['related'] ) {
+	if ( $strict && $include_terms && ! $args['related'] ) {
 
 		// Back compat: Use included terms.
 		$terms = $args['terms'] ? $args['terms'] : $args['include_terms'];
-	} elseif ( $back_compat && $args['terms'] ) {
+	} elseif ( $strict && $args['terms'] ) {
 
 		// Back compat: Use only terms in taxonomies.
 		$terms = km_rpbt_get_term_objects(  $args['terms'], $taxonomies );
 		$terms = ! empty( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
-	} elseif ( ! $back_compat && $include_terms ) {
+	} elseif ( ! $strict && $include_terms ) {
 
 		// Use included terms.
 		$terms = array_merge( $args['terms'], $args['include_terms'] );
@@ -106,7 +106,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 		$terms = wp_get_object_terms( $post_id, $taxonomies, array( 'fields' => 'ids', ) );
 		$terms = ! is_wp_error( $terms ) ? $terms : array();
 
-		if ( $back_compat && $args['related'] && $args['include_terms'] ) {
+		if ( $strict && $args['related'] && $args['include_terms'] ) {
 			// Back compat: Use only terms also in the post terms.
 			$terms = array_intersect( $args['include_terms'], $terms );
 		}

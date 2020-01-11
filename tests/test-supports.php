@@ -8,17 +8,18 @@ class KM_RPBT_Plugin_Supports_Tests extends KM_RPBT_UnitTestCase {
 
 	function test_default_supports() {
 		$expected = array(
-			'widget'               => true,
-			'shortcode'            => true,
-			'shortcode_hide_empty' => true,
-			'widget_hide_empty'    => true,
-			'editor_block'         => true,
-			'cache'                => false,
-			'display_cache_log'    => false,
-			'wp_rest_api'          => false,
-			'debug'                => false,
-			'lazy_loading'         => false,
-			'id_query'             => false,
+			'widget'                  => true,
+			'shortcode'               => true,
+			'editor_block'            => true,
+			'widget_hide_empty'       => true,
+			'shortcode_hide_empty'    => true,
+			'editor_block_hide_empty' => true,
+			'cache'                   => false,
+			'display_cache_log'       => false,
+			'wp_rest_api'             => false,
+			'debug'                   => false,
+			'lazy_loading'            => false,
+			'id_query'                => false,
 		);
 
 		$this->assertEquals( $expected, km_rpbt_get_plugin_supports() );
@@ -59,6 +60,10 @@ class KM_RPBT_Plugin_Supports_Tests extends KM_RPBT_UnitTestCase {
 
 	function test_widget_hide_empty_support() {
 		$this->assertTrue( km_rpbt_plugin_supports( 'widget_hide_empty' ) );
+	}
+
+	function test_editor_block_hide_empty_support() {
+		$this->assertTrue( km_rpbt_plugin_supports( 'editor_block_hide_empty' ) );
 	}
 
 	function test_lazy_loading_support() {

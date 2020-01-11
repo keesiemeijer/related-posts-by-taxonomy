@@ -76,14 +76,14 @@ function km_rpbt_block_editor_assets() {
 
 	wp_localize_script( 'rpbt-related-posts-block', 'km_rpbt_plugin_data',
 		array(
-			'post_types'       => $plugin->post_types,
-			'taxonomies'       => $plugin->taxonomies,
-			'default_tax'      => $plugin->default_tax,
-			'formats'          => $plugin->formats,
-			'image_sizes'      => $plugin->image_sizes,
-			'order'            => $order,
-			'html5_gallery'    => (bool) current_theme_supports( 'html5', 'gallery' ),
-			'default_category' => absint( get_option( 'default_category' ) ),
+			'post_types'          => $plugin->post_types,
+			'taxonomies'          => $plugin->taxonomies,
+			'formats'             => $plugin->formats,
+			'image_sizes'         => $plugin->image_sizes,
+			'order'               => $order,
+			'hide_empty'          => (bool) km_rpbt_plugin_supports( 'editor_block_hide_empty' ),
+			'message'             => km_rpbt_get_no_posts_found_notice(array()),
+			'default_category_id' => absint( get_option( 'default_category' ) ),
 		)
 	);
 }
@@ -100,55 +100,60 @@ function km_rpbt_register_block_type() {
 
 	register_block_type( 'related-posts-by-taxonomy/related-posts-block', array(
 			'attributes' => array(
+				'fields' => array(
+					'type'    => 'string',
+					'default' => km_rpbt_plugin_supports( 'id_query' ) ? 'ids' : '',
+				),
+				'post_types' => array(
+					'type' => 'string',
+				),
+				'taxonomies' => array(
+					'type'    => 'string',
+					'default' => 'km_rpbt_all_tax',
+				),
+				'format' => array(
+					'type'    => 'string',
+					'default' => 'links',
+				),
+				'title' => array(
+					'type'    => 'string',
+					'default' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
+				),
+				'order' => array(
+					'type'    => 'string',
+					'default' => 'DESC',
+				),
+				'image_size' => array(
+					'type'    => 'string',
+					'default' => 'thumbnail',
+				),
+				'gallery_format' => array(
+					'type'    => 'string',
+					'default' => 'editor_block',
+				),
+				'posts_per_page' => array(
+					'type'    => 'int',
+					'default' => 5,
+				),
+				'post_id' => array(
+					'type'    => 'int',
+					'default' => 0,
+				),
+				'columns' => array(
+					'type'    => 'int',
+					'default' => 3,
+				),
 				'is_editor' => array(
+					'type'    => 'boolean',
+					'default' => true,
+				),
+				'related' => array(
 					'type'    => 'boolean',
 					'default' => true,
 				),
 				'image_crop' => array(
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'gallery_format' => array(
-					'type'    => 'string',
-					'default' => 'editor_block',
-				),
-				'taxonomies' => array(
-					'type'    => 'string',
-					'default' => 'km_rpbt_all_tax',
-				),
-				'post_types' => array(
-					'type' => 'string',
-				),
-				'include_terms' => array(
-					'type' => 'string',
-				),
-				'title' => array(
-					'type'    => 'string',
-					'default' => __( 'Related Posts', 'related-posts-by-taxonomy' ),
-				),
-				'posts_per_page' => array(
-					'type'    => 'int',
-					'default' => 5,
-				),
-				'order' => array(
-					'type'    => 'string',
-					'default' => 'DESC',
-				),
-				'post_id' => array(
-					'type'    => 'int',
-					'default' => 0,
-				),
-				'format' => array(
-					'type'    => 'string',
-					'default' => 'links',
-				),
-				'image_size' => array(
-					'type'    => 'string',
-					'default' => 'thumbnail',
-				),
-				'columns' => array(
-					'type'    => 'int',
-					'default' => 3,
 				),
 				'link_caption' => array(
 					'type'    => 'boolean',
@@ -157,10 +162,6 @@ function km_rpbt_register_block_type() {
 				'show_date' => array(
 					'type'    => 'boolean',
 					'default' => false,
-				),
-				'fields' => array(
-					'type'    => 'string',
-					'default' => km_rpbt_plugin_supports( 'id_query' ) ? 'ids' : '',
 				),
 			),
 			'render_callback' => 'km_rpbt_render_block_related_post',

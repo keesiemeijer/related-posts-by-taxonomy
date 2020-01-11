@@ -2,13 +2,12 @@
  * External dependencies
  */
 import { isUndefined, debounce, filter, includes, isArray } from 'lodash';
-import classnames from 'classnames';
 
 /**
  * WordPress dependencies
  */
 import { InspectorControls } from '@wordpress/block-editor';
-import { BaseControl, PanelBody, ToggleControl, ServerSideRender, Disabled } from '@wordpress/components';
+import { Placeholder, BaseControl, PanelBody, ToggleControl, ServerSideRender, Disabled } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { withSelect } from '@wordpress/data';
@@ -30,8 +29,10 @@ export class RelatedPostsBlock extends Component {
 		super(...arguments);
 
 		// Data provided by this plugin.
-		this.html5Gallery = getPluginData('html5_gallery');
-		this.defaultCategory = getPluginData('default_category');
+		this.defaultCategoryID = getPluginData('default_category_id');
+		this.taxPostTypes = getPluginData('post_types');
+		this.hideEmpty = getPluginData('hide_empty');
+		this.message = getPluginData('message');
 
 		this.updatePostTypes = this.updatePostTypes.bind(this);
 
@@ -59,7 +60,7 @@ export class RelatedPostsBlock extends Component {
 	}
 
 	getImageCropHelp(checked) {
-		if(checked) {
+		if (checked) {
 			return __('Thumbnails are cropped to align.', 'related-posts-by-taxonomy');
 		}
 		return __('Thumbnails are not cropped.', 'related-posts-by-taxonomy');
@@ -90,7 +91,7 @@ export class RelatedPostsBlock extends Component {
 		const { attributes, setAttributes, postType, postID, termIDs, taxonomyNames } = this.props;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption, show_date, order, fields, image_crop } = attributes;
 		const titleID = 'inspector-text-control-' + this.instanceId;
-		const className = classnames(this.props.className, { 'rpbt-html5-gallery': ('thumbnails' === format) && this.html5Gallery });
+		const label = __('Related Posts by Taxonomies', 'related-posts-by-taxonomy');
 
 		if (isUndefined(termIDs) || isUndefined(taxonomyNames)) {
 			return null;
@@ -98,24 +99,30 @@ export class RelatedPostsBlock extends Component {
 
 		let restAttributes = Object.assign({}, attributes);
 		restAttributes['post_id'] = postID;
-		restAttributes['include_terms'] = termIDs.join(',');
+		restAttributes['terms'] = termIDs.join(',');
 
-		if (!restAttributes['include_terms'].length && (-1 !== taxonomyNames.indexOf('category'))) {
+		if (!restAttributes['terms'].length && (-1 !== taxonomyNames.indexOf('category'))) {
 			// Use default category if this post supports the 'category' taxonomy and no terms are selected.
-			restAttributes['include_terms'] = this.defaultCategory;
+			restAttributes['terms'] = this.defaultCategoryID;
 		}
 
 		let checkedPostTypes = post_types;
 		if (isUndefined(post_types) || !post_types) {
 			// Use the post type from the current post if not set.
 			checkedPostTypes = postType;
+
+			if (!this.taxPostTypes.hasOwnProperty(postType)) {
+				// Default to post. Current post type was not found (no taxonomies)
+				checkedPostTypes = 'post';
+			}
 		}
 
 		let notice = '';
-		if(!restAttributes['include_terms']) {
-			notice = __('No terms are assigned to this post', 'related-posts-by-taxonomy');
-			if(! taxonomyNames.length && (checkedPostTypes === postType) ) {
-				notice = __('No taxonomies are registered for the current post post type', 'related-posts-by-taxonomy');
+		if (!restAttributes['terms']) {
+			notice = __('There are no terms assigned to this post.', 'related-posts-by-taxonomy');
+			if (!taxonomyNames.length) {
+				// Posts are never related without taxonomies
+				notice = __('There are no taxonomies registered for the current post type.', 'related-posts-by-taxonomy');
 			}
 		}
 
@@ -123,11 +130,6 @@ export class RelatedPostsBlock extends Component {
 			<InspectorControls>
 				<PanelBody title={ __( 'Related Posts Settings' , 'related-posts-by-taxonomy') }>
 					<div className={this.props.className + '-inspector-controls'}>
-						<div>
-							<p>
-							{ __( 'Note: The preview style is not the actual style used in the front end of your site.' , 'related-posts-by-taxonomy') }
-							</p>
-						</div>
 						<BaseControl label={ __( 'Title'  , 'related-posts-by-taxonomy') } id={titleID}>
 							<input className="components-text-control__input"
 								type="text"
@@ -181,16 +183,18 @@ export class RelatedPostsBlock extends Component {
 
 		return (
 			<Fragment>
-				{inspectorControls}
-					<div className={className}>
+				{ inspectorControls }
+				<div className={ this.props.className }>
 					<RestRequest
 						block="related-posts-by-taxonomy/related-posts-block"
-						postID={postID}
-						notice={notice}
-						label={__('Related Posts by Taxonomies', 'related-posts-by-taxonomy')}
-						attributes={ restAttributes }
+						postID={ postID }
+						attributes={  restAttributes }
+						notice={ notice}
+						label={ label }
+						hideEmpty={ this.hideEmpty }
+						message={ this.message }
 					/>
-					</div>
+				</div>
 			</Fragment>
 		);
 	}

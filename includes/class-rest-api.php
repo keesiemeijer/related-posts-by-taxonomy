@@ -64,7 +64,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 */
 	public function get_item( $request ) {
 		$args  = $request->get_params();
-		$error = new WP_Error( 'rest_post_invalid_id', __( 'Invalid post ID.', 'related-posts-by-taxonomy' ), array( 'status' => 404 ) );
+		$error = new WP_Error( 'rest_post_invalid_id', __( 'Invalid post ID.', 'related-posts-by-taxonomy' ), array( 'status' => 400 ) );
 
 		if ( ! isset( $args['id'] ) || ! absint( $args['id'] ) ) {
 			return $error;

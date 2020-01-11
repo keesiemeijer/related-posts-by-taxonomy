@@ -77,17 +77,18 @@ function km_rpbt_get_template_fields( $args ) {
  */
 function km_rpbt_get_plugin_supports() {
 	$supports = array(
-		'widget'               => true,
-		'shortcode'            => true,
-		'shortcode_hide_empty' => true,
-		'widget_hide_empty'    => true,
-		'editor_block'         => true,
-		'cache'                => false,
-		'display_cache_log'    => false,
-		'wp_rest_api'          => false,
-		'id_query'             => false,
-		'lazy_loading'         => false,
-		'debug'                => false,
+		'widget'                  => true,
+		'shortcode'               => true,
+		'shortcode_hide_empty'    => true,
+		'widget_hide_empty'       => true,
+		'editor_block'            => true,
+		'editor_block_hide_empty' => true,
+		'cache'                   => false,
+		'display_cache_log'       => false,
+		'wp_rest_api'             => false,
+		'id_query'                => false,
+		'lazy_loading'            => false,
+		'debug'                   => false,
 	);
 
 	/**
@@ -97,9 +98,10 @@ function km_rpbt_get_plugin_supports() {
 	 *
 	 * - widget
 	 * - shortcode
-	 * - shortcode_hide_empty
-	 * - widget_hide_empty
 	 * - editor_block
+	 * - widget_hide_empty
+	 * - shortcode_hide_empty
+	 * - editor_block_hide_empty
 	 *
 	 * Opt-in features
 	 *
