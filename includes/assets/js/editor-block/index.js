@@ -1317,11 +1317,12 @@ function (_Component) {
     value: function render() {
       var _this$props = this.props,
           attributes = _this$props.attributes,
-          setAttributes = _this$props.setAttributes,
-          postType = _this$props.postType,
-          postID = _this$props.postID,
-          termIDs = _this$props.termIDs,
-          taxonomyNames = _this$props.taxonomyNames;
+          setAttributes = _this$props.setAttributes;
+      var _this$props$rpbtProps = this.props.rpbtProps,
+          postType = _this$props$rpbtProps.postType,
+          postID = _this$props$rpbtProps.postID,
+          termIDs = _this$props$rpbtProps.termIDs,
+          taxonomyNames = _this$props$rpbtProps.taxonomyNames;
       var title = attributes.title,
           taxonomies = attributes.taxonomies,
           post_types = attributes.post_types,
@@ -1461,20 +1462,27 @@ function (_Component) {
 }(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["Component"]);
 /* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_14__["compose"])(Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_13__["withSelect"])(function (select, props) {
   return {
-    postID: select('core/editor').getCurrentPostId(),
-    postType: select('core/editor').getCurrentPostType(),
-    registeredTaxonomies: select('core').getTaxonomies()
+    rpbtProps: {
+      postID: select('core/editor').getCurrentPostId(),
+      postType: select('core/editor').getCurrentPostType(),
+      registeredTaxonomies: select('core').getTaxonomies()
+    }
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_13__["withSelect"])(function (select, props) {
-  if (!props.registeredTaxonomies || !props.postType || !props.postID) {
+  var _props$rpbtProps = props.rpbtProps,
+      postID = _props$rpbtProps.postID,
+      postType = _props$rpbtProps.postType,
+      registeredTaxonomies = _props$rpbtProps.registeredTaxonomies;
+
+  if (!registeredTaxonomies || !postType || !postID) {
     return null;
   }
 
   var termIDs = [];
   var taxonomyNames = [];
-  var taxonomies = props.registeredTaxonomies;
+  var taxonomies = registeredTaxonomies;
   var postTaxonomies = Object(lodash__WEBPACK_IMPORTED_MODULE_9__["filter"])(taxonomies, function (taxonomy) {
-    return Object(lodash__WEBPACK_IMPORTED_MODULE_9__["includes"])(taxonomy.types, props.postType);
+    return Object(lodash__WEBPACK_IMPORTED_MODULE_9__["includes"])(taxonomy.types, postType);
   });
   postTaxonomies.map(function (taxonomy) {
     taxonomyNames.push(taxonomy.slug);
@@ -1485,8 +1493,13 @@ function (_Component) {
     }
   });
   return {
-    taxonomyNames: taxonomyNames,
-    termIDs: termIDs
+    rpbtProps: {
+      postID: postID,
+      postType: postType,
+      registeredTaxonomies: registeredTaxonomies,
+      termIDs: termIDs,
+      taxonomyNames: taxonomyNames
+    }
   };
 }))(RelatedPostsBlock));
 

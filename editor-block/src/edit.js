@@ -88,7 +88,8 @@ export class RelatedPostsBlock extends Component {
 	}
 
 	render() {
-		const { attributes, setAttributes, postType, postID, termIDs, taxonomyNames } = this.props;
+		const { attributes, setAttributes } = this.props;
+		const { postType, postID, termIDs, taxonomyNames } = this.props.rpbtProps;
 		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption, show_date, order, fields, image_crop } = attributes;
 		const titleID = 'inspector-text-control-' + this.instanceId;
 		const label = __('Related Posts by Taxonomies', 'related-posts-by-taxonomy');
@@ -203,22 +204,25 @@ export class RelatedPostsBlock extends Component {
 export default compose(
 	withSelect((select, props) => {
 		return {
-			postID: select('core/editor').getCurrentPostId(),
-			postType: select('core/editor').getCurrentPostType(),
-			registeredTaxonomies: select('core').getTaxonomies(),
+			rpbtProps: {
+				postID: select('core/editor').getCurrentPostId(),
+				postType: select('core/editor').getCurrentPostType(),
+				registeredTaxonomies: select('core').getTaxonomies(),
+			}
 		};
 	}),
 
 	withSelect((select, props) => {
-		if (!props.registeredTaxonomies || !props.postType || !props.postID) {
+		const { postID, postType, registeredTaxonomies } = props.rpbtProps;
+		if (!registeredTaxonomies || !postType || !postID) {
 			return null;
 		}
 
 		const termIDs = [];
 		const taxonomyNames = [];
 
-		const taxonomies = props.registeredTaxonomies;
-		const postTaxonomies = filter(taxonomies, (taxonomy) => includes(taxonomy.types, props.postType));
+		const taxonomies = registeredTaxonomies;
+		const postTaxonomies = filter(taxonomies, (taxonomy) => includes(taxonomy.types, postType));
 
 		postTaxonomies.map((taxonomy) => {
 			taxonomyNames.push(taxonomy.slug);
@@ -230,8 +234,13 @@ export default compose(
 		});
 
 		return {
-			taxonomyNames: taxonomyNames,
-			termIDs: termIDs,
+			rpbtProps: {
+				postID: postID,
+				postType: postType,
+				registeredTaxonomies: registeredTaxonomies,
+				termIDs: termIDs,
+				taxonomyNames: taxonomyNames
+			}
 		};
 	})
 )(RelatedPostsBlock)
