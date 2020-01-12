@@ -235,9 +235,7 @@ export default compose(
 
 		return {
 			rpbtProps: {
-				postID: postID,
-				postType: postType,
-				registeredTaxonomies: registeredTaxonomies,
+				...props.rpbtProps,
 				termIDs: termIDs,
 				taxonomyNames: taxonomyNames
 			}
