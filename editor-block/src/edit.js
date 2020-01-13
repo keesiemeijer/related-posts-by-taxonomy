@@ -32,7 +32,7 @@ export class RelatedPostsBlock extends Component {
 		this.defaultCategoryID = getPluginData('default_category_id');
 		this.taxPostTypes = getPluginData('post_types');
 		this.hideEmpty = getPluginData('hide_empty');
-		this.message = getPluginData('message');
+		this.hideEmptyNotice = getPluginData('hide_empty_notice');
 
 		this.updatePostTypes = this.updatePostTypes.bind(this);
 
@@ -90,7 +90,7 @@ export class RelatedPostsBlock extends Component {
 	render() {
 		const { attributes, setAttributes } = this.props;
 		const { postType, postID, termIDs, taxonomyNames } = this.props.rpbtProps;
-		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption, show_date, order, fields, image_crop } = attributes;
+		const { title, taxonomies, post_types, posts_per_page, format, image_size, columns, link_caption, show_date, order, image_crop } = attributes;
 		const titleID = 'inspector-text-control-' + this.instanceId;
 		const label = __('Related Posts by Taxonomies', 'related-posts-by-taxonomy');
 
@@ -99,7 +99,6 @@ export class RelatedPostsBlock extends Component {
 		}
 
 		let restAttributes = Object.assign({}, attributes);
-		restAttributes['post_id'] = postID;
 		restAttributes['terms'] = termIDs.join(',');
 
 		if (!restAttributes['terms'].length && (-1 !== taxonomyNames.indexOf('category'))) {
@@ -113,17 +112,17 @@ export class RelatedPostsBlock extends Component {
 			checkedPostTypes = postType;
 
 			if (!this.taxPostTypes.hasOwnProperty(postType)) {
-				// Default to post. Current post type was not found (no taxonomies)
+				// Default to post. Current post type has no taxonomies registered.
 				checkedPostTypes = 'post';
 			}
 		}
 
-		let notice = '';
+		let help = '';
 		if (!restAttributes['terms']) {
-			notice = __('There are no terms assigned to this post.', 'related-posts-by-taxonomy');
+			help = __('There are no terms assigned to this post.', 'related-posts-by-taxonomy');
 			if (!taxonomyNames.length) {
-				// Posts are never related without taxonomies
-				notice = __('There are no taxonomies registered for the current post type.', 'related-posts-by-taxonomy');
+				// Posts can't be related without taxonomies
+				help = __('There are no taxonomies registered for the current post type.', 'related-posts-by-taxonomy');
 			}
 		}
 
@@ -188,12 +187,12 @@ export class RelatedPostsBlock extends Component {
 				<div className={ this.props.className }>
 					<RestRequest
 						block="related-posts-by-taxonomy/related-posts-block"
+						label={ label }
 						postID={ postID }
 						attributes={  restAttributes }
-						notice={ notice}
-						label={ label }
+						help={ help }
 						hideEmpty={ this.hideEmpty }
-						message={ this.message }
+						hideEmptyNotice={ this.hideEmptyNotice }
 					/>
 				</div>
 			</Fragment>

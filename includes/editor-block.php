@@ -82,7 +82,7 @@ function km_rpbt_block_editor_assets() {
 			'image_sizes'         => $plugin->image_sizes,
 			'order'               => $order,
 			'hide_empty'          => (bool) km_rpbt_plugin_supports( 'editor_block_hide_empty' ),
-			'message'             => km_rpbt_get_no_posts_found_notice(array()),
+			'hide_empty_notice'   => km_rpbt_get_no_posts_found_notice(array()),
 			'default_category_id' => absint( get_option( 'default_category' ) ),
 		)
 	);
@@ -127,27 +127,15 @@ function km_rpbt_register_block_type() {
 					'type'    => 'string',
 					'default' => 'thumbnail',
 				),
-				'gallery_format' => array(
-					'type'    => 'string',
-					'default' => 'editor_block',
-				),
 				'posts_per_page' => array(
 					'type'    => 'int',
 					'default' => 5,
-				),
-				'post_id' => array(
-					'type'    => 'int',
-					'default' => 0,
 				),
 				'columns' => array(
 					'type'    => 'int',
 					'default' => 3,
 				),
 				'is_editor' => array(
-					'type'    => 'boolean',
-					'default' => true,
-				),
-				'related' => array(
 					'type'    => 'boolean',
 					'default' => true,
 				),

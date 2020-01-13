@@ -121,19 +121,19 @@ export class RestRequest extends Component {
 }
 
 RestRequest.defaultProps = {
-	EmptyResponsePlaceholder: ({ notice, label, hideEmpty, message }) => {
+	EmptyResponsePlaceholder: ({ label, help, hideEmpty, hideEmptyNotice }) => {
 		let displayMessage = __('This block will not be displayed.', 'related-posts-by-taxonomy');
 		let noticeMessage = ' ' + __('There are no related posts found with the current block settings.', 'related-posts-by-taxonomy');
 
-		if (!hideEmpty && message.length) {
+		if (!hideEmpty && hideEmptyNotice.length) {
 			// No posts found message
-			displayMessage = sprintf(__('This block will be displayed with the message: "%s".', 'related-posts-by-taxonomy'), message);
+			displayMessage = sprintf(__('This block will be displayed with the message: "%s".', 'related-posts-by-taxonomy'), hideEmptyNotice);
 			noticeMessage = ' ' + __('Try using different block settings.', 'related-posts-by-taxonomy');
 		}
 
-		if (notice.length) {
+		if (help.length) {
 			// No terms or taxonomies
-			noticeMessage = ' ' + notice;
+			noticeMessage = ' ' + help;
 		}
 		return (
 			<Placeholder label={label}>

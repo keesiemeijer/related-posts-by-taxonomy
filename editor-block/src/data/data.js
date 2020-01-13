@@ -15,7 +15,7 @@ const _defaults = {
 	order: { type: 'object' },
 	image_sizes: { type: 'object' },
 	default_category_id: { type: 'string' },
-	message: { type: 'string' },
+	hide_empty_notice: { type: 'string' },
 	hide_empty: {
 		type: 'bool',
 		default: true,
