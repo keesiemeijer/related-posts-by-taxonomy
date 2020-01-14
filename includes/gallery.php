@@ -250,7 +250,6 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 
 		$label = " role='{$role}' aria-label='{$label}'";
 
-
 		$image_link = km_rpbt_get_gallery_image_link( $attachment_id, $related, $args, $describedby );
 		if ( ! $image_link ) {
 			continue;
@@ -338,7 +337,6 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 
 		$image = km_rpbt_get_gallery_image_link( $attachment_id, $related, $args );
 		if ( ! $image ) {
-
 			continue;
 		}
 
@@ -515,14 +513,25 @@ function km_rpbt_get_editor_block_image( $attachment_id, $args = array() ) {
 	$html     = '';
 
 	$image = wp_get_attachment_image_src( $attachment_id, $args['size'] );
-	if ( isset( $image[0] ) && $image[0] ) {
-		$alt = trim( strip_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) );
-
-		$html .= '<img src="' . esc_attr( $image[0] ) . '"';
-		$html .= $alt ? ' alt="' . esc_attr( $alt ) . '"' : '';
-		$html .= ' data-id="' . $attachment_id . '"';
-		$html .= ' class="wp-image-' . $attachment_id . '" />';
+	if ( ! ( isset( $image[0] ) && $image[0] ) ) {
+		return '';
 	}
+
+	$image_full = $image;
+	if ( 'full' !== $args['size'] ) {
+		$image_full = wp_get_attachment_image_src( $attachment_id, 'full' );
+	}
+
+	$image_full = isset( $image_full[0] ) && $image_full[0] ? $image_full[0] : '';
+	$image_link = get_attachment_link( $attachment_id );
+	$alt        = trim( strip_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) );
+
+	$html .= '<img src="' . esc_attr( $image[0] ) . '"';
+	$html .= $alt ? ' alt="' . esc_attr( $alt ) . '"' : '';
+	$html .= ' data-id="' . esc_attr( $attachment_id ) . '"';
+	$html .= $image_full ? ' data-full-url="' . esc_attr( $image_full ) . '"' : '';
+	$html .= $image_link ? ' data-link="' . esc_attr( $image_link ) . '"' : '';
+	$html .= ' class="wp-image-' . esc_attr( $attachment_id ) . '" />';
 
 	return $html;
 }
