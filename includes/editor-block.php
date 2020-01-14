@@ -135,10 +135,6 @@ function km_rpbt_register_block_type() {
 					'type'    => 'int',
 					'default' => 3,
 				),
-				'is_editor' => array(
-					'type'    => 'boolean',
-					'default' => true,
-				),
 				'image_crop' => array(
 					'type'    => 'boolean',
 					'default' => false,
