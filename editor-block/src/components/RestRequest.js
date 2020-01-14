@@ -16,7 +16,7 @@ export function rendererPath(postID, attributes = null, urlQueryArgs = {}) {
 	let queryArgs = (null !== attributes) ? attributes : {};
 
 	// Defaults
-	queryArgs.is_editor = true;
+	queryArgs.editor_block_request = true;
 	queryArgs.related = true;
 	queryArgs.gallery_format = 'editor_block';
 
