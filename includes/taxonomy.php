@@ -82,7 +82,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 		return array();
 	}
 
-	if ( $back_compat && $include_terms && ! $args['related'] ) {
+	if ( $back_compat && ! $args['related'] && $include_terms ) {
 
 		// Back compat: Use included terms.
 		$terms = $args['terms'] ? $args['terms'] : $args['include_terms'];
