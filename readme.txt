@@ -115,7 +115,7 @@ Yes. Review [this section](https://keesiemeijer.wordpress.com/related-posts-by-t
 Review [Adding Related Posts After the Post Content](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#after-content).
 
 = Can I include or exclude posts or terms with the widget or shortcode =
-Yes. For the widget see [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) and for the shortcode see the attributes [terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#terms), [include_terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#include-terms), [exclude-terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-terms) and [exclude_posts](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-posts).
+Yes. For the widget see [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) and for the shortcode see the attributes [include_terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#include-terms), [exclude-terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-terms) and [exclude_posts](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-posts).
 
 = Can I set my own defaults for the shortcode? =
 Yes. Review [Setting your own defaults for the shortcode](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/recipes/#shortcode_defaults) 
