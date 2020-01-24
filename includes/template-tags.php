@@ -115,7 +115,7 @@ function km_rpbt_post_link( $post = null, $args = array() ) {
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
  * @param array            $args Optional. Widget or shortcode arguments.
- *                               See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                               See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                               information on accepted arguments.
  * @return string Related post link HTML.
  */
@@ -174,7 +174,7 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
  * @since 2.7.3
  *
  * @param array $args Optional. Widget or shortcode arguments.
- *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                    information on accepted arguments.
  */
 function km_rpbt_no_posts_found_notice( $args = array() ) {
@@ -187,7 +187,7 @@ function km_rpbt_no_posts_found_notice( $args = array() ) {
  * @since 2.7.3
  *
  * @param array $args Optional. Widget or shortcode arguments.
- *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                    information on accepted arguments.
  */
 function km_rpbt_get_no_posts_found_notice( $args = array() ) {
@@ -200,8 +200,8 @@ function km_rpbt_get_no_posts_found_notice( $args = array() ) {
 	 *
 	 * @param string $notice No posts found notice. Default "No related posts found".
 	 * @param array  $args   Optional. Widget or shortcode arguments.
-	 *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
-	 *                    information on accepted arguments.
+	 *                       See km_rpbt_related_posts_by_taxonomy_shortcode() for more
+	 *                       information on accepted arguments.
 	 */
 	return apply_filters( 'related_posts_by_taxonomy_no_posts_found_notice', $notice, $args );
 }
@@ -215,7 +215,7 @@ function km_rpbt_get_no_posts_found_notice( $args = array() ) {
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
  * @param array            $args Widget or shortcode arguments.
- *                               See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                               See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                               information on accepted arguments.
  * @return string permalink.
  */

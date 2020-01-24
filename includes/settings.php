@@ -214,7 +214,7 @@ function km_rpbt_get_default_settings( $type = '' ) {
  *
  * @since 2.1
  * @param array $args Arguments to be sanitized.
- *                    See km_rpbt_get_related_posts() for for more
+ *                    See km_rpbt_get_related_posts() for more
  *                    information on accepted arguments.
  * @return array Array with sanitized arguments.
  */

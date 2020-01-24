@@ -160,7 +160,7 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
  * @since 2.6.0
  *
  * @param string $feature Type of feature.
- * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                                    information on accepted arguments.
  * @return string feature html or empty string.
  */
@@ -210,7 +210,7 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
  * @since 2.6.0
  *
  * @param array $related_posts Array with related post objects.
- * @param array $args          See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ * @param array $args          See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                             information on accepted arguments.
  * @return string Related posts HTML
  */

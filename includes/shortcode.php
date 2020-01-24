@@ -119,7 +119,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
  *
  * @since 2.1
  * @param array $atts Array with shortcode arguments.
- *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                    information on accepted arguments.
  * @return array Array with validated shortcode arguments.
  */

@@ -33,7 +33,7 @@ function km_rpbt_get_shortcode_atts() {
  * @since 2.1
  * @param array $related_posts Array with related post objects.
  * @param array $rpbt_args     Shortcode arguments.
- *                             See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                             See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                             information on accepted arguments.
  * @return string Shortcode output.
  */
@@ -180,7 +180,7 @@ function km_rpbt_related_posts_by_taxonomy_widget() {
  *
  * @param array        $related_posts Array with (related) post objects.
  * @param array|string $args          Widget or shortcode arguments.
- *                                    See km_rpbt_get_related_posts() for for more
+ *                                    See km_rpbt_get_related_posts() for more
  *                                    information on accepted arguments.
  * @return array Array with related post objects with classes added.
  */

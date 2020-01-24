@@ -157,7 +157,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 *
 	 * @since 2.6.0
 	 * @param array $atts Array with WP Rest API arguments.
-	 *                    See km_rpbt_get_related_posts() for for more
+	 *                    See km_rpbt_get_related_posts() for more
 	 *                    information on accepted arguments.
 	 * @return array Array with validated WP Rest API arguments.
 	 */
@@ -232,7 +232,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param array           $args    WP Rest API arguments of the item.
-	 *                                 See km_rpbt_get_related_posts() for for more
+	 *                                 See km_rpbt_get_related_posts() for more
 	 *                                 information on accepted request arguments.
 	 * @param WP_REST_Request $request Request object.
 	 * @return mixed
@@ -375,7 +375,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param array $args Query arguments used to get the related posts.
-	 *                    See km_rpbt_get_related_posts() for for more
+	 *                    See km_rpbt_get_related_posts() for more
 	 *                    information on accepted arguments.
 	 * @return array Related Posts.
 	 */
