@@ -30,7 +30,7 @@ function km_kpbt_get_default_gallery_args( $post_id = 0 ) {
 		'gallery_class'  => 'gallery',
 		'gallery_format' => '', // empty string or 'editor_block'
 		'post_class'     => '',
-		'cropped'        => true,
+		'image_crop'     => true, // Block editor default
 		'type'           => '',
 	);
 }
@@ -87,14 +87,15 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	// Back compat with WP gallery_shortcode() and plugin filters.
 	$args['id']   = isset( $args['id'] ) ? $args['id'] : $defaults['id'];
 	$args['id']   = isset( $args['post_id'] ) ? $args['post_id'] : $args['id'];
-	$args['size'] = isset( $args['size'] ) ? $args['size'] : $defaults['size'];
-	$args['size'] = isset( $args['image_size'] ) ? $args['image_size'] : $args['size'];
 
 	$format = isset( $args['gallery_format'] ) && $args['gallery_format'];
 	if ( $format && ( 'editor_block' === $args['gallery_format'] ) ) {
 		// Default class for block editor galleries
 		$defaults['gallery_class'] = 'wp-block-gallery';
 	}
+
+	$args['size'] = isset( $args['size'] ) ? $args['size'] : $defaults['size'];
+	$args['size'] = isset( $args['image_size'] ) ? $args['image_size'] : $args['size'];
 
 	$args_raw = $args;
 
@@ -248,8 +249,7 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 			$label = __( 'Gallery image', 'related-posts-by-taxonomy' );
 		}
 
-		$label = " role='{$role}' aria-label='{$label}'";
-
+		$atts = " role='{$role}' aria-label='{$label}'";
 
 		$image_link = km_rpbt_get_gallery_image_link( $attachment_id, $related, $args, $describedby );
 		if ( ! $image_link ) {
@@ -265,7 +265,7 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 			$orientation = ( $image_meta['height'] > $image_meta['width'] ) ? ' portrait' : ' landscape';
 		}
 
-		$item_output .= "<{$args['itemtag']}{$itemclass}{$label}>";
+		$item_output .= "<{$args['itemtag']}{$itemclass}{$atts}>";
 
 		$item_output .= "
 			<{$args['icontag']} class='gallery-icon{$orientation}'>
@@ -319,10 +319,6 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$html = '';
 	$args = km_rpbt_validate_gallery_args( $args );
 
-	// Use wp_make_content_images_responsive() below to make images responsive.
-	// See https://github.com/WordPress/gutenberg/issues/1450
-	$args['size'] = 'large';
-
 	// Default to 1 if columns is 0. (zero is allowed for the normal gallery)
 	$args['columns'] = ( 0 === $args['columns'] ) ? 1 : $args['columns'];
 
@@ -363,7 +359,7 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$gallery_class = $gallery_class ? $gallery_class . ' ' : '';
 
 	$class = "{$gallery_class}rpbt-related-block-gallery columns-{$args['columns']}";
-	$class .= $args['cropped'] ? ' is-cropped' : '';
+	$class .= $args['image_crop'] ? ' is-cropped' : '';
 
 	$label = __( 'Gallery images', 'related-posts-by-taxonomy' );
 	$atts  = 'class="' . $class  . '" role="group" aria-label="' . $label . '"';
@@ -517,15 +513,26 @@ function km_rpbt_get_editor_block_image( $attachment_id, $args = array() ) {
 	$args     = array_merge( $defaults, $args );
 	$html     = '';
 
-	$image = wp_get_attachment_image_src( $attachment_id, 'large' );
-	if ( isset( $image[0] ) && $image[0] ) {
-		$alt = trim( strip_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) );
-
-		$html .= '<img src="' . esc_attr( $image[0] ) . '"';
-		$html .= $alt ? ' alt="' . esc_attr( $alt ) . '"' : '';
-		$html .= ' data-id="' . $attachment_id . '"';
-		$html .= ' class="wp-image-' . $attachment_id . '" />';
+	$image = wp_get_attachment_image_src( $attachment_id, $args['size'] );
+	if ( ! ( isset( $image[0] ) && $image[0] ) ) {
+		return '';
 	}
+
+	$image_full = $image;
+	if ( 'full' !== $args['size'] ) {
+		$image_full = wp_get_attachment_image_src( $attachment_id, 'full' );
+	}
+
+	$image_full = isset( $image_full[0] ) && $image_full[0] ? $image_full[0] : '';
+	$image_link = get_attachment_link( $attachment_id );
+	$alt        = trim( strip_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) );
+
+	$html .= '<img src="' . esc_attr( $image[0] ) . '"';
+	$html .= $alt ? ' alt="' . esc_attr( $alt ) . '"' : '';
+	$html .= ' data-id="' . esc_attr( $attachment_id ) . '"';
+	$html .= $image_full ? ' data-full-url="' . esc_attr( $image_full ) . '"' : '';
+	$html .= $image_link ? ' data-link="' . esc_attr( $image_link ) . '"' : '';
+	$html .= ' class="wp-image-' . esc_attr( $attachment_id ) . '" />';
 
 	return $html;
 }
