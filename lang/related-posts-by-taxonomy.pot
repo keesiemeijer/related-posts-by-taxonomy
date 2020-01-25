@@ -1,15 +1,15 @@
-# Copyright (C) 2019 keesiemijer
+# Copyright (C) 2020 keesiemijer
 # This file is distributed under the GPL v2.
 msgid ""
 msgstr ""
-"Project-Id-Version: Related Posts By Taxonomy 2.7.3-alpha\n"
+"Project-Id-Version: Related Posts By Taxonomy 2.7.3\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/related-posts-by-taxonomy\n"
-"POT-Creation-Date: 2019-12-23 15:36:44+00:00\n"
+"POT-Creation-Date: 2020-01-25 12:32:33+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2020-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en\n"
@@ -137,31 +137,31 @@ msgstr ""
 msgid "Invalid post ID."
 msgstr ""
 
-#: includes/class-rest-api.php:278
+#: includes/class-rest-api.php:299
 msgid "The related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:286
+#: includes/class-rest-api.php:307
 msgid "Number of related terms in common with the post."
 msgstr ""
 
-#: includes/class-rest-api.php:294
+#: includes/class-rest-api.php:315
 msgid "The Post ID to get related posts for."
 msgstr ""
 
-#: includes/class-rest-api.php:299
+#: includes/class-rest-api.php:320
 msgid "Post types used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:307
+#: includes/class-rest-api.php:328
 msgid "Taxonomies used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:315
+#: includes/class-rest-api.php:336
 msgid "Related term ids used in query for related posts."
 msgstr ""
 
-#: includes/class-rest-api.php:323
+#: includes/class-rest-api.php:344
 msgid "Rendered related posts HTML"
 msgstr ""
 
@@ -173,21 +173,25 @@ msgstr ""
 msgid "Show a list of related posts by taxonomy."
 msgstr ""
 
-#: includes/gallery.php:248 includes/gallery.php:340
+#: includes/gallery.php:249 includes/gallery.php:336
 msgid "Gallery image"
 msgstr ""
 
-#: includes/gallery.php:574
-msgid ""
-"<span class=\"rpbt-screen-reader-text\">Gallery image with caption:</span> "
-"%s"
+#: includes/gallery.php:364
+msgid "Gallery images"
 msgstr ""
 
-#: includes/settings.php:180
+#: includes/gallery.php:586
+msgid ""
+"<span class=\"rpbt-screen-reader-text\">Gallery image with caption: "
+"</span>%s"
+msgstr ""
+
+#: includes/settings.php:182
 msgid "Related Posts"
 msgstr ""
 
-#: includes/template-tags.php:181
+#: includes/template-tags.php:194
 msgid "No related posts found"
 msgstr ""
 

@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,thumbnails,taxonomy,widget,shortcode,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.3
 Tested up to: 5.3
-Stable tag: 2.7.3-alpha
+Stable tag: 2.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -144,12 +144,12 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 == Changelog ==
 = 2.7.3 =
 * Enhancement
-	* Add a function used in the templates for the no posts found message (to make it filterable).
+	* Make the no posts found message filterable.
 	* Update gallery with the HTML changes made in the WordPress 5.3 gallery.
-	* Add accessibility to the gallery figure element.
+	* Add accessibility to the gallery item element.
 * Deprecated
 	* The 'terms' and 'related' arguments are deprecated in favor of the 'include_terms' argument.
-		* The 'include_terms' argument now uses the included terms without restrictions.
+		* The 'include_terms' argument now uses the included terms without any restrictions.
 		* The default value for the 'related' argument changed from boolean true to null.
 		* Set the 'related' argument to boolean true to have the old restrictions back.
 
