@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[19],{217:function(e){e.exports={"related_posts_by_taxonomy_init-55":{html:'<hr /><section class="description"><h2>Description</h2><p>Includes all plugin files and initializes plugin.</p></section>',methods:[],related:{uses:[],used_by:[]},changelog:[{description:"Introduced.",version:"0.1"}],signature:"related_posts_by_taxonomy_init()",notice:""}}}}]);
-//# sourceMappingURL=19.803f21b0.chunk.js.map
