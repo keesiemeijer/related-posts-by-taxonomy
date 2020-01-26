@@ -33,7 +33,7 @@ function km_rpbt_get_shortcode_atts() {
  * @since 2.1
  * @param array $related_posts Array with related post objects.
  * @param array $rpbt_args     Shortcode arguments.
- *                             See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                             See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                             information on accepted arguments.
  * @return string Shortcode output.
  */
@@ -175,12 +175,12 @@ function km_rpbt_related_posts_by_taxonomy_widget() {
  * Use the {@see 'related_posts_by_taxonomy_post_class'} filter to add post classes on a
  * post per post basis
  *
- * @since  2.4.0
+ * @since 2.4.0
  * @deprecated 2.6.0
  *
  * @param array        $related_posts Array with (related) post objects.
  * @param array|string $args          Widget or shortcode arguments.
- *                                    See km_rpbt_get_related_posts() for for more
+ *                                    See km_rpbt_get_related_posts() for more
  *                                    information on accepted arguments.
  * @return array Array with related post objects with classes added.
  */

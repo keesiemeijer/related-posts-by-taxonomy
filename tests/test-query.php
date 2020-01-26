@@ -229,6 +229,47 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$queries_after = get_num_queries();
 
 		// Query for related posts and query for term objects
+		$this->assertSame( $queries_before + 1, $queries_after );
+
+		// Flip values
+		$args['terms'] =  array( $this->tax_1_terms[2], $this->tax_1_terms[0] );
+		$args['taxonomies'] = array('post_tag', 'category' );
+		$args['post_types'] = array('rel_cpt', 'post' );
+
+		// Do same query
+		$rel_post0 = km_rpbt_get_related_posts( $this->posts[0], $args );
+
+		// No extra database queries (cache is used)
+		$this->assertSame( $queries_before +1 ,  get_num_queries() );
+	}
+
+	/**
+	 * Test WP object cache.
+	 */
+	function test_query_cache_back_compat() {
+		$this->setup_posts();
+
+		register_post_type(
+			'rel_cpt', array(
+				'taxonomies' => array( 'post_tag', 'rel_ctax' ),
+			)
+		);
+		register_taxonomy( 'rel_ctax', 'rel_cpt' );
+
+		$args = array(
+			'terms'      => array( $this->tax_1_terms[0], $this->tax_1_terms[2] ),
+
+			'related'    => true,
+			'fields'     => 'ids',
+			'taxonomies' => $this->taxonomies,
+			'post_types' =>  array('post', 'rel_cpt'),
+		);
+
+		$queries_before = get_num_queries();
+		$rel_post0  = km_rpbt_get_related_posts( $this->posts[0], $args );
+		$queries_after = get_num_queries();
+
+		// Query for related posts and query for term objects
 		$this->assertSame( $queries_before + 2, $queries_after );
 
 		// Flip values
@@ -317,6 +358,26 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 			'terms'      => array( $this->tax_2_terms[3] ),
 			'fields'     => 'ids',
 			'taxonomies' => 'lulu',
+		);
+
+		$rel_post0 = km_rpbt_get_related_posts( $this->posts[0], $args );
+
+		// invalid taxonomy is not used if terms are provided
+		$this->assertNotEmpty( $rel_post0 );
+	}
+
+	/**
+	 * Test terms argument.
+	 */
+	function test_related_posts_by_terms_invalid_taxonomy_back_compat() {
+		$this->setup_posts();
+		$args = array(
+			'terms'      => array( $this->tax_2_terms[3] ),
+			'fields'     => 'ids',
+			'taxonomies' => 'lulu',
+
+			// Deprecated argument
+			'related'    => true,
 		);
 
 		$rel_post0 = km_rpbt_get_related_posts( $this->posts[0], $args );

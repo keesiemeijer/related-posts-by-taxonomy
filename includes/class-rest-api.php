@@ -94,7 +94,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 */
 	private function filter_request_args( $args, $post_id, $request ) {
 		$args['post_id'] = $post_id;
-		$defaults = km_rpbt_get_default_settings( 'wp_rest_api' );
+		$settings = km_rpbt_get_default_settings( 'wp_rest_api' );
 
 		/**
 		 * Filter default arguments.
@@ -104,8 +104,10 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 * @param array $defaults See km_rpbt_related_posts_by_taxonomy_shortcode() for
 		 *                        for more information about default arguments.
 		 */
-		$defaults = apply_filters( "related_posts_by_taxonomy_wp_rest_api_defaults", $defaults );
-		$args     = array_merge( $defaults, (array) $args );
+		$defaults = apply_filters( "related_posts_by_taxonomy_wp_rest_api_defaults", $settings );
+		$defaults = array_merge( $settings, (array) $defaults );
+
+		$args = array_merge( $defaults, (array) $args );
 
 		// Unfilterable arguments.
 		$args['type'] = 'wp_rest_api';
@@ -132,7 +134,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		/**
 		 * Filter (validated) Rest API arguments.
 		 *
-		 * @since  2.3.0
+		 * @since 2.3.0
 		 *
 		 * @param array $args Arguments.
 		 */
@@ -155,7 +157,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 *
 	 * @since 2.6.0
 	 * @param array $atts Array with WP Rest API arguments.
-	 *                    See km_rpbt_get_related_posts() for for more
+	 *                    See km_rpbt_get_related_posts() for more
 	 *                    information on accepted arguments.
 	 * @return array Array with validated WP Rest API arguments.
 	 */
@@ -170,6 +172,27 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		$args['post_types'] = km_rpbt_get_post_types( $args['post_types'] );
 
 		return $args;
+	}
+
+	/**
+	 * Sanitizes rendered response HTML.
+	 *
+	 * @since 2.7.3
+	 *
+	 * @param string $html HTML to sanitize.
+	 * @return string Sanitized HTML.
+	 */
+	public function sanitize_response_html( $html ) {
+		$tags = wp_kses_allowed_html( 'post' );
+
+		// For show date
+		$tags['time'] = array(
+			'datetime' => true,
+			'class' => true,
+		);
+
+		$html = wp_kses( $html, $tags );
+		return $html ? $html : '';
 	}
 
 	/**
@@ -209,7 +232,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param array           $args    WP Rest API arguments of the item.
-	 *                                 See km_rpbt_get_related_posts() for for more
+	 *                                 See km_rpbt_get_related_posts() for more
 	 *                                 information on accepted request arguments.
 	 * @param WP_REST_Request $request Request object.
 	 * @return mixed
@@ -226,7 +249,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 			if ( $related_posts && ( empty( $fields ) || ( 'ids' === $fields ) ) ) {
 				// Render posts if the query was for post objects or post IDs.
 				$rendered = km_rpbt_get_related_posts_html( $related_posts, $args );
-				$rendered = wp_kses_post( $rendered );
+				$rendered = $this->sanitize_response_html( $rendered );
 			}
 
 			/* Default to all taxonomies if none were provided. */
@@ -352,7 +375,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @access public
 	 *
 	 * @param array $args Query arguments used to get the related posts.
-	 *                    See km_rpbt_get_related_posts() for for more
+	 *                    See km_rpbt_get_related_posts() for more
 	 *                    information on accepted arguments.
 	 * @return array Related Posts.
 	 */

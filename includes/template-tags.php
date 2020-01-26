@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * This function is used in the related posts display templates.
  *
- * @since  2.4.0
+ * @since 2.4.0
  *
  * @param object       $post Post object.
  * @param array|string $args Widget or shortcode arguments or string with post classes.
@@ -28,7 +28,7 @@ function km_rpbt_post_class( $post = null, $args = '' ) {
  *
  * Gets the classes from the 'rpbt_post_class' property of a post object (if it exists).
  *
- * @since  2.4.0
+ * @since 2.4.0
  *
  * @param object       $post Post object.
  * @param array|string $args Widget or shortcode arguments or string with post classes.
@@ -73,7 +73,7 @@ function km_rpbt_get_post_classes( $post = null, $args = '' ) {
 /**
  * Sanitize classnames.
  *
- * @since  2.4.0
+ * @since 2.4.0
  *
  * @param string $classes String with classnames separated by spaces.
  * @return string Sanitized string with classnames.
@@ -115,7 +115,7 @@ function km_rpbt_post_link( $post = null, $args = array() ) {
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
  * @param array            $args Optional. Widget or shortcode arguments.
- *                               See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                               See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                               information on accepted arguments.
  * @return string Related post link HTML.
  */
@@ -160,12 +160,50 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 	/**
 	 * Filter related post link HTML.
 	 *
-	 * @since  2.4.0
+	 * @since 2.4.0
 	 * @param string $link Related post link HTML.
 	 * @param Object $post Post object.
 	 * @param array  $attr Link attributes.
 	 */
 	return apply_filters( 'related_posts_by_taxonomy_post_link', $link, $post, $link_attr, $args );
+}
+
+/**
+ * Message when no related posts are found.
+ *
+ * @since 2.7.3
+ *
+ * @param array $args Optional. Widget or shortcode arguments.
+ *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for more
+ *                    information on accepted arguments.
+ */
+function km_rpbt_no_posts_found_notice( $args = array() ) {
+	echo km_rpbt_get_no_posts_found_notice( $args );
+}
+
+/**
+ * Message when no related posts are found.
+ *
+ * @since 2.7.3
+ *
+ * @param array $args Optional. Widget or shortcode arguments.
+ *                    See km_rpbt_related_posts_by_taxonomy_shortcode() for more
+ *                    information on accepted arguments.
+ */
+function km_rpbt_get_no_posts_found_notice( $args = array() ) {
+	$notice = __( 'No related posts found', 'related-posts-by-taxonomy' );
+
+	/**
+	 * Filter the no related posts found message
+	 *
+	 * @since 2.7.3
+	 *
+	 * @param string $notice No posts found notice. Default "No related posts found".
+	 * @param array  $args   Optional. Widget or shortcode arguments.
+	 *                       See km_rpbt_related_posts_by_taxonomy_shortcode() for more
+	 *                       information on accepted arguments.
+	 */
+	return apply_filters( 'related_posts_by_taxonomy_no_posts_found_notice', $notice, $args );
 }
 
 /**
@@ -177,7 +215,7 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
  * @param array            $args Widget or shortcode arguments.
- *                               See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ *                               See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                               information on accepted arguments.
  * @return string permalink.
  */
@@ -192,7 +230,7 @@ function km_rpbt_get_permalink( $post = null, $args = '' ) {
 	/**
 	 * Filter the permalink used for related posts.
 	 *
-	 * @since  2.5.1
+	 * @since 2.5.1
 	 *
 	 * @param string Permalink.
 	 */

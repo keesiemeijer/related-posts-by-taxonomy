@@ -12,7 +12,7 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'use_default_gallery_style', '__return_true', 99 );
 		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
 		remove_filter( 'related_posts_by_taxonomy_gallery', array( $this, 'return_first_argument' ) );
-		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'return_query_args' ),10, 4 );
+		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'return_query_args' ), 10, 4 );
 	}
 
 	function test_gallery_class() {
@@ -37,7 +37,7 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 		extract( $gallery_args );
 
 		$args['columns'] = 0;
-		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'return_query_args' ),10, 4 );
+		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'return_query_args' ), 10, 4 );
 		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$this->assertSame( 0, $this->query_args['columns'] );
@@ -65,12 +65,12 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
-<dt class='gallery-icon '>
-<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<dt class='gallery-icon'>
+<a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-{$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -91,14 +91,16 @@ EOF;
 		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$expected = <<<EOF
-<ul class="wp-block-gallery rpbt-related-block-gallery columns-3 is-cropped">
+<figure class="wp-block-gallery rpbt-related-block-gallery columns-3 is-cropped" role="group" aria-label="Gallery images">
+<ul class="blocks-gallery-grid">
 <li class="blocks-gallery-item my-class">
-<figure>
+<figure role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
 <a href='{$permalink}'><img></a>
-<figcaption>{$related_post->post_title}</figcaption>
+<figcaption class="blocks-gallery-item__caption"><span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}</figcaption>
 </figure>
 </li>
 </ul>
+</figure>
 EOF;
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
@@ -117,12 +119,12 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
-<dt class='gallery-icon '>
-<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<dt class='gallery-icon'>
+<a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-{$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -146,12 +148,12 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
-<dt class='gallery-icon '>
-<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title} {$date}'>
+<dt class='gallery-icon'>
+<a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-{$related_post->post_title} <time class="rpbt-post-date" datetime="{$datetime}">{$date}</time>
+<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title} <time class="rpbt-post-date" datetime="{$datetime}">{$date}</time>
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -173,12 +175,12 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
-<dt class='gallery-icon '>
-<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+<div id='rpbt-related-gallery-$static' class='related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<dt class='gallery-icon'>
+<a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-{$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -200,12 +202,12 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item my-class'>
-<dt class='gallery-icon '>
-<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item my-class' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<dt class='gallery-icon'>
+<a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-{$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -224,9 +226,11 @@ EOF;
 		add_filter( 'use_default_gallery_style', '__return_true', 99 );
 		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
-		$static   = $this->get_gallery_instance_id( $gallery );
+		$static    = $this->get_gallery_instance_id( $gallery );
+		$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
+
 		$expected = <<<EOF
-<style type='text/css'>
+<style{$type_attr}>
 #rpbt-related-gallery-$static {
 margin: auto;
 }
@@ -244,12 +248,12 @@ margin-left: 0;
 }
 /* see gallery_shortcode() in wp-includes/media.php */
 </style>
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
-<dt class='gallery-icon '>
-<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<dt class='gallery-icon'>
+<a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-{$related_post->post_title}
+<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -271,9 +275,9 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
-<dt class='gallery-icon '>
-<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image'>
+<dt class='gallery-icon'>
+<a href='{$permalink}'><img></a>
 </dt></dl>
 <br style='clear: both' />
 </div>
@@ -297,12 +301,12 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item'>
-<dt class='gallery-icon '>
-<a href='{$permalink}' title='{$related_post->post_title}'><img></a>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<dt class='gallery-icon'>
+<a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<a href="{$permalink}">{$related_post->post_title}</a>
+<span class="rpbt-screen-reader-text">Gallery image with caption: </span><a href="{$permalink}">{$related_post->post_title}</a>
 </dd></dl>
 <br style='clear: both' />
 </div>

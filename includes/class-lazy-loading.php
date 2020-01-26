@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Lazy loading feature
- * 
+ *
  * Query related posts after the page has loaded (with Ajax).
  *
  * @since 2.6.0
@@ -76,7 +76,7 @@ class Related_Posts_By_Taxonomy_Lazy_Loading {
 		$args['fields'] = km_rpbt_get_template_fields( $args );
 
 		$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
-		$hide_empty    = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty" );
+		$hide_empty    = (bool) km_rpbt_plugin_supports( "{$type}_hide_empty", $args );
 
 		$html = '';
 		if ( ! $hide_empty || ! empty( $related_posts ) ) {

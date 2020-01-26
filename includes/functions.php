@@ -25,12 +25,13 @@ function km_rpbt_plugin() {
  * See the {@see 'related_posts_by_taxonomy_supports'} filter which
  * features are supported by default and which are opt-in
  *
- * @since  2.5.0
+ * @since 2.5.0
  *
  * @param string $type Type of feature.
+ * @param array  $args Optional arguments.
  * @return bool True if the feature is supported.
  */
-function km_rpbt_plugin_supports( $feature ) {
+function km_rpbt_plugin_supports( $feature, $args = array() ) {
 	$supports = km_rpbt_get_plugin_supports();
 
 	if ( ! in_array( $feature, array_keys( $supports ) ) ) {
@@ -58,7 +59,7 @@ function km_rpbt_plugin_supports( $feature ) {
 	 *
 	 * @param bool $bool Add support if true. Default false
 	 */
-	return apply_filters( "related_posts_by_taxonomy_{$feature}", (bool) $supports[ $feature ] );
+	return apply_filters( "related_posts_by_taxonomy_{$feature}", (bool) $supports[ $feature ], $args );
 }
 
 /**
@@ -72,7 +73,7 @@ function km_rpbt_plugin_supports( $feature ) {
  * If taxonomies are not set in the arguments it queries for
  * related posts in all public taxonomies.
  *
- * @since  2.5.0
+ * @since 2.5.0
  *
  * @param array        $post_id The post id to get related posts for.
  * @param string|array $args    {
@@ -88,18 +89,12 @@ function km_rpbt_plugin_supports( $feature ) {
  *                                            Accepts 'post_date'and 'post_modified'. Default 'post_date'.
  *     @type string         $fields           Return full post objects, IDs, post titles or post slugs.
  *                                            Accepts 'all', 'ids', 'names' or 'slugs'. Default is 'all'.
- *     @type array|string   $terms            Terms to use for the related posts query. Array or comma separated
- *                                            list of term ids. Only includes terms from the `$taxonomies` argument.
- *                                            Default empty.
- *     @type array|string   $include_terms    Terms to include for the related posts query. Array or comma separated
- *                                            list of term ids. Only includes terms in common with the current post.
- *                                            Default empty.
+ *     @type array|string   $include_terms    Terms to use for the related posts query. Array or comma separated list of
+ *                                            term ids. Default empty (query by the terms of the current post).
  *     @type boolean        $include_parents  Whether to include parent terms in the query for related posts. Default false.
  *     @type boolean        $include_children Whether to include child terms in the query for related posts. Default false.
  *     @type array|string   $exclude_terms    Terms to exlude for the related posts query. Array or comma separated
  *                                            list of term ids. Default empty
- *     @type boolean        $related          If false the `$terms` and `$include_terms` terms are used without
- *                                            checking taxonomies or post terms. Default true.
  *     @type array|string   $exclude_post     Exclude posts for the related posts query. Array or comma separated
  *                                            list of post ids. Default empty.
  *     @type int            $limit_posts      Limit the posts to search related posts in. Default -1 (search in all posts).
@@ -162,10 +157,10 @@ function km_rpbt_get_related_posts( $post_id, $args = array() ) {
 /**
  * Related posts feature HTML.
  *
- * @since  2.6.0
+ * @since 2.6.0
  *
  * @param string $feature Type of feature.
- * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                                    information on accepted arguments.
  * @return string feature html or empty string.
  */
@@ -191,7 +186,7 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
 
 	// Get the related posts from database or cache.
 	$related_posts = km_rpbt_get_related_posts( $args['post_id'], $args );
-	$hide_empty    = km_rpbt_plugin_supports( "{$feature}_hide_empty" );
+	$hide_empty    = km_rpbt_plugin_supports( "{$feature}_hide_empty", $args );
 
 	if ( ! $hide_empty || ! empty( $related_posts ) ) {
 		$html = km_rpbt_get_related_posts_html( $related_posts, $args );
@@ -200,7 +195,7 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
 	/**
 	 * Fires after the related posts are displayed.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string Display type, widget or shortcode.
 	 */
@@ -215,7 +210,7 @@ function km_rpbt_get_feature_html( $feature, $args = array() ) {
  * @since 2.6.0
  *
  * @param array $related_posts Array with related post objects.
- * @param array $args          See km_rpbt_related_posts_by_taxonomy_shortcode() for for more
+ * @param array $args          See km_rpbt_related_posts_by_taxonomy_shortcode() for more
  *                             information on accepted arguments.
  * @return string Related posts HTML
  */
@@ -293,7 +288,7 @@ function km_rpbt_get_lazy_loading_html( $args ) {
 	/**
 	 * Filter placeholder HTML while loading posts with the lazy loading feature.
 	 *
-	 * @since  2.6.0
+	 * @since 2.6.0
 	 *
 	 * @param string $content HTML that will be displayed while loading posts. Default empty string.
 	 * @param array  $args    See km_rpbt_related_posts_by_taxonomy_shortcode() arguments.
@@ -406,7 +401,7 @@ function km_rpbt_nested_array_sort( $array ) {
 /**
  * Checks if the cache class is loaded.
  *
- * @since  2.5.0
+ * @since 2.5.0
  *
  * @param object $plugin Related_Posts_By_Taxonomy_Cache object. Default null.
  * @return bool True if the cache class is loaded.
@@ -422,7 +417,7 @@ function km_rpbt_is_cache_loaded() {
  * The opt-in cache feature needs to be activated (with a filter) to cache posts.
  *
  * @since 2.1
- * @since  2.5.0 Use empty string as default value for $taxonomies parameter.
+ * @since 2.5.0 Use empty string as default value for $taxonomies parameter.
  *
  * @param int          $post_id    The post id to cache related posts for.
  * @param array|string $taxonomies Taxonomies for the related posts query.

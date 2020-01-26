@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,thumbnails,taxonomy,widget,shortcode,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.3
 Tested up to: 5.3
-Stable tag: 2.7.2
+Stable tag: 2.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,7 +65,6 @@ Attributes for the shortcode are:
 * `show_date`
 * `before_title`
 * `after_title`
-* `terms`
 * `include_terms`
 * `include_parents`
 * `include_children`
@@ -83,7 +82,6 @@ Attributes for the shortcode are:
 * `meta_value`
 * `meta_compare`
 * `meta_type`
-* `related`
 * `public_only`
 * `include_self`
 * `post_class`
@@ -117,7 +115,7 @@ Yes. Review [this section](https://keesiemeijer.wordpress.com/related-posts-by-t
 Review [Adding Related Posts After the Post Content](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#after-content).
 
 = Can I include or exclude posts or terms with the widget or shortcode =
-Yes. For the widget see [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) and for the shortcode see the attributes [terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#terms), [include_terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#include-terms), [exclude-terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-terms) and [exclude_posts](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-posts).
+Yes. For the widget see [this filter](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy/filters/#related_posts_by_taxonomy_widget_args) and for the shortcode see the attributes [include_terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#include-terms), [exclude-terms](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-terms) and [exclude_posts](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/#exclude-posts).
 
 = Can I set my own defaults for the shortcode? =
 Yes. Review [Setting your own defaults for the shortcode](https://keesiemeijer.wordpress.com/related-posts-by-taxonomy/recipes/#shortcode_defaults) 
@@ -144,6 +142,17 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.7.3 =
+* Enhancement
+	* Make the no posts found message filterable.
+	* Update gallery with the HTML changes made in the WordPress 5.3 gallery.
+	* Add accessibility to the gallery item element.
+* Deprecated
+	* The 'terms' and 'related' arguments are deprecated in favor of the 'include_terms' argument.
+		* The 'include_terms' argument now uses the included terms without any restrictions.
+		* The default value for the 'related' argument changed from boolean true to null.
+		* Set the 'related' argument to boolean true to have the old restrictions back.
+
 = 2.7.2 =
 * Bug Fixes
 	* Fix for gallery image (fallback) filter not being reached.
@@ -204,5 +213,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.7.2 =
-This upgrade contains minor bug fixes for filtering gallery images and the Rest API.
+= 2.7.3 =
+This upgrade makes the "no found posts" message filterable and deprecates two arguments (see the changelog)
