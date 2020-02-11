@@ -217,14 +217,15 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @since 2.6.0
 		 */
 		function pre_related_posts( $posts, $args ) {
-			$post_id       = $args['post_id'];
-			$taxonomies    = $args['taxonomies'];
-			$back_compat   = is_bool( $args['related'] );
-			$include_terms = ( $args['include_terms'] || $args['terms'] );
+			$post_id    = $args['post_id'];
+			$taxonomies = $args['taxonomies'];
 
 			$terms = get_terms( array( 'fields' => 'names', 'object_ids' => array( $post_id ) ) );
 			$terms = ! is_wp_error( $terms ) ? $terms : array();
 
+
+			$back_compat   = is_bool( $args['related'] );
+			$include_terms = ( $args['include_terms'] || $args['terms'] );
 			if ( $back_compat && $include_terms && ! $args['related'] ) {
 				$taxonomies = 'No taxonomies used in query (related - false)';
 			} elseif ( ! $back_compat && $include_terms ) {
@@ -232,14 +233,18 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			}
 
 			$taxonomies = is_array( $taxonomies ) ? implode( ', ', $taxonomies ) : $taxonomies;
+			$term_names = $this->get_terms_names( $args['related_terms'] );
 
-			$this->debug['current post id'] = $post_id;
-			$this->debug['taxonomies used for query'] = $taxonomies;
+			$this->debug['terms used for query']         = $term_names;
+			$this->debug['current post id']              = $post_id;
+			$this->debug['taxonomies used for query']    = $taxonomies;
 			$this->debug['terms found for current post'] = implode( ', ', $terms );
 
 			if ( $this->cache ) {
 				$this->check_cache( $args );
 			}
+
+			return $posts;
 		}
 
 		/**
@@ -283,10 +288,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$query = preg_replace( "/ INNER JOIN /", " \nINNER JOIN ", $query );
 			$query = preg_replace( "/ WHERE /", " \nWHERE ", $query );
 			$query = preg_replace( "/ AND /", " \nAND ", $query );
-
-			$term_names = $this->get_terms_names( $args['related_terms'] );
-
-			$this->debug['terms used for query'] = $term_names;
 
 			unset( $args['related_terms'] );
 

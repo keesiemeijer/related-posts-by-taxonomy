@@ -64,18 +64,13 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$args       = km_rpbt_sanitize_args( $args );
 	$terms      = km_rpbt_get_terms( $post_id, $taxonomies, $args );
 
-	if ( ! $post_id || empty( $terms ) ) {
-		// Invalid post ID, invalid taxonomies, or no terms found.
-		return array();
-	}
-
-	// Sort arrays for WP object cache key.
-	$args = km_rpbt_nested_array_sort( $args );
-
 	$args['related_terms'] = $terms;
 	$args['termcount']     = array();
 	$args['post_id']       = $post_id;
 	$args['taxonomies']    = $taxonomies;
+
+	// Sort arrays for WP object cache key.
+	$args = km_rpbt_nested_array_sort( $args );
 
 	/**
 	 * Filter whether to use your own related posts.
@@ -90,6 +85,11 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$related_posts = apply_filters( 'related_posts_by_taxonomy_pre_related_posts', null, $args );
 	if ( is_array( $related_posts ) ) {
 		return $related_posts;
+	}
+
+	if ( ! $post_id || empty( $terms ) ) {
+		// Invalid post ID, invalid taxonomies, or no terms found.
+		return array();
 	}
 
 	// Back compat for filters.
