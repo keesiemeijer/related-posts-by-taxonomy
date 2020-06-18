@@ -581,20 +581,14 @@ function km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args = ar
 		$caption = (string) $args['caption'];
 	}
 
-	$caption_raw = $caption;
-	if ( ! empty( $caption ) ) {
-		$caption = sprintf( __( '<span class="rpbt-screen-reader-text">Gallery image with caption: </span>%s', 'related-posts-by-taxonomy' ), $caption );
-	}
-
 	/**
 	 * Filter the related post thumbnail caption.
 	 *
 	 * @since 0.3
 	 *
-	 * @param string $caption     Options 'post_title', 'attachment_caption', attachment_alt, or a custom string. Default: post_title.
-	 * @param object $related     Related post object.
-	 * @param array  $args        Function arguments.
-	 * @param string $caption_raw Caption without screen reader text.
+	 * @param string $caption Options 'post_title', 'attachment_caption', attachment_alt, or a custom string. Default: post_title.
+	 * @param object $related Related post object.
+	 * @param array  $args    Function arguments.
 	 */
-	return apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args, $caption_raw );
+	return apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args );
 }
