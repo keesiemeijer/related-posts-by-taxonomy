@@ -367,7 +367,11 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$html = '<ul class="blocks-gallery-grid">' . "\n{$html}</ul>";
 	$html = "<figure {$atts}>\n{$html}\n</figure>\n";
 
-	if ( function_exists( 'wp_make_content_images_responsive' ) ) {
+
+	if ( function_exists( 'wp_filter_content_tags' ) ) {
+		// since WP 5.5
+		$html = wp_filter_content_tags( $html );
+	} elseif ( function_exists( 'wp_make_content_images_responsive' ) ) {
 		// since WP 4.4.0
 		$html = wp_make_content_images_responsive( $html );
 	}
