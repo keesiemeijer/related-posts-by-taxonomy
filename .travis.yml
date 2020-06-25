@@ -34,7 +34,7 @@ before_script:
   if [[ 'trunk' != "$RPBT_WP_TS_VERSION" ]]; then
     bash bin/install-wp-tests.sh wordpress_test root '' --wp-version="$WP_VERSION" --wp-ts-version="$WP_VERSION"
   else
-    bash bin/install-wp-tests.sh wordpress_test root '' --wp-version="$WP_VERSION"
+    bash bin/install-wp-tests.sh wordpress_test root '' --wp-version=trunk --wp-ts-version=trunk
   fi 
 - |
   # Export Composer's global bin dir to PATH, but not on PHP 5.2:
