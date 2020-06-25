@@ -51,9 +51,17 @@ before_script:
       [[ 'trunk' != "$RPBT_WP_TS_VERSION" ]] && unit=6
       travis_retry composer global require "phpunit/phpunit:^$unit"
       ;;
-    *)
+    7.0)
       echo "Using PHPUnit 6.x"
       travis_retry composer global require "phpunit/phpunit:^6"
+      ;;
+    5.6)
+      echo "Using PHPUnit 5.x"
+      travis_retry composer global require "phpunit/phpunit:^5"
+      ;;
+    *)
+      echo "No PHPUnit version handling for PHP version $TRAVIS_PHP_VERSION"
+      exit 1
       ;;
   esac
 script: phpunit
