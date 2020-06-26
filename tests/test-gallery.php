@@ -65,12 +65,12 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='{$related_post->post_title}'>
 <dt class='gallery-icon'>
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}
+{$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -94,9 +94,9 @@ EOF;
 <figure class="wp-block-gallery rpbt-related-block-gallery columns-3 is-cropped" role="group" aria-label="Gallery images">
 <ul class="blocks-gallery-grid">
 <li class="blocks-gallery-item my-class">
-<figure role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<figure role='figure' aria-label='{$related_post->post_title}'>
 <a href='{$permalink}'><img></a>
-<figcaption class="blocks-gallery-item__caption"><span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}</figcaption>
+<figcaption class="blocks-gallery-item__caption">{$related_post->post_title}</figcaption>
 </figure>
 </li>
 </ul>
@@ -119,12 +119,12 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='{$related_post->post_title}'>
 <dt class='gallery-icon'>
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}
+{$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -148,12 +148,12 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title} {$date}'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='{$related_post->post_title} {$date}'>
 <dt class='gallery-icon'>
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title} <time class="rpbt-post-date" datetime="{$datetime}">{$date}</time>
+{$related_post->post_title} <time class="rpbt-post-date" datetime="{$datetime}">{$date}</time>
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -175,12 +175,12 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<div id='rpbt-related-gallery-$static' class='related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='{$related_post->post_title}'>
 <dt class='gallery-icon'>
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}
+{$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -202,12 +202,12 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item my-class' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item my-class' role='figure' aria-label='{$related_post->post_title}'>
 <dt class='gallery-icon'>
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}
+{$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -248,12 +248,12 @@ margin-left: 0;
 }
 /* see gallery_shortcode() in wp-includes/media.php */
 </style>
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='{$related_post->post_title}'>
 <dt class='gallery-icon'>
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="rpbt-screen-reader-text">Gallery image with caption: </span>{$related_post->post_title}
+{$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
 </div>
@@ -301,12 +301,12 @@ EOF;
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
-<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='Gallery image with caption: {$related_post->post_title}'>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$args['id']} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='{$related_post->post_title}'>
 <dt class='gallery-icon'>
 <a href='{$permalink}'><img></a>
 </dt>
 <dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$args['id']}'>
-<span class="rpbt-screen-reader-text">Gallery image with caption: </span><a href="{$permalink}">{$related_post->post_title}</a>
+<a href="{$permalink}">{$related_post->post_title}</a>
 </dd></dl>
 <br style='clear: both' />
 </div>

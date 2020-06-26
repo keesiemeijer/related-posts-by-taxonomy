@@ -34,7 +34,7 @@ before_script:
   if [[ 'trunk' != "$RPBT_WP_TS_VERSION" ]]; then
     bash bin/install-wp-tests.sh wordpress_test root '' --wp-version="$WP_VERSION" --wp-ts-version="$WP_VERSION"
   else
-    bash bin/install-wp-tests.sh wordpress_test root '' --wp-version="$WP_VERSION"
+    bash bin/install-wp-tests.sh wordpress_test root '' --wp-version=trunk --wp-ts-version=trunk
   fi 
 - |
   # Export Composer's global bin dir to PATH, but not on PHP 5.2:
@@ -55,13 +55,9 @@ before_script:
       echo "Using PHPUnit 6.x"
       travis_retry composer global require "phpunit/phpunit:^6"
       ;;
-    5.6|5.5|5.4|5.3)
-      echo "Using PHPUnit 4.x"
-      travis_retry composer global require "phpunit/phpunit:^4"
-      ;;
-    5.2)
-      # Do nothing, use default PHPUnit 3.6.x
-      echo "Using default PHPUnit, hopefully 3.6"
+    5.6)
+      echo "Using PHPUnit 5.x"
+      travis_retry composer global require "phpunit/phpunit:^5"
       ;;
     *)
       echo "No PHPUnit version handling for PHP version $TRAVIS_PHP_VERSION"

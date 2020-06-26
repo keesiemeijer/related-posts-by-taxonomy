@@ -109,6 +109,7 @@ download() {
 }
  
 install_wp() {
+	rm -rf "$WP_CORE_DIR"
 	mkdir -p "$WP_CORE_DIR"
 
 	[[ 'latest' = "$WP_VERSION" ]] && WP_VERSION="$WP_LATEST"
@@ -137,6 +138,7 @@ install_wp() {
 }
 
 install_test_suite() {
+	rm -rf "$WP_TESTS_DIR"
 	mkdir -p "$WP_TESTS_DIR"
 
 	# portable in-place argument for both GNU sed and Mac OSX sed

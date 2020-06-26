@@ -367,7 +367,11 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$html = '<ul class="blocks-gallery-grid">' . "\n{$html}</ul>";
 	$html = "<figure {$atts}>\n{$html}\n</figure>\n";
 
-	if ( function_exists( 'wp_make_content_images_responsive' ) ) {
+
+	if ( function_exists( 'wp_filter_content_tags' ) ) {
+		// since WP 5.5
+		$html = wp_filter_content_tags( $html );
+	} elseif ( function_exists( 'wp_make_content_images_responsive' ) ) {
 		// since WP 4.4.0
 		$html = wp_make_content_images_responsive( $html );
 	}
@@ -581,20 +585,14 @@ function km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args = ar
 		$caption = (string) $args['caption'];
 	}
 
-	$caption_raw = $caption;
-	if ( ! empty( $caption ) ) {
-		$caption = sprintf( __( '<span class="rpbt-screen-reader-text">Gallery image with caption: </span>%s', 'related-posts-by-taxonomy' ), $caption );
-	}
-
 	/**
 	 * Filter the related post thumbnail caption.
 	 *
 	 * @since 0.3
 	 *
-	 * @param string $caption     Options 'post_title', 'attachment_caption', attachment_alt, or a custom string. Default: post_title.
-	 * @param object $related     Related post object.
-	 * @param array  $args        Function arguments.
-	 * @param string $caption_raw Caption without screen reader text.
+	 * @param string $caption Options 'post_title', 'attachment_caption', attachment_alt, or a custom string. Default: post_title.
+	 * @param object $related Related post object.
+	 * @param array  $args    Function arguments.
 	 */
-	return apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args, $caption_raw );
+	return apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args );
 }
