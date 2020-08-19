@@ -355,9 +355,10 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 		return '';
 	}
 
-	// The 'gallery' CSS selector is used by normal WP galleries and can not be changed.
-	$gallery_class = ( 'gallery' === $args['gallery_class'] ) ? 'wp-block-gallery' : $args['gallery_class'];
-	$gallery_class = km_rpbt_sanitize_classes( $gallery_class );
+	$gallery_class = km_rpbt_sanitize_classes( $args['gallery_class'] );
+
+	// The 'gallery' CSS selector is used by normal WP galleries.
+	$gallery_class = ( 'gallery' === $gallery_class  ) ? 'wp-block-gallery' : $gallery_class;
 	$gallery_class = $gallery_class ? $gallery_class . ' ' : '';
 
 	$class = "{$gallery_class}rpbt-related-block-gallery columns-{$args['columns']}";
