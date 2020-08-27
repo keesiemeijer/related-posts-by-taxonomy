@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,thumbnails,taxonomy,widget,shortcode,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 4.5
 Tested up to: 5.5
-Stable tag: 2.7.5-alpha
+Stable tag: 2.7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -146,6 +146,7 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 * Enhancement
 	* Update the block gallery with the HTML changes made in WordPress 5.4 (again!).
 	* Use post title for aria-label only
+	* Display cache log in footer (because admin_bar_menu hook changed to wp_body_open)
 	* Getting ready for WP 5.5 (updating deprecated functions)
 = 2.7.3 =
 * Enhancement
