@@ -75,7 +75,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			add_filter( 'related_posts_by_taxonomy_widget_args',    array( $this, 'add_cache' ), 9 );
 
 			if ( $this->cache['display_log'] ) {
+				// Add link to admin bar.
 				add_action( 'admin_bar_menu', array( $this, 'display_cache_log' ), 999 );
+
+				// Display cache results in footer.
+				add_action( 'wp_footer', array( $this, 'wp_footer' ), 99 );
 			}
 
 			if ( ! $this->cache['flush_manually'] ) {
@@ -576,7 +580,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		}
 
 		/**
-		 * Displays cache log in the toolbar.
+		 * Adds link to cache log in the toolbar.
 		 *
 		 * @since 2.1
 		 * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
@@ -587,6 +591,32 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				return;
 			}
 
+			$args = array(
+				'id'    => 'related_posts_by_tax-0' ,
+				'title' => 'Related Posts Cache',
+				'href' => "#rpbt-cache-results",
+			);
+
+			$wp_admin_bar->add_node( $args );
+		}
+
+		/**
+		 * Displays cache results in the footer.
+		 *
+		 * @since  2.7.4
+		 *
+		 * @return void
+		 */
+		function wp_footer() {
+			if ( is_admin() || ! is_super_admin() ) {
+				return;
+			}
+
+			$style = 'border:0 none;outline:0 none;padding:20px;margin:0;';
+			$style .= 'color: #333;background: #f5f5f5;font-family: monospace;font-size: 16px;font-style: normal;';
+			$style .= 'font-weight: normal;line-height: 1.5;white-space: pre;overflow:auto;';
+			$style .= 'width:100%;display:block;float:none;clear:both;text-align:left;z-index: 999;position:relative;';
+
 			if ( empty( $this->cache_log ) ) {
 				$message = 'This page has no related posts';
 				if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
@@ -595,39 +625,16 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				$this->cache_log[] = $message;
 			}
 
-			array_unshift( $this->cache_log, 'Related Posts Cache' );
 
-			$this->cache_log = $cache_log = array_values( $this->cache_log );
-			$notices         = array( 'failed', 'flushed' );
+			echo "<pre id='rpbt-cache-results' style='{$style}'>";
+			echo "Related Posts by Taxonomy Cache Results \n";
+			echo str_repeat( "-", 39 ) . "\n";
 
-			// Add color to toolbar nodes if needed.
-			foreach ( $this->cache_log as $key => $log ) {
-				foreach ( $notices as $notice ) {
-					if ( false !== strpos( strtolower( $log ), $notice ) ) {
-						$this->cache_log[ $key ] = "<span style='color:orange;'>$log</span>";
-						break;
-					}
-				}
+			foreach ( $this->cache_log as $value ) {
+				echo "{$value}\n";
 			}
 
-			// Add color to top level node if needed.
-			if ( $this->cache_log != $cache_log ) {
-				$this->cache_log[0] = "<span style='color:orange;'>{$this->cache_log[0]}</span>";
-			}
-
-			for ( $i = 0; $i < count( $this->cache_log ); $i++ ) {
-
-				$args = array(
-					'id'    => 'related_posts_by_tax-' . $i,
-					'title' => $this->cache_log[ $i ],
-				);
-
-				if ( $i ) {
-					$args['parent'] = 'related_posts_by_tax-0';
-				}
-
-				$wp_admin_bar->add_node( $args );
-			}
+			echo '</pre>';
 		}
 
 	} // Class.

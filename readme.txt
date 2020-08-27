@@ -146,6 +146,7 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 * Enhancement
 	* Update the block gallery with the HTML changes made in WordPress 5.4 (again!).
 	* Use post title for aria-label only
+	* Display cache log in footer (because admin_bar_menu hook changed to wp_body_open)
 	* Getting ready for WP 5.5 (updating deprecated functions)
 = 2.7.3 =
 * Enhancement
