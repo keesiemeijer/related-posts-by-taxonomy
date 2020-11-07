@@ -54,40 +54,9 @@ if ( ! function_exists( 'related_posts_by_taxonomy_init' ) ) {
 	 */
 	function related_posts_by_taxonomy_init() {
 
+		require_once __DIR__ . '/autoloader/autoload.php';
+
 		load_plugin_textdomain( 'related-posts-by-taxonomy', '', dirname( plugin_basename( __FILE__ ) ) . '/lang' );
-
-		// Deprecated functions and files.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/back-compat/deprecated.php';
-
-		// Settings used by this plugin.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/settings.php';
-
-		// Functions to query the database
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/query.php';
-
-		// Functions used in the templates.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-tags.php';
-
-		// Functions for related posts
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/functions.php';
-
-		// Taxonomy functions.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/taxonomy.php';
-
-		// The related post thumbnail gallery.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/gallery.php';
-
-		// The Shortcode.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/shortcode.php';
-
-		// loads the different templates used for the widget and shortcode.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/template-loader.php';
-
-		// Defaults
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-defaults.php';
-
-		// Plugin.
-		require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-plugin.php';
 
 		// Instantiate the plugin class.
 		$related_posts = new Related_Posts_By_Taxonomy_Plugin();

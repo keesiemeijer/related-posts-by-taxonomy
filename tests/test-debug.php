@@ -26,7 +26,7 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 	 * Tests if debug filter is set to true.
 	 */
 	function test_debug_true() {
-		$this->assertFalse( class_exists( 'Related_Posts_By_Taxonomy_Debug' )  );
+		$this->assertFalse( class_exists( 'Related_Posts_By_Taxonomy_Debug', false )  );
 
 		add_filter( 'related_posts_by_taxonomy_debug', '__return_true' );
 
@@ -34,7 +34,7 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 		$cache = new Related_Posts_By_Taxonomy_Plugin();
 		$cache->debug_init();
 
-		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Debug' )  );
+		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Debug', false )  );
 	}
 
 	function setup_debug() {

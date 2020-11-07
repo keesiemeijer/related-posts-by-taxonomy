@@ -1,0 +1,26 @@
+{
+    "name": "keesiemeijer/related-posts-by-taxonomy",
+    "type": "wordpress-plugin",
+    "description": "Display related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode.",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "classmap": [
+            "includes/"
+        ],
+        "files": [
+            "includes/template-loader.php",
+            "includes/shortcode.php",
+            "includes/query.php",
+            "includes/template-tags.php",
+            "includes/functions.php",
+            "includes/gallery.php",
+            "includes/settings.php",
+            "includes/taxonomy.php",
+            "includes/back-compat/deprecated.php"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "vendor-dir": "autoloader"
+    }
+}
