@@ -2,12 +2,10 @@
 
 [![Docmentation](https://img.shields.io/badge/Documentation-%F0%9F%93%96-blueviolet)](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy)
 [![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/related-posts-by-taxonomy)](https://wordpress.org/plugins/related-posts-by-taxonomy/)
+[![WordPress Plugin: Required WP Version](https://img.shields.io/wordpress/plugin/wp-version/related-posts-by-taxonomy)](https://wordpress.org/plugins/related-posts-by-taxonomy/)
+[![WordPress Plugin: Tested WP Version](https://img.shields.io/wordpress/plugin/tested/related-posts-by-taxonomy)](https://wordpress.org/plugins/related-posts-by-taxonomy/)
 [![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dm/related-posts-by-taxonomy)](https://wordpress.org/plugins/related-posts-by-taxonomy/)
 [![Build Status](https://travis-ci.org/keesiemeijer/related-posts-by-taxonomy.svg?branch=develop)](https://travis-ci.org/github/keesiemeijer/related-posts-by-taxonomy)
-
-Version:           2.7.4  
-Requires at least: 4.5  
-Tested up to:      5.5  
 
 ### Welcome to the GitHub repository for this plugin ###
 This is the development repository for the WordPress plugin [Related Posts by Taxonomy](https://wordpress.org/plugins/related-posts-by-taxonomy).
