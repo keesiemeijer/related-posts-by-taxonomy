@@ -54,7 +54,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 		 */
 		public function cache_init() {
 			if ( km_rpbt_plugin_supports( 'cache' ) ) {
-				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-cache.php';
 				$defaults        = Related_Posts_By_Taxonomy_Defaults::get_instance();
 				$defaults->cache = new Related_Posts_By_Taxonomy_Cache();
 			}
@@ -67,7 +66,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 		 */
 		public function debug_init() {
 			if ( ! is_admin() && km_rpbt_plugin_supports( 'debug' ) ) {
-				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-debug.php';
 				$debug = new Related_Posts_By_Taxonomy_Debug();
 			}
 		}
@@ -79,7 +77,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 		 */
 		public function widget_init() {
 			if ( km_rpbt_plugin_supports( 'widget' ) ) {
-				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-widget.php';
 				register_widget( 'Related_Posts_By_Taxonomy' );
 			}
 		}
@@ -111,8 +108,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 			}
 
 			if ( is_user_logged_in() || km_rpbt_plugin_supports( 'wp_rest_api' ) ) {
-				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-rest-api.php';
-
 				$rest_api = new Related_Posts_By_Taxonomy_Rest_API();
 				$rest_api->register_routes();
 			}
@@ -125,7 +120,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 		 */
 		public function lazy_loading_init() {
 			if (  km_rpbt_plugin_supports( 'lazy_loading' ) ) {
-				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-lazy-loading.php';
 				$rest_api = new Related_Posts_By_Taxonomy_Lazy_Loading();
 			}
 		}
