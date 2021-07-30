@@ -1,7 +1,7 @@
 # [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Build Status](https://travis-ci.org/keesiemeijer/related-posts-by-taxonomy.svg?branch=develop)](http://travis-ci.org/keesiemeijer/related-posts-by-taxonomy) #
 
 Version:           2.7.4  
-Requires at least: 4.5  
+Requires at least: 4.8  
 Tested up to:      5.8  
 
 ### Welcome to the GitHub repository for this plugin ###

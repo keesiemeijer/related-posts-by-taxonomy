@@ -1,7 +1,7 @@
 === Related Posts by Taxonomy ===
 Contributors: keesiemeijer
 Tags: posts,related,related posts,thumbnails,taxonomy,widget,shortcode,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
-Requires at least: 4.5
+Requires at least: 4.8
 Tested up to: 5.8
 Stable tag: 2.7.4
 License: GPLv2 or later

@@ -3,7 +3,7 @@
   "version": "2.7.4",
   "license": "GPL-2.0-or-later",
   "tested_up_to": "5.8",
-  "requires_at_least": "4.5",
+  "requires_at_least": "4.8",
   "main": "Gruntfile.js",
   "author": "keesiemeijer",
   "repository": {
