@@ -14,10 +14,6 @@ env:
 
 matrix:
   include:
-    - php: 8.0.0
-      env: WP_VERSION=latest WP_MULTISITE=0
-    - php: 7.2
-      env: WP_VERSION=latest WP_MULTISITE=0
     - php: 7.2
       env: WP_VERSION=latest WP_MULTISITE=1
     - php: 7.2
@@ -47,7 +43,7 @@ before_script:
 - |
   # Install the specified version of PHPUnit depending on the PHP version:
   case "$TRAVIS_PHP_VERSION" in
-    8.0.0|7.3|7.2|7.1|nightly)
+    7.3|7.2|7.1|nightly)
       echo "Using PHPUnit 7.x"
       unit=7
       [[ 'trunk' != "$RPBT_WP_TS_VERSION" ]] && unit=6
