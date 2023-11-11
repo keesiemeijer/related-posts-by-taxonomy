@@ -6,7 +6,7 @@
  */
 class KM_RPBT_Defaults_Tests extends KM_RPBT_UnitTestCase {
 
-	function tearDown() {
+	function tear_down() {
 		unregister_taxonomy_for_object_type( 'category', 'page' );
 		unregister_taxonomy_for_object_type( 'ctax', 'cpt' );
 

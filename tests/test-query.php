@@ -11,8 +11,8 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 	private $tax_2_terms;
 	private $taxonomies = array( 'category', 'post_tag' );
 
-	function tearDown() {
-		parent::tearDown();
+	function tear_down() {
+		parent::tear_down();
 		remove_filter( 'related_posts_by_taxonomy_posts_orderby', array( $this, 'return_first_argument' ), 10, 4 );
 		remove_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_posts_meta_query', array( $this, 'meta_query_callback' ), 10, 4 );
@@ -320,7 +320,7 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 	function test_related_posts_by_terms_invalid_term_id() {
 		$this->setup_posts();
 
-		$invalid_id = $this->get_highest_term_id() + 1;
+		$invalid_id = $this->get_highest_term_id() + 100;
 
 		$args = array(
 			'terms'      => array( $invalid_id ),
@@ -765,9 +765,10 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		// test post 0
 		$rel_post0 = km_rpbt_get_related_posts( $posts[0], $args );
 
-		$this->assertContains( $posts[1], $rel_post0 );
-		$this->assertContains( $posts[2], $rel_post0 );
-		$this->assertContains( $posts[3], $rel_post0 );
+		$this->assertTrue( in_array( $posts[1], $rel_post0 ) );
+		$this->assertTrue( in_array( $posts[2], $rel_post0 ) );
+		$this->assertTrue( in_array( $posts[3], $rel_post0 ) );
+
 		$this->assertEquals( count( $rel_post0 ), 3 );
 	}
 
@@ -885,7 +886,7 @@ class KM_RPBT_Query_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertSame( (int) $posts[0], (int) $rel_post0[0] );
 
 		//Check if the query contains 'RAND()'
-		$this->assertContains( 'RAND()', $this->arg );
+		$this->assertStringContainsString( 'RAND()', $this->arg );
 		$this->arg = null;
 	}
 

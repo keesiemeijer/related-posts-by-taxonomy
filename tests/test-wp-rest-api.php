@@ -11,12 +11,12 @@ class KM_RPBT_WP_REST_API extends KM_RPBT_UnitTestCase {
 	private $tax_2_terms;
 	private $taxonomies = array( 'category', 'post_tag' );
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 		add_filter( 'related_posts_by_taxonomy_wp_rest_api', '__return_true' );
 	}
 
-	function tearDown() {
+	function tear_down() {
 		remove_filter( 'related_posts_by_taxonomy_wp_rest_api', '__return_true' );
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_query_args' ), 10, 4 );
 		remove_filter( 'related_posts_by_taxonomy_cache', array( $this, 'return_first_argument' ) );
@@ -985,9 +985,9 @@ EOF;
 		// Test post 0.
 		$rel_post0 = $this->rest_related_posts_by_taxonomy( $posts[0], $taxonomies, $args );
 
-		$this->assertContains( $posts[1], $rel_post0 );
-		$this->assertContains( $posts[2], $rel_post0 );
-		$this->assertContains( $posts[3], $rel_post0 );
+		$this->assertTrue( in_array( $posts[1], $rel_post0 ) );
+		$this->assertTrue( in_array( $posts[2], $rel_post0 ) );
+		$this->assertTrue( in_array( $posts[3], $rel_post0 ) );
 		$this->assertEquals( count( $rel_post0 ), 3 );
 	}
 
@@ -1113,7 +1113,7 @@ EOF;
 		$this->assertSame( (int) $posts[0], (int) $rel_post0[0] );
 
 		//Check if the query contains 'RAND()'
-		$this->assertContains( 'RAND()', $this->arg );
+		$this->assertStringContainsString( 'RAND()', $this->arg );
 		$this->arg = null;
 	}
 

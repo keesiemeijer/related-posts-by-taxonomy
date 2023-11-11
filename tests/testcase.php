@@ -4,14 +4,14 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 	public $arg;
 	public $query_args;
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 		$this->arg = null;
 		$this->query_args = null;
 	}
 
-	function tearDown() {
-		parent::tearDown();
+	function tear_down() {
+		parent::tear_down();
 		unregister_taxonomy( 'ctax' );
 	}
 

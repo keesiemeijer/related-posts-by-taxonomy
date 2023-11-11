@@ -6,7 +6,7 @@
  */
 class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 
-	function tearDown() {
+	function tear_down() {
 		remove_filter( 'use_default_gallery_style', '__return_false', 99 );
 		remove_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 3 );
 		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );

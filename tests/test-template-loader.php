@@ -1,6 +1,8 @@
 <?php
 /**
  * Tests for the km_rpbt_query_related_posts() function in functions.php.
+ *
+ * @group Template
  */
 class KM_RPBT_Template_Loader_Tests extends KM_RPBT_UnitTestCase {
 	private $path;
@@ -8,8 +10,8 @@ class KM_RPBT_Template_Loader_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Set up.
 	 */
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 		$path       = pathinfo( dirname(  __FILE__  ) );
 		$this->path = $path['dirname'];
 	}
