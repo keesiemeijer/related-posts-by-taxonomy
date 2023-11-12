@@ -1,8 +1,8 @@
-# [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Tests](https://github.com/keesiemeijer/related-posts-by-taxonomy/workflows/Test/badge.svg)](https://github.com/keesiemeijer/related-posts-by-taxonomy/actions?query=workflow%3ATest) #
+# [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Tests](https://github.com/keesiemeijer/related-posts-by-taxonomy/workflows/Test/badge.svg)](https://github.com/keesiemeijer/related-posts-by-taxonomy/actions) #
 
 Version:           2.7.4  
 Requires at least: 4.8  
-Tested up to:      5.8  
+Tested up to:      6.4  
 
 ### Welcome to the GitHub repository for this plugin ###
 This is the development repository for the WordPress plugin [Related Posts by Taxonomy](https://wordpress.org/plugins/related-posts-by-taxonomy).
