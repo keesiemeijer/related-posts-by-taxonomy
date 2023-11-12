@@ -5,14 +5,14 @@ if [ $# -lt 3 ]; then
 	exit 1
 fi
 
-DB_NAME=$1
-DB_USER=$2
-DB_PASS=$3
-DB_HOST=${4-localhost}
-WP_VERSION=${5-latest}
+WP_VERSION=${1-latest}
+DB_NAME=$2
+DB_USER=$3
+DB_PASS=$4
+DB_HOST=${5-localhost}
 SKIP_DB_CREATE=${6-false}
 
-TMPDIR=${TMPDIR-/tmp}
+TMPDIR="/tmp"
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
 WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
 WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress/}
