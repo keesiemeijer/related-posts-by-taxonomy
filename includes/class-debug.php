@@ -28,6 +28,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		public $plugin            = 0;
 		public $widget_counter    = 0;
 		public $shortcode_counter = 0;
+		public $cache             = false;
 
 		function __construct() {
 			$this->debug_setup();

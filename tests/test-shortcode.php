@@ -357,16 +357,21 @@ EOF;
 		$this->assertTrue( is_null( $this->arg['related'] ) );
 		$this->arg = null;
 
+		// 0 is returned in attrinutes as string "0"
+		do_shortcode( '[related_posts_by_tax related="0" post_id="' . $posts[0] . '"]' );
+		$this->assertFalse( $this->arg['related'] );
+		$this->arg = null;
+
 		// If used it's a boolean
 		do_shortcode( '[related_posts_by_tax related="true" post_id="' . $posts[0] . '"]' );
 		$this->assertTrue( $this->arg['related'] );
 		$this->arg = null;
 
-		do_shortcode( '[related_posts_by_tax related="gobbledygook" post_id="' . $posts[0] . '"]' );
+		do_shortcode( '[related_posts_by_tax related="false" post_id="' . $posts[0] . '"]' );
 		$this->assertFalse( $this->arg['related'] );
 		$this->arg = null;
 
-		do_shortcode( '[related_posts_by_tax related="false" post_id="' . $posts[0] . '"]' );
+		do_shortcode( '[related_posts_by_tax related="gobbledygook" post_id="' . $posts[0] . '"]' );
 		$this->assertFalse( $this->arg['related'] );
 		$this->arg = null;
 
