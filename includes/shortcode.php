@@ -141,16 +141,17 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	);
 
 	foreach( $booleans as $bool ) {
-		if( is_string( $atts[ $bool ] ) ) {
-			// If it's a string a boolean attribute is used in the shortcode
+		if( ! is_string( $atts[ $bool ] ) ) {
+			continue;
+		}
 
-			if ('related' === $bool) {
-				// Deprecated argument changed from boolean to null (back compat)
-				$atts[ $bool ] = ( '' !== trim( $atts[ $bool ] ) ) ? $atts[ $bool ] : null;
-			} else {
-				$atts[ $bool ] = ( '' !== trim( $atts[ $bool ] ) ) ? $atts[ $bool ] : false;
-			}
-		} 
+		// If it's a string a boolean attribute was used in the shortcode
+		if ( 'related' === $bool ) {
+			// Deprecated argument changed from boolean to null (back compat)
+			$atts[ $bool ] = ( '' !== trim( $atts[ $bool ] ) ) ? $atts[ $bool ] : null;
+		} else {
+			$atts[ $bool ] = ( '' !== trim( $atts[ $bool ] ) ) ? $atts[ $bool ] : false;
+		}
 	}
 
 	if ( 'regular_order' !== $atts['include_self'] ) {

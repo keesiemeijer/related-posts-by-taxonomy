@@ -3,7 +3,7 @@ Contributors: keesiemeijer
 Tags: posts,related,related posts,thumbnails,taxonomy,widget,shortcode,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
 Requires at least: 5.9
 Tested up to: 6.4
-Stable tag: 2.7.4
+Stable tag: 2.7.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -142,12 +142,17 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.7.5 =
+* Enhancement
+	* Fix PHP 8 and up deprecated notices
+
 = 2.7.4 =
 * Enhancement
 	* Update the block gallery with the HTML changes made in WordPress 5.4 (again!).
 	* Use post title for aria-label only
 	* Display cache log in footer (because admin_bar_menu hook changed to wp_body_open)
 	* Getting ready for WP 5.5 (updating deprecated functions)
+
 = 2.7.3 =
 * Enhancement
 	* Make the no posts found message filterable.
@@ -219,5 +224,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.7.4 =
-No new features. This upgrade does minor changes for WordPress 5.5
+= 2.7.5 =
+Minor changes to make this plugin play nice with newer WordPress and PHP versions.
