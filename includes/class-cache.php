@@ -89,8 +89,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				add_action( 'trashed_post',      array( $this, '_flush_cache' ) );
 				add_action( 'untrashed_post',    array( $this, '_flush_cache' ) );
 
-				// Flush the cache when terms are updated.
+				// Flush the cache when terms are updated or deleted.
 				add_action( 'set_object_terms',  array( $this, 'set_object_terms' ), 10, 6 );
+				add_action( 'deleted_term_relationships',  array( $this, 'deleted_term_relationships' ), 10, 3 );
+
 
 				// Flush the cache if a post thumbnail is added, updated or deleted.
 				add_action( 'updated_post_meta', array( $this, 'updated_postmeta' ), 10, 4 );
@@ -557,6 +559,22 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			if ( $tt_ids != $old_tt_ids ) {
 				$this->_flush_cache();
 			}
+		}
+
+		/**
+		 * Flush the cache when terms are deleted.
+		 * 
+		 * Only used for taxonomies that don't have a default term
+		 *
+		 * @since 2.7.5
+		 *
+		 * @param int    $object_id Object ID.
+		 * @param array  $tt_ids    An array of term taxonomy IDs.
+		 * @param string $taxonomy  Taxonomy slug.
+		 */
+		public function deleted_term_relationships( $object_id, $tt_ids, $taxonomy ) {
+			// Term is deleted.
+			$this->_flush_cache();
 		}
 
 		/**

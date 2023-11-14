@@ -6,14 +6,14 @@
  */
 class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 
-	function tearDown() {
+	function tear_down() {
 		// use tearDown for WP < 4.0
 		remove_filter( 'related_posts_by_taxonomy_id_query', '__return_true' );
 		remove_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_first_argument' ) );
 
 
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	function get_default_sanitized_args() {

@@ -1,3 +1,25 @@
+= 2.7.5 =
+* Enhancement
+	* Fix PHP 8 and up deprecated notices
+
+= 2.7.4 =
+* Enhancement
+	* Update the block gallery with the HTML changes made in WordPress 5.4 (again!).
+	* Use post title for aria-label only
+	* Display cache log in footer (because admin_bar_menu hook changed to wp_body_open)
+	* Getting ready for WP 5.5 (updating deprecated functions)
+
+= 2.7.3 =
+* Enhancement
+	* Make the no posts found message filterable.
+	* Update gallery with the HTML changes made in the WordPress 5.3 gallery.
+	* Add accessibility to the gallery item element.
+* Deprecated
+	* The 'terms' and 'related' arguments are deprecated in favor of the 'include_terms' argument.
+		* The 'include_terms' argument now uses the included terms without any restrictions.
+		* The default value for the 'related' argument changed from boolean true to null.
+		* Set the 'related' argument to boolean true to have the old restrictions back.
+
 = 2.7.2 =
 * Bug Fixes
 	* Fix for gallery image (fallback) filter not being reached.

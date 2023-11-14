@@ -130,15 +130,29 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	// Get allowed fields for use in templates
 	$atts['fields'] = km_rpbt_get_template_fields( $atts );
 
-	// Convert (strings) to booleans or use defaults.
-	$atts['link_caption']     = ( '' !== trim( $atts['link_caption'] ) ) ? $atts['link_caption'] : false;
-	$atts['public_only']      = ( '' !== trim( $atts['public_only'] ) ) ? $atts['public_only'] : false;
-	$atts['show_date']        = ( '' !== trim( $atts['show_date'] ) ) ? $atts['show_date'] : false;
-	$atts['include_parents']  = ( '' !== trim( $atts['include_parents'] ) ) ? $atts['include_parents'] : false;
-	$atts['include_children'] = ( '' !== trim( $atts['include_children'] ) ) ? $atts['include_children'] : false;
+	// Shortcode boolean attributes
+	$booleans = array(
+		'link_caption',
+		'public_only',
+		'show_date',
+		'include_parents',
+		'include_children',
+		'related'
+	);
 
-	// Deprecated argument changed from boolean to null (back compat)
-	$atts['related'] = ( '' !== trim( $atts['related'] ) ) ? $atts['related'] : null;
+	foreach( $booleans as $bool ) {
+		if( ! is_string( $atts[ $bool ] ) ) {
+			continue;
+		}
+
+		// If it's a string a boolean attribute was used in the shortcode
+		if ( 'related' === $bool ) {
+			// Deprecated argument changed from boolean to null (back compat)
+			$atts[ $bool ] = ( '' !== trim( $atts[ $bool ] ) ) ? $atts[ $bool ] : null;
+		} else {
+			$atts[ $bool ] = ( '' !== trim( $atts[ $bool ] ) ) ? $atts[ $bool ] : false;
+		}
+	}
 
 	if ( 'regular_order' !== $atts['include_self'] ) {
 		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;

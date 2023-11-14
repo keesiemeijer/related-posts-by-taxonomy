@@ -6,7 +6,7 @@
  */
 class KM_RPBT_Query_Ajax_Tests extends KM_RPBT_UnitTestCase {
 
-	function tearDown() {
+	function tear_down() {
 		remove_filter( 'related_posts_by_taxonomy_ajax_query', '__return_true' );
 	}
 
@@ -17,9 +17,9 @@ class KM_RPBT_Query_Ajax_Tests extends KM_RPBT_UnitTestCase {
 		$args = km_rpbt_get_default_settings( 'shortcode' );
 		$args['format'] = 'thumbnails';
 		$ajax_html = km_rpbt_get_lazy_loading_html( $args );
-		$this->assertContains( "class='rpbt-related-posts-lazy-loading'", $ajax_html );
-		$this->assertContains( ',&quot;type&quot;:&quot;shortcode&quot;', $ajax_html );
-		$this->assertContains( '&quot;format&quot;:&quot;thumbnails&quot;', $ajax_html );
+		$this->assertStringContainsString( "class='rpbt-related-posts-lazy-loading'", $ajax_html );
+		$this->assertStringContainsString( ',&quot;type&quot;:&quot;shortcode&quot;', $ajax_html );
+		$this->assertStringContainsString( '&quot;format&quot;:&quot;thumbnails&quot;', $ajax_html );
 	}
 
 	/**
