@@ -10,7 +10,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 	private $plugin;
 
-	function tearDown() {
+	function tear_down() {
 		// use tearDown for WP < 4.0
 		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
 		remove_filter( 'related_posts_by_taxonomy_id_query', '__return_true' );
@@ -179,7 +179,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		$_posts     = get_posts( array( 'posts__in' => $this->posts, 'order' => 'post__in' ) );
+		$_posts     = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
 		$post_names = wp_list_pluck( $_posts, 'post_title' );
 
 		$taxonomies = array( 'post_tag' );

@@ -7,6 +7,10 @@
 [![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dm/related-posts-by-taxonomy)](https://wordpress.org/plugins/related-posts-by-taxonomy/)
 [![Build Status](https://travis-ci.org/keesiemeijer/related-posts-by-taxonomy.svg?branch=master)](https://travis-ci.org/github/keesiemeijer/related-posts-by-taxonomy)
 
+Version:           2.7.5  
+Requires at least: 5.9  
+Tested up to:      6.4  
+
 ### Welcome to the GitHub repository for this plugin ###
 This is the development repository for the WordPress plugin [Related Posts by Taxonomy](https://wordpress.org/plugins/related-posts-by-taxonomy).
 

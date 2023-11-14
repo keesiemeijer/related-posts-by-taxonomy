@@ -1,6 +1,8 @@
 <?php
 /**
  * Tests for the km_rpbt_query_related_posts() function in functions.php.
+ *
+ * @group Functions
  */
 class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 

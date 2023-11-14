@@ -6,7 +6,7 @@
  */
 class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 
-	function tearDown() {
+	function tear_down() {
 		// use tearDown for WP < 4.0
 		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', '__return_true' );
@@ -15,7 +15,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'override_related_posts' ), 10, 2 );
 
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	/**
@@ -107,7 +107,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		ob_start();
 		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[4] . '"]' );
 		$shortcode = ob_get_clean();
-		$this->assertContains( '<p>No related posts found</p>', $shortcode );
+		$this->assertStringContainsString( '<p>No related posts found</p>', $shortcode );
 	}
 
 	/**
@@ -357,16 +357,21 @@ EOF;
 		$this->assertTrue( is_null( $this->arg['related'] ) );
 		$this->arg = null;
 
+		// 0 is returned in attrinutes as string "0"
+		do_shortcode( '[related_posts_by_tax related="0" post_id="' . $posts[0] . '"]' );
+		$this->assertFalse( $this->arg['related'] );
+		$this->arg = null;
+
 		// If used it's a boolean
 		do_shortcode( '[related_posts_by_tax related="true" post_id="' . $posts[0] . '"]' );
 		$this->assertTrue( $this->arg['related'] );
 		$this->arg = null;
 
-		do_shortcode( '[related_posts_by_tax related="gobbledygook" post_id="' . $posts[0] . '"]' );
+		do_shortcode( '[related_posts_by_tax related="false" post_id="' . $posts[0] . '"]' );
 		$this->assertFalse( $this->arg['related'] );
 		$this->arg = null;
 
-		do_shortcode( '[related_posts_by_tax related="false" post_id="' . $posts[0] . '"]' );
+		do_shortcode( '[related_posts_by_tax related="gobbledygook" post_id="' . $posts[0] . '"]' );
 		$this->assertFalse( $this->arg['related'] );
 		$this->arg = null;
 

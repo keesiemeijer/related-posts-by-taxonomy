@@ -21,7 +21,7 @@ module.exports = function( grunt ) {
 			},
 			target: {
 				files: {
-					src: [ '*.php', '**/*.php', '!node_modules/**', '!bin/**' ]
+					src: [ '*.php', '**/*.php', '!node_modules/**', '!bin/**', '!vendor/**' ]
 				}
 			}
 		},
@@ -80,6 +80,7 @@ module.exports = function( grunt ) {
 				src: [
 					'**',
 					'!node_modules/**',
+					'!vendor/**',
 					'!bin/**',
 					'!tests/**',
 					'!build/**',
@@ -88,12 +89,14 @@ module.exports = function( grunt ) {
 					'!Gruntfile.js',
 					'!package.json',
 					'!package-lock.json',
+					'!composer.json',
 					'!composer.lock',
 					'!phpunit.xml',
 					'!README.md',
 					'!readme.md',
 					'!travis.yml',
 					'!.git/**',
+					'!.github/**',
 					'!.gitignore',
 					'!.gitmodules',
 					'!.gitattributes',

@@ -6,7 +6,7 @@
  */
 class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 
-	function tearDown() {
+	function tear_down() {
 		// use tearDown for WP < 4.0
 		remove_filter( 'use_default_gallery_style', '__return_false', 99 );
 		remove_filter( 'use_default_gallery_style', '__return_true', 99 );

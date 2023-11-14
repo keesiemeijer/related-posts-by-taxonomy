@@ -8,12 +8,12 @@ class KM_RPBT_Uninstall_Tests extends KM_RPBT_UnitTestCase {
 	/**
 	 * Set up.
 	 */
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 		delete_transient( 'rpbt_related_posts_flush_cache' );
 	}
 
-	function tearDown() {
+	function tear_down() {
 		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
 	}
 

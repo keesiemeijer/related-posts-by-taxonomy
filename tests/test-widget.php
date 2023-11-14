@@ -6,14 +6,14 @@
  */
 class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
-	function tearDown() {
+	function tear_down() {
 		// use tearDown for WP < 4.0
 		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', '__return_false' );
 		remove_filter( 'related_posts_by_taxonomy_widget', '__return_false' );
 		remove_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'override_related_posts' ), 10, 2 );
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	/**
@@ -161,7 +161,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
 
-		$this->assertContains( '<p>No related posts found</p>', $output );
+		$this->assertStringContainsString( '<p>No related posts found</p>', $output );
 	}
 
 	/**
@@ -284,9 +284,9 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
 
-		$this->assertContains( '<h2>Related Posts</h2>', $output );
-		$this->assertContains( '<section>', $output );
-		$this->assertContains( '</section>', $output );
+		$this->assertStringContainsString( '<h2>Related Posts</h2>', $output );
+		$this->assertStringContainsString( '<section>', $output );
+		$this->assertStringContainsString( '</section>', $output );
 
 		// get post ids array and permalinks array
 		$_posts     = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
@@ -337,9 +337,9 @@ EOF;
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
 
-		$this->assertContains( '<h2>Related Posts</h2>', $output );
-		$this->assertContains( '<section>', $output );
-		$this->assertContains( '</section>', $output );
+		$this->assertStringContainsString( '<h2>Related Posts</h2>', $output );
+		$this->assertStringContainsString( '<section>', $output );
+		$this->assertStringContainsString( '</section>', $output );
 
 		// get post ids array and permalinks array
 		$_posts     = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
@@ -415,7 +415,7 @@ EOF;
 		);
 
 		foreach ( $pieces as $class ) {
-			$this->assertContains( 'class="rpbt_' . $class . '"', $output );
+			$this->assertStringContainsString( 'class="rpbt_' . $class . '"', $output );
 		}
 	}
 }
