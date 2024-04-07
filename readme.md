@@ -2,7 +2,7 @@
 
 Version:           2.7.5  
 Requires at least: 5.9  
-Tested up to:      6.4  
+Tested up to:      6.5  
 
 ### Welcome to the GitHub repository for this plugin ###
 This is the development repository for the WordPress plugin [Related Posts by Taxonomy](https://wordpress.org/plugins/related-posts-by-taxonomy).
