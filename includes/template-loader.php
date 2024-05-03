@@ -19,6 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function km_rpbt_get_template( $format = false, $type = false ) {
 
 	$template = 'related-posts-links.php'; // Default template.
+	$dir      = 'related-post-plugin';  // Default theme directory to search in.
 	$format   = ( $format ) ? (string) $format : '';
 	$type     = ( $type ) ? (string) $type : '';
 
@@ -31,7 +32,21 @@ function km_rpbt_get_template( $format = false, $type = false ) {
 	}
 
 	/**
-	 * Filter the template used.
+	 * Filter the theme directory used.
+	 *
+	 * @since 2.7.6
+	 *
+	 * @param string $dir      theme directory.
+	 * @param string $type     Template used for widget or shortcode.
+	 */
+	$theme_dir = apply_filters( 'related_posts_by_taxonomy_template_directory', $dir, $type, $format );
+
+	$theme_dir = is_string( $theme_dir ) ? $theme_dir : $dir;
+	$theme_dir = trim ( trailingslashit( $theme_dir ) );
+	$theme_dir = ( '/' === $theme_dir) ? '' : $theme_dir;
+
+	/**
+	 * Filter the theme template used.
 	 *
 	 * @since 0.1
 	 *
@@ -40,7 +55,7 @@ function km_rpbt_get_template( $format = false, $type = false ) {
 	 */
 	$theme_template = apply_filters( 'related_posts_by_taxonomy_template', $template, $type, $format );
 
-	$theme_template = locate_template( array( 'related-post-plugin/' . $theme_template ) );
+	$theme_template = locate_template( array( $theme_dir . $theme_template ) );
 	if ( $theme_template ) {
 		return $theme_template;
 	} else {
