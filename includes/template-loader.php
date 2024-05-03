@@ -54,9 +54,9 @@ function km_rpbt_get_template( $format = false, $type = false ) {
 	 * @param string $type     Template used for widget or shortcode.
 	 */
 	$theme_template = apply_filters( 'related_posts_by_taxonomy_template', $template, $type, $format );
-
 	$theme_template = locate_template( array( $theme_dir . $theme_template ) );
-	if ( $theme_template ) {
+
+	if ( $theme_template && is_file( $theme_template ) ) {
 		return $theme_template;
 	} else {
 
