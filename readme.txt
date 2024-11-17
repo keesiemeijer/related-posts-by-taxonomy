@@ -142,6 +142,9 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.7.6 =
+* Enhancement
+	* Add a filter to use any theme directory for custom plugin template files
 = 2.7.5 =
 * Enhancement
 	* Fix PHP 8 and up deprecated notices
@@ -224,5 +227,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.7.5 =
-Minor changes to make this plugin play nice with newer WordPress and PHP versions.
+= 2.7.6 =
+Adds a filter to use any theme directory for custom plugin template files
