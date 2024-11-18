@@ -36,7 +36,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_cache_setup() {
 		$this->setup_cache();
-		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Cache' ), "Class doesn't exist"  );
+		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Cache' ), "Class doesn't exist" );
 		$this->assertTrue( km_rpbt_is_cache_loaded(), 'Cache not loaded' );
 		$this->assertTrue( km_rpbt_plugin_supports( 'cache' ), 'Cache not supported' );
 		$transient = get_transient( 'rpbt_related_posts_flush_cache' );
@@ -53,7 +53,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$cache = new Related_Posts_By_Taxonomy_Plugin();
 		$cache->cache_init();
 
-		$this->assertFalse( $this->arg  );
+		$this->assertFalse( $this->arg );
 		$this->arg = null;
 	}
 
@@ -64,8 +64,8 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_cache_settings() {
 		$this->setup_cache();
-		$this->assertFalse( $this->plugin->cache->cache['display_log']  );
-		$this->assertFalse( $this->plugin->cache->cache['flush_manually']  );
+		$this->assertFalse( $this->plugin->cache->cache['display_log'] );
+		$this->assertFalse( $this->plugin->cache->cache['flush_manually'] );
 	}
 
 	/**
@@ -82,8 +82,9 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$posts        = $create_posts['posts'];
 
 		// Add a shortcode to cache.
-		wp_update_post( array(
-				'ID'          => $posts[0],
+		wp_update_post(
+			array(
+				'ID'           => $posts[0],
 				'post_content' => '[related_posts_by_tax]',
 			)
 		);
@@ -113,9 +114,9 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertNotEmpty( $cache_ids );
 
 		// Get related post ids with function.
-		$args = array( 'fields' => 'ids' );
+		$args       = array( 'fields' => 'ids' );
 		$taxonomies = array_keys( $this->plugin->taxonomies );
-		$related = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
+		$related    = km_rpbt_query_related_posts( $posts[0], $taxonomies, $args );
 
 		$this->assertEquals( $cache_ids, $related );
 	}
@@ -131,8 +132,8 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		$args = array( 'fields' => 'ids' );
-		$taxonomies = array( 'post_tag' );
+		$args          = array( 'fields' => 'ids' );
+		$taxonomies    = array( 'post_tag' );
 		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, $args );
 
 		$meta_key = $this->get_cache_meta_key();
@@ -141,7 +142,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertNotEmpty( $meta_key );
 
 		// Get cache for $post[1];
-		$cache = get_post_meta( $posts[1], $meta_key, true );
+		$cache     = get_post_meta( $posts[1], $meta_key, true );
 		$cache_ids = array_keys( $cache['ids'] );
 		$this->assertNotEmpty( $cache_ids );
 
@@ -161,7 +162,11 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 		$taxonomies = array( 'post_tag' );
 
-		$args = array( 'taxonomies' => $taxonomies, 'post_id' => $posts[1], 'fields' => 'ids' );
+		$args    = array(
+			'taxonomies' => $taxonomies,
+			'post_id'    => $posts[1],
+			'fields'     => 'ids',
+		);
 		$related = $this->plugin->cache->get_related_posts( $args );
 
 		// Check if related posts are cached
@@ -179,13 +184,22 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		$_posts     = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $posts,
+				'order'     => 'post__in',
+			)
+		);
 		$post_names = wp_list_pluck( $_posts, 'post_title' );
 
-		$taxonomies = array( 'post_tag' );
+		$taxonomies    = array( 'post_tag' );
 		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, array( 'fields' => 'names' ) );
 
-		$args = array( 'taxonomies' => $taxonomies, 'post_id' => $posts[1], 'fields' => 'names' );
+		$args    = array(
+			'taxonomies' => $taxonomies,
+			'post_id'    => $posts[1],
+			'fields'     => 'names',
+		);
 		$related = $this->plugin->cache->get_related_posts( $args );
 
 		// Check if related posts are from the cache
@@ -207,7 +221,11 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 		add_filter( 'related_posts_by_taxonomy_id_query', '__return_true' );
 
-		$args = array( 'taxonomies' => 'post_tag', 'post_id' => $posts[1], 'fields' => '' );
+		$args    = array(
+			'taxonomies' => 'post_tag',
+			'post_id'    => $posts[1],
+			'fields'     => '',
+		);
 		$related = $this->plugin->cache->get_related_posts( $args );
 
 		// Check if related posts were cached
@@ -241,7 +259,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertTrue( $this->cache_log_contains( $log ), 'posts not cached' );
 
 		// Get posts from cache
-		$from_cache   = km_rpbt_get_related_posts( $posts[1] );
+		$from_cache = km_rpbt_get_related_posts( $posts[1] );
 
 		// Check if related posts are from the cache
 		$log = sprintf( 'Post ID %d - cache exists', $posts[1] );
@@ -249,7 +267,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 		// Test default post properties.
 		$this->assertSame( (int) $cached_posts[0]->ID, $from_cache[0]->ID );
-		$this->assertTrue( isset( $from_cache[0]->termcount ) && $from_cache[0]->termcount , 'termcount failed' );
+		$this->assertTrue( isset( $from_cache[0]->termcount ) && $from_cache[0]->termcount, 'termcount failed' );
 		$this->assertTrue( isset( $from_cache[0]->rpbt_current ) && $from_cache[0]->rpbt_current, 'rpbt_current failed' );
 		$this->assertTrue( isset( $from_cache[0]->rpbt_post_class ), 'rpbt_post_class failed' );
 		$this->assertTrue( isset( $from_cache[0]->rpbt_type ), 'rpbt_type failed' );
@@ -281,7 +299,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$posts = $this->create_posts_with_terms( 'rel_cpt', 'post_tag', 'rel_ctax' );
 		$posts = $posts['posts'];
 
-		$args =  array( 'post_types' => array( 'rel_cpt' ) );
+		$args = array( 'post_types' => array( 'rel_cpt' ) );
 
 		// Test with a single taxonomy.
 		$taxonomies = array( 'rel_ctax' );
@@ -295,8 +313,8 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 
 		$args = array_merge( $args, $taxonomies );
 
-		$args =  array(
-			'post_id' => $posts[0],
+		$args = array(
+			'post_id'    => $posts[0],
 			'post_types' => array( 'rel_cpt' ),
 			'taxonomies' => array( 'rel_ctax' ),
 
@@ -319,7 +337,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		$args = array( 'fields' => 'ids' );
+		$args       = array( 'fields' => 'ids' );
 		$taxonomies = array( 'post_tag' );
 
 		// Cache related posts for post 2
@@ -350,7 +368,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Was set to true with create_posts_with_terms()
 		$this->plugin->cache->flush_cache = false;
 
-		$args = array( 'fields' => 'ids' );
+		$args       = array( 'fields' => 'ids' );
 		$taxonomies = array( 'post_tag' );
 
 		// Cache related posts for post 2
@@ -385,7 +403,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Was set to true with create_posts_with_terms()
 		$this->plugin->cache->flush_cache = false;
 
-		$args = array( 'fields' => 'ids' );
+		$args       = array( 'fields' => 'ids' );
 		$taxonomies = array( 'post_tag' );
 
 		// Cache related posts for post 2
@@ -394,7 +412,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Cache should be set for $post[2].
 		$this->assertNotEmpty( $this->get_cache_meta_key() );
 
-		set_post_thumbnail ( $posts[2], $attachment_id );
+		set_post_thumbnail( $posts[2], $attachment_id );
 
 		// $this->plugin->cache->flush_cache should be true
 		$this->plugin->cache->shutdown_flush_cache();
@@ -420,7 +438,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Was set to true with create_posts_with_terms()
 		$this->plugin->cache->flush_cache = false;
 
-		$args = array( 'fields' => 'ids' );
+		$args       = array( 'fields' => 'ids' );
 		$taxonomies = array( 'post_tag' );
 
 		// Cache related posts for post 2
@@ -429,7 +447,7 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Cache should be set for $post[2].
 		$this->assertNotEmpty( $this->get_cache_meta_key() );
 
-		wp_delete_term ( $terms[2], 'post_tag' );
+		wp_delete_term( $terms[2], 'post_tag' );
 
 		// $this->plugin->cache->flush_cache should be true
 		$this->plugin->cache->shutdown_flush_cache();
@@ -437,5 +455,4 @@ class KM_RPBT_Cache_Tests extends KM_RPBT_UnitTestCase {
 		// Cache should be empty.
 		$this->assertEmpty( $this->get_cache_meta_key() );
 	}
-
 }

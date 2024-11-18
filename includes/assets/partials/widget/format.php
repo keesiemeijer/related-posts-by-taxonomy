@@ -3,7 +3,7 @@
 </h4>
 <p class="rpbt_format">
 	<label for="<?php echo $this->get_field_id( 'format' ); ?>">
-		<?php _e( 'Format', 'related-posts-by-taxonomy' ) ?>: 
+		<?php _e( 'Format', 'related-posts-by-taxonomy' ); ?>: 
 	</label>
 	<select name="<?php echo $this->get_field_name( 'format' ); ?>" id="<?php echo $this->get_field_id( 'format' ); ?>" class="widefat">
 		<?php foreach ( $plugin->formats as $name => $label ) : ?>

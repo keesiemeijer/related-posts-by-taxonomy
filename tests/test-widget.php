@@ -58,7 +58,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
 		// run the widget
 		ob_start();
-		$args = array(
+		$args     = array(
 			'before_widget' => '<section>',
 			'after_widget'  => '</section>',
 			'before_title'  => '<h2>',
@@ -69,7 +69,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
 
-		$this->assertTrue( $this->arg  );
+		$this->assertTrue( $this->arg );
 		$this->arg = null;
 	}
 
@@ -80,7 +80,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		//add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_first_argument' ) );
+		// add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'return_first_argument' ) );
 		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 		$args   = array(
 			'before_widget' => '<section>',
@@ -101,7 +101,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$count = 0;
 		foreach ( $links as $link ) {
 			if ( false !== strpos( $output, $link ) ) {
-				$count++;
+				++$count;
 			}
 		}
 
@@ -109,7 +109,8 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertTrue( ( 3 === $count ) );
 
 		// Create custom post type posts.
-		$this->factory->post->create_many( 5,
+		$this->factory->post->create_many(
+			5,
 			array(
 				'post_type' => 'cpt',
 			)
@@ -131,7 +132,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$count = 0;
 		foreach ( $cpt_links as $cpt_link ) {
 			if ( false !== strpos( $cpt_output, $cpt_link ) ) {
-				$count++;
+				++$count;
 			}
 		}
 		// Found 5 custom post type posts.
@@ -150,7 +151,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 
 		// run the widget
 		ob_start();
-		$args = array(
+		$args     = array(
 			'before_widget' => '<section>',
 			'after_widget'  => '</section>',
 			'before_title'  => '<h2>',
@@ -189,7 +190,7 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$expected               = km_rpbt_get_default_settings( 'widget' );
 		$expected['post_types'] = array( 'post' ); // set in the widget as default
 		$expected['post_id']    = false; // not in the loop
-		$expected = array_merge( $expected, $args );
+		$expected               = array_merge( $expected, $args );
 
 		$this->assertEquals( $expected, $this->arg );
 		$this->arg = null;
@@ -202,8 +203,8 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$widget       = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 
-		$settings = $widget->get_instance_settings( array() );
-		$expected = km_rpbt_get_default_settings( 'widget' );
+		$settings               = $widget->get_instance_settings( array() );
+		$expected               = km_rpbt_get_default_settings( 'widget' );
 		$expected['post_types'] = array( 'post' => 'on' ); // set in the widget as default
 
 		$this->assertEquals( $expected, $settings );
@@ -215,12 +216,12 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 	function test_widget_deprecated_all_taxonomy_value() {
 		$create_posts = $this->create_posts_with_terms();
 		$widget       = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
-		$this->assertSame( 'all',  $widget->plugin->all_tax );
+		$this->assertSame( 'all', $widget->plugin->all_tax );
 
-		$args = array( 'taxonomies' => 'all' );
+		$args     = array( 'taxonomies' => 'all' );
 		$settings = $widget->get_instance_settings( $args );
 
-		$expected = km_rpbt_get_default_settings( 'widget' );
+		$expected               = km_rpbt_get_default_settings( 'widget' );
 		$expected['post_types'] = array( 'post' => 'on' ); // set in the widget as default
 
 		// All taxonomies option is saved as empty string since version 2.7.0
@@ -234,10 +235,10 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$widget       = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 
-		$expected = km_rpbt_get_default_settings( 'widget' );
+		$expected               = km_rpbt_get_default_settings( 'widget' );
 		$expected['post_types'] = array( 'post' => 'on' ); // set in the widget as default
 
-		$args = array( 'taxonomy' => 'all_taxonomies' );
+		$args     = array( 'taxonomy' => 'all_taxonomies' );
 		$settings = $widget->get_instance_settings( $args );
 		$this->assertEquals( '', $settings['taxonomies'] );
 		$this->assertTrue( ! isset( $settings['taxonomy'] ) );
@@ -250,10 +251,10 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$create_posts = $this->create_posts_with_terms();
 		$widget       = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
 
-		$expected = km_rpbt_get_default_settings( 'widget' );
+		$expected               = km_rpbt_get_default_settings( 'widget' );
 		$expected['post_types'] = array( 'post' => 'on' ); // set in the widget as default
 
-		$args = array( 'taxonomy' => 'category' );
+		$args     = array( 'taxonomy' => 'category' );
 		$settings = $widget->get_instance_settings( $args );
 		$this->assertEquals( 'category', $settings['taxonomies'] );
 		$this->assertTrue( ! isset( $settings['taxonomy'] ) );
@@ -289,7 +290,12 @@ class KM_RPBT_Widget_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertStringContainsString( '</section>', $output );
 
 		// get post ids array and permalinks array
-		$_posts     = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $posts,
+				'order'     => 'post__in',
+			)
+		);
 		$ids        = wp_list_pluck( $_posts, 'ID' );
 		$permalinks = array_map( 'get_permalink', $ids );
 
@@ -332,7 +338,11 @@ EOF;
 			'after_title'   => '</h2>',
 		);
 
-		$instance = array( 'post_id' => $posts[0], 'show_date' => true, 'post_class' => 'my-class' );
+		$instance = array(
+			'post_id'    => $posts[0],
+			'show_date'  => true,
+			'post_class' => 'my-class',
+		);
 		$widget->_set( 2 );
 		$widget->widget( $args, $instance );
 		$output = ob_get_clean();
@@ -342,13 +352,18 @@ EOF;
 		$this->assertStringContainsString( '</section>', $output );
 
 		// get post ids array and permalinks array
-		$_posts     = get_posts( array( 'posts__in' => $posts, 'order' => 'post__in' ) );
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $posts,
+				'order'     => 'post__in',
+			)
+		);
 		$ids        = wp_list_pluck( $_posts, 'ID' );
 		$permalinks = array_map( 'get_permalink', $ids );
 		$date       = array();
 		$datetime   = array();
 		foreach ( $_posts as $post ) {
-			$date[] = get_the_date( '', $post );
+			$date[]     = get_the_date( '', $post );
 			$datetime[] = get_the_date( DATE_W3C, $post );
 		}
 
@@ -394,7 +409,10 @@ EOF;
 			'after_title'   => '</h2>',
 		);
 
-		$instance = array( 'post_id' => $posts[0], 'show_date' => true );
+		$instance = array(
+			'post_id'   => $posts[0],
+			'show_date' => true,
+		);
 		$widget->_set( 2 );
 		$widget->form( $instance );
 		$output = ob_get_clean();

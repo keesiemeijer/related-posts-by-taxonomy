@@ -111,7 +111,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$post_ids_sql = '';
 	if ( $args['exclude_posts'] ) {
 		// Post ids sql.
-		$post_ids_sql = "AND $wpdb->posts.ID";
+		$post_ids_sql  = "AND $wpdb->posts.ID";
 		$post_ids_sql .= ' NOT IN (' . implode( ', ', $args['exclude_posts'] ) . ')';
 	}
 
@@ -135,7 +135,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 			$order_sql = 'ASC';
 			break;
 		case 'RAND':
-			$order_sql = 'RAND()';
+			$order_sql     = 'RAND()';
 			$order_by_rand = true;
 			break;
 		default:
@@ -144,7 +144,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	}
 
 	$allowed_fields = array(
-		'ids' => 'ID',
+		'ids'   => 'ID',
 		'names' => 'post_title',
 		'slugs' => 'post_name',
 	);
@@ -179,12 +179,12 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	$limit_date_sql = '';
 	if ( $args['limit_year'] || $args['limit_month'] ) {
 		// Month takes precedence over year.
-		$time_limit  = ( $args['limit_month'] ) ? $args['limit_month'] : $args['limit_year'];
-		$time_string = ( $args['limit_month'] ) ? 'month' : 'year';
-		$last_date = date( 'Y-m-t', strtotime( 'now' ) );
-		$first_date  = date( 'Y-m-d', strtotime( "$last_date -$time_limit $time_string" ) );
+		$time_limit     = ( $args['limit_month'] ) ? $args['limit_month'] : $args['limit_year'];
+		$time_string    = ( $args['limit_month'] ) ? 'month' : 'year';
+		$last_date      = date( 'Y-m-t', strtotime( 'now' ) );
+		$first_date     = date( 'Y-m-d', strtotime( "$last_date -$time_limit $time_string" ) );
 		$limit_date_sql = " AND $wpdb->posts.$orderby > '$first_date 23:59:59' AND $wpdb->posts.$orderby <= '$last_date 23:59:59'";
-		$limit_sql = '';
+		$limit_sql      = '';
 	}
 
 	$order_by_sql = '';
@@ -196,7 +196,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	}
 
 	if ( ! $order_by_rand ) {
-		$select_sql .= ' , count(distinct tt.term_taxonomy_id) as termcount';
+		$select_sql   .= ' , count(distinct tt.term_taxonomy_id) as termcount';
 		$order_by_sql .= "$wpdb->posts.$orderby";
 	}
 
@@ -230,8 +230,8 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 
 	$meta_join_sql = $meta_where_sql = '';
 	if ( ! empty( $meta_query ) ) {
-		$meta = get_meta_sql( $meta_query, 'post', $wpdb->posts, 'ID' );
-		$meta_join_sql = ( isset( $meta['join'] ) && $meta['join'] ) ? $meta['join'] : '';
+		$meta           = get_meta_sql( $meta_query, 'post', $wpdb->posts, 'ID' );
+		$meta_join_sql  = ( isset( $meta['join'] ) && $meta['join'] ) ? $meta['join'] : '';
 		$meta_where_sql = ( isset( $meta['where'] ) && $meta['where'] ) ? $meta['where'] : '';
 
 		if ( ( '' === $meta_join_sql ) || ( '' === $meta_where_sql ) ) {
@@ -239,7 +239,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		}
 	}
 
-	$pieces   = array( 'select_sql', 'join_sql', 'where_sql', 'group_by_sql', 'order_by_sql', 'limit_sql' );
+	$pieces = array( 'select_sql', 'join_sql', 'where_sql', 'group_by_sql', 'order_by_sql', 'limit_sql' );
 
 	/**
 	 * Filter the SELECT clause of the related posts query.
@@ -266,7 +266,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 	 * @param array  $taxonomies Array of Taxonomy names.
 	 * @param array  $args       Related posts query arguments.
 	 */
-	$join_sql  = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_join', array( $join_sql, $post_id, $taxonomies, $args ) );
+	$join_sql = apply_filters_ref_array( 'related_posts_by_taxonomy_posts_join', array( $join_sql, $post_id, $taxonomies, $args ) );
 
 	$where_sql = "{$where_sql} {$post_ids_sql}{$limit_date_sql} AND ( $term_ids_sql ){$meta_where_sql}";
 
@@ -385,7 +385,7 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 		if ( -1 !== (int) $args['posts_per_page'] ) {
 			$posts_per_page = absint( $args['posts_per_page'] );
 			$posts_per_page = ( $posts_per_page ) ? $posts_per_page : 5;
-			$results = array_slice( $results, 0, $posts_per_page );
+			$results        = array_slice( $results, 0, $posts_per_page );
 		}
 
 		// Add default values.

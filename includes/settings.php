@@ -177,17 +177,17 @@ function km_rpbt_get_default_settings( $type = '' ) {
 
 	// Common settings for the widget and shortcode and wp rest api.
 	$settings = array(
-		'post_id'        => '',
-		'taxonomies'     => '',
-		'title'          => __( 'Related Posts', 'related-posts-by-taxonomy' ),
-		'format'         => 'links',
-		'image_size'     => 'thumbnail',
-		'gallery_format' => '',
-		'columns'        => 3,
-		'caption'        => 'post_title',
-		'link_caption'   => false,
-		'show_date'      => false,
-		'post_class'     => '',
+		'post_id'            => '',
+		'taxonomies'         => '',
+		'title'              => __( 'Related Posts', 'related-posts-by-taxonomy' ),
+		'format'             => 'links',
+		'image_size'         => 'thumbnail',
+		'gallery_format'     => '',
+		'columns'            => 3,
+		'caption'            => 'post_title',
+		'link_caption'       => false,
+		'show_date'          => false,
+		'post_class'         => '',
 
 		// back compat: double quoted class attribute
 		"before_{$selector}" => '<div class="rpbt_' . $selector . '">',
@@ -275,7 +275,7 @@ function km_rpbt_validate_args( $args ) {
 	$defaults = km_rpbt_get_default_settings( $type );
 
 	/* make sure all defaults are present */
-	$args = array_merge( $defaults, $args );
+	$args          = array_merge( $defaults, $args );
 	$args['title'] = trim( $args['title'] );
 
 	if ( empty( $args['post_id'] ) ) {
@@ -284,7 +284,7 @@ function km_rpbt_validate_args( $args ) {
 
 	/* If no post type is set use the post type of the current post */
 	if ( empty( $args['post_types'] ) ) {
-		$post_type = get_post_type( $args['post_id'] );
+		$post_type          = get_post_type( $args['post_id'] );
 		$args['post_types'] = $post_type ? array( $post_type ) : array( 'post' );
 	}
 

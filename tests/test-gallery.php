@@ -83,7 +83,7 @@ EOF;
 	 * Test output from gallery.
 	 */
 	function test_shortcode_gallery_format_editor_block_with_custom_post_class() {
-		$gallery_args = $this->setup_gallery();
+		$gallery_args                           = $this->setup_gallery();
 		$gallery_args['args']['gallery_format'] = 'editor_block';
 		$gallery_args['args']['post_class']     = 'my-class';
 		extract( $gallery_args );
@@ -171,7 +171,7 @@ EOF;
 
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
 		$args['gallery_class'] = '';
-		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+		$gallery               = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
@@ -198,7 +198,7 @@ EOF;
 
 		add_filter( 'use_default_gallery_style', '__return_false', 99 );
 		$args['post_class'] = 'my-class';
-		$gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+		$gallery            = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
 
 		$static   = $this->get_gallery_instance_id( $gallery );
 		$expected = <<<EOF
@@ -325,19 +325,22 @@ EOF;
 		$ids = array();
 		foreach ( range( 1, 3 ) as $i ) {
 			$attachment_id = $this->factory->attachment->create_object(
-				"image$i.jpg", 0, array(
+				"image$i.jpg",
+				0,
+				array(
 					'post_mime_type' => 'image/jpeg',
-					'post_type' => 'attachment',
-					'post_excerpt' => "excerpt $i",
+					'post_type'      => 'attachment',
+					'post_excerpt'   => "excerpt $i",
 				)
 			);
-			$metadata = array_merge(
+			$metadata      = array_merge(
 				array(
 					'file' => "image$i.jpg",
-				), array(
-					'width' => 100,
+				),
+				array(
+					'width'  => 100,
 					'height' => 100,
-					'sizes' => '',
+					'sizes'  => '',
 				)
 			);
 			wp_update_attachment_metadata( $attachment_id, $metadata );
@@ -359,7 +362,7 @@ BLOB;
 
 		// Type attribute changed from single to double quotes or
 		// was omitted in WP 5.3
-		if ( version_compare( $version , '5.3', '>=' ) ) {
+		if ( version_compare( $version, '5.3', '>=' ) ) {
 			$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
 		}
 

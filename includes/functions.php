@@ -225,7 +225,7 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 	}
 
 	$rpbt_args['type'] = km_rpbt_get_settings_type( $rpbt_args );
-	$rpbt_args = array_merge( km_rpbt_get_default_settings( $rpbt_args['type'] ), $rpbt_args );
+	$rpbt_args         = array_merge( km_rpbt_get_default_settings( $rpbt_args['type'] ), $rpbt_args );
 
 	/* get the template depending on the format  */
 	$template = km_rpbt_get_template( $rpbt_args['format'], $rpbt_args['type'] );
@@ -255,10 +255,10 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 
 	$html = '';
 	if ( $output ) {
-		$html =  isset( $rpbt_args[ $before ] ) ? $rpbt_args[ $before ]  . "\n" : '';
+		$html  = isset( $rpbt_args[ $before ] ) ? $rpbt_args[ $before ] . "\n" : '';
 		$html .= trim( $rpbt_args['title'] ) . "\n";
 		$html .= $output . "\n";
-		$html .= isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ]  . "\n" : '';
+		$html .= isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ] . "\n" : '';
 	}
 
 	$recursing = false;

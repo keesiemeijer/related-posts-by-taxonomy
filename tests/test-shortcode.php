@@ -42,15 +42,15 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 			'link_caption'     => false,
 			'show_date'        => false,
 			'post_class'       => '',
-			"before_shortcode" => '<div class="rpbt_shortcode">',
-			"after_shortcode"  => '</div>',
+			'before_shortcode' => '<div class="rpbt_shortcode">',
+			'after_shortcode'  => '</div>',
 			'before_title'     => '<h3>',
 			'after_title'      => '</h3>',
 			'type'             => 'shortcode',
 		);
 
 		// km_rpbt_get_query_vars() is also tested in test-functions.php
-		$expected = array_merge( km_rpbt_get_query_vars(), $expected );
+		$expected               = array_merge( km_rpbt_get_query_vars(), $expected );
 		$expected['post_types'] = '';
 
 		$atts = km_rpbt_get_default_settings( 'shortcode' );
@@ -112,8 +112,6 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test the related posts retrieved by the shortcode
-	 *
-	 *
 	 */
 	function test_shortcode_posts() {
 		$create_posts = $this->create_posts_with_terms();
@@ -128,9 +126,9 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( array( $posts[1], $posts[2], $posts[3] ), $post_ids );
 		$this->arg = null;
 
-
 		// Create custom post type posts.
-		$this->factory->post->create_many( 5,
+		$this->factory->post->create_many(
+			5,
 			array(
 				'post_type' => 'cpt',
 			)
@@ -148,7 +146,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$count = 0;
 		foreach ( $cpt_links as $link ) {
 			if ( false !== strpos( $shortcode, $link ) ) {
-				$count++;
+				++$count;
 			}
 		}
 
@@ -162,7 +160,8 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 
 		// register custom post type
 		register_post_type(
-			'cpt', array(
+			'cpt',
+			array(
 				'public'      => true,
 				'has_archive' => true,
 				'taxonomies'  => array( 'post_tag', 'category' ),
@@ -179,7 +178,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		// Add a shortcode to post content.
 		wp_update_post(
 			array(
-				'ID'          => $posts[0],
+				'ID'           => $posts[0],
 				'post_content' => '[related_posts_by_tax]',
 			)
 		);
@@ -236,7 +235,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		$_posts     = get_posts(
 			array(
 				'posts__in' => $posts,
-				'order' => 'post__in',
+				'order'     => 'post__in',
 			)
 		);
 		$ids        = wp_list_pluck( $_posts, 'ID' );
@@ -269,7 +268,6 @@ EOF;
 
 	/**
 	 * Test output from shortcode.
-	 *
 	 */
 	function test_shortcode_output_with_date() {
 		$create_posts = $this->create_posts_with_terms();
@@ -279,7 +277,7 @@ EOF;
 		$_posts     = get_posts(
 			array(
 				'posts__in' => $posts,
-				'order' => 'post__in',
+				'order'     => 'post__in',
 			)
 		);
 		$ids        = wp_list_pluck( $_posts, 'ID' );
@@ -287,7 +285,7 @@ EOF;
 		$date       = array();
 		$datetime   = array();
 		foreach ( $posts as $post ) {
-			$date[] = get_the_date( '', $post );
+			$date[]     = get_the_date( '', $post );
 			$datetime[] = get_the_date( DATE_W3C, $post );
 		}
 

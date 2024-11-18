@@ -6,7 +6,7 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 
 	function set_up() {
 		parent::set_up();
-		$this->arg = null;
+		$this->arg        = null;
 		$this->query_args = null;
 	}
 
@@ -47,10 +47,10 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		$terms = $this->factory->term->create_many( 5, array( 'taxonomy' => $taxonomy ) );
 
 		foreach ( array_values( $posts ) as $key => $post ) {
-			wp_set_post_terms ( $posts[ $key ], $terms[ $key ], $taxonomy );
+			wp_set_post_terms( $posts[ $key ], $terms[ $key ], $taxonomy );
 		}
 
-		//$assigned_terms = assign_taxonomy_terms($posts_taxonomy);
+		// $assigned_terms = assign_taxonomy_terms($posts_taxonomy);
 
 		// term 0
 		// --term 1
@@ -60,11 +60,11 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		$args = array();
 		foreach ( array( 1, 2, 3 ) as $id ) {
 			$args['parent'] = $terms[ $id - 1 ];
-			wp_update_term( $terms[ $id ] , $taxonomy, $args );
+			wp_update_term( $terms[ $id ], $taxonomy, $args );
 		}
 
 		$args['parent'] = $terms[0];
-		wp_update_term( $terms[4] , $taxonomy, $args );
+		wp_update_term( $terms[4], $taxonomy, $args );
 
 		return compact( 'posts', 'terms' );
 	}
@@ -81,13 +81,14 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 
 		// create posts with decreasing timestamp
 		$posts = array();
-		$now = time();
+		$now   = time();
 		foreach ( range( 1, $posts_per_page ) as $i ) {
 			$this->factory->post->create(
 				array(
 					'post_date' => date( 'Y-m-d H:i:s', $now - ( $i * DAY_IN_SECONDS ) ),
-					'post_type' => $post_type
-				) );
+					'post_type' => $post_type,
+				)
+			);
 		}
 
 		// Return posts by desc date.
@@ -97,8 +98,9 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 				'post_type'      => $post_type,
 				'fields'         => 'ids',
 				'order'          => 'DESC',
-				'orderby'        => 'date'
-			) );
+				'orderby'        => 'date',
+			)
+		);
 
 		return $posts;
 	}
@@ -121,7 +123,7 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 
 		if ( $schema === 1 ) {
 			// assign terms to posts
-			$post_terms =  array(
+			$post_terms = array(
 				array( $tax_terms[0], $tax_terms[1], $tax_terms[2] ), // post 0
 				array( $tax_terms[2] ),                               // post 1
 				array( $tax_terms[0], $tax_terms[2] ),                // post 2
@@ -144,7 +146,7 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 
 		foreach ( $post_terms as $key => $terms ) {
 			if ( ! empty( $terms ) ) {
-				wp_set_post_terms ( $posts[ $key ], $terms, $taxonomy );
+				wp_set_post_terms( $posts[ $key ], $terms, $taxonomy );
 			}
 		}
 
@@ -155,27 +157,28 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		// Get highest term id
 		$terms = get_terms(
 			array(
-				'fields'   => 'ids',
-				'order'    => 'DESC',
-				'orderby'  => 'term_id',
-				'number'   => 1,
-			) );
+				'fields'  => 'ids',
+				'order'   => 'DESC',
+				'orderby' => 'term_id',
+				'number'  => 1,
+			)
+		);
 		return isset( $terms[0] ) ? absint( $terms[0] ) : 0;
 	}
 
 	function return_first_argument( $arg ) {
 		$this->arg = $arg;
-		return  $arg;
+		return $arg;
 	}
 
 	function return_query_args( $results, $post_id, $taxonomies, $args ) {
 		$this->query_args = $args;
-		return  $results;
+		return $results;
 	}
 
 	function meta_query_callback( $meta_query, $post_id, $taxonomies, $args ) {
 		$meta_query[] = array(
-			'key' => 'meta_key',
+			'key'   => 'meta_key',
 			'value' => 'meta_value',
 		);
 		return $meta_query;
@@ -207,14 +210,14 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 		// create attachment
 		$filename = ( DIR_TESTDATA . '/images/test-image.jpg' );
 		$contents = file_get_contents( $filename );
-		$upload = wp_upload_bits( basename( $filename ), null, $contents );
+		$upload   = wp_upload_bits( basename( $filename ), null, $contents );
 		$this->assertTrue( empty( $upload['error'] ) );
 
 		$attachment = array(
-			'post_title' => 'Post Thumbnail',
-			'post_type' => 'attachment',
+			'post_title'     => 'Post Thumbnail',
+			'post_type'      => 'attachment',
 			'post_mime_type' => 'image/jpeg',
-			'guid' => $upload['url']
+			'guid'           => $upload['url'],
 		);
 
 		return wp_insert_attachment( $attachment, $upload['file'] );
@@ -226,11 +229,11 @@ class KM_RPBT_UnitTestCase extends WP_UnitTestCase {
 	 * @depends KM_RPBT_Misc_Tests::test_create_posts
 	 */
 	function setup_gallery() {
-		$posts        = $this->create_posts();
-		$related_post = get_post( $posts[0] );
-		$permalink    = get_permalink( $related_post->ID );
+		$posts         = $this->create_posts();
+		$related_post  = get_post( $posts[0] );
+		$permalink     = get_permalink( $related_post->ID );
 		$attachment_id = $this->create_image();
-		set_post_thumbnail ( $posts[0], $attachment_id );
+		set_post_thumbnail( $posts[0], $attachment_id );
 
 		// Adds a fake image <img>, otherwhise the function will return nothing.
 		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );

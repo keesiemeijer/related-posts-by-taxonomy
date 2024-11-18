@@ -101,7 +101,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 */
 		public static function get_instance() {
 			// create a new object if it doesn't exist.
-			is_null( self::$instance ) && self::$instance = new self;
+			is_null( self::$instance ) && self::$instance = new self();
 			return self::$instance;
 		}
 
@@ -140,7 +140,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		 * @return array Array with post type objects.
 		 */
 		public function get_post_types() {
-			$post_types = array();
+			$post_types     = array();
 			$post_types_obj = get_post_types( array( 'public' => true ), 'objects', 'and' );
 
 			foreach ( (array) $post_types_obj as $key => $value ) {
@@ -206,7 +206,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		public function get_image_sizes() {
 
 			global $_wp_additional_image_sizes;
-			$sizes = array();
+			$sizes       = array();
 			$image_sizes = get_intermediate_image_sizes();
 
 			foreach ( $image_sizes as $s ) {
@@ -221,8 +221,8 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 				}
 
 				if ( $width && $height ) {
-					$size = sanitize_title( $s );
-					$size = ucwords( str_replace( array( '-', '_' ), ' ', $s ) );
+					$size        = sanitize_title( $s );
+					$size        = ucwords( str_replace( array( '-', '_' ), ' ', $s ) );
 					$sizes[ $s ] = $size . ' (' . $width . ' x ' . $height . ')';
 				}
 			}
@@ -294,7 +294,6 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Defaults' ) ) {
 		public function plugin_supports( $type = '' ) {
 			return km_rpbt_plugin_supports( $type );
 		}
-
 	} // end class
 
 } // class exists

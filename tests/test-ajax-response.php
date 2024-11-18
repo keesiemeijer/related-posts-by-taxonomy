@@ -16,7 +16,7 @@ class KM_RPBT_Ajax_Tests extends KM_RPBT_Ajax_UnitTestCase {
 	}
 
 	function get_args( $post_id, $type = 'shortcode' ) {
-		$args = array(
+		$args     = array(
 			'post_id'   => $post_id,
 			'post_type' => 'post',
 		);
@@ -36,14 +36,14 @@ class KM_RPBT_Ajax_Tests extends KM_RPBT_Ajax_UnitTestCase {
 		$_posts     = get_posts(
 			array(
 				'posts__in' => $posts,
-				'order' => 'post__in',
+				'order'     => 'post__in',
 			)
 		);
 		$ids        = wp_list_pluck( $_posts, 'ID' );
 		$permalinks = array_map( 'get_permalink', $ids );
 
 		// expected related posts are post 1,2,3
-		$expected = <<<EOF
+		$expected       = <<<EOF
 <div class="rpbt_shortcode">
 <h3>Related Posts</h3>
 <ul>

@@ -29,7 +29,7 @@ class KM_RPBT_Functions_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_km_rpbt_get_post_types_custom() {
 		register_post_type( 'cpt' );
-		$expected = array( 'cpt', 'post' );
+		$expected   = array( 'cpt', 'post' );
 		$post_types = km_rpbt_get_post_types( $expected );
 		sort( $post_types );
 		$this->assertEquals( $expected, km_rpbt_get_post_types( $post_types ) );

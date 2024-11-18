@@ -39,8 +39,8 @@ class KM_RPBT_Uninstall_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEmpty( $this->get_cache_meta_key() );
 
 		// Cache related posts.
-		$args = array( 'fields' => 'ids' );
-		$taxonomies = array( 'post_tag' );
+		$args          = array( 'fields' => 'ids' );
+		$taxonomies    = array( 'post_tag' );
 		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies, $args );
 
 		// Test if cached related posts exists.
