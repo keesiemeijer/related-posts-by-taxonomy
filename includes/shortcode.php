@@ -85,14 +85,14 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
 	 * @param array $defaults Default feature arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
 	 *                        for more information about default feature arguments.
 	 */
-	$defaults = apply_filters( "related_posts_by_taxonomy_shortcode_defaults", $settings );
+	$defaults = apply_filters( 'related_posts_by_taxonomy_shortcode_defaults', $settings );
 	$defaults = array_merge( $settings, (array) $defaults );
 
 	// Filter hook shortcode_atts_related_posts_by_tax.
 	$args = shortcode_atts( $defaults, $args, 'related_posts_by_tax' );
 
 	$args['type'] = 'shortcode';
-	$args = km_rpbt_validate_shortcode_atts( $args );
+	$args         = km_rpbt_validate_shortcode_atts( $args );
 
 	/**
 	 * Filter validated shortcode arguments.
@@ -102,7 +102,7 @@ function km_rpbt_related_posts_by_taxonomy_shortcode( $args ) {
 	 * @param array $args Shortcode arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
 	 *                    for more information about feature arguments.
 	 */
-	$args = apply_filters( "related_posts_by_taxonomy_shortcode_atts", $args );
+	$args = apply_filters( 'related_posts_by_taxonomy_shortcode_atts', $args );
 	$args = array_merge( $defaults, (array) $args );
 
 	$args['type'] = 'shortcode';
@@ -137,11 +137,11 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 		'show_date',
 		'include_parents',
 		'include_children',
-		'related'
+		'related',
 	);
 
-	foreach( $booleans as $bool ) {
-		if( ! is_string( $atts[ $bool ] ) ) {
+	foreach ( $booleans as $bool ) {
+		if ( ! is_string( $atts[ $bool ] ) ) {
 			continue;
 		}
 
@@ -155,7 +155,7 @@ function km_rpbt_validate_shortcode_atts( $atts ) {
 	}
 
 	if ( 'regular_order' !== $atts['include_self'] ) {
-		$atts['include_self']  = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
+		$atts['include_self'] = ( '' !== trim( $atts['include_self'] ) ) ? $atts['include_self'] : false;
 	}
 
 	return km_rpbt_validate_booleans( $atts, $defaults );

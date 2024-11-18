@@ -29,12 +29,15 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 */
 	public function register_routes() {
 
-		$version = '1';
+		$version   = '1';
 		$namespace = 'related-posts-by-taxonomy/v' . $version;
-		$base = 'posts';
+		$base      = 'posts';
 
-		register_rest_route( $namespace, '/' . $base . '/(?P<id>[\d]+)', array(
-				'args' => array(
+		register_rest_route(
+			$namespace,
+			'/' . $base . '/(?P<id>[\d]+)',
+			array(
+				'args'   => array(
 					'id' => array(
 						'description' => __( 'Unique identifier for the object.', 'related-posts-by-taxonomy' ),
 						'type'        => 'integer',
@@ -94,7 +97,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 */
 	private function filter_request_args( $args, $post_id, $request ) {
 		$args['post_id'] = $post_id;
-		$settings = km_rpbt_get_default_settings( 'wp_rest_api' );
+		$settings        = km_rpbt_get_default_settings( 'wp_rest_api' );
 
 		/**
 		 * Filter default arguments.
@@ -104,13 +107,13 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 * @param array $defaults See km_rpbt_related_posts_by_taxonomy_shortcode() for
 		 *                        for more information about default arguments.
 		 */
-		$defaults = apply_filters( "related_posts_by_taxonomy_wp_rest_api_defaults", $settings );
+		$defaults = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_defaults', $settings );
 		$defaults = array_merge( $settings, (array) $defaults );
 
 		$args = array_merge( $defaults, (array) $args );
 
 		// Unfilterable arguments.
-		$args['type'] = 'wp_rest_api';
+		$args['type']    = 'wp_rest_api';
 		$args['post_id'] = $post_id;
 
 		/*
@@ -138,7 +141,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		 *
 		 * @param array $args Arguments.
 		 */
-		$args = apply_filters( "related_posts_by_taxonomy_wp_rest_api_args", $args );
+		$args = apply_filters( 'related_posts_by_taxonomy_wp_rest_api_args', $args );
 
 		// Invalid post types in the request and not added by args filter.
 		if ( $invalid_post_types && ! $args['post_types'] ) {
@@ -188,7 +191,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		// For show date
 		$tags['time'] = array(
 			'datetime' => true,
-			'class' => true,
+			'class'    => true,
 		);
 
 		$html = wp_kses( $html, $tags );
@@ -245,7 +248,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 		// Check if none, or valid (registered) post types and taxonomies are provided in the request.
 		if ( ! $cancel_query ) {
 			$related_posts = $this->get_related_posts( $args );
-			$fields = trim( strtolower( $args['fields'] ) );
+			$fields        = trim( strtolower( $args['fields'] ) );
 			if ( $related_posts && ( empty( $fields ) || ( 'ids' === $fields ) ) ) {
 				// Render posts if the query was for post objects or post IDs.
 				$rendered = km_rpbt_get_related_posts_html( $related_posts, $args );
@@ -295,52 +298,52 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 			'title'      => 'related_posts_by_tax',
 			'type'       => 'object',
 			'properties' => array(
-				'posts'            => array(
+				'posts'         => array(
 					'description' => __( 'The related posts.', 'related-posts-by-taxonomy' ),
 					'type'        => 'array',
 					'items'       => array(
-						'type'    => 'object|string|integer',
+						'type' => 'object|string|integer',
 					),
 					'context'     => array( 'view' ),
 				),
-				'termcount'            => array(
+				'termcount'     => array(
 					'description' => __( 'Number of related terms in common with the post.', 'related-posts-by-taxonomy' ),
 					'type'        => 'array',
 					'items'       => array(
-						'type'    => 'integer',
+						'type' => 'integer',
 					),
 					'context'     => array( 'view' ),
 				),
-				'post_id'            => array(
+				'post_id'       => array(
 					'description' => __( 'The Post ID to get related posts for.', 'related-posts-by-taxonomy' ),
 					'type'        => 'integer',
 					'context'     => array( 'view' ),
 				),
-				'post_types'            => array(
+				'post_types'    => array(
 					'description' => __( 'Post types used in query for related posts.', 'related-posts-by-taxonomy' ),
 					'type'        => 'array',
 					'items'       => array(
-						'type'    => 'string',
+						'type' => 'string',
 					),
 					'context'     => array( 'view' ),
 				),
-				'taxonomies'            => array(
+				'taxonomies'    => array(
 					'description' => __( 'Taxonomies used in query for related posts.', 'related-posts-by-taxonomy' ),
 					'type'        => 'array',
 					'items'       => array(
-						'type'    => 'string',
+						'type' => 'string',
 					),
 					'context'     => array( 'view' ),
 				),
-				'related_terms'            => array(
+				'related_terms' => array(
 					'description' => __( 'Related term ids used in query for related posts.', 'related-posts-by-taxonomy' ),
 					'type'        => 'array',
 					'items'       => array(
-						'type'    => 'integer',
+						'type' => 'integer',
 					),
 					'context'     => array( 'view' ),
 				),
-				'rendered'            => array(
+				'rendered'      => array(
 					'description' => __( 'Rendered related posts HTML', 'related-posts-by-taxonomy' ),
 					'type'        => 'string',
 					'context'     => array( 'view' ),

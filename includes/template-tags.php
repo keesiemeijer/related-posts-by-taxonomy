@@ -100,7 +100,6 @@ function km_rpbt_sanitize_classes( $classes ) {
  *
  * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
  * @param array            $args Widget or shortcode arguments.
- *
  */
 function km_rpbt_post_link( $post = null, $args = array() ) {
 	echo km_rpbt_get_post_link( $post, $args ) . "\n";
@@ -149,9 +148,9 @@ function km_rpbt_get_post_link( $post = null, $args = array() ) {
 		$title_attr = ' title="' . esc_attr( $title ) . '"';
 	}
 
-	$permalink  = km_rpbt_get_permalink( $post, $args );
+	$permalink = km_rpbt_get_permalink( $post, $args );
 	if ( $permalink && $title ) {
-		$link = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . '</a>';
+		$link  = '<a href="' . $permalink . '"' . $title_attr . '>' . $title . '</a>';
 		$link .= $args['show_date'] ? ' ' . km_rpbt_get_post_date( $post ) : '';
 	}
 

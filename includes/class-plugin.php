@@ -124,12 +124,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Plugin' ) ) {
 		 * @since 2.6.0
 		 */
 		public function lazy_loading_init() {
-			if (  km_rpbt_plugin_supports( 'lazy_loading' ) ) {
+			if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
 				require_once RELATED_POSTS_BY_TAXONOMY_PLUGIN_DIR . 'includes/class-lazy-loading.php';
 				$rest_api = new Related_Posts_By_Taxonomy_Lazy_Loading();
 			}
 		}
-
 	} // end class
 
 } // class exists

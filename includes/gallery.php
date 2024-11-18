@@ -78,15 +78,15 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 	}
 
 	static $instance = 0;
-	$instance++;
+	++$instance;
 
 	$post     = get_post();
 	$post_id  = isset( $post->ID ) ? $post->ID : 0;
 	$defaults = km_kpbt_get_default_gallery_args( $post_id );
 
 	// Back compat with WP gallery_shortcode() and plugin filters.
-	$args['id']   = isset( $args['id'] ) ? $args['id'] : $defaults['id'];
-	$args['id']   = isset( $args['post_id'] ) ? $args['post_id'] : $args['id'];
+	$args['id'] = isset( $args['id'] ) ? $args['id'] : $defaults['id'];
+	$args['id'] = isset( $args['post_id'] ) ? $args['post_id'] : $args['id'];
 
 	$format = isset( $args['gallery_format'] ) && $args['gallery_format'];
 	if ( $format && ( 'editor_block' === $args['gallery_format'] ) ) {
@@ -116,7 +116,7 @@ function km_rpbt_related_posts_by_taxonomy_gallery( $args, $related_posts = arra
 
 	if ( is_feed() ) {
 		$args['gallery_type'] = 'rpbt_gallery_feed';
-		$output = "\n";
+		$output               = "\n";
 		foreach ( (array) $related_posts as $related ) {
 			$related = is_object( $related ) ? $related : get_post( $related );
 			if ( ! isset( $related->ID, $related->post_title ) ) {
@@ -224,7 +224,7 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 	/** This filter is documented in wp-includes/media.php */
 	$output = apply_filters( 'gallery_style', $gallery_style . $gallery_div );
 
-	$i = 0;
+	$i           = 0;
 	$item_output = '';
 
 	foreach ( (array) $related_posts as $related ) {
@@ -233,9 +233,9 @@ function km_kpbt_get_gallery_shortcode_html( $related_posts, $args = array(), $i
 			continue;
 		}
 
-		$attachment_id  = get_post_thumbnail_id( $related->ID );
-		$caption        = km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args );
-		$describedby    = ( trim( $caption ) ) ? array(
+		$attachment_id = get_post_thumbnail_id( $related->ID );
+		$caption       = km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args );
+		$describedby   = ( trim( $caption ) ) ? array(
 			'aria-describedby' => "{$selector}-{$related->ID}",
 		) : '';
 
@@ -328,8 +328,8 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 			continue;
 		}
 
-		$attachment_id  = get_post_thumbnail_id( $related->ID );
-		$caption        = km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args );
+		$attachment_id = get_post_thumbnail_id( $related->ID );
+		$caption       = km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args );
 
 		$label = esc_attr( strip_tags( $caption ) );
 		if ( empty( $label ) ) {
@@ -358,18 +358,17 @@ function km_rpbt_get_gallery_editor_block_html( $related_posts, $args = array(),
 	$gallery_class = km_rpbt_sanitize_classes( $args['gallery_class'] );
 
 	// The 'gallery' CSS selector is used by normal WP galleries.
-	$gallery_class = ( 'gallery' === $gallery_class  ) ? 'wp-block-gallery' : $gallery_class;
+	$gallery_class = ( 'gallery' === $gallery_class ) ? 'wp-block-gallery' : $gallery_class;
 	$gallery_class = $gallery_class ? $gallery_class . ' ' : '';
 
-	$class = "{$gallery_class}rpbt-related-block-gallery columns-{$args['columns']}";
+	$class  = "{$gallery_class}rpbt-related-block-gallery columns-{$args['columns']}";
 	$class .= $args['image_crop'] ? ' is-cropped' : '';
 
 	$label = __( 'Gallery images', 'related-posts-by-taxonomy' );
-	$atts  = 'class="' . $class  . '" role="group" aria-label="' . $label . '"';
+	$atts  = 'class="' . $class . '" role="group" aria-label="' . $label . '"';
 
 	$html = '<ul class="blocks-gallery-grid">' . "\n{$html}</ul>";
 	$html = "<figure {$atts}>\n{$html}\n</figure>\n";
-
 
 	if ( function_exists( 'wp_filter_content_tags' ) ) {
 		// since WP 5.5
@@ -559,7 +558,7 @@ function km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args = ar
 	$defaults      = km_kpbt_get_default_gallery_args();
 	$args          = array_merge( $defaults, $args );
 	$caption       = '';
-	$attachment_id  = absint( $attachment_id );
+	$attachment_id = absint( $attachment_id );
 
 	$title = '';
 	if ( isset( $related->post_title, $related->ID ) ) {
@@ -581,7 +580,7 @@ function km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args = ar
 		wp_reset_postdata();
 	} elseif ( $attachment_id && ( 'attachment_caption' === $args['caption'] ) ) {
 		$attachment = get_post( $attachment_id );
-		$caption = ( isset( $attachment->post_excerpt ) ) ? $attachment->post_excerpt : '';
+		$caption    = ( isset( $attachment->post_excerpt ) ) ? $attachment->post_excerpt : '';
 	} elseif ( $attachment_id && ( 'attachment_alt' === $args['caption'] ) ) {
 		$caption = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
 	} else {
@@ -597,5 +596,5 @@ function km_rpbt_get_gallery_image_caption( $attachment_id, $related, $args = ar
 	 * @param object $related Related post object.
 	 * @param array  $args    Function arguments.
 	 */
-	return apply_filters( 'related_posts_by_taxonomy_caption',  wptexturize( $caption ), $related, $args );
+	return apply_filters( 'related_posts_by_taxonomy_caption', wptexturize( $caption ), $related, $args );
 }

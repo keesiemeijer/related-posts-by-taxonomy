@@ -52,7 +52,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 * Used in the km_rpbt_query_related_posts() function to replace 'post_type = 'post' with 'post_type IN ( ... )
 	 */
 	function test_wp_get_posts_by_author_sql() {
-		$where  = get_posts_by_author_sql( 'post' );
+		$where = get_posts_by_author_sql( 'post' );
 		$this->assertTrue( (bool) preg_match( "/post_type = 'post'/", $where ) );
 	}
 
@@ -63,13 +63,13 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_wp_get_meta_sql_value_comma_separated_string_to_array() {
 		$meta_query_obj = new WP_Meta_Query();
-		$meta_query = array(
+		$meta_query     = array(
 			array(
 				'key'       => 'my_key',
 				'value'     => '10,20', // string (e.g. shortcode value)
 				'compare'   => 'BETWEEN',
-				'meta_type' => 'NUMERIC'
-			)
+				'meta_type' => 'NUMERIC',
+			),
 		);
 		global $wpdb;
 		$meta_sql = get_meta_sql( $meta_query, 'post', $wpdb->posts, 'ID' );
@@ -96,7 +96,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_wp_meta_query_parse_query_vars_default_settings() {
 		$meta_query_obj = new WP_Meta_Query();
-		$args = km_rpbt_get_default_settings( 'shortcode' );
+		$args           = km_rpbt_get_default_settings( 'shortcode' );
 		$this->assertTrue( array_key_exists( 'meta_key', $args ) );
 		$meta_query_obj->parse_query_vars( $args );
 
@@ -111,7 +111,7 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_wp_meta_query_parse_query_vars_with_meta_key() {
 		$meta_query_obj = new WP_Meta_Query();
-		$args = array(
+		$args           = array(
 			'meta_key' => 'my_key',
 		);
 		$meta_query_obj->parse_query_vars( $args );
@@ -142,11 +142,11 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 	function test_empty_output() {
 		$create_posts = $this->create_posts_with_terms();
 
-		$posts        = $create_posts['posts'];
-		$terms        = $create_posts['tax2_terms'];
-		$_posts       = get_posts();
-		$args         = array( 'fields' => 'ids' );
-		$taxonomies   = array( 'category', 'post_tag' );
+		$posts         = $create_posts['posts'];
+		$terms         = $create_posts['tax2_terms'];
+		$_posts        = get_posts();
+		$args          = array( 'fields' => 'ids' );
+		$taxonomies    = array( 'category', 'post_tag' );
 		$attachment_id = $this->create_image();
 
 		ob_start();
@@ -186,8 +186,14 @@ class KM_RPBT_Misc_Tests extends KM_RPBT_UnitTestCase {
 		$classes4            = km_rpbt_post_class();
 		$link                = km_rpbt_get_post_link( $_posts[0], true );
 		$link2               = km_rpbt_get_permalink( $_posts[0] );
-		$post_thumb          = set_post_thumbnail ( $posts[2], $attachment_id );
-		$rel_posts4          = km_rpbt_get_related_posts( $posts[0], array( 'post_thumbnail' => true, 'fields' => 'ids' ) );
+		$post_thumb          = set_post_thumbnail( $posts[2], $attachment_id );
+		$rel_posts4          = km_rpbt_get_related_posts(
+			$posts[0],
+			array(
+				'post_thumbnail' => true,
+				'fields'         => 'ids',
+			)
+		);
 		$gallery_args        = km_kpbt_get_default_gallery_args();
 		$gallery             = km_rpbt_related_posts_by_taxonomy_gallery( array( 'id' => $posts[0] ), array( $rel_posts4[0] ) );
 		$gallery_shortcode   = km_kpbt_get_gallery_shortcode_html( $rel_posts4, $gallery_args, 1 );

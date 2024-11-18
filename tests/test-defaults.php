@@ -27,7 +27,7 @@ class KM_RPBT_Defaults_Tests extends KM_RPBT_UnitTestCase {
 		$plugin->_setup();
 
 		$taxonomies = array_keys( $plugin->taxonomies );
-		$expected = array( 'category', 'post_tag', 'post_format' );
+		$expected   = array( 'category', 'post_tag', 'post_format' );
 		sort( $taxonomies );
 		sort( $expected );
 		$this->assertSame( $expected, $taxonomies );

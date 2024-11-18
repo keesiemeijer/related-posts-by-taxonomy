@@ -54,17 +54,17 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$this->debug['cache'] = 'none';
 
 			// Get all post types when widget or shortcode is called.
-			$post_types = array_keys( get_post_types() );
+			$post_types       = array_keys( get_post_types() );
 			$this->post_types = array_merge( $this->post_types, $post_types );
 			$this->post_types = array_unique( $this->post_types );
 
 			// Get all taxonomies when widget or shortcode is called.
-			$taxonomies = array_keys( get_taxonomies() );
+			$taxonomies       = array_keys( get_taxonomies() );
 			$this->taxonomies = array_merge( $this->taxonomies, $taxonomies );
 			$this->taxonomies = array_unique( $this->taxonomies );
 
-			$this->plugin  = km_rpbt_plugin();
-			$this->cache   = km_rpbt_is_cache_loaded();
+			$this->plugin = km_rpbt_plugin();
+			$this->cache  = km_rpbt_is_cache_loaded();
 
 			// Display debug results in footer.
 			add_action( 'wp_footer', array( $this, 'wp_footer' ), 99 );
@@ -73,7 +73,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			add_filter( 'dynamic_sidebar_params', array( $this, 'widget_params' ), 99 );
 
 			// Get widget and shortcode args.
-			add_filter( 'related_posts_by_taxonomy_widget_args',    array( $this, 'debug_start' ), 99, 2 );
+			add_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'debug_start' ), 99, 2 );
 			add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'debug_start' ), 99, 2 );
 
 			// Bail, the page has already loaded when using lazy loading.
@@ -82,7 +82,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			}
 
 			// Show widget and shortcode even if no posts were found.
-			add_filter( 'related_posts_by_taxonomy_widget_hide_empty',    array( $this, 'hide_empty' ), 99 );
+			add_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'hide_empty' ), 99 );
 			add_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'hide_empty' ), 99 );
 
 			// Get current post terms, taxonomies and post ID.
@@ -91,7 +91,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			// Get query and related terms.
 			add_filter( 'related_posts_by_taxonomy_posts_clauses', array( $this, 'posts_clauses' ), 99, 4 );
 
-			// Get Related posts
+			// Get Related posts.
 			add_filter( 'related_posts_by_taxonomy', array( $this, 'posts_found' ) );
 
 			// Get the requested template.
@@ -119,9 +119,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$args['title'] = empty( $args['title'] ) ? 'Related Posts Debug Title' : $args['title'];
 
 			if ( 'related_posts_by_taxonomy_widget_args' === current_filter() ) {
-				$this->debug['type']        = 'widget';
+				$this->debug['type']             = 'widget';
 				$this->debug['widget arguments'] = $args;
-				$this->debug['widget']      = $widget;
+				$this->debug['widget']           = $widget;
 
 			} else {
 				$this->debug['type']           = 'shortcode';
@@ -153,7 +153,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				$this->debug['cache']             = 'current post cached';
 				$this->debug['cached post ids']   = ! empty( $post_ids ) ? implode( ', ', $post_ids ) : '';
 				$defaults                         = km_rpbt_get_query_vars();
-				$this->debug['function args']     = array_intersect_key( $args , $defaults );
+				$this->debug['function args']     = array_intersect_key( $args, $defaults );
 				$taxonomies                       = km_rpbt_get_taxonomies( $cache_args['taxonomies'] );
 				$this->debug['cached taxonomies'] = implode( ', ', $taxonomies );
 				$this->debug['current post id']   = isset( $args['post_id'] ) ? $args['post_id'] : '';
@@ -221,9 +221,13 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$post_id    = $args['post_id'];
 			$taxonomies = $args['taxonomies'];
 
-			$terms = get_terms( array( 'fields' => 'names', 'object_ids' => array( $post_id ) ) );
+			$terms = get_terms(
+				array(
+					'fields'     => 'names',
+					'object_ids' => array( $post_id ),
+				)
+			);
 			$terms = ! is_wp_error( $terms ) ? $terms : array();
-
 
 			$back_compat   = is_bool( $args['related'] );
 			$include_terms = ( $args['include_terms'] || $args['terms'] );
@@ -283,17 +287,17 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			$query = "SELECT {$select_sql} FROM $wpdb->posts {$join_sql} {$where_sql} {$group_by_sql} {$order_by_sql} {$limit_sql}";
 
 			// Remove prefix
-			$query = str_replace( $wpdb->prefix , '' , $query );
+			$query = str_replace( $wpdb->prefix, '', $query );
 
 			// Format query
-			$query = preg_replace( "/ INNER JOIN /", " \nINNER JOIN ", $query );
-			$query = preg_replace( "/ WHERE /", " \nWHERE ", $query );
-			$query = preg_replace( "/ AND /", " \nAND ", $query );
+			$query = preg_replace( '/ INNER JOIN /', " \nINNER JOIN ", $query );
+			$query = preg_replace( '/ WHERE /', " \nWHERE ", $query );
+			$query = preg_replace( '/ AND /', " \nAND ", $query );
 
 			unset( $args['related_terms'] );
 
-			$defaults = km_rpbt_get_query_vars();
-			$this->debug['function args'] = array_intersect_key( $args , $defaults );
+			$defaults                           = km_rpbt_get_query_vars();
+			$this->debug['function args']       = array_intersect_key( $args, $defaults );
 			$this->debug['related posts query'] = $query;
 
 			return $pieces;
@@ -314,7 +318,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			if ( ! empty( $results ) ) {
 				if ( isset( $results[0]->ID ) ) {
 					// Assume array with post objects.
-					$post_ids = wp_list_pluck( $results, 'ID' );
+					$post_ids                              = wp_list_pluck( $results, 'ID' );
 					$this->debug['related post ids found'] = implode( ', ', $post_ids );
 				} else {
 					// Assume array with ids, names or slugs.
@@ -390,10 +394,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 */
 		function get_header( $type = '' ) {
 			static $shortcode = 0;
-			static $widget = 0;
+			static $widget    = 0;
 
-			$type_count =  '';
-			$debug_type =  '';
+			$type_count = '';
+			$debug_type = '';
 			if ( 'shortcode' === $type ) {
 				$type_count = ' ' . ++$shortcode;
 				$debug_type = 'Debug: ';
@@ -402,15 +406,15 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				$debug_type = 'Debug: ';
 			}
 
-			//$type  = ( 'Supports' !== $type ) ? 'Debug: ' . $type : $type;
-			$title = 'Related Posts by Taxonomy ' . $debug_type . $type . $type_count;
-			$title = '**    ' . $title . '    **';
+			// $type  = ( 'Supports' !== $type ) ? 'Debug: ' . $type : $type;
+			$title  = 'Related Posts by Taxonomy ' . $debug_type . $type . $type_count;
+			$title  = '**    ' . $title . '    **';
 			$length = strlen( $title );
-			$rows = str_repeat( "*", $length ) . "\n";
-			$rows .= '**' . str_repeat( " ", $length - 4 ) . "**\n";
-			$rows .= $title . "\n";
-			$rows .= '**' . str_repeat( " ", $length - 4 ) . "**\n";
-			$rows .= str_repeat( "*", $length ) . "\n";
+			$rows   = str_repeat( '*', $length ) . "\n";
+			$rows  .= '**' . str_repeat( ' ', $length - 4 ) . "**\n";
+			$rows  .= $title . "\n";
+			$rows  .= '**' . str_repeat( ' ', $length - 4 ) . "**\n";
+			$rows  .= str_repeat( '*', $length ) . "\n";
 			return $rows;
 		}
 
@@ -423,7 +427,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 */
 		function get_supports() {
 			// Remove filters before calling km_rpbt_get_plugin_supports().
-			remove_filter( 'related_posts_by_taxonomy_widget_hide_empty',    array( $this, 'hide_empty' ), 99 );
+			remove_filter( 'related_posts_by_taxonomy_widget_hide_empty', array( $this, 'hide_empty' ), 99 );
 			remove_filter( 'related_posts_by_taxonomy_shortcode_hide_empty', array( $this, 'hide_empty' ), 99 );
 
 			$supports = km_rpbt_get_plugin_supports();
@@ -442,7 +446,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * @return string Inline styles.
 		 */
 		function get_style() {
-			$style = 'border:0 none;outline:0 none;padding:20px;margin:0;';
+			$style  = 'border:0 none;outline:0 none;padding:20px;margin:0;';
 			$style .= 'color: #333;background: #f5f5f5;font-family: monospace;font-size: 16px;font-style: normal;font-weight: normal;line-height: 1.5;white-space: pre;overflow:auto;';
 			$style .= 'width:100%;display:block;float:none;clear:both;text-align:left;z-index: 999;position:relative;';
 			return $style;
@@ -463,11 +467,11 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				// create string from array
 				$value = var_export( $value, true );
 				// clean up arrays
-				$value = preg_replace( "/\=>\s*array\s*\(/", '=> array(', $value );
-				$value = preg_replace( "/array\s*\(\s*\),/", 'array(),', $value );
+				$value = preg_replace( '/\=>\s*array\s*\(/', '=> array(', $value );
+				$value = preg_replace( '/array\s*\(\s*\),/', 'array(),', $value );
 				// convert spaces to tabs
-				$value = preg_replace( "/(?<![^\s]{2})  /", "\t", $value );
-				$section  = "<pre style='{$style}'>" . htmlspecialchars( $value ) . '</pre>';
+				$value   = preg_replace( '/(?<![^\s]{2})  /', "\t", $value );
+				$section = "<pre style='{$style}'>" . htmlspecialchars( $value ) . '</pre>';
 			} else {
 				$section = "{$value}\n";
 			}
@@ -479,18 +483,27 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 		 * Displays the results in the footer
 		 */
 		function wp_footer() {
-			$seperator = str_repeat( "-", 43 ) . "\n";
+			$seperator = str_repeat( '-', 43 ) . "\n";
 
 			$order = array(
-				'type', 'cache', 'current post id', 'terms found for current post',
-				'taxonomies used for query', 'cached taxonomies',
-				'terms used for query', 'cached terms',
-				'related post ids found', 'cached post ids',
-				'widget arguments', 'shortcode args', 'function args',
+				'type',
+				'cache',
+				'current post id',
+				'terms found for current post',
+				'taxonomies used for query',
+				'cached taxonomies',
+				'terms used for query',
+				'cached terms',
+				'related post ids found',
+				'cached post ids',
+				'widget arguments',
+				'shortcode args',
+				'function args',
 				'related posts query',
-				'requested template', 'widget'
+				'requested template',
+				'widget',
 			);
-			$order = array_fill_keys( $order , '' );
+			$order = array_fill_keys( $order, '' );
 			$style = $this->get_style();
 
 			echo "<pre style='{$style}'>" . $this->get_header( 'General Debug Information' ) . "\n\n";
@@ -499,12 +512,12 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			echo $seperator;
 			echo "All post types found (public and private)\n\n";
 			$post_types = implode( ', ', $this->post_types );
-			echo $post_types  . "\n";
+			echo $post_types . "\n";
 			echo $seperator;
 			echo "All taxonomies found (public and private)\n\n";
 			$taxonomies = implode( ', ', $this->taxonomies );
 			echo $taxonomies;
-			echo "</pre>";
+			echo '</pre>';
 
 			if ( ! empty( $this->results ) ) {
 				echo '<p>';
@@ -515,7 +528,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 						$id = ' id="' . $debug_arr['debug_id'] . '"';
 					}
 
-					echo "<pre{$id} style='{$style}'>" .  $this->get_header( $debug_arr['type'] ) . "\n\n";
+					echo "<pre{$id} style='{$style}'>" . $this->get_header( $debug_arr['type'] ) . "\n\n";
 
 					unset( $debug_arr['debug_id'], $debug_arr['debug_link'] );
 
@@ -573,6 +586,5 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 				echo $message;
 			}
 		}
-
 	} // class
 } // class exists

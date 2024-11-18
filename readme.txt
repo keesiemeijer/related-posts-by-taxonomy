@@ -1,9 +1,9 @@
 === Related Posts by Taxonomy ===
 Contributors: keesiemeijer
-Tags: posts,related,related posts,thumbnails,taxonomy,widget,shortcode,taxonomies,post type,post types,category,categories,tag,tags,post thumbnail,post thumbnails,thumbnails,featured,featured image,image,images
+Tags: posts,related,related posts,taxonomy,thumbnails
 Requires at least: 5.9
-Tested up to: 6.5
-Stable tag: 2.7.5
+Tested up to: 6.7
+Stable tag: 2.7.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -142,6 +142,9 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.7.6 =
+* Enhancement
+	* Add a filter to use any theme directory for custom related posts template files
 = 2.7.5 =
 * Enhancement
 	* Fix PHP 8 and up deprecated notices
@@ -224,5 +227,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.7.5 =
-Minor changes to make this plugin play nice with newer WordPress and PHP versions.
+= 2.7.6 =
+Adds a filter to use any theme directory for custom related posts template files

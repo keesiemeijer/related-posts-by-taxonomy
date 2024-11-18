@@ -83,7 +83,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		 * @param array $defaults Default widget arguments. See km_rpbt_related_posts_by_taxonomy_shortcode() for
 		 *                        for more information about default widget arguments.
 		 */
-		$defaults = apply_filters( "related_posts_by_taxonomy_widget_defaults", $settings );
+		$defaults = apply_filters( 'related_posts_by_taxonomy_widget_defaults', $settings );
 		$defaults = array_merge( $settings, (array) $defaults );
 
 		$args = $this->get_instance_settings( $args, $widget_args, $defaults );
@@ -158,11 +158,11 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		// Validation.
 		$i['taxonomies'] = $this->is_all_taxonomies( $i['taxonomies'] ) ? '' : $i['taxonomies'];
-		$i['post_id']    = $i['post_id'] ? $i['post_id']  : '';
-		$i['columns']    = $i['columns'] ? $i['columns']  : 3;
+		$i['post_id']    = $i['post_id'] ? $i['post_id'] : '';
+		$i['columns']    = $i['columns'] ? $i['columns'] : 3;
 
 		if ( -1 !== $i['posts_per_page'] ) {
-			$posts_per_page = absint( $i['posts_per_page'] );
+			$posts_per_page      = absint( $i['posts_per_page'] );
 			$i['posts_per_page'] = $posts_per_page ? $posts_per_page : 5;
 		}
 
@@ -197,7 +197,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		 * @param array $instance Widget form instance. See km_rpbt_related_posts_by_taxonomy_widget() for
 		 *                        for more information about default feature arguments.
 		 */
-		$instance = apply_filters( "related_posts_by_taxonomy_widget_form_instance", $instance );
+		$instance = apply_filters( 'related_posts_by_taxonomy_widget_form_instance', $instance );
 		$i        = $this->get_instance_settings( $instance );
 
 		$fields = array();
@@ -224,7 +224,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		$fields = (array) apply_filters_ref_array( 'related_posts_by_taxonomy_widget_form_fields', array( $fields, $i, $this ) );
 
 		foreach ( $pieces as $piece ) {
-			echo  ( isset( $fields[ $piece ] ) ) ? $fields[ $piece ] : '';
+			echo ( isset( $fields[ $piece ] ) ) ? $fields[ $piece ] : '';
 		}
 	} // end form
 
@@ -278,7 +278,7 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 		if ( isset( $i['taxonomies'] ) ) {
 			// Taxonomies argument exist.
-			$all_tax = ! $i['taxonomies'] || $this->is_all_taxonomies( $i['taxonomies'] );
+			$all_tax         = ! $i['taxonomies'] || $this->is_all_taxonomies( $i['taxonomies'] );
 			$i['taxonomies'] = $all_tax ? '' : $i['taxonomies'];
 			return $i;
 		}
@@ -318,7 +318,6 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 
 	/**
 	 * Returns the current post id to get related posts for.
-	 *
 	 *
 	 * @since 0.2.1
 	 * @since 2.5.0 Moved logic to km_rpbt_get_widget_post_id().
@@ -387,5 +386,4 @@ class Related_Posts_By_Taxonomy extends WP_Widget {
 		_deprecated_function( __FUNCTION__, '2.6.0', 'km_rpbt_get_related_posts_html()' );
 		echo km_rpbt_get_related_posts_html( $related_posts, $args );
 	}
-
 } // end Related_Posts_By_Taxonomy class

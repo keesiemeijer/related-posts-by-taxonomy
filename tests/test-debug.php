@@ -18,7 +18,7 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 		$cache = new Related_Posts_By_Taxonomy_Plugin();
 		$cache->debug_init();
 
-		$this->assertFalse( $this->arg  );
+		$this->assertFalse( $this->arg );
 		$this->arg = null;
 	}
 
@@ -26,7 +26,7 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 	 * Tests if debug filter is set to true.
 	 */
 	function test_debug_true() {
-		$this->assertFalse( class_exists( 'Related_Posts_By_Taxonomy_Debug' )  );
+		$this->assertFalse( class_exists( 'Related_Posts_By_Taxonomy_Debug' ) );
 
 		add_filter( 'related_posts_by_taxonomy_debug', '__return_true' );
 
@@ -34,7 +34,7 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 		$cache = new Related_Posts_By_Taxonomy_Plugin();
 		$cache->debug_init();
 
-		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Debug' )  );
+		$this->assertTrue( class_exists( 'Related_Posts_By_Taxonomy_Debug' ) );
 	}
 
 	function setup_debug() {
@@ -45,7 +45,7 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 			)
 		);
 
-		if( is_multisite() ) {
+		if ( is_multisite() ) {
 			grant_super_admin( $user_id );
 		}
 
@@ -71,7 +71,12 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 
 		$this->assertSame( 'post_tag', $debug['taxonomies used for query'] );
 
-		$term_names = get_terms( array( 'taxonomy' => 'post_tag', 'fields' => 'names' ) );
+		$term_names = get_terms(
+			array(
+				'taxonomy' => 'post_tag',
+				'fields'   => 'names',
+			)
+		);
 		$term_names = implode( ', ', array( $term_names[0], $term_names[1], $term_names[2] ) );
 
 		$terms_used = $debug['terms used for query'];
@@ -90,7 +95,7 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 		$debug = $this->debug->results[0];
 
 		global $wpdb;
-		$this->assertNotEmpty($wpdb->prefix);
+		$this->assertNotEmpty( $wpdb->prefix );
 
 		// Prefix should not be in query.
 		$query = $debug['related posts query'];
@@ -100,7 +105,7 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertTrue( false !== strrpos( $query, $sql_terms ) );
 	}
 
-	function test_debug_posts_found(){
+	function test_debug_posts_found() {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
@@ -116,7 +121,7 @@ class KM_RPBT_Debug_Tests extends KM_RPBT_UnitTestCase {
 		$this->assertEquals( implode( ', ', array( $posts[2], $posts[1], $posts[3] ) ), $found );
 	}
 
-	function test_debug_link(){
+	function test_debug_link() {
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 

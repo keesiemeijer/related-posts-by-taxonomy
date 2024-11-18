@@ -26,8 +26,8 @@ class Related_Posts_By_Taxonomy_Lazy_Loading {
 	 */
 	public function init() {
 		// ajax actions
-		add_action( 'wp_ajax_rpbt_lazy_loading',  array( $this, 'lazy_loading_query' ) );
-		add_action( "wp_ajax_nopriv_rpbt_lazy_loading",  array( $this, 'lazy_loading_query' ) );
+		add_action( 'wp_ajax_rpbt_lazy_loading', array( $this, 'lazy_loading_query' ) );
+		add_action( 'wp_ajax_nopriv_rpbt_lazy_loading', array( $this, 'lazy_loading_query' ) );
 
 		// Enqueue scripts and styles.
 		add_action( 'wp_enqueue_scripts', array( $this, 'scripts_and_styles' ), 11 );
@@ -40,12 +40,15 @@ class Related_Posts_By_Taxonomy_Lazy_Loading {
 	 * @since 2.6.0
 	 */
 	public function scripts_and_styles() {
-		$debug = defined( 'WP_DEBUG') && WP_DEBUG ? '' : '.min';
+		$debug = defined( 'WP_DEBUG' ) && WP_DEBUG ? '' : '.min';
 		wp_register_script( 'rpbt-lazy-loading', RELATED_POSTS_BY_TAXONOMY_PLUGIN_URL . "includes/assets/js/lazy-loading{$debug}.js", array( 'jquery' ), false, true );
-		wp_localize_script( 'rpbt-lazy-loading', 'rpbt_lazy_loading', array(
+		wp_localize_script(
+			'rpbt-lazy-loading',
+			'rpbt_lazy_loading',
+			array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'rpbt_lazy_loading_nonce' ),
-				'loading' => __('Loading...', 'related-posts-by-taxonomy' ),
+				'loading' => __( 'Loading...', 'related-posts-by-taxonomy' ),
 			)
 		);
 
@@ -86,6 +89,6 @@ class Related_Posts_By_Taxonomy_Lazy_Loading {
 		/** This action is documented in includes/functions.php */
 		do_action( 'related_posts_by_taxonomy_after_display', $type );
 
-		wp_send_json_success ( $html );
+		wp_send_json_success( $html );
 	}
 }

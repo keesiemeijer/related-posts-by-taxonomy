@@ -19,7 +19,7 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_km_rpbt_get_taxonomies_custom() {
 		register_taxonomy( 'ctax', 'post' );
-		$expected = array( 'category', 'ctax' );
+		$expected   = array( 'category', 'ctax' );
 		$taxonomies = km_rpbt_get_taxonomies( $expected );
 		sort( $taxonomies );
 		$this->assertEquals( $expected, $taxonomies );
@@ -28,7 +28,7 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 	function test_km_rpbt_get_term_objects() {
 		$create_posts = $this->create_posts_with_hierarchical_terms();
 
-		$terms = $create_posts['terms'];
+		$terms    = $create_posts['terms'];
 		$term_obj = km_rpbt_get_term_objects( array( $terms[0] ), $taxonomies = 'category' );
 
 		// Objects are returned
@@ -36,10 +36,10 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 	}
 
 	function test_km_rpbt_get_term_objects_cache() {
-		$create_posts = $this->create_posts_with_hierarchical_terms();
+		$create_posts   = $this->create_posts_with_hierarchical_terms();
 		$queries_before = get_num_queries();
 
-		$terms = $create_posts['terms'];
+		$terms    = $create_posts['terms'];
 		$term_obj = km_rpbt_get_term_objects( array( $terms[0], $terms[1] ), $taxonomies = 'category' );
 
 		$queries_after = get_num_queries();
@@ -55,7 +55,7 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 	function test_km_rpbt_get_term_objects_no_taxonomies() {
 		$create_posts = $this->create_posts_with_hierarchical_terms();
 
-		$terms = $create_posts['terms'];
+		$terms    = $create_posts['terms'];
 		$term_obj = km_rpbt_get_term_objects( array( $terms[0] ) );
 
 		// Objects are returned even with no taxonomies
@@ -65,7 +65,7 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 	function test_km_rpbt_get_term_objects_term_not_in_taxonomy_post_tag() {
 		$create_posts = $this->create_posts_with_hierarchical_terms();
 
-		$terms = $create_posts['terms'];
+		$terms    = $create_posts['terms'];
 		$term_obj = km_rpbt_get_term_objects( array( $terms[0] ), 'post_tag' );
 
 		// Term 0 is a not a post_tag taxonomy term.
@@ -81,7 +81,7 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 
 	function test_km_rpbt_get_hierarchy_terms_parents() {
 		$create_posts = $this->create_posts_with_hierarchical_terms();
-		$terms = $create_posts['terms'];
+		$terms        = $create_posts['terms'];
 
 		$term_ids = km_rpbt_get_hierarchy_terms( 'parents', array( $terms[2] ) );
 
@@ -91,7 +91,7 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 
 	function test_km_rpbt_get_hierarchy_terms_children() {
 		$create_posts = $this->create_posts_with_hierarchical_terms();
-		$terms = $create_posts['terms'];
+		$terms        = $create_posts['terms'];
 
 		$term_ids = km_rpbt_get_hierarchy_terms( 'children', array( $terms[2] ) );
 
@@ -101,11 +101,14 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 
 	function test_km_rpbt_get_terms_related_true() {
 		$create_posts = $this->create_posts_with_terms();
-		$terms = $create_posts['tax1_terms'];
-		$posts = $create_posts['posts'];
+		$terms        = $create_posts['tax1_terms'];
+		$posts        = $create_posts['posts'];
 
 		// Term 0 is assigned to post 0
-		$args = array( 'related' => true, 'terms' => $terms[0] );
+		$args       = array(
+			'related' => true,
+			'terms'   => $terms[0],
+		);
 		$post_terms = km_rpbt_get_terms( $posts[0], 'post_tag', $args );
 
 		// Term 0 is a post_tag
@@ -114,17 +117,23 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 
 	function test_km_rpbt_get_terms_related_true_term_not_in_taxonomy() {
 		$create_posts = $this->create_posts_with_terms();
-		$terms = $create_posts['tax1_terms'];
-		$posts = $create_posts['posts'];
+		$terms        = $create_posts['tax1_terms'];
+		$posts        = $create_posts['posts'];
 
 		// Term 0 is assigned to post 0
-		$args = array( 'related' => true, 'terms' => $terms[0] );
+		$args       = array(
+			'related' => true,
+			'terms'   => $terms[0],
+		);
 		$post_terms = km_rpbt_get_terms( $posts[0], 'category', $args );
 		// Term 0 is not a category term
 		$this->assertEmpty( $post_terms );
 
 		// Term 3 is not assigned to post 0
-		$args = array( 'related' => true, 'include_terms' => $terms[3] );
+		$args       = array(
+			'related'       => true,
+			'include_terms' => $terms[3],
+		);
 		$post_terms = km_rpbt_get_terms( $posts[0], 'post_tag', $args );
 		// Term 3 is not included because it is not assinged to post 0.
 		$this->assertEmpty( $post_terms );
@@ -132,18 +141,25 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 
 	function test_km_rpbt_get_terms_related_false_with_invalid_taxonomy() {
 		$create_posts = $this->create_posts_with_terms();
-		$terms = $create_posts['tax1_terms'];
-		$posts = $create_posts['posts'];
+		$terms        = $create_posts['tax1_terms'];
+		$posts        = $create_posts['posts'];
 		// In these tests terms need to exist. The taxonomy does not matter.
 
 		// Term 3 is not assigned to post 0 and invalid taxonomy
-		$args = array( 'related' => false, 'terms' => $terms[3], 'include_terms' => $terms[4] );
+		$args       = array(
+			'related'       => false,
+			'terms'         => $terms[3],
+			'include_terms' => $terms[4],
+		);
 		$post_terms = km_rpbt_get_terms( $posts[0], 'invalid_tax', $args );
 		// Term 3 is included over term 4 from include_terms.
 		$this->assertEquals( array( $terms[3] ), $post_terms );
 
 		// Term 3 is not assigned to post 0 and invalid taxonomy
-		$args = array( 'related' => false, 'include_terms' => $terms[3] );
+		$args       = array(
+			'related'       => false,
+			'include_terms' => $terms[3],
+		);
 		$post_terms = km_rpbt_get_terms( $posts[0], 'invalid_tax', $args );
 		// Term 3 is also included with include_terms
 		$this->assertEquals( array( $terms[3] ), $post_terms );
@@ -151,12 +167,15 @@ class KM_RPBT_Taxonomy_Tests extends KM_RPBT_UnitTestCase {
 
 	function test_km_rpbt_get_terms_without_related_and_invalid_taxonomy() {
 		$create_posts = $this->create_posts_with_terms();
-		$terms = $create_posts['tax1_terms'];
-		$posts = $create_posts['posts'];
+		$terms        = $create_posts['tax1_terms'];
+		$posts        = $create_posts['posts'];
 		// In these tests terms need to exist. The taxonomy does not matter.
 
 		// Terms 3 and 4 are not assigned to post 0 and invalid taxonomy
-		$args = array( 'terms' => $terms[3], 'include_terms' => $terms[4] );
+		$args       = array(
+			'terms'         => $terms[3],
+			'include_terms' => $terms[4],
+		);
 		$post_terms = km_rpbt_get_terms( $posts[0], 'invalid_tax', $args );
 		// The terms argument is deprecated in version 2.7.3 but can still be used.
 		// Both include_terms and terms are used.

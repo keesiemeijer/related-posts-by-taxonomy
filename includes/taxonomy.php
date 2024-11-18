@@ -90,7 +90,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 	} elseif ( $strict && $args['terms'] ) {
 		// Back compat: Use only terms in taxonomies.
 
-		$terms = km_rpbt_get_term_objects(  $args['terms'], $taxonomies );
+		$terms = km_rpbt_get_term_objects( $args['terms'], $taxonomies );
 		$terms = ! empty( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
 	} elseif ( ! $strict && $include ) {
 		// Use all included terms.
@@ -104,7 +104,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 		 * The post ID and taxonomies are validated above (set to empty value if invalid).
 		 * wp_get_object_terms() returns an empty array if one argument is empty.
 		 */
-		$terms = wp_get_object_terms( $post_id, $taxonomies, array( 'fields' => 'ids', ) );
+		$terms = wp_get_object_terms( $post_id, $taxonomies, array( 'fields' => 'ids' ) );
 		$terms = ! is_wp_error( $terms ) ? $terms : array();
 
 		if ( $strict && $args['related'] && $args['include_terms'] ) {
@@ -129,7 +129,7 @@ function km_rpbt_get_terms( $post_id, $taxonomies, $args = array() ) {
 
 	// Exclude terms.
 	if ( ! empty( $terms ) && ! empty( $args['exclude_terms'] ) ) {
-		$terms = array_diff( $terms , $args['exclude_terms'] );
+		$terms = array_diff( $terms, $args['exclude_terms'] );
 	}
 
 	// For cache
@@ -216,7 +216,7 @@ function km_rpbt_get_term_objects( $terms, $taxonomies = '' ) {
 		return array();
 	}
 
-	$tax_sql    = '';
+	$tax_sql = '';
 	if ( ! empty( $taxonomies ) ) {
 		sort( $taxonomies );
 		$taxonomies = array_map( 'esc_sql', $taxonomies );

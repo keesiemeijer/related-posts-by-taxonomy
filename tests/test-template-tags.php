@@ -10,7 +10,7 @@ class KM_RPBT_Template_Tags extends KM_RPBT_UnitTestCase {
 		remove_filter( 'use_default_gallery_style', '__return_false', 99 );
 		remove_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 3 );
 		remove_filter( 'related_posts_by_taxonomy_cache', '__return_true' );
-		remove_filter( 'related_posts_by_taxonomy_the_permalink', array( $this, 'the_permalink' ) , 10, 3 );
+		remove_filter( 'related_posts_by_taxonomy_the_permalink', array( $this, 'the_permalink' ), 10, 3 );
 	}
 
 	function setup_cache() {
@@ -79,11 +79,14 @@ EOF;
 		$create_posts = $this->create_posts_with_terms();
 		$posts        = $create_posts['posts'];
 
-		$taxonomies = array( 'post_tag' );
+		$taxonomies    = array( 'post_tag' );
 		$related_posts = km_rpbt_cache_related_posts( $posts[1], $taxonomies );
 
 		add_filter( 'related_posts_by_taxonomy_post_class', array( $this, 'post_class' ), 10, 3 );
-		$args = array( 'taxonomies' => $taxonomies, 'post_id' => $posts[1] );
+		$args    = array(
+			'taxonomies' => $taxonomies,
+			'post_id'    => $posts[1],
+		);
 		$related = $plugin->cache->get_related_posts( $args );
 
 		// Check if related posts are from the cache
@@ -156,8 +159,8 @@ EOF;
 	 * used in the templates
 	 */
 	function test_rpbt_get_post_link_global_post() {
-		$posts = $this->create_posts();
-		$posts = get_posts();
+		$posts           = $this->create_posts();
+		$posts           = get_posts();
 		$GLOBALS['post'] = $posts[0];
 
 		$link2 = km_rpbt_get_post_link();
@@ -187,7 +190,7 @@ EOF;
 		$expected  = '<a href="' . $permalink . '">' . $posts[0]->post_title . '</a>';
 		$this->assertSame( $expected, $link );
 
-		$link     = km_rpbt_get_post_link( $posts[0], array( 'title_attr'  => true ) );
+		$link     = km_rpbt_get_post_link( $posts[0], array( 'title_attr' => true ) );
 		$expected = '<a href="' . $permalink . '" title="' . $posts[0]->post_title . '">' . $posts[0]->post_title . '</a>';
 		$this->assertSame( $expected, $link );
 	}
@@ -211,7 +214,7 @@ EOF;
 			get_the_date( '', $posts[0] )
 		);
 
-		$expected  = '<a href="' . $permalink . '">' . $posts[0]->post_title . '</a> ' . $time_string;
+		$expected = '<a href="' . $permalink . '">' . $posts[0]->post_title . '</a> ' . $time_string;
 
 		$this->assertSame( $expected, $link );
 	}
@@ -224,7 +227,7 @@ EOF;
 		$posts = $this->create_posts();
 		$posts = get_posts();
 
-		add_filter( 'related_posts_by_taxonomy_the_permalink', array( $this, 'the_permalink' ) , 10, 3 );
+		add_filter( 'related_posts_by_taxonomy_the_permalink', array( $this, 'the_permalink' ), 10, 3 );
 
 		$link      = km_rpbt_get_post_link( $posts[0] );
 		$permalink = get_permalink( $posts[0] );

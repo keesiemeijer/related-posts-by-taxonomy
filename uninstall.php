@@ -3,7 +3,7 @@
 // Uninstall script.
 
 if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	exit ();
+	exit();
 }
 
 global $wpdb;

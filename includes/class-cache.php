@@ -72,7 +72,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			// Enable cache for the shortcode and widget.
 			add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'add_cache' ), 9 );
-			add_filter( 'related_posts_by_taxonomy_widget_args',    array( $this, 'add_cache' ), 9 );
+			add_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'add_cache' ), 9 );
 
 			if ( $this->cache['display_log'] ) {
 				// Add link to admin bar.
@@ -86,18 +86,17 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 				// Flush the cache when a post is deleted.
 				add_action( 'after_delete_post', array( $this, '_flush_cache' ) );
-				add_action( 'trashed_post',      array( $this, '_flush_cache' ) );
-				add_action( 'untrashed_post',    array( $this, '_flush_cache' ) );
+				add_action( 'trashed_post', array( $this, '_flush_cache' ) );
+				add_action( 'untrashed_post', array( $this, '_flush_cache' ) );
 
 				// Flush the cache when terms are updated or deleted.
-				add_action( 'set_object_terms',  array( $this, 'set_object_terms' ), 10, 6 );
-				add_action( 'deleted_term_relationships',  array( $this, 'deleted_term_relationships' ), 10, 3 );
-
+				add_action( 'set_object_terms', array( $this, 'set_object_terms' ), 10, 6 );
+				add_action( 'deleted_term_relationships', array( $this, 'deleted_term_relationships' ), 10, 3 );
 
 				// Flush the cache if a post thumbnail is added, updated or deleted.
 				add_action( 'updated_post_meta', array( $this, 'updated_postmeta' ), 10, 4 );
 				add_action( 'deleted_post_meta', array( $this, 'updated_postmeta' ), 10, 4 );
-				add_action( 'added_post_meta',   array( $this, 'updated_postmeta' ), 10, 4 );
+				add_action( 'added_post_meta', array( $this, 'updated_postmeta' ), 10, 4 );
 
 				// Flush cache when PHP is almost shutting down and page is loaded.
 				add_action( 'shutdown', array( $this, 'shutdown_flush_cache' ) );
@@ -171,7 +170,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			if ( isset( $cache['ids'] ) ) {
 				if ( empty( $cache['ids'] ) ) {
 					// Cached, but the current post has no related posts.
-					$posts = array();
+					$posts             = array();
 					$this->cache_log[] = sprintf( 'Post ID %d - cache exists (no related posts found)', $args['post_id'] );
 				} else {
 					// Cached and related post ids are found!
@@ -183,7 +182,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 
 			if ( 'ids' === km_rpbt_get_template_fields( $args ) ) {
-				// The query was for post IDs
+				// The query was for post IDs.
 				return $posts;
 			}
 
@@ -230,7 +229,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 		private function set_cache( $args ) {
 			$query_args = $args;
 			$key        = $this->get_post_meta_key( $args );
-			$cache      = array( 'ids' => array(), 'args' => array() );
+			$cache      = array(
+				'ids'  => array(),
+				'args' => array(),
+			);
 
 			$query_args['fields'] = km_rpbt_get_template_fields( $query_args );
 
@@ -246,11 +248,10 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			// Remove the filter.
 			remove_filter( 'related_posts_by_taxonomy', array( $this, 'current_post' ), 99, 4 );
 
-
 			// Create the array with cached post ids
 			// and add the related term count.
 			foreach ( $posts as $post ) {
-				$post_id = isset( $post->ID ) ? $post->ID : $post;
+				$post_id                  = isset( $post->ID ) ? $post->ID : $post;
 				$cache['ids'][ $post_id ] = isset( $post->termcount ) ? $post->termcount : 0;
 			}
 
@@ -354,7 +355,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 				$this->cache_log[] = sprintf( 'Post ID %d - cache exists', $args['post_id'] );
 			} else {
-				$posts = array();
+				$posts             = array();
 				$this->cache_log[] = sprintf( 'Post ID %d - cache exists (no related posts found)', $args['post_id'] );
 			}
 
@@ -563,7 +564,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 		/**
 		 * Flush the cache when terms are deleted.
-		 * 
+		 *
 		 * Only used for taxonomies that don't have a default term
 		 *
 		 * @since 2.7.5
@@ -610,9 +611,9 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 
 			$args = array(
-				'id'    => 'related_posts_by_tax-0' ,
+				'id'    => 'related_posts_by_tax-0',
 				'title' => 'Related Posts Cache',
-				'href' => "#rpbt-cache-results",
+				'href'  => '#rpbt-cache-results',
 			);
 
 			$wp_admin_bar->add_node( $args );
@@ -630,7 +631,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 				return;
 			}
 
-			$style = 'border:0 none;outline:0 none;padding:20px;margin:0;';
+			$style  = 'border:0 none;outline:0 none;padding:20px;margin:0;';
 			$style .= 'color: #333;background: #f5f5f5;font-family: monospace;font-size: 16px;font-style: normal;';
 			$style .= 'font-weight: normal;line-height: 1.5;white-space: pre;overflow:auto;';
 			$style .= 'width:100%;display:block;float:none;clear:both;text-align:left;z-index: 999;position:relative;';
@@ -638,15 +639,14 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			if ( empty( $this->cache_log ) ) {
 				$message = 'This page has no related posts';
 				if ( km_rpbt_plugin_supports( 'lazy_loading' ) ) {
-					$message = "Disable the lazy_loading feature to see the cache log";
+					$message = 'Disable the lazy_loading feature to see the cache log';
 				}
 				$this->cache_log[] = $message;
 			}
 
-
 			echo "<pre id='rpbt-cache-results' style='{$style}'>";
 			echo "Related Posts by Taxonomy Cache Results \n";
-			echo str_repeat( "-", 39 ) . "\n";
+			echo str_repeat( '-', 39 ) . "\n";
 
 			foreach ( $this->cache_log as $value ) {
 				echo "{$value}\n";
@@ -654,6 +654,5 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 
 			echo '</pre>';
 		}
-
 	} // Class.
 } // Class exists.

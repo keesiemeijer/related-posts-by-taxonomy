@@ -12,7 +12,6 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_widget_args', array( $this, 'return_first_argument' ) );
 
-
 		parent::tear_down();
 	}
 
@@ -84,7 +83,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 	 * Test sanitizing arguments.
 	 */
 	function test_km_rpbt_sanitize_args_array() {
-		$expected = $this->get_default_sanitized_args();
+		$expected  = $this->get_default_sanitized_args();
 		$sanitized = array(
 			'posts_per_page' => 0,
 			'order'          => '',
@@ -98,26 +97,26 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 		$expected = array_merge( $expected, $sanitized );
 
 		$args = array(
-			'post_types'      => false,
-			'posts_per_page'  => false,
-			'order'           => false,
-			'fields'          => false,
-			'limit_posts'     => -1,
-			'limit_year'      => 'false',
-			'limit_month'     => false,
-			'orderby'         => array( false ),
-			'exclude_terms'   => array( 1, 2, 'string', false, 3, 2 ),
-			'include_terms'   => false,
-			'include_parents' => false,
+			'post_types'       => false,
+			'posts_per_page'   => false,
+			'order'            => false,
+			'fields'           => false,
+			'limit_posts'      => -1,
+			'limit_year'       => 'false',
+			'limit_month'      => false,
+			'orderby'          => array( false ),
+			'exclude_terms'    => array( 1, 2, 'string', false, 3, 2 ),
+			'include_terms'    => false,
+			'include_parents'  => false,
 			'include_children' => false,
-			'exclude_posts'   => null,
-			'post_thumbnail'  => 'false',
-			'related'         => 'lalala',
-			'public_only'     => array(),
-			'include_self'    => 'no',
-			'terms'           => 'term-a,term-b,',
-			'meta_key'        => false,
-			'meta_value'      => array( 10, 20 ), // mixed value not sanitized
+			'exclude_posts'    => null,
+			'post_thumbnail'   => 'false',
+			'related'          => 'lalala',
+			'public_only'      => array(),
+			'include_self'     => 'no',
+			'terms'            => 'term-a,term-b,',
+			'meta_key'         => false,
+			'meta_value'       => array( 10, 20 ), // mixed value not sanitized
 		);
 
 		$sanitized_args = km_rpbt_sanitize_args( $args );
@@ -130,20 +129,19 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 
 	/**
 	 * Test sanitizing arguments in a string.
-	 *
 	 */
 	function test_km_rpbt_sanitize_args_string() {
-		$expected = $this->get_default_sanitized_args();
+		$expected  = $this->get_default_sanitized_args();
 		$sanitized = array(
 			'posts_per_page' => 3,
 			'fields'         => 'ids',
 			'public_only'    => true,
 			'terms'          => array( 1, 2, 3 ),
-			'meta_key'       => 'false'
+			'meta_key'       => 'false',
 		);
-		$expected = array_merge( $expected, $sanitized );
+		$expected  = array_merge( $expected, $sanitized );
 
-		$args = 'posts_per_page=3&fields=ids&public_only=true&terms=1,2,2,false,3&meta_key=false';
+		$args           = 'posts_per_page=3&fields=ids&public_only=true&terms=1,2,2,false,3&meta_key=false';
 		$sanitized_args = km_rpbt_sanitize_args( $args );
 
 		ksort( $expected );
@@ -185,7 +183,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 		add_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
 
 		do_shortcode( '[related_posts_by_tax]' );
-		$this->assertSame('ids', $this->arg['fields']);
+		$this->assertSame( 'ids', $this->arg['fields'] );
 		$this->arg = null;
 	}
 
@@ -205,7 +203,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 
 		$widget->widget( $args, array() );
 		$output = ob_get_clean();
-		$this->assertSame('ids', $this->arg['fields']);
+		$this->assertSame( 'ids', $this->arg['fields'] );
 
 		$this->arg = null;
 	}
@@ -215,7 +213,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_km_rpbt_get_comma_separated_values() {
 		$expected = array( 'lol', 'hihi' );
-		$value = ' lol, hihi,lol';
+		$value    = ' lol, hihi,lol';
 		$this->assertEquals( $expected, km_rpbt_get_comma_separated_values( $value ) );
 
 		$value = array( ' lol', 'hihi ', ' lol ' );
@@ -232,7 +230,7 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 		$validated_ids = km_rpbt_validate_ids( $ids );
 		$this->assertEquals( array( 1, 2, 3 ), $validated_ids );
 
-		$ids = '1,string,2,0,###,2,3';
+		$ids           = '1,string,2,0,###,2,3';
 		$validated_ids = km_rpbt_validate_ids( $ids );
 		$this->assertEquals( array( 1, 2, 3 ), $validated_ids );
 	}
@@ -242,18 +240,18 @@ class KM_RPBT_Settings_Tests extends KM_RPBT_UnitTestCase {
 	 */
 	function test_km_rpbt_validate_booleans() {
 		$defaults = array(
-			'a' => true,
-			'b' => true,
-			'c' => false,
-			'd' => false,
-			'e' => true,
-			'f' => array(),
-			'g' => 'string',
-			'h' => null,
+			'a'            => true,
+			'b'            => true,
+			'c'            => false,
+			'd'            => false,
+			'e'            => true,
+			'f'            => array(),
+			'g'            => 'string',
+			'h'            => null,
 			'include_self' => false,
 		);
 
-		$expected = $defaults;
+		$expected                 = $defaults;
 		$expected['include_self'] = 'regular_order';
 
 		$args = array(
