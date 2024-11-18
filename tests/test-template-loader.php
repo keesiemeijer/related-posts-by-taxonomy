@@ -164,7 +164,6 @@ class KM_RPBT_Template_Loader_Tests extends KM_RPBT_UnitTestCase {
 		$template = km_rpbt_get_template( false, 'shortcode' );
 
 		$this->assertEquals( $expected, $template );
-		$this->assertEquals( 'test', 'test' );
 	}
 
 	/**
