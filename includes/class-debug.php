@@ -91,7 +91,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Debug' ) ) {
 			// Get query and related terms.
 			add_filter( 'related_posts_by_taxonomy_posts_clauses', array( $this, 'posts_clauses' ), 99, 4 );
 
-			// Get Related posts
+			// Get Related posts.
 			add_filter( 'related_posts_by_taxonomy', array( $this, 'posts_found' ) );
 
 			// Get the requested template.

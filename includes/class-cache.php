@@ -182,7 +182,7 @@ if ( ! class_exists( 'Related_Posts_By_Taxonomy_Cache' ) ) {
 			}
 
 			if ( 'ids' === km_rpbt_get_template_fields( $args ) ) {
-				// The query was for post IDs
+				// The query was for post IDs.
 				return $posts;
 			}
 
