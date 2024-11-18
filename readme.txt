@@ -144,7 +144,7 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 == Changelog ==
 = 2.7.6 =
 * Enhancement
-	* Add a filter to use any theme directory for custom plugin template files
+	* Add a filter to use any theme directory for custom related posts template files
 = 2.7.5 =
 * Enhancement
 	* Fix PHP 8 and up deprecated notices
@@ -228,4 +228,4 @@ For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
 = 2.7.6 =
-Adds a filter to use any theme directory for custom plugin template files
+Adds a filter to use any theme directory for custom related posts template files
