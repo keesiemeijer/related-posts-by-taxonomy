@@ -1,32 +1,36 @@
-# [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Tests](https://github.com/keesiemeijer/related-posts-by-taxonomy/workflows/Test/badge.svg)](https://github.com/keesiemeijer/related-posts-by-taxonomy/actions) #
+# [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Tests](https://github.com/keesiemeijer/related-posts-by-taxonomy/workflows/Test/badge.svg)](https://github.com/keesiemeijer/related-posts-by-taxonomy/actions)
 
-Version:           2.7.6  
+Version: 2.7.6  
 Requires at least: 5.9  
-Tested up to:      6.7  
+Tested up to: 6.8
 
-### Welcome to the GitHub repository for this plugin ###
+### Welcome to the GitHub repository for this plugin
+
 This is the development repository for the WordPress plugin [Related Posts by Taxonomy](https://wordpress.org/plugins/related-posts-by-taxonomy).
 
-The `master` branch is where you'll find the most recent, stable release.
-The `develop` branch is the current working branch for development. Both branches are required to pass all unit tests. Any pull requests are first merged with the `develop` branch before being merged into the `master` branch. See [Pull Requests](#pull-requests)
+The `main` branch is where you'll find the most recent, stable release.
+The `develop` branch is the current working branch for development. Both branches are required to pass all unit tests. Any pull requests are first merged with the `develop` branch before being merged into the `main` branch. See [Pull Requests](#pull-requests)
 
-## Description ##
+## Description
+
 This WordPress plugin displays related posts as thumbnails, links, excerpts or as full posts with a widget or shortcode. Posts with the **most terms in common** will display at the top. Use multiple taxonomies and post types to get the related posts. Include or exclude terms. Change the look and feel with your own html templates in your (child) theme.
 
 Visit these resources for more information.
 
-* [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy)
-* [WordPress repository](https://wordpress.org/plugins/related-posts-by-taxonomy)
-* [code reference](https://keesiemeijer.github.io/related-posts-by-taxonomy)
+-   [plugin documentation](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy)
+-   [WordPress repository](https://wordpress.org/plugins/related-posts-by-taxonomy)
+-   [code reference](https://keesiemeijer.github.io/related-posts-by-taxonomy)
 
-## Installation ##
+## Installation
 
-* Clone the GitHub repository: `git clone https://github.com/keesiemeijer/related-posts-by-taxonomy.git`
-* Or download and unzip the file: [https://github.com/keesiemeijer/related-posts-by-taxonomy/archive/master.zip](https://github.com/keesiemeijer/related-posts-by-taxonomy/archive/master.zip)
-* Activate the plugin in the wp-admin.
+-   Clone the GitHub repository: `git clone https://github.com/keesiemeijer/related-posts-by-taxonomy.git`
+-   Or download and unzip the file: [https://github.com/keesiemeijer/related-posts-by-taxonomy/archive/main.zip](https://github.com/keesiemeijer/related-posts-by-taxonomy/archive/main.zip)
+-   Activate the plugin in the wp-admin.
 
-## Pull Requests ##
+## Pull Requests
+
 When starting work on a new feature, branch off from the `develop` branch.
+
 ```bash
 # clone the repository
 git clone https://github.com/keesiemeijer/related-posts-by-taxonomy.git
@@ -41,11 +45,13 @@ git checkout develop
 git checkout -b newfeature develop
 ```
 
-## Creating a new build ##
+## Creating a new build
+
 To build the plugin without all the development files (as in the WP repository) use the following commands:
+
 ```bash
-# Go to the master branch
-git checkout master
+# Go to the main branch
+git checkout main
 
 # Install Grunt tasks
 npm install
@@ -53,22 +59,26 @@ npm install
 # Build the production plugin
 grunt build
 ```
+
 The plugin will be compiled in the `build` directory.
 
-## Bugs ##
+## Bugs
+
 If you find an issue, let us know [here](https://github.com/keesiemeijer/related-posts-by-taxonomy/issues?state=open)!
 
-## Support ##
+## Support
+
 This is a developer's portal for Related Posts by Taxonomy and should _not_ be used for support. Please visit the [support forums](https://wordpress.org/support/plugin/related-posts-by-taxonomy).
 
-### Translations ###
+### Translations
+
 Dutch  
 French (by [Annie Stasse](http://www.artisanathai.fr/))  
 Spanish (by [Ludobooks – Cuentos personalizados](http://www.ludobooks.com))  
 Catalan (by [Ludobooks – Cuentos personalizados](http://www.ludobooks.com))  
-Polish (by [koda0601](http://rekolekcje.net.pl/))  
+Polish (by [koda0601](http://rekolekcje.net.pl/))
 
-## Contributions ##
+## Contributions
 
 There are various ways you can contribute:
 

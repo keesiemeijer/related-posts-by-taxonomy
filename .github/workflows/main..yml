@@ -3,33 +3,35 @@ name: Test
 on: push
 
 jobs:
-  phpunit:
-    name: PHPUnit
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php: ['7.4', '8.0', '8.2']
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: wordpress_test
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Install Composer dependencies
-      run: composer install -o --no-progress
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, mysqli, pdo_mysql, bcmath, soap, intl, gd, exif, iconv, imagick
-        coverage: none
-    - name: PHPUnit
-      run: |
-        bin/install-wp-tests.sh latest wordpress_test root root 127.0.0.1:${{ job.services.mysql.ports['3306'] }} true
-        vendor/bin/phpunit
+    phpunit:
+        name: PHPUnit
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                php: ["7.4", "8.0", "8.2", "8.3"]
+        services:
+            mysql:
+                image: mysql:5.7
+                env:
+                    MYSQL_ROOT_PASSWORD: root
+                    MYSQL_DATABASE: wordpress_test
+                ports:
+                    - 3306
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Install Composer dependencies
+              run: composer install -o --no-progress
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, mysqli, pdo_mysql, bcmath, soap, intl, gd, exif, iconv, imagick
+                  coverage: none
+            - name: Install Subversion
+              run: sudo apt-get update && sudo apt-get install -y subversion
+            - name: PHPUnit
+              run: |
+                  bin/install-wp-tests.sh latest wordpress_test root root 127.0.0.1:${{ job.services.mysql.ports['3306'] }} true
+                  vendor/bin/phpunit
