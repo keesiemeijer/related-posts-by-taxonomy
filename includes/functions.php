@@ -261,7 +261,20 @@ function km_rpbt_get_related_posts_html( $related_posts, $rpbt_args ) {
 		$html .= isset( $rpbt_args[ $after ] ) ? $rpbt_args[ $after ] . "\n" : '';
 	}
 
+	/**
+	 * Filters Disallowed tags (<scipt> etc...) out of html output by default.
+	 *
+	 * @since 2.7.7
+	 *
+	 * @return boolean Srips disallowed html from output if true
+	 */
+	if ( apply_filters( 'related_posts_by_taxonomy_strip_disallowed_html', true, $rpbt_args ) ) {
+		// Html is filtered by default to only return allowed HTML.
+		$html = wp_kses( $html, km_rpbt_kses_allowed_html() );
+	}
+
 	$recursing = false;
+
 	return trim( $html );
 }
 
