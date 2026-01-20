@@ -230,5 +230,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.7.6 =
-Use wp_kses() to sanitize the html output of the shortcode, widget and rest api features
+= 2.7.7 =
+Bug fix - Use wp_kses() to sanitize the html output of the shortcode, widget and rest api features
