@@ -17,8 +17,8 @@
     "grunt-contrib-uglify": "^5.2.2",
     "grunt-githash": "^0.1.3",
     "grunt-text-replace": "^0.4.0",
-    "grunt-version": "^3.0.1",
-    "grunt-wp-i18n": "^1.0.3",
+    "grunt-version": "^3.0.2",
+    "grunt-wp-i18n": "^1.0.4",
     "load-grunt-tasks": "^5.1.0"
   }
 }
