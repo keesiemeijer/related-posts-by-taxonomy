@@ -2,8 +2,8 @@
 Contributors: keesiemeijer
 Tags: posts,related,related posts,taxonomy,thumbnails
 Requires at least: 5.9
-Tested up to: 6.8
-Stable tag: 2.7.6
+Tested up to: 6.9
+Stable tag: 2.7.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -142,6 +142,9 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.7.7 =
+* Bug Fixes
+	* Use wp_kses() to sanitize the html output of the shortcode, widget and rest api features
 = 2.7.6 =
 * Enhancement
 	* Add a filter to use any theme directory for custom related posts template files
@@ -228,4 +231,4 @@ For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
 = 2.7.6 =
-Adds a filter to use any theme directory for custom related posts template files
+Use wp_kses() to sanitize the html output of the shortcode, widget and rest api features
