@@ -363,3 +363,36 @@ function km_rpbt_validate_booleans( $args, $defaults ) {
 	}
 	return $args;
 }
+
+/**
+ * Returns all valid tags in html returned by this plugin.
+ *
+ * @since 2.7.7
+ *
+ * @return array Array with validated boolean values
+ */
+function km_rpbt_kses_allowed_html() {
+	$tags = wp_kses_allowed_html( 'post' );
+
+	if ( ! isset( $tags['time'] ) || ! is_array( $tags['time'] ) ) {
+		$tags['time'] = array();
+	}
+	$tags['time']['datetime'] = true;
+	$tags['time']['class']    = true;
+
+	if ( ! isset( $tags['img'] ) || ! is_array( $tags['img'] ) ) {
+		$tags['img'] = array();
+	}
+	$tags['img']['srcset']   = true;
+	$tags['img']['decoding'] = true;
+	$tags['img']['sizes']    = true;
+
+	/**
+	 * Valid tags used for kses.
+	 *
+	 * @since 2.7.7
+	 *
+	 * @return array Array with allowed html tags
+	 */
+	return apply_filters( 'related_posts_by_taxonomy_kses_allowed_html', $tags );
+}

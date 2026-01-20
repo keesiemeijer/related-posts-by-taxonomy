@@ -186,14 +186,7 @@ class Related_Posts_By_Taxonomy_Rest_API extends WP_REST_Controller {
 	 * @return string Sanitized HTML.
 	 */
 	public function sanitize_response_html( $html ) {
-		$tags = wp_kses_allowed_html( 'post' );
-
-		// For show date
-		$tags['time'] = array(
-			'datetime' => true,
-			'class'    => true,
-		);
-
+		$tags = km_rpbt_kses_allowed_html();
 		$html = wp_kses( $html, $tags );
 		return $html ? $html : '';
 	}

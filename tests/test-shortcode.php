@@ -13,6 +13,7 @@ class KM_RPBT_Shortcode_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy_shortcode_atts', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_shortcode', '__return_false' );
 		remove_filter( 'related_posts_by_taxonomy', array( $this, 'return_first_argument' ) );
+		remove_filter( 'related_posts_by_taxonomy_strip_disallowed_html', '__return_false' );
 		remove_filter( 'related_posts_by_taxonomy_pre_related_posts', array( $this, 'override_related_posts' ), 10, 2 );
 
 		parent::tear_down();
@@ -261,6 +262,99 @@ EOF;
 
 		ob_start();
 		echo do_shortcode( '[related_posts_by_tax post_id="' . $posts[0] . '" fields="ids"]' );
+		$shortcode = ob_get_clean();
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );
+	}
+
+	/**
+	 * Test output from shortcode.
+	 */
+	function test_shortcode_output_sanitation() {
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// get post ids array and permalinks array
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $posts,
+				'order'     => 'post__in',
+			)
+		);
+		$ids        = wp_list_pluck( $_posts, 'ID' );
+		$permalinks = array_map( 'get_permalink', $ids );
+
+		// expected related posts are post 1,2,3
+		$expected = <<<EOF
+<div class="rpbt_shortcode">
+<h3>not title or anything alert(document.cookie)</h3>
+<ul>
+<li>
+<a href="{$permalinks[1]}">{$_posts[1]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[2]}">{$_posts[2]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[3]}">{$_posts[3]->post_title}</a>
+</li>
+</ul>
+</div>
+EOF;
+		// inject javascript in shortcode attribute
+		ob_start();
+		echo do_shortcode(
+			'[related_posts_by_tax post_id="' . $posts[0] . '" fields="ids"
+		title="not title or anything \x3c\x73\x63\x72\x69\x70\x74\x3e\x61\x6c\x65\x72\x74\x28\x64\x6f\x63\x75\x6d\x65\x6e\x74\x2e\x63\x6f\x6f\x6b\x69\x65\x29\x3c\x2f\x73\x63\x72\x69\x70\x74\x3e\x0d\x0a"]'
+		);
+		$shortcode = ob_get_clean();
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );
+	}
+
+	/**
+	 * Test output from shortcode.
+	 */
+	function test_shortcode_output_sanitation_without_filter_applied() {
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		// get post ids array and permalinks array
+		$_posts     = get_posts(
+			array(
+				'posts__in' => $posts,
+				'order'     => 'post__in',
+			)
+		);
+		$ids        = wp_list_pluck( $_posts, 'ID' );
+		$permalinks = array_map( 'get_permalink', $ids );
+
+		// expected related posts are post 1,2,3
+		$expected = <<<EOF
+<div class="rpbt_shortcode">
+<h3>not title or anything <script>alert(document.cookie)</script></h3>
+<ul>
+<li>
+<a href="{$permalinks[1]}">{$_posts[1]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[2]}">{$_posts[2]->post_title}</a>
+</li>
+<li>
+<a href="{$permalinks[3]}">{$_posts[3]->post_title}</a>
+</li>
+</ul>
+</div>
+EOF;
+		add_filter( 'related_posts_by_taxonomy_strip_disallowed_html', '__return_false' );
+		// inject javascript in shortcode attribute
+		ob_start();
+		echo do_shortcode(
+			'[related_posts_by_tax post_id="' . $posts[0] . '" fields="ids"
+		title="not title or anything \x3c\x73\x63\x72\x69\x70\x74\x3e\x61\x6c\x65\x72\x74\x28\x64\x6f\x63\x75\x6d\x65\x6e\x74\x2e\x63\x6f\x6f\x6b\x69\x65\x29\x3c\x2f\x73\x63\x72\x69\x70\x74\x3e\x0d\x0a"]'
+		);
 		$shortcode = ob_get_clean();
 
 		$this->assertEquals( strip_ws( $expected ), strip_ws( $shortcode ) );

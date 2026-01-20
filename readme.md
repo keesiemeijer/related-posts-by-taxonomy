@@ -1,8 +1,8 @@
 # [Related Posts by Taxonomy](http://keesiemeijer.wordpress.com/related-posts-by-taxonomy) [![Tests](https://github.com/keesiemeijer/related-posts-by-taxonomy/workflows/Test/badge.svg)](https://github.com/keesiemeijer/related-posts-by-taxonomy/actions)
 
-Version: 2.7.6  
+Version: 2.7.7  
 Requires at least: 5.9  
-Tested up to: 6.8
+Tested up to: 6.9
 
 ### Welcome to the GitHub repository for this plugin
 
