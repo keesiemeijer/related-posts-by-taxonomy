@@ -13,6 +13,7 @@ class KM_RPBT_Gallery_Tests extends KM_RPBT_UnitTestCase {
 		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
 		remove_filter( 'related_posts_by_taxonomy_gallery', array( $this, 'return_first_argument' ) );
 		remove_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'return_query_args' ), 10, 4 );
+		remove_filter( 'related_posts_by_taxonomy_strip_disallowed_html', '__return_false' );
 	}
 
 	function test_gallery_class() {
@@ -219,7 +220,7 @@ EOF;
 	/**
 	 * Test output from gallery with gallery style.
 	 */
-	function test_shortcode_with_gallery_style() {
+	function test_gallery_style() {
 		$gallery_args = $this->setup_gallery();
 		extract( $gallery_args );
 
@@ -256,6 +257,232 @@ margin-left: 0;
 {$related_post->post_title}
 </dd></dl>
 <br style='clear: both' />
+</div>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
+	}
+
+	/**
+	 * Test output from gallery with gallery style.
+	 */
+	function test_shortcode_with_gallery_style() {
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+		$permalinks   = array();
+		$titles       = array();
+
+		foreach ( $posts as $post_id ) {
+			$attachment_id = $this->create_image();
+			set_post_thumbnail( $post_id, $attachment_id );
+			$permalinks[] = get_permalink( $post_id );
+			$titles[]     = get_the_title( $post_id );
+		}
+
+		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
+		add_filter( 'use_default_gallery_style', '__return_true', 99 );
+
+		ob_start();
+		echo do_shortcode( '[related_posts_by_tax format="thumbnails" post_id="' . $posts[0] . '"]' );
+		$gallery = ob_get_clean();
+
+		$static    = $this->get_gallery_instance_id( $gallery );
+		$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
+
+				$expected = <<<EOF
+<div class="rpbt_shortcode">
+<h3>Related Posts</h3>
+<style{$type_attr}>
+#rpbt-related-gallery-$static {
+margin: auto;
+}
+#rpbt-related-gallery-$static .gallery-item {
+float: left;
+margin-top: 10px;
+text-align: center;
+width: 33%;
+}
+#rpbt-related-gallery-$static img {
+border: 2px solid #cfcfcf;
+}
+#rpbt-related-gallery-$static .gallery-caption {
+margin-left: 0;
+}
+/* see gallery_shortcode() in wp-includes/media.php */
+</style>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$posts[0]} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='{$titles[1]}'>
+<dt class='gallery-icon'>
+<a href='{$permalinks[1]}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$posts[1]}'>
+{$titles[1]}
+</dd></dl><dl class='gallery-item' role='figure' aria-label='{$titles[2]}'>
+<dt class='gallery-icon'>
+<a href='{$permalinks[2]}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$posts[2]}'>
+{$titles[2]}
+</dd></dl><dl class='gallery-item' role='figure' aria-label='{$titles[3]}'>
+<dt class='gallery-icon'>
+<a href='{$permalinks[3]}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$posts[3]}'>
+{$titles[3]}
+</dd></dl><br style="clear: both" />
+</div>
+</div>
+EOF;
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
+	}
+	/**
+	 * Test output from gallery with gallery style.
+	 */
+	function test_shortcode_with_gallery_style_with_title_not_sanitatized() {
+		// With this filter set to false malicious code could be added with the shortcode
+		add_filter( 'related_posts_by_taxonomy_strip_disallowed_html', '__return_false' );
+
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+		$permalinks   = array();
+		$titles       = array();
+
+		foreach ( $posts as $post_id ) {
+			$attachment_id = $this->create_image();
+			set_post_thumbnail( $post_id, $attachment_id );
+			$permalinks[] = get_permalink( $post_id );
+			$titles[]     = get_the_title( $post_id );
+		}
+
+		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
+
+		add_filter( 'use_default_gallery_style', '__return_true', 99 );
+		// $gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+		// $gallery = do_shortcode( "[related_posts_by_tax format='thumbnails' post_id='$post_id" );
+
+		ob_start();
+		echo do_shortcode( '[related_posts_by_tax format="thumbnails" post_id="' . $posts[0] . '" title="Related Posts \x3c\x73\x63\x72\x69\x70\x74\x3e\x61\x6c\x65\x72\x74\x28\x64\x6f\x63\x75\x6d\x65\x6e\x74\x2e\x63\x6f\x6f\x6b\x69\x65\x29\x3c\x2f\x73\x63\x72\x69\x70\x74\x3e\x0d\x0a"]' );
+		$gallery = ob_get_clean();
+
+		$static    = $this->get_gallery_instance_id( $gallery );
+		$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
+
+				$expected = <<<EOF
+<div class="rpbt_shortcode">
+<h3>Related Posts <script>alert(document.cookie)</script></h3>
+<style{$type_attr}>
+#rpbt-related-gallery-$static {
+margin: auto;
+}
+#rpbt-related-gallery-$static .gallery-item {
+float: left;
+margin-top: 10px;
+text-align: center;
+width: 33%;
+}
+#rpbt-related-gallery-$static img {
+border: 2px solid #cfcfcf;
+}
+#rpbt-related-gallery-$static .gallery-caption {
+margin-left: 0;
+}
+/* see gallery_shortcode() in wp-includes/media.php */
+</style>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$posts[0]} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='{$titles[1]}'>
+<dt class='gallery-icon'>
+<a href='{$permalinks[1]}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$posts[1]}'>
+{$titles[1]}
+</dd></dl><dl class='gallery-item' role='figure' aria-label='{$titles[2]}'>
+<dt class='gallery-icon'>
+<a href='{$permalinks[2]}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$posts[2]}'>
+{$titles[2]}
+</dd></dl><dl class='gallery-item' role='figure' aria-label='{$titles[3]}'>
+<dt class='gallery-icon'>
+<a href='{$permalinks[3]}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$posts[3]}'>
+{$titles[3]}
+</dd></dl><br style="clear: both" />
+</div>
+</div>
+EOF;
+
+		$this->assertEquals( strip_ws( $expected ), strip_ws( $gallery ) );
+	}
+
+	/**
+	 * Test output from gallery with gallery style.
+	 */
+	function test_shortcode_with_gallery_style_with_title_sanitatized() {
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+		$permalinks   = array();
+		$titles       = array();
+
+		foreach ( $posts as $post_id ) {
+			$attachment_id = $this->create_image();
+			set_post_thumbnail( $post_id, $attachment_id );
+			$permalinks[] = get_permalink( $post_id );
+			$titles[]     = get_the_title( $post_id );
+		}
+
+		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
+
+		add_filter( 'use_default_gallery_style', '__return_true', 99 );
+		// $gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
+		// $gallery = do_shortcode( "[related_posts_by_tax format='thumbnails' post_id='$post_id" );
+
+		ob_start();
+		echo do_shortcode( '[related_posts_by_tax format="thumbnails" post_id="' . $posts[0] . '" title="Related Posts \x3c\x73\x63\x72\x69\x70\x74\x3e\x61\x6c\x65\x72\x74\x28\x64\x6f\x63\x75\x6d\x65\x6e\x74\x2e\x63\x6f\x6f\x6b\x69\x65\x29\x3c\x2f\x73\x63\x72\x69\x70\x74\x3e\x0d\x0a"]' );
+		$gallery = ob_get_clean();
+
+		$static    = $this->get_gallery_instance_id( $gallery );
+		$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
+
+				$expected = <<<EOF
+<div class="rpbt_shortcode">
+<h3>Related Posts alert(document.cookie)</h3>
+<style{$type_attr}>
+#rpbt-related-gallery-$static {
+margin: auto;
+}
+#rpbt-related-gallery-$static .gallery-item {
+float: left;
+margin-top: 10px;
+text-align: center;
+width: 33%;
+}
+#rpbt-related-gallery-$static img {
+border: 2px solid #cfcfcf;
+}
+#rpbt-related-gallery-$static .gallery-caption {
+margin-left: 0;
+}
+/* see gallery_shortcode() in wp-includes/media.php */
+</style>
+<div id='rpbt-related-gallery-$static' class='gallery related-gallery related-galleryid-{$posts[0]} gallery-columns-3 gallery-size-thumbnail'><dl class='gallery-item' role='figure' aria-label='{$titles[1]}'>
+<dt class='gallery-icon'>
+<a href='{$permalinks[1]}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$posts[1]}'>
+{$titles[1]}
+</dd></dl><dl class='gallery-item' role='figure' aria-label='{$titles[2]}'>
+<dt class='gallery-icon'>
+<a href='{$permalinks[2]}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$posts[2]}'>
+{$titles[2]}
+</dd></dl><dl class='gallery-item' role='figure' aria-label='{$titles[3]}'>
+<dt class='gallery-icon'>
+<a href='{$permalinks[3]}'><img></a>
+</dt>
+<dd class='wp-caption-text gallery-caption' id='rpbt-related-gallery-$static-{$posts[3]}'>
+{$titles[3]}
+</dd></dl><br style="clear: both" />
+</div>
 </div>
 EOF;
 
