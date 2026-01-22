@@ -387,6 +387,11 @@ function km_rpbt_kses_allowed_html() {
 	$tags['img']['decoding'] = true;
 	$tags['img']['sizes']    = true;
 
+	if ( ! isset( $tags['style'] ) || ! is_array( $tags['style'] ) ) {
+		$tags['style'] = array();
+	}
+	$tags['style']['type'] = true;
+
 	/**
 	 * Valid tags used for kses.
 	 *
