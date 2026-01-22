@@ -354,10 +354,7 @@ EOF;
 		}
 
 		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
-
 		add_filter( 'use_default_gallery_style', '__return_true', 99 );
-		// $gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
-		// $gallery = do_shortcode( "[related_posts_by_tax format='thumbnails' post_id='$post_id" );
 
 		ob_start();
 		echo do_shortcode( '[related_posts_by_tax format="thumbnails" post_id="' . $posts[0] . '" title="Related Posts \x3c\x73\x63\x72\x69\x70\x74\x3e\x61\x6c\x65\x72\x74\x28\x64\x6f\x63\x75\x6d\x65\x6e\x74\x2e\x63\x6f\x6f\x6b\x69\x65\x29\x3c\x2f\x73\x63\x72\x69\x70\x74\x3e\x0d\x0a"]' );
@@ -430,10 +427,7 @@ EOF;
 		}
 
 		add_filter( 'related_posts_by_taxonomy_post_thumbnail_link', array( $this, 'add_image' ), 99, 4 );
-
 		add_filter( 'use_default_gallery_style', '__return_true', 99 );
-		// $gallery = km_rpbt_related_posts_by_taxonomy_gallery( $args, array( $related_post ) );
-		// $gallery = do_shortcode( "[related_posts_by_tax format='thumbnails' post_id='$post_id" );
 
 		ob_start();
 		echo do_shortcode( '[related_posts_by_tax format="thumbnails" post_id="' . $posts[0] . '" title="Related Posts \x3c\x73\x63\x72\x69\x70\x74\x3e\x61\x6c\x65\x72\x74\x28\x64\x6f\x63\x75\x6d\x65\x6e\x74\x2e\x63\x6f\x6f\x6b\x69\x65\x29\x3c\x2f\x73\x63\x72\x69\x70\x74\x3e\x0d\x0a"]' );
