@@ -387,11 +387,6 @@ function km_rpbt_kses_allowed_html() {
 	$tags['img']['decoding'] = true;
 	$tags['img']['sizes']    = true;
 
-	if ( ! isset( $tags['style'] ) || ! is_array( $tags['style'] ) ) {
-		$tags['style'] = array();
-	}
-	$tags['style']['type'] = true;
-
 	/**
 	 * Valid tags used for kses.
 	 *
@@ -400,4 +395,74 @@ function km_rpbt_kses_allowed_html() {
 	 * @return array Array with allowed html tags
 	 */
 	return apply_filters( 'related_posts_by_taxonomy_kses_allowed_html', $tags );
+}
+
+/**
+ * Returns all setting keys used in html output.
+ *
+ * @since 2.7.8
+ *
+ * @return array Array with settings keys that are used in html output
+ */
+function km_rpbt_get_html_setting_keys() {
+	$html_settings = array(
+		'title',
+		'before_title',
+		'after_title',
+	);
+	foreach ( km_rpbt_get_setting_types() as $value ) {
+		$html_settings[] = "before_{$value}";
+		$html_settings[] = "after_{$value}";
+	}
+	return $html_settings;
+}
+
+/**
+ * Returns sanitized settings strings that ar used in html output.
+ *
+ * @since 2.7.8
+ *
+ * @param array $args  See km_rpbt_related_posts_by_taxonomy_shortcode() for more
+ *                     information on accepted arguments.
+ */
+function km_rpbt_sanitize_html_settings( $args ) {
+		// Default values used by features
+		$known_html_values = array(
+			'Related Posts',
+			__( 'Related Posts', 'related-posts-by-taxonomy' ),
+			'<h3>',
+			'</h3>',
+			'<h2>',
+			'</h2>',
+			'<div class="rpbt_shortcode">',
+			'<div class="rpbt_widget">',
+			'<div class="rpbt_related_posts">',
+			'</div>',
+		);
+
+		$sanitize_keys = km_rpbt_get_html_setting_keys();
+
+		// Check if before_ and after_ type exist with current type
+		if ( isset( $args['type'] ) && is_string( $args['type'] ) ) {
+			if ( ! in_array( "before_{$args['type']}", $sanitize_keys ) ) {
+				$sanitize_keys[] = "before_{$args['type']}";
+			}
+			if ( ! in_array( "after_{$args['type']}", $sanitize_keys ) ) {
+				$sanitize_keys[] = "after_{$args['type']}";
+			}
+		}
+
+		foreach ( $sanitize_keys as $key ) {
+			if ( isset( $args[ $key ] ) && $args[ $key ] ) {
+				// Skip default html values
+				if ( in_array( $args[ $key ], $known_html_values ) ) {
+					continue;
+				}
+
+				// Sanitize setting
+				$args[ $key ] = wp_kses( $args[ $key ], km_rpbt_kses_allowed_html() );
+			}
+		}
+
+		return $args;
 }
