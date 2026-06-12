@@ -360,9 +360,22 @@ function km_rpbt_query_related_posts( $post_id, $taxonomies = 'category', $args 
 
 	$key = md5( $query );
 	$key = "get_related_taxonomy_posts:$key:$last_changed";
+
+	/**
+	 * Filter expiration time for the related posts query results in the WP object cache.
+	 *
+	 * Expiration time Used by wp_cache_set() function.
+	 *
+	 * @since 2.7.9
+	 * @param int    $expiration Expiration time in seconds. Default 0 (no expiration).
+	 * @param string $query_type The type of query. Type can be 'posts' or 'km_rpbt_terms'.
+	 */
+	$expiration = apply_filters( 'related_posts_by_taxonomy_wp_object_cache_expiration', 0, 'posts' );
+	$expiration = absint( $expiration );
+
 	if ( ! $results = wp_cache_get( $key, 'posts' ) ) {
 		$results = $wpdb->get_results( $query );
-		wp_cache_set( $key, $results, 'posts' );
+		wp_cache_set( $key, $results, 'posts', $expiration );
 	}
 
 	if ( $results ) {

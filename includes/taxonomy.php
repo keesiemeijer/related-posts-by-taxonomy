@@ -238,11 +238,23 @@ function km_rpbt_get_term_objects( $terms, $taxonomies = '' ) {
 	$cache_key    = "km_rpbt_get_term_objects:$key:$last_changed";
 	$cache        = wp_cache_get( $cache_key, 'km_rpbt_terms' );
 
+	/**
+	 * Filter expiration time for the related posts query results in the WP object cache.
+	 *
+	 * Expiration time Used by wp_cache_set() function.
+	 *
+	 * @since 2.7.9
+	 * @param int   $expiration Expiration time in seconds. Default 0 (no expiration).
+	 * @param string $query_type The type of query. Type can be 'posts' or 'km_rpbt_terms'.
+	 */
+	$expiration = apply_filters( 'related_posts_by_taxonomy_wp_object_cache_expiration', 0, 'km_rpbt_terms' );
+	$expiration = absint( $expiration );
+
 	if ( false !== $cache ) {
 		$results = $cache;
 	} else {
 		$results = $wpdb->get_results( $query );
-		wp_cache_set( $cache_key, $results, 'km_rpbt_terms' );
+		wp_cache_set( $cache_key, $results, 'km_rpbt_terms', $expiration );
 	}
 
 	return is_array( $results ) ? $results : array();
