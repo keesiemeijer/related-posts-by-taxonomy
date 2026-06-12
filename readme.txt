@@ -143,7 +143,10 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 
 == Changelog ==
 = 2.7.9 =
-    * Tested with WP 7.0 and updated tests for PHP 8.5
+* Enhancement
+	* New filter for the $expire attribute in wp_cache_set()
+		* This allows you to set your own expire time if needed
+	* Tested with WP 7.0 and PHP 8.5
 = 2.7.8 =
 * Bug Fixes
 	* Fix gallery <style> tags being stripped from html output
@@ -205,35 +208,8 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 	* Detect post type Page taxonomies
 	* Preparing the plugin for the (Gutenberg) editor block feature
 
-= 2.5.1 =
-* Enhancement
-    * Add ability to show the post date after the post title
-    * Allow getting post fields from the cache
-    * Add new filter to filter all related post permalinks
-    * Add new tests for the post type feature (GitHub)
-* Bug fixes
-	* (minor) Add post classes after retrieving posts from the cache
-	* (minor) Return an error if invalid taxonomies or post types was requested with the WP Rest API
-
-= 2.5.0 =
-* Enhancement
-	* Prepare plugin for gutenberg blocks
-	* Add 'terms' parameter for shortcode and widget
-	* Add GDPR information to readme.txt
-	* deprecate functions (with back compatibility)
-		* km_rpbt_related_posts_by_taxonomy()
-		* km_rpbt_get_default_args()
-		* km_rpbt_related_posts_by_taxonomy_validate_ids()
-		* km_rpbt_related_posts_by_taxonomy_template()
-		* km_rpbt_post_title_link()
-		* km_rpbt_get_related_post_title_link()
-		* km_rpbt_related_posts_by_taxonomy_widget()
-* Bug fixes
-	* (minor) Add missing filter pre_related_posts before cache queries
-	* (minor) Add missing properties to related posts returned by the cache 
-
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
 = 2.7.9 =
-Tested with WP 7.0 and updated tests for PHP 8.5
+Added a new filter for the $expire attribute in wp_cache_set()
