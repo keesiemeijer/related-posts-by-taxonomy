@@ -239,7 +239,7 @@ function km_rpbt_get_term_objects( $terms, $taxonomies = '' ) {
 	$cache        = wp_cache_get( $cache_key, 'km_rpbt_terms' );
 
 	/**
-	 * Filter expiration time for the related posts query results in the WP object cache.
+	 * Filter expiration time for the related terms query results in the WP object cache.
 	 *
 	 * Expiration time Used by wp_cache_set() function.
 	 *
