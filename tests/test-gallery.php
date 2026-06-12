@@ -587,6 +587,11 @@ BLOB;
 			$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
 		}
 
+		// Type attribute was removed WP 7.0
+		if ( version_compare( $version, '7.0', '>=' ) ) {
+			$type_attr = '';
+		}
+
 		$expected = <<<EOF
 <style{$type_attr}>
 	#gallery-1 {
