@@ -2,8 +2,8 @@
 Contributors: keesiemeijer
 Tags: posts,related,related posts,taxonomy,thumbnails
 Requires at least: 5.9
-Tested up to: 6.9
-Stable tag: 2.7.8
+Tested up to: 7.0
+Stable tag: 2.7.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -142,6 +142,8 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.7.9 =
+    * Tested with WP 7.0 and updated tests for PHP 8.5
 = 2.7.8 =
 * Bug Fixes
 	* Fix gallery <style> tags being stripped from html output
@@ -233,5 +235,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.7.8 =
-Bug fix - Fix gallery <style> tags being stripped from html output
+= 2.7.9 =
+Tested with WP 7.0 and updated tests for PHP 8.5
