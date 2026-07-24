@@ -439,6 +439,8 @@ EOF;
 
 	/**
 	 * Test if the current posts_per_page field output matches the legacy esc_attr_e output.
+	 *
+	 * In plugin version 2.7.9 and below the widget posts_per_page field used esc_attr_e() instead of esc_attr() to escape the value of the input.
 	 * See Pull Request #26 for more context:  * See Pull Request #26 for more context: https://github.com/keesiemeijer/related-posts-by-taxonomy/pull/26
 	 */
 	function test_rpbt_widget_form_posts_per_page_legacy_output() {
@@ -450,8 +452,7 @@ EOF;
 
 		$instance = $widget->get_instance_settings(
 			array(
-				'post_id'        => $posts[0],
-				'posts_per_page' => -1,
+				'post_id' => $posts[0],
 			)
 		);
 
@@ -464,7 +465,7 @@ EOF;
 
 	/**
 	 * Render a legacy widget field fixture in widget scope.
-	 * Used to compare the current field output with the back-compat esc_attr_e() fixture.
+	 * Used to compare the current field output with a back-compat fixture.
 	 *
 	 * See Pull Request #26 for more context: https://github.com/keesiemeijer/related-posts-by-taxonomy/pull/26
 	 *
