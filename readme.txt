@@ -142,6 +142,9 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 4. Twenty Thirteen screenshot. Post thumbnails (after post content) and the widget
 
 == Changelog ==
+= 2.7.10 =
+* Bug Fixes
+	*  (minor) Diplay widget value with the appropriate function. Props DAnn2012
 = 2.7.9 =
 * Enhancement
 	* New filter for the $expire attribute in wp_cache_set()
@@ -211,5 +214,5 @@ Please contact a GDPR consultant or law firm with this information to assess if 
 For older changelog versions see the changelog.txt file
 
 == Upgrade Notice ==
-= 2.7.9 =
-Added a new filter for the $expire attribute in wp_cache_set()
+= 2.7.10 =
+Minor upate to display a widget value with the appropriate function.
