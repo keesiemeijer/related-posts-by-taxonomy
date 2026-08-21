@@ -1,8 +1,8 @@
 {
   "name": "related-posts-by-taxonomy",
-  "version": "2.7.9",
+  "version": "2.7.10",
   "license": "GPL-2.0-or-later",
-  "tested_up_to": "7.0",
+  "tested_up_to": "7.1",
   "requires_at_least": "5.9",
   "main": "Gruntfile.js",
   "author": "keesiemeijer",
@@ -10,8 +10,11 @@
     "type": "git",
     "url": "https://github.com/keesiemeijer/related-posts-by-taxonomy.git"
   },
+  "overrides": {
+    "js-yaml": "5.2.2"
+  },
   "devDependencies": {
-    "grunt": "^1.6.2",
+    "grunt": "^1.6.3",
     "grunt-contrib-clean": "^2.0.1",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-uglify": "^5.2.2",

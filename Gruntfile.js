@@ -19,7 +19,7 @@ module.exports = function (grunt) {
             },
             target: {
                 files: {
-                    src: ["*.php", "**/*.php", "!node_modules/**", "!bin/**", "!vendor/**"],
+                    src: ["*.php", "**/*.php", "!node_modules/**", "!bin/**", "!vendor/**", "!tests/**"],
                 },
             },
         },
@@ -28,6 +28,7 @@ module.exports = function (grunt) {
             target: {
                 options: {
                     domainPath: "/lang",
+                    exclude: ["node_modules/.*", "bin/.*", "vendor/.*", "tests/.*"],
                     mainFile: "related-posts-by-taxonomy.php",
                     potFilename: "related-posts-by-taxonomy.pot",
                     potHeaders: {

@@ -436,4 +436,55 @@ EOF;
 			$this->assertStringContainsString( 'class="rpbt_' . $class . '"', $output );
 		}
 	}
+
+	/**
+	 * Test if the current posts_per_page field output matches the legacy esc_attr_e output.
+	 *
+	 * In plugin version 2.7.9 and below the widget posts_per_page field used esc_attr_e() instead of esc_attr() to escape the value of the input.
+	 * See Pull Request #26 for more context:  * See Pull Request #26 for more context: https://github.com/keesiemeijer/related-posts-by-taxonomy/pull/26
+	 */
+	function test_rpbt_widget_form_posts_per_page_legacy_output() {
+		$create_posts = $this->create_posts_with_terms();
+		$posts        = $create_posts['posts'];
+
+		$widget = new Related_Posts_By_Taxonomy( 'related-posts-by-taxonomy', __( 'Related Posts By Taxonomy', 'related-posts-by-taxonomy' ) );
+		$widget->_set( 2 );
+
+		$instance = $widget->get_instance_settings(
+			array(
+				'post_id' => $posts[0],
+			)
+		);
+
+		$current_output = $widget->get_field( 'posts-per-page', $instance );
+
+		$legacy_output = $this->get_legacy_widget_field_output( $widget, $instance, __DIR__ . '/back-compat/posts-per-page-esc-attr-e.php' );
+
+		$this->assertSame( strip_ws( $legacy_output ), strip_ws( $current_output ) );
+	}
+
+	/**
+	 * Render a legacy widget field fixture in widget scope.
+	 * Used to compare the current field output with a back-compat fixture.
+	 *
+	 * See Pull Request #26 for more context: https://github.com/keesiemeijer/related-posts-by-taxonomy/pull/26
+	 *
+	 * @param Related_Posts_By_Taxonomy $widget Widget instance.
+	 * @param array                     $instance Widget instance settings.
+	 * @param string                    $file Fixture file path.
+	 * @return string
+	 */
+	private function get_legacy_widget_field_output( $widget, $instance, $file ) {
+		$renderer = function () use ( $instance, $file ) {
+			$i = $instance;
+
+			ob_start();
+			include $file;
+			return ob_get_clean();
+		};
+
+		$renderer = Closure::bind( $renderer, $widget, get_class( $widget ) );
+
+		return $renderer();
+	}
 }
